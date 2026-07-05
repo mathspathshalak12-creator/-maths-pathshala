@@ -84,23 +84,16 @@
   <div class="subhead">Student login — Kalyanpur, Kanpur</div>
 
   <div id="phone-step">
-    <label>Your registered mobile number</label>
-    <div class="phone-row">
-      <div class="cc">+91</div>
-      <input type="tel" id="phone-input" placeholder="98765 43210" maxlength="10">
-    </div>
-    <button class="btn btn-primary" id="send-otp-btn">Send OTP</button>
+    <label>Email</label>
+    <input type="email" id="email-input" placeholder="student@example.com" style="margin-bottom:20px;">
+    <label>Password</label>
+    <input type="password" id="password-input" placeholder="Enter your password" style="margin-bottom:20px;">
+    <button class="btn btn-primary" id="send-otp-btn">Login</button>
   </div>
 
-  <div id="otp-step">
-    <label>Enter the 6-digit OTP</label>
-    <input type="text" id="otp-input" placeholder="123456" maxlength="6" style="margin-bottom:8px;">
-    <button class="btn btn-primary" id="verify-otp-btn">Verify &amp; Login</button>
-    <button class="btn btn-outline" id="change-number-btn">Change number</button>
-  </div>
+  <div id="otp-step" style="display:none;"></div>
 
   <div class="msg" id="status-msg"></div>
-  <div id="recaptcha-container"></div>
 </div>
 
 <div class="card" id="dashboard-screen">
@@ -139,7 +132,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   // ==== YOUR FIREBASE CONFIG ====
@@ -162,67 +155,36 @@
   const loginCard = document.getElementById('login-card');
   const dashboardScreen = document.getElementById('dashboard-screen');
   const notFoundScreen = document.getElementById('not-found-screen');
-  const phoneStep = document.getElementById('phone-step');
-  const otpStep = document.getElementById('otp-step');
   const statusMsg = document.getElementById('status-msg');
 
-  document.getElementById('not-found-wa').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi, I tried logging into the student dashboard but my number isn't registered. Can you set up my account?")}`;
+  document.getElementById('not-found-wa').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi, I tried logging into the student dashboard but my login isn't working. Can you help?")}`;
 
   function showMsg(text, type){
     statusMsg.textContent = text;
     statusMsg.className = 'msg ' + (type || '');
   }
 
-  window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
-
-  let confirmationResult = null;
-
   document.getElementById('send-otp-btn').addEventListener('click', () => {
-    const raw = document.getElementById('phone-input').value.trim();
-    if(raw.length !== 10 || isNaN(raw)){
-      showMsg('Please enter a valid 10-digit number', 'error');
+    const email = document.getElementById('email-input').value.trim();
+    const password = document.getElementById('password-input').value;
+    if(!email || !password){
+      showMsg('Please enter both email and password', 'error');
       return;
     }
-    const phoneNumber = "+91" + raw;
     const btn = document.getElementById('send-otp-btn');
-    btn.disabled = true; btn.textContent = "Sending...";
-    signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier)
-      .then((result) => {
-        confirmationResult = result;
-        phoneStep.style.display = 'none';
-        otpStep.style.display = 'block';
-        showMsg('OTP sent! Check your SMS.', 'success');
-      })
-      .catch((error) => {
-        showMsg('Error sending OTP: ' + error.message, 'error');
-      })
-      .finally(() => { btn.disabled = false; btn.textContent = "Send OTP"; });
-  });
-
-  document.getElementById('change-number-btn').addEventListener('click', () => {
-    otpStep.style.display = 'none';
-    phoneStep.style.display = 'block';
-    showMsg('');
-  });
-
-  document.getElementById('verify-otp-btn').addEventListener('click', () => {
-    const code = document.getElementById('otp-input').value.trim();
-    if(!confirmationResult){ showMsg('Please request OTP again.', 'error'); return; }
-    const btn = document.getElementById('verify-otp-btn');
-    btn.disabled = true; btn.textContent = "Verifying...";
-    confirmationResult.confirm(code)
+    btn.disabled = true; btn.textContent = "Logging in...";
+    signInWithEmailAndPassword(auth, email, password)
       .then(async (result) => {
-        const user = result.user;
-        await loadDashboard(user.phoneNumber);
+        await loadDashboard(result.user.email);
       })
       .catch((error) => {
-        showMsg('Invalid OTP, please try again.', 'error');
+        showMsg('Login failed: check your email and password', 'error');
       })
-      .finally(() => { btn.disabled = false; btn.textContent = "Verify & Login"; });
+      .finally(() => { btn.disabled = false; btn.textContent = "Login"; });
   });
 
-  async function loadDashboard(phoneNumber){
-    const docRef = doc(db, "students", phoneNumber);
+  async function loadDashboard(email){
+    const docRef = doc(db, "students", email.toLowerCase());
     const docSnap = await getDoc(docRef);
 
     if(!docSnap.exists()){
@@ -233,7 +195,7 @@
 
     const data = docSnap.data();
     document.getElementById('dash-name').textContent = data.name || "Student";
-    document.getElementById('dash-phone').textContent = phoneNumber;
+    document.getElementById('dash-phone').textContent = email;
 
     const feeBadge = document.getElementById('fee-badge');
     if(data.feeStatus === 'Paid'){
