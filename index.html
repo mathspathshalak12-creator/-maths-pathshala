@@ -263,6 +263,61 @@
   .popup-seats{display:flex;gap:8px;justify-content:center;margin-bottom:22px;}
   .popup-seats .seat{width:28px;height:28px;}
   .popup-ctas{display:flex;flex-direction:column;gap:10px;}
+
+  /* NOTES SECTION */
+  .notes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media(max-width:900px){.notes-grid{grid-template-columns:1fr 1fr;}}
+  @media(max-width:600px){.notes-grid{grid-template-columns:1fr;}}
+  .note-card{
+    background:var(--paper);border:1px solid var(--line);border-radius:14px;
+    padding:24px;display:flex;flex-direction:column;gap:14px;
+  }
+  .note-icon{
+    width:40px;height:40px;border-radius:8px;background:#FDF0DA;
+    display:flex;align-items:center;justify-content:center;font-size:18px;
+  }
+  .note-class{font-size:12.5px;font-weight:700;color:var(--amber-dark);letter-spacing:.03em;text-transform:uppercase;}
+  .note-title{font-size:16px;font-weight:700;color:var(--navy);}
+  .note-desc{font-size:13.5px;color:var(--muted);flex-grow:1;}
+  .note-dl{
+    display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;
+    color:var(--navy);border:1.5px solid var(--navy);border-radius:6px;
+    padding:9px 16px;justify-content:center;transition:all .12s ease;
+  }
+  .note-dl:hover{background:var(--navy);color:#fff;}
+
+  /* CHAPTER-WISE NOTES BROWSER */
+  .notes-tabs{display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap;}
+  .notes-tab{
+    padding:10px 20px;border-radius:8px;border:1.5px solid var(--line);
+    background:var(--paper);font-size:14px;font-weight:600;color:var(--muted);
+    cursor:pointer;transition:all .12s ease;
+  }
+  .notes-tab.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+  .notes-tab:hover:not(.active){border-color:var(--navy);color:var(--navy);}
+
+  .chapter-panel{display:none;}
+  .chapter-panel.active{display:block;}
+  .chapter-list{
+    background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  }
+  .chapter-row{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:16px 22px;border-bottom:1px solid var(--line);
+  }
+  .chapter-row:last-child{border-bottom:none;}
+  .chapter-num{
+    font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--amber-dark);
+    font-weight:700;width:28px;flex-shrink:0;
+  }
+  .chapter-name{font-size:15px;color:var(--navy);font-weight:500;flex-grow:1;}
+  .chapter-row .note-dl{padding:7px 14px;font-size:13px;flex-shrink:0;}
+
+  .notes-subject-label{
+    font-size:13px;font-weight:700;color:var(--amber-dark);text-transform:uppercase;
+    letter-spacing:.03em;margin:28px 0 12px;
+  }
+  .notes-subject-label:first-child{margin-top:0;}
 </style>
 </head>
 <body>
@@ -273,6 +328,7 @@
     <div class="navlinks">
       <a href="javascript:void(0)" data-scroll="programs">Batch classes</a>
       <a href="javascript:void(0)" data-scroll="hometuition">Home tuition</a>
+      <a href="javascript:void(0)" data-scroll="notes">Notes</a>
       <a href="javascript:void(0)" data-scroll="why">Why us</a>
       <a href="javascript:void(0)" data-scroll="testimonials">Reviews</a>
       <a href="javascript:void(0)" data-scroll="register">Register</a>
@@ -382,6 +438,161 @@
         </ul>
       </div>
     </div>
+  </div>
+</section>
+
+<section id="notes">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">Free resources</div>
+      <h2>Chapter-wise short notes.</h2>
+      <p>Pick your class, then download notes for the exact chapter you're stuck on — handwritten, exam-oriented, free to download.</p>
+    </div>
+
+    <div class="notes-tabs">
+      <div class="notes-tab active" data-class="9">Class 9</div>
+      <div class="notes-tab" data-class="10">Class 10</div>
+      <div class="notes-tab" data-class="11">Class 11</div>
+      <div class="notes-tab" data-class="12">Class 12</div>
+    </div>
+
+    <!-- CLASS 9 -->
+    <div class="chapter-panel active" id="panel-9">
+      <div class="notes-subject-label">Mathematics</div>
+      <div class="chapter-list">
+        <div class="chapter-row"><span class="chapter-num">01</span><span class="chapter-name">Number Systems</span><a class="note-dl" href="notes/class9-maths-01-number-systems.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">02</span><span class="chapter-name">Polynomials</span><a class="note-dl" href="notes/class9-maths-02-polynomials.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">03</span><span class="chapter-name">Coordinate Geometry</span><a class="note-dl" href="notes/class9-maths-03-coordinate-geometry.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">04</span><span class="chapter-name">Linear Equations in Two Variables</span><a class="note-dl" href="notes/class9-maths-04-linear-equations-two-variables.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">05</span><span class="chapter-name">Introduction to Euclid's Geometry</span><a class="note-dl" href="notes/class9-maths-05-euclids-geometry.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">06</span><span class="chapter-name">Lines and Angles</span><a class="note-dl" href="notes/class9-maths-06-lines-and-angles.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">07</span><span class="chapter-name">Triangles</span><a class="note-dl" href="notes/class9-maths-07-triangles.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">08</span><span class="chapter-name">Quadrilaterals</span><a class="note-dl" href="notes/class9-maths-08-quadrilaterals.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">09</span><span class="chapter-name">Circles</span><a class="note-dl" href="notes/class9-maths-09-circles.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">10</span><span class="chapter-name">Heron's Formula</span><a class="note-dl" href="notes/class9-maths-10-herons-formula.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">11</span><span class="chapter-name">Surface Areas and Volumes</span><a class="note-dl" href="notes/class9-maths-11-surface-areas-volumes.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">12</span><span class="chapter-name">Statistics</span><a class="note-dl" href="notes/class9-maths-12-statistics.pdf" download>⬇ Download</a></div>
+      </div>
+
+      <div class="notes-subject-label">Science — Chemistry</div>
+      <div class="chapter-list">
+        <div class="chapter-row"><span class="chapter-num">01</span><span class="chapter-name">Matter in Our Surroundings</span><a class="note-dl" href="notes/class9-science-chemistry-01-matter-in-our-surroundings.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">02</span><span class="chapter-name">Is Matter Around Us Pure?</span><a class="note-dl" href="notes/class9-science-chemistry-02-is-matter-pure.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">03</span><span class="chapter-name">Atoms and Molecules</span><a class="note-dl" href="notes/class9-science-chemistry-03-atoms-and-molecules.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">04</span><span class="chapter-name">Structure of the Atom</span><a class="note-dl" href="notes/class9-science-chemistry-04-structure-of-the-atom.pdf" download>⬇ Download</a></div>
+      </div>
+
+      <div class="notes-subject-label">Science — Biology</div>
+      <div class="chapter-list">
+        <div class="chapter-row"><span class="chapter-num">01</span><span class="chapter-name">The Fundamental Unit of Life</span><a class="note-dl" href="notes/class9-science-biology-01-fundamental-unit-of-life.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">02</span><span class="chapter-name">Tissues</span><a class="note-dl" href="notes/class9-science-biology-02-tissues.pdf" download>⬇ Download</a></div>
+      </div>
+
+      <div class="notes-subject-label">Science — Physics</div>
+      <div class="chapter-list">
+        <div class="chapter-row"><span class="chapter-num">01</span><span class="chapter-name">Motion</span><a class="note-dl" href="notes/class9-science-physics-01-motion.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">02</span><span class="chapter-name">Force and Laws of Motion</span><a class="note-dl" href="notes/class9-science-physics-02-force-and-laws-of-motion.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">03</span><span class="chapter-name">Gravitation</span><a class="note-dl" href="notes/class9-science-physics-03-gravitation.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">04</span><span class="chapter-name">Work and Energy</span><a class="note-dl" href="notes/class9-science-physics-04-work-and-energy.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">05</span><span class="chapter-name">Sound</span><a class="note-dl" href="notes/class9-science-physics-05-sound.pdf" download>⬇ Download</a></div>
+      </div>
+
+      <div class="notes-subject-label">Science — Biology (Applied)</div>
+      <div class="chapter-list">
+        <div class="chapter-row"><span class="chapter-num">01</span><span class="chapter-name">Improvement in Food Resources</span><a class="note-dl" href="notes/class9-science-biology-applied-01-improvement-in-food-resources.pdf" download>⬇ Download</a></div>
+      </div>
+    </div>
+
+    <!-- CLASS 10 -->
+    <div class="chapter-panel" id="panel-10">
+      <div class="notes-subject-label">Mathematics</div>
+      <div class="chapter-list">
+        <div class="chapter-row"><span class="chapter-num">01</span><span class="chapter-name">Real Numbers</span><a class="note-dl" href="notes/class10-maths-01-real-numbers.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">02</span><span class="chapter-name">Polynomials</span><a class="note-dl" href="notes/class10-maths-02-polynomials.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">03</span><span class="chapter-name">Pair of Linear Equations in Two Variables</span><a class="note-dl" href="notes/class10-maths-03-pair-of-linear-equations.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">04</span><span class="chapter-name">Quadratic Equations</span><a class="note-dl" href="notes/class10-maths-04-quadratic-equations.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">05</span><span class="chapter-name">Arithmetic Progressions</span><a class="note-dl" href="notes/class10-maths-05-arithmetic-progressions.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">06</span><span class="chapter-name">Triangles</span><a class="note-dl" href="notes/class10-maths-06-triangles.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">07</span><span class="chapter-name">Coordinate Geometry</span><a class="note-dl" href="notes/class10-maths-07-coordinate-geometry.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">08</span><span class="chapter-name">Introduction to Trigonometry</span><a class="note-dl" href="notes/class10-maths-08-introduction-to-trigonometry.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">09</span><span class="chapter-name">Some Applications of Trigonometry</span><a class="note-dl" href="notes/class10-maths-09-applications-of-trigonometry.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">10</span><span class="chapter-name">Circles</span><a class="note-dl" href="notes/class10-maths-10-circles.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">11</span><span class="chapter-name">Areas Related to Circles</span><a class="note-dl" href="notes/class10-maths-11-areas-related-to-circles.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">12</span><span class="chapter-name">Surface Areas and Volumes</span><a class="note-dl" href="notes/class10-maths-12-surface-areas-and-volumes.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">13</span><span class="chapter-name">Statistics</span><a class="note-dl" href="notes/class10-maths-13-statistics.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">14</span><span class="chapter-name">Probability</span><a class="note-dl" href="notes/class10-maths-14-probability.pdf" download>⬇ Download</a></div>
+      </div>
+
+      <div class="notes-subject-label">Science — Chemistry</div>
+      <div class="chapter-list">
+        <div class="chapter-row"><span class="chapter-num">01</span><span class="chapter-name">Chemical Reactions and Equations</span><a class="note-dl" href="notes/class10-science-chemistry-01-chemical-reactions-and-equations.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">02</span><span class="chapter-name">Acids, Bases and Salts</span><a class="note-dl" href="notes/class10-science-chemistry-02-acids-bases-and-salts.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">03</span><span class="chapter-name">Metals and Non-metals</span><a class="note-dl" href="notes/class10-science-chemistry-03-metals-and-non-metals.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">04</span><span class="chapter-name">Carbon and Its Compounds</span><a class="note-dl" href="notes/class10-science-chemistry-04-carbon-and-its-compounds.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">05</span><span class="chapter-name">Periodic Classification of Elements</span><a class="note-dl" href="notes/class10-science-chemistry-05-periodic-classification.pdf" download>⬇ Download</a></div>
+      </div>
+
+      <div class="notes-subject-label">Science — Biology</div>
+      <div class="chapter-list">
+        <div class="chapter-row"><span class="chapter-num">01</span><span class="chapter-name">Life Processes</span><a class="note-dl" href="notes/class10-science-biology-01-life-processes.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">02</span><span class="chapter-name">Control and Coordination</span><a class="note-dl" href="notes/class10-science-biology-02-control-and-coordination.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">03</span><span class="chapter-name">How Do Organisms Reproduce?</span><a class="note-dl" href="notes/class10-science-biology-03-how-do-organisms-reproduce.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">04</span><span class="chapter-name">Heredity and Evolution</span><a class="note-dl" href="notes/class10-science-biology-04-heredity-and-evolution.pdf" download>⬇ Download</a></div>
+      </div>
+
+      <div class="notes-subject-label">Science — Physics</div>
+      <div class="chapter-list">
+        <div class="chapter-row"><span class="chapter-num">01</span><span class="chapter-name">Light – Reflection and Refraction</span><a class="note-dl" href="notes/class10-science-physics-01-light-reflection-refraction.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">02</span><span class="chapter-name">The Human Eye and the Colourful World</span><a class="note-dl" href="notes/class10-science-physics-02-human-eye-colourful-world.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">03</span><span class="chapter-name">Electricity</span><a class="note-dl" href="notes/class10-science-physics-03-electricity.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">04</span><span class="chapter-name">Magnetic Effects of Electric Current</span><a class="note-dl" href="notes/class10-science-physics-04-magnetic-effects.pdf" download>⬇ Download</a></div>
+      </div>
+    </div>
+
+    <!-- CLASS 11 -->
+    <div class="chapter-panel" id="panel-11">
+      <div class="notes-subject-label">Mathematics</div>
+      <div class="chapter-list">
+        <div class="chapter-row"><span class="chapter-num">01</span><span class="chapter-name">Sets</span><a class="note-dl" href="notes/class11-maths-01-sets.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">02</span><span class="chapter-name">Relations and Functions</span><a class="note-dl" href="notes/class11-maths-02-relations-and-functions.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">03</span><span class="chapter-name">Trigonometric Functions</span><a class="note-dl" href="notes/class11-maths-03-trigonometric-functions.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">04</span><span class="chapter-name">Principle of Mathematical Induction</span><a class="note-dl" href="notes/class11-maths-04-mathematical-induction.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">05</span><span class="chapter-name">Complex Numbers and Quadratic Equations</span><a class="note-dl" href="notes/class11-maths-05-complex-numbers-quadratic-equations.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">06</span><span class="chapter-name">Linear Inequalities</span><a class="note-dl" href="notes/class11-maths-06-linear-inequalities.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">07</span><span class="chapter-name">Permutations and Combinations</span><a class="note-dl" href="notes/class11-maths-07-permutations-and-combinations.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">08</span><span class="chapter-name">Binomial Theorem</span><a class="note-dl" href="notes/class11-maths-08-binomial-theorem.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">09</span><span class="chapter-name">Sequences and Series</span><a class="note-dl" href="notes/class11-maths-09-sequences-and-series.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">10</span><span class="chapter-name">Straight Lines</span><a class="note-dl" href="notes/class11-maths-10-straight-lines.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">11</span><span class="chapter-name">Conic Sections</span><a class="note-dl" href="notes/class11-maths-11-conic-sections.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">12</span><span class="chapter-name">Introduction to Three-Dimensional Geometry</span><a class="note-dl" href="notes/class11-maths-12-3d-geometry.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">13</span><span class="chapter-name">Limits and Derivatives</span><a class="note-dl" href="notes/class11-maths-13-limits-and-derivatives.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">14</span><span class="chapter-name">Mathematical Reasoning</span><a class="note-dl" href="notes/class11-maths-14-mathematical-reasoning.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">15</span><span class="chapter-name">Statistics</span><a class="note-dl" href="notes/class11-maths-15-statistics.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">16</span><span class="chapter-name">Probability</span><a class="note-dl" href="notes/class11-maths-16-probability.pdf" download>⬇ Download</a></div>
+      </div>
+    </div>
+
+    <!-- CLASS 12 -->
+    <div class="chapter-panel" id="panel-12">
+      <div class="notes-subject-label">Mathematics</div>
+      <div class="chapter-list">
+        <div class="chapter-row"><span class="chapter-num">01</span><span class="chapter-name">Relations and Functions</span><a class="note-dl" href="notes/class12-maths-01-relations-and-functions.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">02</span><span class="chapter-name">Inverse Trigonometric Functions</span><a class="note-dl" href="notes/class12-maths-02-inverse-trigonometric-functions.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">03</span><span class="chapter-name">Matrices</span><a class="note-dl" href="notes/class12-maths-03-matrices.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">04</span><span class="chapter-name">Determinants</span><a class="note-dl" href="notes/class12-maths-04-determinants.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">05</span><span class="chapter-name">Continuity and Differentiability</span><a class="note-dl" href="notes/class12-maths-05-continuity-and-differentiability.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">06</span><span class="chapter-name">Application of Derivatives</span><a class="note-dl" href="notes/class12-maths-06-application-of-derivatives.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">07</span><span class="chapter-name">Integrals</span><a class="note-dl" href="notes/class12-maths-07-integrals.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">08</span><span class="chapter-name">Applications of Integrals</span><a class="note-dl" href="notes/class12-maths-08-applications-of-integrals.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">09</span><span class="chapter-name">Differential Equations</span><a class="note-dl" href="notes/class12-maths-09-differential-equations.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">10</span><span class="chapter-name">Vector Algebra</span><a class="note-dl" href="notes/class12-maths-10-vector-algebra.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">11</span><span class="chapter-name">Three Dimensional Geometry</span><a class="note-dl" href="notes/class12-maths-11-three-dimensional-geometry.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">12</span><span class="chapter-name">Linear Programming</span><a class="note-dl" href="notes/class12-maths-12-linear-programming.pdf" download>⬇ Download</a></div>
+        <div class="chapter-row"><span class="chapter-num">13</span><span class="chapter-name">Probability</span><a class="note-dl" href="notes/class12-maths-13-probability.pdf" download>⬇ Download</a></div>
+      </div>
+    </div>
+
+    <p class="note" style="margin-top:20px;">Don't see the chapter you need? <a href="javascript:void(0)" id="notes-wa-link" style="color:var(--amber-dark);font-weight:600;">Ask on WhatsApp</a> and we'll send it directly.</p>
   </div>
 </section>
 
@@ -584,6 +795,18 @@
     el.addEventListener('click', function(){
       var target = document.getElementById(el.getAttribute('data-scroll'));
       if(target){ target.scrollIntoView({behavior:'smooth', block:'start'}); }
+    });
+  });
+
+  document.getElementById('notes-wa-link').href = waLink;
+  document.getElementById('notes-wa-link').target = "_blank";
+
+  document.querySelectorAll('.notes-tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      document.querySelectorAll('.notes-tab').forEach(function(t){ t.classList.remove('active'); });
+      document.querySelectorAll('.chapter-panel').forEach(function(p){ p.classList.remove('active'); });
+      tab.classList.add('active');
+      document.getElementById('panel-' + tab.getAttribute('data-class')).classList.add('active');
     });
   });
 
