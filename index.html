@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Maths Pathshala — Kalyanpur, Kanpur</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B1E3D">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
@@ -264,6 +266,46 @@
   .popup-seats .seat{width:28px;height:28px;}
   .popup-ctas{display:flex;flex-direction:column;gap:10px;}
 
+  /* STUDENT LOGIN MODAL */
+  .login-modal-card{max-width:380px;}
+  .login-modal-card label{display:block;font-size:13px;font-weight:600;color:var(--navy);margin-bottom:8px;text-align:left;}
+  .login-modal-card input{
+    width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:8px;
+    font-size:15px;font-family:'Inter',sans-serif;color:var(--navy);margin-bottom:16px;
+  }
+  .login-modal-card input:focus{outline:none;border-color:var(--amber-dark);}
+  .login-msg{font-size:13px;text-align:center;margin-top:14px;min-height:18px;}
+  .login-msg.error{color:#C0392B;}
+  .login-msg.success{color:#1E7A46;}
+
+  /* EMBEDDED STUDENT DASHBOARD */
+  #student-dashboard{display:none;padding:32px 0 0;}
+  .dash-panel{
+    background:var(--navy);border-radius:16px;padding:28px 32px;color:#fff;
+  }
+  .dash-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;}
+  .dash-welcome{font-size:20px;font-weight:700;}
+  .dash-welcome span{color:var(--amber);}
+  .dash-email{font-size:13px;color:#B9C2D6;margin-top:2px;}
+  .dash-logout{
+    font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,0.1);
+    border:1px solid rgba(255,255,255,0.25);padding:8px 16px;border-radius:6px;cursor:pointer;
+  }
+  .dash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:800px){.dash-grid{grid-template-columns:1fr;}}
+  .dash-box{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:16px 18px;}
+  .dash-box-label{font-size:11.5px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;}
+  .dash-box-value{font-size:16px;font-weight:600;}
+  .dash-fee-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:700;}
+  .dash-fee-paid{background:#DFF4E7;color:#1E7A46;}
+  .dash-fee-due{background:#FBE2E1;color:#C0392B;}
+  .dash-notes-list{list-style:none;font-size:14px;}
+  .dash-notes-list li{display:flex;justify-content:space-between;align-items:center;padding:6px 0;}
+  .dash-notes-list a{color:#fff;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,0.3);border-radius:6px;padding:4px 10px;}
+  .dash-notes-list a:hover{background:#fff;color:var(--navy);}
+  .dash-not-found{font-size:14px;color:#fff;text-align:center;padding:10px 0;}
+  .dash-not-found a{color:var(--amber);font-weight:600;}
+
   /* NOTES SECTION */
   .notes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
   @media(max-width:900px){.notes-grid{grid-template-columns:1fr 1fr;}}
@@ -334,6 +376,7 @@
       <a href="javascript:void(0)" data-scroll="register">Register</a>
     </div>
     <a href="javascript:void(0)" data-scroll="register" class="nav-cta">Register now</a>
+    <a href="javascript:void(0)" id="student-login-btn" class="nav-cta" style="background:var(--navy);margin-left:10px;">Student Login</a>
   </nav>
 </header>
 
@@ -353,6 +396,55 @@
     </div>
   </div>
 </section>
+
+<div id="student-dashboard">
+  <div class="wrap">
+    <div class="dash-panel">
+      <div class="dash-top">
+        <div>
+          <div class="dash-welcome">Welcome, <span id="dash-name">Student</span></div>
+          <div class="dash-email" id="dash-email"></div>
+        </div>
+        <button class="dash-logout" id="dash-logout-btn">Logout</button>
+      </div>
+      <div id="dash-found-content">
+        <div class="dash-grid">
+          <div class="dash-box">
+            <div class="dash-box-label">Fee status</div>
+            <span class="dash-fee-badge" id="dash-fee-badge">—</span>
+          </div>
+          <div class="dash-box">
+            <div class="dash-box-label">Batch timing</div>
+            <div class="dash-box-value" id="dash-batch-value">—</div>
+          </div>
+          <div class="dash-box">
+            <div class="dash-box-label">Your notes</div>
+            <ul class="dash-notes-list" id="dash-notes-list"><li>No notes assigned yet</li></ul>
+          </div>
+        </div>
+      </div>
+      <div id="dash-not-found-content" style="display:none;">
+        <div class="dash-not-found">
+          We couldn't find your student record. <a href="javascript:void(0)" id="dash-not-found-wa" target="_blank">Message us on WhatsApp</a> to get set up.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="popup-overlay" id="login-modal">
+  <div class="popup-card login-modal-card">
+    <button class="popup-close" id="login-modal-close" aria-label="Close">✕</button>
+    <div class="popup-badge">Student login</div>
+    <h3>Log in to your dashboard</h3>
+    <label style="margin-top:16px;">Email</label>
+    <input type="email" id="login-email-input" placeholder="you@example.com">
+    <label>Password</label>
+    <input type="password" id="login-password-input" placeholder="Enter your password">
+    <button class="btn btn-primary" id="login-submit-btn" style="justify-content:center;">Login</button>
+    <div class="login-msg" id="login-msg"></div>
+  </div>
+</div>
 
 <div class="trust-strip">
   <div class="wrap">
@@ -818,6 +910,131 @@
   document.getElementById('popup-close').addEventListener('click', closePopup);
   document.getElementById('popup-register').addEventListener('click', closePopup);
   popup.addEventListener('click', function(e){ if(e.target === popup){ closePopup(); } });
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB3fzWzwiTxHJi1M3OQI3hgZJpi6lq-eww",
+    authDomain: "maths-pathshala.firebaseapp.com",
+    projectId: "maths-pathshala",
+    storageBucket: "maths-pathshala.firebasestorage.app",
+    messagingSenderId: "848136078985",
+    appId: "1:848136078985:web:385a3d6602550de113e858",
+    measurementId: "G-T8T96LLPQZ"
+  };
+  const WA_NUMBER = "919506054813";
+
+  const fbApp = initializeApp(firebaseConfig);
+  const auth = getAuth(fbApp);
+  const db = getFirestore(fbApp);
+
+  const loginModal = document.getElementById('login-modal');
+  const studentDashboard = document.getElementById('student-dashboard');
+  const loginMsg = document.getElementById('login-msg');
+  const studentLoginBtn = document.getElementById('student-login-btn');
+
+  document.getElementById('dash-not-found-wa').href =
+    `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Hi, I tried logging into the student dashboard but my record wasn't found. Can you help?")}`;
+
+  function showLoginMsg(text, type){
+    loginMsg.textContent = text;
+    loginMsg.className = 'login-msg ' + (type || '');
+  }
+
+  studentLoginBtn.addEventListener('click', () => {
+    loginModal.classList.add('show');
+  });
+  document.getElementById('login-modal-close').addEventListener('click', () => {
+    loginModal.classList.remove('show');
+  });
+  loginModal.addEventListener('click', (e) => {
+    if(e.target === loginModal){ loginModal.classList.remove('show'); }
+  });
+
+  document.getElementById('login-submit-btn').addEventListener('click', () => {
+    const email = document.getElementById('login-email-input').value.trim();
+    const password = document.getElementById('login-password-input').value;
+    if(!email || !password){
+      showLoginMsg('Please enter both email and password', 'error');
+      return;
+    }
+    const btn = document.getElementById('login-submit-btn');
+    btn.disabled = true; btn.textContent = "Logging in...";
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        loginModal.classList.remove('show');
+      })
+      .catch(() => {
+        showLoginMsg('Login failed: check your email and password', 'error');
+      })
+      .finally(() => { btn.disabled = false; btn.textContent = "Login"; });
+  });
+
+  onAuthStateChanged(auth, async (user) => {
+    if(user){
+      await loadStudentDashboard(user.email);
+      studentLoginBtn.style.display = 'none';
+    } else {
+      studentDashboard.style.display = 'none';
+      studentLoginBtn.style.display = 'inline-flex';
+    }
+  });
+
+  async function loadStudentDashboard(email){
+    const docRef = doc(db, "students", email.toLowerCase());
+    const docSnap = await getDoc(docRef);
+    const foundContent = document.getElementById('dash-found-content');
+    const notFoundContent = document.getElementById('dash-not-found-content');
+
+    document.getElementById('dash-email').textContent = email;
+
+    if(!docSnap.exists()){
+      foundContent.style.display = 'none';
+      notFoundContent.style.display = 'block';
+      document.getElementById('dash-name').textContent = 'Student';
+      studentDashboard.style.display = 'block';
+      return;
+    }
+
+    const data = docSnap.data();
+    foundContent.style.display = 'block';
+    notFoundContent.style.display = 'none';
+
+    document.getElementById('dash-name').textContent = data.name || "Student";
+
+    const feeBadge = document.getElementById('dash-fee-badge');
+    if(data.feeStatus === 'Paid'){
+      feeBadge.textContent = 'Paid';
+      feeBadge.className = 'dash-fee-badge dash-fee-paid';
+    } else {
+      feeBadge.textContent = data.feeStatus || 'Due';
+      feeBadge.className = 'dash-fee-badge dash-fee-due';
+    }
+
+    document.getElementById('dash-batch-value').textContent = data.batchTiming || 'Not assigned yet';
+
+    const notesList = document.getElementById('dash-notes-list');
+    notesList.innerHTML = '';
+    if(Array.isArray(data.notes) && data.notes.length > 0){
+      data.notes.forEach(note => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span>${note.title}</span><a href="${note.url}" target="_blank" download>Download</a>`;
+        notesList.appendChild(li);
+      });
+    } else {
+      notesList.innerHTML = '<li>No notes assigned yet</li>';
+    }
+
+    studentDashboard.style.display = 'block';
+  }
+
+  document.getElementById('dash-logout-btn').addEventListener('click', async () => {
+    await signOut(auth);
+  });
 </script>
 
 </body>
