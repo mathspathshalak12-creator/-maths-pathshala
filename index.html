@@ -377,6 +377,7 @@
           <div class="dash-welcome">Welcome, <span id="dash-name">Student</span></div>
           <div class="dash-email" id="dash-email"></div>
         </div>
+        <button class="dash-logout" id="dash-refresh-btn">↻ Refresh</button>
       </div>
       <div id="dash-found-content">
         <div class="dash-grid">
@@ -998,6 +999,15 @@
       isLoggedIn = false;
       studentDashboard.style.display = 'none';
       studentLoginBtn.textContent = 'Student Login';
+    }
+  });
+
+  document.getElementById('dash-refresh-btn').addEventListener('click', async () => {
+    if(auth.currentUser){
+      const btn = document.getElementById('dash-refresh-btn');
+      btn.textContent = 'Refreshing...';
+      await loadStudentDashboard(auth.currentUser.email);
+      btn.textContent = '↻ Refresh';
     }
   });
 
