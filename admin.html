@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — Maths Pathshala</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1E3D; --navy-2:#122A52; --amber:#F5A623; --amber-dark:#B5760F;
+    --cream:#FAF8F3; --paper:#FFFFFF; --muted:#5B6B85; --line:#E4E0D6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;color:var(--navy);background:var(--cream);min-height:100vh;padding:24px;}
+  h1,h2,.display{font-family:'Space Grotesk',sans-serif;}
+  .wrap{max-width:960px;margin:0 auto;}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:28px;margin-bottom:20px;}
+  h2{font-size:20px;margin-bottom:16px;}
+  label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;margin-top:14px;}
+  input, select{
+    width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;
+    font-size:14px;font-family:'Inter',sans-serif;color:var(--navy);
+  }
+  input:focus, select:focus{outline:none;border-color:var(--amber-dark);}
+  .btn{
+    padding:11px 20px;border-radius:8px;font-weight:600;font-size:14px;border:none;
+    cursor:pointer;margin-top:16px;background:var(--amber);color:var(--navy);
+  }
+  .btn:hover{background:var(--amber-dark);color:#fff;}
+  .btn-secondary{background:var(--navy);color:#fff;}
+  .btn-small{padding:6px 12px;font-size:12px;margin-top:0;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  #login-screen{max-width:380px;margin:80px auto;}
+  #admin-screen{display:none;}
+  .student-list{list-style:none;}
+  .student-list li{
+    display:flex;justify-content:space-between;align-items:center;padding:12px 14px;
+    border:1px solid var(--line);border-radius:8px;margin-bottom:8px;cursor:pointer;
+  }
+  .student-list li:hover{border-color:var(--amber-dark);}
+  .student-list .s-name{font-weight:600;}
+  .student-list .s-email{font-size:12px;color:var(--muted);}
+  .msg{font-size:13px;margin-top:12px;}
+  .msg.error{color:#C0392B;}
+  .msg.success{color:#1E7A46;}
+  .attendance-log-item{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--line);}
+  .notes-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:13px;border-top:1px solid var(--line);}
+  .remove-btn{color:#C0392B;font-size:12px;cursor:pointer;font-weight:600;background:none;border:none;}
+  .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+  .logout-link{font-size:13px;color:var(--muted);cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div id="login-screen" class="card">
+    <h2>Admin Login</h2>
+    <label>Email</label>
+    <input type="email" id="admin-email" placeholder="admin@example.com">
+    <label>Password</label>
+    <input type="password" id="admin-password" placeholder="Password">
+    <button class="btn" id="admin-login-btn">Login</button>
+    <div class="msg" id="login-msg"></div>
+  </div>
+
+  <div id="admin-screen">
+    <div class="top-bar">
+      <h1 style="font-size:24px;">Maths Pathshala — Admin Panel</h1>
+      <span class="logout-link" id="admin-logout">Logout</span>
+    </div>
+
+    <div class="card">
+      <h2>All Students</h2>
+      <ul class="student-list" id="student-list"><li>Loading...</li></ul>
+    </div>
+
+    <div class="card">
+      <h2 id="form-heading">Add / Update Student</h2>
+      <label>Student email (used as their login + record ID)</label>
+      <input type="email" id="f-email" placeholder="student@example.com">
+      <div class="row2">
+        <div>
+          <label>Name</label>
+          <input type="text" id="f-name" placeholder="Student full name">
+        </div>
+        <div>
+          <label>Fee status</label>
+          <select id="f-fee">
+            <option value="Paid">Paid</option>
+            <option value="Due">Due</option>
+          </select>
+        </div>
+      </div>
+      <label>Batch timing</label>
+      <input type="text" id="f-batch" placeholder="Evening 5-6 PM">
+      <label>Attendance percent</label>
+      <input type="number" id="f-attendance-pct" placeholder="85">
+
+      <label>Add today's attendance entry</label>
+      <div class="row2">
+        <select id="f-att-status">
+          <option value="Present">Present</option>
+          <option value="Absent">Absent</option>
+        </select>
+        <button class="btn btn-secondary btn-small" id="add-attendance-btn" style="margin-top:0;">+ Add attendance entry (today)</button>
+      </div>
+      <div id="attendance-log-preview"></div>
+
+      <label>Add a note (chapter PDF)</label>
+      <div class="row2">
+        <input type="text" id="f-note-title" placeholder="Chapter title, e.g. Quadratic Equations">
+        <input type="text" id="f-note-url" placeholder="notes/class10-maths-04-quadratic-equations.pdf">
+      </div>
+      <button class="btn btn-secondary btn-small" id="add-note-btn">+ Add note</button>
+      <div id="notes-preview"></div>
+
+      <div style="margin-top:20px;">
+        <button class="btn" id="save-student-btn">Save Student</button>
+        <button class="btn btn-secondary" id="clear-form-btn">Clear Form (new student)</button>
+      </div>
+      <div class="msg" id="save-msg"></div>
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB3fzWzwiTxHJi1M3OQI3hgZJpi6lq-eww",
+    authDomain: "maths-pathshala.firebaseapp.com",
+    projectId: "maths-pathshala",
+    storageBucket: "maths-pathshala.firebasestorage.app",
+    messagingSenderId: "848136078985",
+    appId: "1:848136078985:web:385a3d6602550de113e858",
+    measurementId: "G-T8T96LLPQZ"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const loginScreen = document.getElementById('login-screen');
+  const adminScreen = document.getElementById('admin-screen');
+  const loginMsg = document.getElementById('login-msg');
+  const saveMsg = document.getElementById('save-msg');
+
+  let currentAttendanceLog = [];
+  let currentNotes = [];
+
+  document.getElementById('admin-login-btn').addEventListener('click', () => {
+    const email = document.getElementById('admin-email').value.trim();
+    const password = document.getElementById('admin-password').value;
+    signInWithEmailAndPassword(auth, email, password)
+      .catch(() => {
+        loginMsg.textContent = 'Login failed — check email and password.';
+        loginMsg.className = 'msg error';
+      });
+  });
+
+  document.getElementById('admin-logout').addEventListener('click', () => {
+    signOut(auth);
+  });
+
+  onAuthStateChanged(auth, (user) => {
+    if(user){
+      loginScreen.style.display = 'none';
+      adminScreen.style.display = 'block';
+      loadStudentList();
+    } else {
+      loginScreen.style.display = 'block';
+      adminScreen.style.display = 'none';
+    }
+  });
+
+  async function loadStudentList(){
+    const list = document.getElementById('student-list');
+    list.innerHTML = 'Loading...';
+    const snap = await getDocs(collection(db, "students"));
+    if(snap.empty){
+      list.innerHTML = '<li>No students yet — add one below.</li>';
+      return;
+    }
+    list.innerHTML = '';
+    snap.forEach(docSnap => {
+      const data = docSnap.data();
+      const li = document.createElement('li');
+      li.innerHTML = `<div><div class="s-name">${data.name || 'Unnamed'}</div><div class="s-email">${docSnap.id}</div></div><span style="font-size:12px;color:var(--muted);">Edit →</span>`;
+      li.addEventListener('click', () => loadStudentIntoForm(docSnap.id, data));
+      list.appendChild(li);
+    });
+  }
+
+  function loadStudentIntoForm(email, data){
+    document.getElementById('form-heading').textContent = 'Editing: ' + (data.name || email);
+    document.getElementById('f-email').value = email;
+    document.getElementById('f-name').value = data.name || '';
+    document.getElementById('f-fee').value = data.feeStatus || 'Due';
+    document.getElementById('f-batch').value = data.batchTiming || '';
+    document.getElementById('f-attendance-pct').value = (data.attendance && data.attendance.percent) || '';
+    currentAttendanceLog = (data.attendance && data.attendance.log) || [];
+    currentNotes = data.notes || [];
+    renderAttendancePreview();
+    renderNotesPreview();
+    saveMsg.textContent = '';
+    window.scrollTo({top: document.getElementById('form-heading').offsetTop - 20, behavior:'smooth'});
+  }
+
+  document.getElementById('clear-form-btn').addEventListener('click', () => {
+    document.getElementById('form-heading').textContent = 'Add / Update Student';
+    document.getElementById('f-email').value = '';
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-fee').value = 'Due';
+    document.getElementById('f-batch').value = '';
+    document.getElementById('f-attendance-pct').value = '';
+    currentAttendanceLog = [];
+    currentNotes = [];
+    renderAttendancePreview();
+    renderNotesPreview();
+    saveMsg.textContent = '';
+  });
+
+  function renderAttendancePreview(){
+    const box = document.getElementById('attendance-log-preview');
+    if(currentAttendanceLog.length === 0){
+      box.innerHTML = '<div style="font-size:12px;color:var(--muted);margin-top:8px;">No entries yet</div>';
+      return;
+    }
+    box.innerHTML = currentAttendanceLog.map((e, i) =>
+      `<div class="attendance-log-item"><span>${e.date} — ${e.status}</span><button class="remove-btn" data-idx="${i}">Remove</button></div>`
+    ).join('');
+    box.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentAttendanceLog.splice(parseInt(btn.dataset.idx), 1);
+        renderAttendancePreview();
+      });
+    });
+  }
+
+  function renderNotesPreview(){
+    const box = document.getElementById('notes-preview');
+    if(currentNotes.length === 0){
+      box.innerHTML = '<div style="font-size:12px;color:var(--muted);margin-top:8px;">No notes yet</div>';
+      return;
+    }
+    box.innerHTML = currentNotes.map((n, i) =>
+      `<div class="notes-item"><span>${n.title}</span><button class="remove-btn" data-idx="${i}">Remove</button></div>`
+    ).join('');
+    box.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentNotes.splice(parseInt(btn.dataset.idx), 1);
+        renderNotesPreview();
+      });
+    });
+  }
+
+  document.getElementById('add-attendance-btn').addEventListener('click', () => {
+    const status = document.getElementById('f-att-status').value;
+    const today = new Date();
+    const dateStr = today.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+    currentAttendanceLog.unshift({ date: dateStr, status: status });
+    renderAttendancePreview();
+  });
+
+  document.getElementById('add-note-btn').addEventListener('click', () => {
+    const title = document.getElementById('f-note-title').value.trim();
+    const url = document.getElementById('f-note-url').value.trim();
+    if(!title || !url){ return; }
+    currentNotes.push({ title, url });
+    document.getElementById('f-note-title').value = '';
+    document.getElementById('f-note-url').value = '';
+    renderNotesPreview();
+  });
+
+  document.getElementById('save-student-btn').addEventListener('click', async () => {
+    const email = document.getElementById('f-email').value.trim().toLowerCase();
+    if(!email){
+      saveMsg.textContent = 'Student email is required.';
+      saveMsg.className = 'msg error';
+      return;
+    }
+    const pct = parseInt(document.getElementById('f-attendance-pct').value) || 0;
+
+    const studentData = {
+      name: document.getElementById('f-name').value.trim(),
+      feeStatus: document.getElementById('f-fee').value,
+      batchTiming: document.getElementById('f-batch').value.trim(),
+      attendance: { percent: pct, log: currentAttendanceLog },
+      notes: currentNotes
+    };
+
+    try{
+      await setDoc(doc(db, "students", email), studentData, { merge: true });
+      saveMsg.textContent = 'Saved successfully!';
+      saveMsg.className = 'msg success';
+      loadStudentList();
+    } catch(err){
+      saveMsg.textContent = 'Error saving: ' + err.message;
+      saveMsg.className = 'msg error';
+    }
+  });
+</script>
+</body>
+</html>
