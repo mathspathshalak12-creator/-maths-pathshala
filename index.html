@@ -1059,7 +1059,7 @@
     if(Array.isArray(data.notes) && data.notes.length > 0){
       data.notes.forEach(note => {
         const li = document.createElement('li');
-        li.innerHTML = `<span>${note.title}</span><a href="${note.url}" target="_blank" download>Download</a>`;
+        li.innerHTML = `<span>${note.title}</span><span style="display:flex;gap:6px;"><a href="${note.url}" target="_blank">View</a><a href="${note.url}" download>Download</a></span>`;
         notesList.appendChild(li);
       });
     } else {
