@@ -291,7 +291,7 @@
     font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,0.1);
     border:1px solid rgba(255,255,255,0.25);padding:8px 16px;border-radius:6px;cursor:pointer;
   }
-  .dash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .dash-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
   @media(max-width:800px){.dash-grid{grid-template-columns:1fr;}}
   .dash-box{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:16px 18px;}
   .dash-box-label{font-size:11.5px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;}
@@ -303,6 +303,11 @@
   .dash-notes-list li{display:flex;justify-content:space-between;align-items:center;padding:6px 0;}
   .dash-notes-list a{color:#fff;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,0.3);border-radius:6px;padding:4px 10px;}
   .dash-notes-list a:hover{background:#fff;color:var(--navy);}
+  .dash-attendance-pct{font-size:22px;font-weight:700;color:var(--amber);margin-bottom:10px;}
+  .dash-attendance-list{list-style:none;font-size:13px;}
+  .dash-attendance-list li{display:flex;justify-content:space-between;padding:5px 0;color:#E4E0D6;}
+  .att-present{color:#7FD6A0;font-weight:600;}
+  .att-absent{color:#F0938C;font-weight:600;}
   .dash-not-found{font-size:14px;color:#fff;text-align:center;padding:10px 0;}
   .dash-not-found a{color:var(--amber);font-weight:600;}
 
@@ -364,6 +369,45 @@
 </head>
 <body>
 
+<div id="student-dashboard">
+  <div class="wrap">
+    <div class="dash-panel">
+      <div class="dash-top">
+        <div>
+          <div class="dash-welcome">Welcome, <span id="dash-name">Student</span></div>
+          <div class="dash-email" id="dash-email"></div>
+        </div>
+      </div>
+      <div id="dash-found-content">
+        <div class="dash-grid">
+          <div class="dash-box">
+            <div class="dash-box-label">Fee status</div>
+            <span class="dash-fee-badge" id="dash-fee-badge">—</span>
+          </div>
+          <div class="dash-box">
+            <div class="dash-box-label">Batch timing</div>
+            <div class="dash-box-value" id="dash-batch-value">—</div>
+          </div>
+          <div class="dash-box">
+            <div class="dash-box-label">Attendance</div>
+            <div class="dash-attendance-pct" id="dash-attendance-pct">—</div>
+            <ul class="dash-attendance-list" id="dash-attendance-list"><li>No attendance recorded yet</li></ul>
+          </div>
+          <div class="dash-box">
+            <div class="dash-box-label">Your notes</div>
+            <ul class="dash-notes-list" id="dash-notes-list"><li>No notes assigned yet</li></ul>
+          </div>
+        </div>
+      </div>
+      <div id="dash-not-found-content" style="display:none;">
+        <div class="dash-not-found">
+          We couldn't find your student record. <a href="javascript:void(0)" id="dash-not-found-wa" target="_blank">Message us on WhatsApp</a> to get set up.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <header>
   <nav>
     <div class="logo">Maths <span>Pathshala</span></div>
@@ -396,41 +440,6 @@
     </div>
   </div>
 </section>
-
-<div id="student-dashboard">
-  <div class="wrap">
-    <div class="dash-panel">
-      <div class="dash-top">
-        <div>
-          <div class="dash-welcome">Welcome, <span id="dash-name">Student</span></div>
-          <div class="dash-email" id="dash-email"></div>
-        </div>
-        <button class="dash-logout" id="dash-logout-btn">Logout</button>
-      </div>
-      <div id="dash-found-content">
-        <div class="dash-grid">
-          <div class="dash-box">
-            <div class="dash-box-label">Fee status</div>
-            <span class="dash-fee-badge" id="dash-fee-badge">—</span>
-          </div>
-          <div class="dash-box">
-            <div class="dash-box-label">Batch timing</div>
-            <div class="dash-box-value" id="dash-batch-value">—</div>
-          </div>
-          <div class="dash-box">
-            <div class="dash-box-label">Your notes</div>
-            <ul class="dash-notes-list" id="dash-notes-list"><li>No notes assigned yet</li></ul>
-          </div>
-        </div>
-      </div>
-      <div id="dash-not-found-content" style="display:none;">
-        <div class="dash-not-found">
-          We couldn't find your student record. <a href="javascript:void(0)" id="dash-not-found-wa" target="_blank">Message us on WhatsApp</a> to get set up.
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <div class="popup-overlay" id="login-modal">
   <div class="popup-card login-modal-card">
@@ -945,8 +954,14 @@
     loginMsg.className = 'login-msg ' + (type || '');
   }
 
+  let isLoggedIn = false;
+
   studentLoginBtn.addEventListener('click', () => {
-    loginModal.classList.add('show');
+    if(isLoggedIn){
+      signOut(auth);
+    } else {
+      loginModal.classList.add('show');
+    }
   });
   document.getElementById('login-modal-close').addEventListener('click', () => {
     loginModal.classList.remove('show');
@@ -976,11 +991,13 @@
 
   onAuthStateChanged(auth, async (user) => {
     if(user){
+      isLoggedIn = true;
       await loadStudentDashboard(user.email);
-      studentLoginBtn.style.display = 'none';
+      studentLoginBtn.textContent = 'Logout';
     } else {
+      isLoggedIn = false;
       studentDashboard.style.display = 'none';
-      studentLoginBtn.style.display = 'inline-flex';
+      studentLoginBtn.textContent = 'Student Login';
     }
   });
 
@@ -1017,6 +1034,26 @@
 
     document.getElementById('dash-batch-value').textContent = data.batchTiming || 'Not assigned yet';
 
+    const attPct = document.getElementById('dash-attendance-pct');
+    const attList = document.getElementById('dash-attendance-list');
+    if(data.attendance && typeof data.attendance.percent === 'number'){
+      attPct.textContent = data.attendance.percent + '% attendance';
+      attList.innerHTML = '';
+      if(Array.isArray(data.attendance.log) && data.attendance.log.length > 0){
+        data.attendance.log.forEach(entry => {
+          const li = document.createElement('li');
+          const statusClass = entry.status === 'Present' ? 'att-present' : 'att-absent';
+          li.innerHTML = `<span>${entry.date}</span><span class="${statusClass}">${entry.status}</span>`;
+          attList.appendChild(li);
+        });
+      } else {
+        attList.innerHTML = '<li>No recent records</li>';
+      }
+    } else {
+      attPct.textContent = '—';
+      attList.innerHTML = '<li>No attendance recorded yet</li>';
+    }
+
     const notesList = document.getElementById('dash-notes-list');
     notesList.innerHTML = '';
     if(Array.isArray(data.notes) && data.notes.length > 0){
@@ -1031,10 +1068,6 @@
 
     studentDashboard.style.display = 'block';
   }
-
-  document.getElementById('dash-logout-btn').addEventListener('click', async () => {
-    await signOut(auth);
-  });
 </script>
 
 </body>
