@@ -98,14 +98,15 @@
       <label>Attendance percent</label>
       <input type="number" id="f-attendance-pct" placeholder="85">
 
-      <label>Add today's attendance entry</label>
+      <label>Add attendance entry (any date)</label>
       <div class="row2">
+        <input type="date" id="f-att-date">
         <select id="f-att-status">
           <option value="Present">Present</option>
           <option value="Absent">Absent</option>
         </select>
-        <button class="btn btn-secondary btn-small" id="add-attendance-btn" style="margin-top:0;">+ Add attendance entry (today)</button>
       </div>
+      <button class="btn btn-secondary btn-small" id="add-attendance-btn">+ Add attendance entry</button>
       <div id="attendance-log-preview"></div>
 
       <label>Add a note (chapter PDF)</label>
@@ -172,6 +173,8 @@
       loginScreen.style.display = 'none';
       adminScreen.style.display = 'block';
       loadStudentList();
+      const todayStr = new Date().toISOString().split('T')[0];
+      document.getElementById('f-att-date').value = todayStr;
     } else {
       loginScreen.style.display = 'block';
       adminScreen.style.display = 'none';
@@ -261,8 +264,13 @@
 
   document.getElementById('add-attendance-btn').addEventListener('click', () => {
     const status = document.getElementById('f-att-status').value;
-    const today = new Date();
-    const dateStr = today.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+    const dateInput = document.getElementById('f-att-date').value;
+    if(!dateInput){
+      alert('Please pick a date first.');
+      return;
+    }
+    const dateObj = new Date(dateInput + 'T00:00:00');
+    const dateStr = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
     currentAttendanceLog.unshift({ date: dateStr, status: status });
     renderAttendancePreview();
   });
