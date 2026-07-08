@@ -418,6 +418,22 @@
     letter-spacing:.03em;margin:28px 0 12px;
   }
   .notes-subject-label:first-child{margin-top:0;}
+
+  .spinner{
+    display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.25);
+    border-top-color:var(--amber);border-radius:50%;animation:spin .7s linear infinite;
+    vertical-align:middle;margin-right:6px;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .loading-row{display:flex;align-items:center;font-size:13px;color:#B9C2D6;padding:8px 0;}
+
+  .streak-badge{
+    display:inline-flex;align-items:center;gap:4px;background:rgba(245,166,35,0.18);
+    color:var(--amber);font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;
+    margin-left:8px;
+  }
+
+  .forgot-pw-link{display:block;text-align:right;font-size:12.5px;color:var(--amber-dark);margin:-10px 0 16px;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -529,6 +545,7 @@
     <input type="email" id="login-email-input" placeholder="you@example.com">
     <label>Password</label>
     <input type="password" id="login-password-input" placeholder="Enter your password">
+    <span class="forgot-pw-link" id="forgot-pw-link">Forgot password?</span>
     <button class="btn btn-primary" id="login-submit-btn" style="justify-content:center;">Login</button>
     <div class="login-msg" id="login-msg"></div>
   </div>
@@ -1002,7 +1019,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, getDoc, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -1084,6 +1101,21 @@
       .finally(() => { btn.disabled = false; btn.textContent = "Login"; });
   });
 
+  document.getElementById('forgot-pw-link').addEventListener('click', () => {
+    const email = document.getElementById('login-email-input').value.trim();
+    if(!email){
+      showLoginMsg('Enter your email above first, then tap "Forgot password?"', 'error');
+      return;
+    }
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        showLoginMsg('Password reset email sent! Check your inbox.', 'success');
+      })
+      .catch(() => {
+        showLoginMsg('Could not send reset email. Check the email address.', 'error');
+      });
+  });
+
   onAuthStateChanged(auth, async (user) => {
     if(user){
       isLoggedIn = true;
@@ -1150,6 +1182,8 @@
   }
 
   async function loadStudentDashboard(email){
+    document.getElementById('dash-name').innerHTML = '<span class="spinner"></span>Loading...';
+    studentDashboard.style.display = 'block';
     const docRef = doc(db, "students", email.toLowerCase());
     const docSnap = await getDoc(docRef);
     const foundContent = document.getElementById('dash-found-content');
@@ -1196,7 +1230,17 @@
     const attPct = document.getElementById('dash-attendance-pct');
     const attList = document.getElementById('dash-attendance-list');
     if(data.attendance && typeof data.attendance.percent === 'number'){
-      attPct.textContent = data.attendance.percent + '% attendance';
+      let streakHtml = '';
+      if(Array.isArray(data.attendance.log) && data.attendance.log.length > 0){
+        let streak = 0;
+        for(const entry of data.attendance.log){
+          if(entry.status === 'Present'){ streak++; } else { break; }
+        }
+        if(streak >= 2){
+          streakHtml = `<span class="streak-badge">🔥 ${streak} day streak</span>`;
+        }
+      }
+      attPct.innerHTML = data.attendance.percent + '% attendance' + streakHtml;
       attList.innerHTML = '';
       if(Array.isArray(data.attendance.log) && data.attendance.log.length > 0){
         data.attendance.log.forEach(entry => {
