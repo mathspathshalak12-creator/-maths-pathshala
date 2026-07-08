@@ -58,6 +58,63 @@
   .stat-label{font-size:12px;color:var(--muted);font-weight:600;margin-top:4px;}
   .stat-card.warn .stat-num{color:#C0392B;}
   .stat-card.good .stat-num{color:#1E7A46;}
+
+  /* BULK ATTENDANCE MARKING */
+  .att-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:18px;}
+  .att-date-picker{display:flex;align-items:center;gap:10px;}
+  .att-date-picker input{width:auto;padding:9px 12px;}
+  .att-summary{display:flex;gap:16px;font-size:13px;font-weight:600;}
+  .att-summary span{display:flex;align-items:center;gap:6px;}
+  .att-dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  .att-dot.present{background:#1E7A46;}
+  .att-dot.absent{background:#C0392B;}
+  .att-dot.unmarked{background:var(--muted);}
+
+  .att-row{
+    display:flex;justify-content:space-between;align-items:center;gap:12px;
+    padding:12px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .att-row.marked-present{border-color:#1E7A46;background:#F3FBF6;}
+  .att-row.marked-absent{border-color:#C0392B;background:#FDF3F2;}
+  .att-row-name{font-weight:600;font-size:14px;}
+  .att-row-email{font-size:11.5px;color:var(--muted);}
+  .att-toggle-group{display:flex;gap:6px;flex-shrink:0;}
+  .att-toggle-btn{
+    padding:7px 16px;border-radius:20px;font-size:12.5px;font-weight:700;
+    border:1.5px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;
+    transition:all .12s ease;
+  }
+  .att-toggle-btn.present.active{background:#1E7A46;border-color:#1E7A46;color:#fff;}
+  .att-toggle-btn.absent.active{background:#C0392B;border-color:#C0392B;color:#fff;}
+  .att-toggle-btn:hover:not(.active){border-color:var(--navy);color:var(--navy);}
+
+  .save-attendance-bar{
+    position:sticky;bottom:16px;background:var(--navy);border-radius:12px;padding:14px 20px;
+    display:flex;justify-content:space-between;align-items:center;margin-top:16px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.15);
+  }
+  .save-attendance-bar span{color:#fff;font-size:13px;}
+  .save-attendance-bar button{margin:0;}
+  .toast{
+    position:fixed;top:20px;right:20px;background:#1E7A46;color:#fff;padding:12px 20px;
+    border-radius:8px;font-size:14px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,0.2);
+    opacity:0;transform:translateY(-10px);transition:all .25s ease;z-index:100;
+  }
+  .toast.show{opacity:1;transform:translateY(0);}
+
+  /* NOTICES */
+  .notice-item{
+    display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
+    padding:14px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;
+  }
+  .notice-title{font-weight:700;font-size:14px;}
+  .notice-msg{font-size:13px;color:var(--muted);margin-top:4px;}
+  .notice-date{font-size:11px;color:var(--muted);margin-top:6px;}
+  .notice-delete{color:#C0392B;font-size:12px;font-weight:600;background:none;border:none;cursor:pointer;flex-shrink:0;}
+
+  /* TEST SCORES */
+  .score-item{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--line);}
 </style>
 </head>
 <body>
@@ -96,6 +153,37 @@
       <div class="stat-card">
         <div class="stat-num" id="stat-marked-today">—</div>
         <div class="stat-label">Attendance Marked Today</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Post a Notice</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">This appears on every student's dashboard as soon as they log in or refresh.</p>
+      <label>Title</label>
+      <input type="text" id="notice-title" placeholder="e.g. No class this Sunday">
+      <label>Message</label>
+      <input type="text" id="notice-message" placeholder="e.g. Class postponed to Monday due to a holiday.">
+      <button class="btn" id="post-notice-btn">Post Notice</button>
+      <div id="notices-list" style="margin-top:18px;"></div>
+    </div>
+
+    <div class="card">
+      <div class="att-header">
+        <h2 style="margin:0;">Mark Attendance</h2>
+        <div class="att-date-picker">
+          <label style="margin:0;">Date:</label>
+          <input type="date" id="bulk-att-date">
+        </div>
+      </div>
+      <div class="att-summary" id="att-summary">
+        <span><span class="att-dot present"></span>0 Present</span>
+        <span><span class="att-dot absent"></span>0 Absent</span>
+        <span><span class="att-dot unmarked"></span>0 Unmarked</span>
+      </div>
+      <div id="att-rows-container" style="margin-top:16px;"><div style="color:var(--muted);font-size:13px;">Loading students...</div></div>
+      <div class="save-attendance-bar" id="save-attendance-bar" style="display:none;">
+        <span id="save-bar-text">Ready to save</span>
+        <button class="btn" id="save-bulk-attendance-btn" style="margin:0;">Save Attendance</button>
       </div>
     </div>
 
@@ -145,6 +233,18 @@
       <button class="btn btn-secondary btn-small" id="add-note-btn">+ Add note</button>
       <div id="notes-preview"></div>
 
+      <label>Add a test score</label>
+      <div class="row2">
+        <input type="text" id="f-test-name" placeholder="e.g. Unit Test 1 - Trigonometry">
+        <input type="date" id="f-test-date">
+      </div>
+      <div class="row2" style="margin-top:14px;">
+        <input type="number" id="f-test-score" placeholder="Score, e.g. 42">
+        <input type="number" id="f-test-max" placeholder="Out of, e.g. 50">
+      </div>
+      <button class="btn btn-secondary btn-small" id="add-score-btn">+ Add test score</button>
+      <div id="scores-preview"></div>
+
       <div style="margin-top:20px;">
         <button class="btn" id="save-student-btn">Save Student</button>
         <button class="btn btn-secondary" id="clear-form-btn">Clear Form (new student)</button>
@@ -155,10 +255,12 @@
 
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, writeBatch, addDoc, deleteDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB3fzWzwiTxHJi1M3OQI3hgZJpi6lq-eww",
@@ -181,6 +283,7 @@
 
   let currentAttendanceLog = [];
   let currentNotes = [];
+  let currentTestScores = [];
 
   document.getElementById('admin-login-btn').addEventListener('click', () => {
     const email = document.getElementById('admin-email').value.trim();
@@ -206,6 +309,144 @@
     } else {
       loginScreen.style.display = 'block';
       adminScreen.style.display = 'none';
+    }
+  });
+
+  onAuthStateChanged(auth, (user) => {
+    if(user){
+      loginScreen.style.display = 'none';
+      adminScreen.style.display = 'block';
+      loadStudentList();
+      const todayStr = new Date().toISOString().split('T')[0];
+      document.getElementById('f-att-date').value = todayStr;
+      document.getElementById('f-test-date').value = todayStr;
+      document.getElementById('bulk-att-date').value = todayStr;
+      loadBulkAttendanceRows();
+      loadNotices();
+    } else {
+      loginScreen.style.display = 'block';
+      adminScreen.style.display = 'none';
+    }
+  });
+
+  function showToast(text){
+    const toast = document.getElementById('toast');
+    toast.textContent = text;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  function dateInputToLabel(dateInputValue){
+    const d = new Date(dateInputValue + 'T00:00:00');
+    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+  }
+
+  let bulkStudentsCache = [];
+
+  async function loadBulkAttendanceRows(){
+    const container = document.getElementById('att-rows-container');
+    container.innerHTML = '<div style="color:var(--muted);font-size:13px;">Loading students...</div>';
+    const snap = await getDocs(collection(db, "students"));
+    bulkStudentsCache = [];
+    snap.forEach(docSnap => bulkStudentsCache.push({ id: docSnap.id, data: docSnap.data() }));
+
+    if(bulkStudentsCache.length === 0){
+      container.innerHTML = '<div style="color:var(--muted);font-size:13px;">No students yet.</div>';
+      return;
+    }
+
+    const dateLabel = dateInputToLabel(document.getElementById('bulk-att-date').value);
+    container.innerHTML = '';
+    bulkStudentsCache.forEach(student => {
+      const existingLog = (student.data.attendance && student.data.attendance.log) || [];
+      const existingEntry = existingLog.find(e => e.date === dateLabel);
+      const currentStatus = existingEntry ? existingEntry.status : null;
+
+      const row = document.createElement('div');
+      row.className = 'att-row' + (currentStatus === 'Present' ? ' marked-present' : currentStatus === 'Absent' ? ' marked-absent' : '');
+      row.dataset.email = student.id;
+      row.dataset.status = currentStatus || '';
+      row.innerHTML = `
+        <div>
+          <div class="att-row-name">${student.data.name || 'Unnamed'}</div>
+          <div class="att-row-email">${student.id}</div>
+        </div>
+        <div class="att-toggle-group">
+          <button class="att-toggle-btn present ${currentStatus === 'Present' ? 'active' : ''}" data-status="Present">Present</button>
+          <button class="att-toggle-btn absent ${currentStatus === 'Absent' ? 'active' : ''}" data-status="Absent">Absent</button>
+        </div>
+      `;
+      row.querySelectorAll('.att-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const status = btn.dataset.status;
+          row.dataset.status = status;
+          row.querySelectorAll('.att-toggle-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          row.classList.remove('marked-present', 'marked-absent');
+          row.classList.add(status === 'Present' ? 'marked-present' : 'marked-absent');
+          updateAttendanceSummary();
+        });
+      });
+      container.appendChild(row);
+    });
+
+    document.getElementById('save-attendance-bar').style.display = 'flex';
+    updateAttendanceSummary();
+  }
+
+  function updateAttendanceSummary(){
+    const rows = document.querySelectorAll('.att-row');
+    let present = 0, absent = 0, unmarked = 0;
+    rows.forEach(r => {
+      if(r.dataset.status === 'Present'){ present++; }
+      else if(r.dataset.status === 'Absent'){ absent++; }
+      else { unmarked++; }
+    });
+    document.getElementById('att-summary').innerHTML = `
+      <span><span class="att-dot present"></span>${present} Present</span>
+      <span><span class="att-dot absent"></span>${absent} Absent</span>
+      <span><span class="att-dot unmarked"></span>${unmarked} Unmarked</span>
+    `;
+    document.getElementById('save-bar-text').textContent = `${present + absent} of ${rows.length} students marked`;
+  }
+
+  document.getElementById('bulk-att-date').addEventListener('change', loadBulkAttendanceRows);
+
+  document.getElementById('save-bulk-attendance-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('save-bulk-attendance-btn');
+    const dateLabel = dateInputToLabel(document.getElementById('bulk-att-date').value);
+    const rows = document.querySelectorAll('.att-row');
+    const toSave = Array.from(rows).filter(r => r.dataset.status);
+
+    if(toSave.length === 0){
+      showToast('Mark at least one student first.');
+      return;
+    }
+
+    btn.disabled = true; btn.textContent = 'Saving...';
+
+    try{
+      const batch = writeBatch(db);
+      toSave.forEach(row => {
+        const email = row.dataset.email;
+        const status = row.dataset.status;
+        const student = bulkStudentsCache.find(s => s.id === email);
+        let log = (student.data.attendance && student.data.attendance.log) || [];
+        log = log.filter(e => e.date !== dateLabel);
+        log.unshift({ date: dateLabel, status: status });
+        const presentCount = log.filter(e => e.status === 'Present').length;
+        const percent = Math.round((presentCount / log.length) * 100);
+        const docRef = doc(db, "students", email);
+        batch.set(docRef, { attendance: { percent, log } }, { merge: true });
+      });
+      await batch.commit();
+      showToast(`Saved attendance for ${toSave.length} student(s)!`);
+      loadStudentList();
+      loadBulkAttendanceRows();
+    } catch(err){
+      showToast('Error: ' + err.message);
+    } finally {
+      btn.disabled = false; btn.textContent = 'Save Attendance';
     }
   });
 
@@ -255,8 +496,10 @@
     document.getElementById('f-attendance-pct').value = (data.attendance && data.attendance.percent) || '';
     currentAttendanceLog = (data.attendance && data.attendance.log) || [];
     currentNotes = data.notes || [];
+    currentTestScores = data.testScores || [];
     renderAttendancePreview();
     renderNotesPreview();
+    renderScoresPreview();
     saveMsg.textContent = '';
     window.scrollTo({top: document.getElementById('form-heading').offsetTop - 20, behavior:'smooth'});
   }
@@ -270,8 +513,10 @@
     document.getElementById('f-attendance-pct').value = '';
     currentAttendanceLog = [];
     currentNotes = [];
+    currentTestScores = [];
     renderAttendancePreview();
     renderNotesPreview();
+    renderScoresPreview();
     saveMsg.textContent = '';
   });
 
@@ -308,6 +553,41 @@
       });
     });
   }
+
+  function renderScoresPreview(){
+    const box = document.getElementById('scores-preview');
+    if(currentTestScores.length === 0){
+      box.innerHTML = '<div style="font-size:12px;color:var(--muted);margin-top:8px;">No test scores yet</div>';
+      return;
+    }
+    box.innerHTML = currentTestScores.map((s, i) =>
+      `<div class="score-item"><span>${s.date} — ${s.name}: ${s.score}/${s.max}</span><button class="remove-btn" data-idx="${i}">Remove</button></div>`
+    ).join('');
+    box.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentTestScores.splice(parseInt(btn.dataset.idx), 1);
+        renderScoresPreview();
+      });
+    });
+  }
+
+  document.getElementById('add-score-btn').addEventListener('click', () => {
+    const name = document.getElementById('f-test-name').value.trim();
+    const dateInput = document.getElementById('f-test-date').value;
+    const score = parseFloat(document.getElementById('f-test-score').value);
+    const max = parseFloat(document.getElementById('f-test-max').value);
+    if(!name || !dateInput || isNaN(score) || isNaN(max)){
+      alert('Please fill test name, date, score and max marks.');
+      return;
+    }
+    const dateObj = new Date(dateInput + 'T00:00:00');
+    const dateStr = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+    currentTestScores.push({ name, date: dateStr, score, max });
+    document.getElementById('f-test-name').value = '';
+    document.getElementById('f-test-score').value = '';
+    document.getElementById('f-test-max').value = '';
+    renderScoresPreview();
+  });
 
   document.getElementById('add-attendance-btn').addEventListener('click', () => {
     const status = document.getElementById('f-att-status').value;
@@ -346,7 +626,8 @@
       feeStatus: document.getElementById('f-fee').value,
       batchTiming: document.getElementById('f-batch').value.trim(),
       attendance: { percent: pct, log: currentAttendanceLog },
-      notes: currentNotes
+      notes: currentNotes,
+      testScores: currentTestScores
     };
 
     try{
@@ -357,6 +638,64 @@
     } catch(err){
       saveMsg.textContent = 'Error saving: ' + err.message;
       saveMsg.className = 'msg error';
+    }
+  });
+
+  async function loadNotices(){
+    const list = document.getElementById('notices-list');
+    list.innerHTML = '<div style="font-size:13px;color:var(--muted);">Loading...</div>';
+    try{
+      const q = query(collection(db, "notices"), orderBy("createdAt", "desc"));
+      const snap = await getDocs(q);
+      if(snap.empty){
+        list.innerHTML = '<div style="font-size:13px;color:var(--muted);">No notices posted yet.</div>';
+        return;
+      }
+      list.innerHTML = '';
+      snap.forEach(docSnap => {
+        const data = docSnap.data();
+        const dateStr = data.createdAt ? data.createdAt.toDate().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : '';
+        const item = document.createElement('div');
+        item.className = 'notice-item';
+        item.innerHTML = `
+          <div>
+            <div class="notice-title">${data.title}</div>
+            <div class="notice-msg">${data.message}</div>
+            <div class="notice-date">${dateStr}</div>
+          </div>
+          <button class="notice-delete" data-id="${docSnap.id}">Delete</button>
+        `;
+        item.querySelector('.notice-delete').addEventListener('click', async () => {
+          await deleteDoc(doc(db, "notices", docSnap.id));
+          loadNotices();
+          showToast('Notice deleted.');
+        });
+        list.appendChild(item);
+      });
+    } catch(err){
+      list.innerHTML = '<div style="font-size:13px;color:#C0392B;">Error loading notices: ' + err.message + '</div>';
+    }
+  }
+
+  document.getElementById('post-notice-btn').addEventListener('click', async () => {
+    const title = document.getElementById('notice-title').value.trim();
+    const message = document.getElementById('notice-message').value.trim();
+    if(!title || !message){
+      showToast('Please fill both title and message.');
+      return;
+    }
+    const btn = document.getElementById('post-notice-btn');
+    btn.disabled = true; btn.textContent = 'Posting...';
+    try{
+      await addDoc(collection(db, "notices"), { title, message, createdAt: serverTimestamp() });
+      document.getElementById('notice-title').value = '';
+      document.getElementById('notice-message').value = '';
+      showToast('Notice posted!');
+      loadNotices();
+    } catch(err){
+      showToast('Error: ' + err.message);
+    } finally {
+      btn.disabled = false; btn.textContent = 'Post Notice';
     }
   });
 </script>
