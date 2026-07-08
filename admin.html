@@ -128,6 +128,14 @@
     #print-report-area li{ padding:3px 0; border-bottom:1px solid #ddd; font-size:13px; }
     #print-report-area hr{ margin:10px 0; border:none; border-top:1px solid #ccc; }
   }
+
+  .spinner{
+    display:inline-block;width:16px;height:16px;border:2px solid var(--line);
+    border-top-color:var(--amber-dark);border-radius:50%;animation:spin .7s linear infinite;
+    vertical-align:middle;margin-right:8px;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .loading-row{display:flex;align-items:center;font-size:13px;color:var(--muted);padding:10px 0;}
 </style>
 </head>
 <body>
@@ -212,8 +220,11 @@
     </div>
 
     <div class="card">
-      <h2>All Students</h2>
-      <div class="row2" style="margin-top:0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h2 style="margin:0;">All Students</h2>
+        <button class="btn btn-secondary btn-small" id="export-csv-btn">⬇ Export to CSV</button>
+      </div>
+      <div class="row2" style="margin-top:14px;">
         <input type="text" id="student-search" placeholder="Search by name or email...">
         <select id="student-filter">
           <option value="all">All students</option>
@@ -415,7 +426,7 @@
 
   async function loadBulkAttendanceRows(){
     const container = document.getElementById('att-rows-container');
-    container.innerHTML = '<div style="color:var(--muted);font-size:13px;">Loading students...</div>';
+    container.innerHTML = '<div class="loading-row"><span class="spinner"></span>Loading students...</div>';
     const snap = await getDocs(collection(db, "students"));
     bulkStudentsCache = [];
     snap.forEach(docSnap => bulkStudentsCache.push({ id: docSnap.id, data: docSnap.data() }));
@@ -524,7 +535,7 @@
 
   async function loadStudentList(){
     const list = document.getElementById('student-list');
-    list.innerHTML = 'Loading...';
+    list.innerHTML = '<li class="loading-row"><span class="spinner"></span>Loading...</li>';
     const snap = await getDocs(collection(db, "students"));
 
     let total = 0, paid = 0, due = 0, markedToday = 0;
@@ -587,6 +598,36 @@
 
   document.getElementById('student-search').addEventListener('input', renderStudentList);
   document.getElementById('student-filter').addEventListener('change', renderStudentList);
+
+  document.getElementById('export-csv-btn').addEventListener('click', () => {
+    if(allStudentsCache.length === 0){
+      showToast('No students to export.');
+      return;
+    }
+    const headers = ['Name', 'Email', 'Fee Status', 'Batch Timing', 'Next Class', 'Attendance %'];
+    const rows = allStudentsCache.map(s => [
+      s.data.name || '',
+      s.id,
+      s.data.feeStatus || '',
+      s.data.batchTiming || '',
+      s.data.nextClass || '',
+      (s.data.attendance && s.data.attendance.percent) || 0
+    ]);
+    let csv = headers.join(',') + '\n';
+    rows.forEach(row => {
+      csv += row.map(val => `"${String(val).replace(/"/g, '""')}"`).join(',') + '\n';
+    });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `maths-pathshala-students-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('CSV exported!');
+  });
 
   function loadStudentIntoForm(email, data){
     document.getElementById('form-heading').textContent = 'Editing: ' + (data.name || email);
