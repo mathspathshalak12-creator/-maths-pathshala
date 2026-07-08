@@ -284,6 +284,10 @@
   .dash-panel{
     background:var(--navy);border-radius:16px;padding:28px 32px;color:#fff;
   }
+  @media(max-width:600px){
+    .dash-panel{padding:20px 16px;}
+    #student-dashboard{padding:16px 0 0;}
+  }
   .dash-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;}
   .dash-welcome{font-size:20px;font-weight:700;}
   .dash-welcome span{color:var(--amber);}
@@ -293,16 +297,18 @@
     border:1px solid rgba(255,255,255,0.25);padding:8px 16px;border-radius:6px;cursor:pointer;
   }
   .dash-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
-  @media(max-width:800px){.dash-grid{grid-template-columns:1fr;}}
-  .dash-box{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:16px 18px;}
+  @media(max-width:800px){.dash-grid{grid-template-columns:1fr;gap:12px;}}
+  .dash-box{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:16px 18px;overflow:hidden;}
+  @media(max-width:600px){.dash-box{padding:14px 16px;}}
   .dash-box-label{font-size:11.5px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;}
   .dash-box-value{font-size:16px;font-weight:600;}
   .dash-fee-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:700;}
   .dash-fee-paid{background:#DFF4E7;color:#1E7A46;}
   .dash-fee-due{background:#FBE2E1;color:#C0392B;}
-  .dash-notes-list{list-style:none;font-size:14px;}
-  .dash-notes-list li{display:flex;justify-content:space-between;align-items:center;padding:6px 0;}
-  .dash-notes-list a{color:#fff;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,0.3);border-radius:6px;padding:4px 10px;}
+  .dash-notes-list{list-style:none;font-size:14px;max-height:180px;overflow-y:auto;padding-right:4px;}
+  .dash-notes-list li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 0;flex-wrap:wrap;}
+  .dash-notes-list li span:first-child{flex:1;min-width:0;word-break:break-word;}
+  .dash-notes-list a{color:#fff;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,0.3);border-radius:6px;padding:4px 10px;white-space:nowrap;}
   .dash-notes-list a:hover{background:#fff;color:var(--navy);}
 
   /* NOTICES BANNER */
@@ -317,12 +323,16 @@
   /* TEST SCORES */
   .score-box{grid-column:span 2;}
   @media(max-width:800px){.score-box{grid-column:span 1;}}
-  .score-list{list-style:none;font-size:13px;margin-top:10px;}
-  .score-list li{display:flex;justify-content:space-between;padding:5px 0;color:#E4E0D6;}
-  .score-chart-wrap{margin-top:12px;height:160px;}
+  .score-list{list-style:none;font-size:13px;margin-top:10px;max-height:140px;overflow-y:auto;padding-right:4px;}
+  .score-list li{display:flex;justify-content:space-between;gap:10px;padding:5px 0;color:#E4E0D6;flex-wrap:wrap;}
+  .score-list li span:first-child{flex:1;min-width:0;word-break:break-word;}
+  .score-list li span:last-child{white-space:nowrap;font-weight:600;color:#fff;}
+  .score-chart-wrap{position:relative;margin-top:14px;height:160px;width:100%;}
+  .score-chart-wrap canvas{max-width:100%;}
   .dash-attendance-pct{font-size:22px;font-weight:700;color:var(--amber);margin-bottom:10px;}
-  .dash-attendance-list{list-style:none;font-size:13px;}
-  .dash-attendance-list li{display:flex;justify-content:space-between;padding:5px 0;color:#E4E0D6;}
+  .dash-attendance-list{list-style:none;font-size:13px;max-height:140px;overflow-y:auto;padding-right:4px;}
+  .dash-attendance-list li{display:flex;justify-content:space-between;gap:10px;padding:5px 0;color:#E4E0D6;flex-wrap:wrap;}
+  .dash-attendance-list li span:first-child{white-space:nowrap;}
   .att-present{color:#7FD6A0;font-weight:600;}
   .att-absent{color:#F0938C;font-weight:600;}
   .dash-not-found{font-size:14px;color:#fff;text-align:center;padding:10px 0;}
