@@ -116,6 +116,18 @@
   /* TEST SCORES */
   .score-item{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--line);}
   .payment-item{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--line);}
+
+  @media print{
+    body *{ display:none !important; }
+    #print-report-area, #print-report-area *{ display:block !important; }
+    #print-report-area{ color:#000; font-family:'Inter',sans-serif; padding:20px; }
+    #print-report-area h1{ font-size:22px; margin-bottom:4px; }
+    #print-report-area h2{ font-size:18px; margin-top:16px; }
+    #print-report-area h3, #print-report-area h4{ font-size:14px; margin-top:14px; color:#B5760F; }
+    #print-report-area ul{ list-style:none; padding:0; }
+    #print-report-area li{ padding:3px 0; border-bottom:1px solid #ddd; font-size:13px; }
+    #print-report-area hr{ margin:10px 0; border:none; border-top:1px solid #ccc; }
+  }
 </style>
 </head>
 <body>
@@ -279,6 +291,7 @@
       <div style="margin-top:20px;">
         <button class="btn" id="save-student-btn">Save Student</button>
         <button class="btn btn-secondary" id="clear-form-btn">Clear Form (new student)</button>
+        <button class="btn btn-secondary" id="print-report-btn">🖨 Print Report Card</button>
       </div>
       <div class="msg" id="save-msg"></div>
     </div>
@@ -287,6 +300,29 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div id="print-report-area" style="display:none;">
+  <h1 id="pr-title" style="font-family:'Space Grotesk',sans-serif;">Maths Pathshala — Student Report</h1>
+  <p id="pr-generated" style="font-size:12px;color:#555;"></p>
+  <hr>
+  <h2 id="pr-name"></h2>
+  <p id="pr-email"></p>
+  <h3>Fee Status</h3>
+  <p id="pr-fee"></p>
+  <h4>Payment History</h4>
+  <ul id="pr-payments"></ul>
+  <h3>Batch Timing</h3>
+  <p id="pr-batch"></p>
+  <h3>Next Class</h3>
+  <p id="pr-next-class"></p>
+  <h3>Attendance</h3>
+  <p id="pr-attendance-pct"></p>
+  <ul id="pr-attendance-log"></ul>
+  <h3>Test Scores</h3>
+  <ul id="pr-scores"></ul>
+  <h3>Notes Assigned</h3>
+  <ul id="pr-notes"></ul>
+</div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -551,7 +587,6 @@
 
   document.getElementById('student-search').addEventListener('input', renderStudentList);
   document.getElementById('student-filter').addEventListener('change', renderStudentList);
-  }
 
   function loadStudentIntoForm(email, data){
     document.getElementById('form-heading').textContent = 'Editing: ' + (data.name || email);
@@ -713,6 +748,49 @@
     document.getElementById('f-note-title').value = '';
     document.getElementById('f-note-url').value = '';
     renderNotesPreview();
+  });
+
+  document.getElementById('print-report-btn').addEventListener('click', () => {
+    const name = document.getElementById('f-name').value.trim();
+    const email = document.getElementById('f-email').value.trim();
+    if(!email){
+      showToast('Load or select a student first.');
+      return;
+    }
+    const feeStatus = document.getElementById('f-fee').value;
+    const batch = document.getElementById('f-batch').value.trim();
+    const nextClass = document.getElementById('f-next-class').value.trim();
+    const attPct = document.getElementById('f-attendance-pct').value;
+
+    document.getElementById('pr-generated').textContent = 'Generated on ' + new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+    document.getElementById('pr-name').textContent = name || 'Unnamed Student';
+    document.getElementById('pr-email').textContent = email;
+    document.getElementById('pr-fee').textContent = feeStatus;
+    document.getElementById('pr-batch').textContent = batch || 'Not assigned';
+    document.getElementById('pr-next-class').textContent = nextClass || 'Not scheduled';
+    document.getElementById('pr-attendance-pct').textContent = (attPct || '0') + '% attendance';
+
+    const paymentsList = document.getElementById('pr-payments');
+    paymentsList.innerHTML = currentPayments.length
+      ? currentPayments.map(p => `<li>${p.date} — ₹${p.amount}</li>`).join('')
+      : '<li>No payment records</li>';
+
+    const attList = document.getElementById('pr-attendance-log');
+    attList.innerHTML = currentAttendanceLog.length
+      ? currentAttendanceLog.map(e => `<li>${e.date} — ${e.status}</li>`).join('')
+      : '<li>No attendance records</li>';
+
+    const scoresList = document.getElementById('pr-scores');
+    scoresList.innerHTML = currentTestScores.length
+      ? currentTestScores.map(s => `<li>${s.date} — ${s.name}: ${s.score}/${s.max}</li>`).join('')
+      : '<li>No test scores</li>';
+
+    const notesListEl = document.getElementById('pr-notes');
+    notesListEl.innerHTML = currentNotes.length
+      ? currentNotes.map(n => `<li>${n.title}</li>`).join('')
+      : '<li>No notes assigned</li>';
+
+    window.print();
   });
 
   document.getElementById('save-student-btn').addEventListener('click', async () => {
