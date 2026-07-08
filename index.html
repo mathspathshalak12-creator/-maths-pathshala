@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Maths Pathshala — Kalyanpur, Kanpur</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0B1E3D">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -303,6 +304,22 @@
   .dash-notes-list li{display:flex;justify-content:space-between;align-items:center;padding:6px 0;}
   .dash-notes-list a{color:#fff;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,0.3);border-radius:6px;padding:4px 10px;}
   .dash-notes-list a:hover{background:#fff;color:var(--navy);}
+
+  /* NOTICES BANNER */
+  .dash-notices{margin-bottom:16px;}
+  .notice-banner{
+    background:rgba(245,166,35,0.14);border:1px solid rgba(245,166,35,0.4);
+    border-radius:10px;padding:12px 16px;margin-bottom:8px;
+  }
+  .notice-banner-title{font-size:13.5px;font-weight:700;color:var(--amber);}
+  .notice-banner-msg{font-size:13px;color:#E4E0D6;margin-top:3px;}
+
+  /* TEST SCORES */
+  .score-box{grid-column:span 2;}
+  @media(max-width:800px){.score-box{grid-column:span 1;}}
+  .score-list{list-style:none;font-size:13px;margin-top:10px;}
+  .score-list li{display:flex;justify-content:space-between;padding:5px 0;color:#E4E0D6;}
+  .score-chart-wrap{margin-top:12px;height:160px;}
   .dash-attendance-pct{font-size:22px;font-weight:700;color:var(--amber);margin-bottom:10px;}
   .dash-attendance-list{list-style:none;font-size:13px;}
   .dash-attendance-list li{display:flex;justify-content:space-between;padding:5px 0;color:#E4E0D6;}
@@ -379,6 +396,7 @@
         </div>
         <button class="dash-logout" id="dash-refresh-btn">↻ Refresh</button>
       </div>
+      <div class="dash-notices" id="dash-notices"></div>
       <div id="dash-found-content">
         <div class="dash-grid">
           <div class="dash-box">
@@ -397,6 +415,11 @@
           <div class="dash-box">
             <div class="dash-box-label">Your notes</div>
             <ul class="dash-notes-list" id="dash-notes-list"><li>No notes assigned yet</li></ul>
+          </div>
+          <div class="dash-box score-box">
+            <div class="dash-box-label">Test scores &amp; progress</div>
+            <ul class="score-list" id="dash-scores-list"><li>No test scores yet</li></ul>
+            <div class="score-chart-wrap"><canvas id="score-chart"></canvas></div>
           </div>
         </div>
       </div>
@@ -925,7 +948,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB3fzWzwiTxHJi1M3OQI3hgZJpi6lq-eww",
@@ -994,6 +1017,7 @@
     if(user){
       isLoggedIn = true;
       await loadStudentDashboard(user.email);
+      await loadNotices();
       studentLoginBtn.textContent = 'Logout';
     } else {
       isLoggedIn = false;
@@ -1007,9 +1031,29 @@
       const btn = document.getElementById('dash-refresh-btn');
       btn.textContent = 'Refreshing...';
       await loadStudentDashboard(auth.currentUser.email);
+      await loadNotices();
       btn.textContent = '↻ Refresh';
     }
   });
+
+  async function loadNotices(){
+    const box = document.getElementById('dash-notices');
+    try{
+      const q = query(collection(db, "notices"), orderBy("createdAt", "desc"), limit(3));
+      const snap = await getDocs(q);
+      if(snap.empty){ box.innerHTML = ''; return; }
+      box.innerHTML = '';
+      snap.forEach(docSnap => {
+        const data = docSnap.data();
+        const banner = document.createElement('div');
+        banner.className = 'notice-banner';
+        banner.innerHTML = `<div class="notice-banner-title">📢 ${data.title}</div><div class="notice-banner-msg">${data.message}</div>`;
+        box.appendChild(banner);
+      });
+    } catch(err){
+      box.innerHTML = '';
+    }
+  }
 
   async function loadStudentDashboard(email){
     const docRef = doc(db, "students", email.toLowerCase());
@@ -1076,7 +1120,56 @@
       notesList.innerHTML = '<li>No notes assigned yet</li>';
     }
 
+    const scoresList = document.getElementById('dash-scores-list');
+    scoresList.innerHTML = '';
+    if(Array.isArray(data.testScores) && data.testScores.length > 0){
+      data.testScores.forEach(s => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span>${s.date} — ${s.name}</span><span>${s.score}/${s.max}</span>`;
+        scoresList.appendChild(li);
+      });
+      renderScoreChart(data.testScores);
+    } else {
+      scoresList.innerHTML = '<li>No test scores yet</li>';
+      const canvas = document.getElementById('score-chart');
+      if(canvas && window.scoreChartInstance){ window.scoreChartInstance.destroy(); }
+    }
+
     studentDashboard.style.display = 'block';
+  }
+
+  function renderScoreChart(scores){
+    const canvas = document.getElementById('score-chart');
+    if(!canvas || typeof Chart === 'undefined'){ return; }
+    const labels = scores.map(s => s.date);
+    const percentages = scores.map(s => Math.round((s.score / s.max) * 100));
+
+    if(window.scoreChartInstance){ window.scoreChartInstance.destroy(); }
+    window.scoreChartInstance = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Score %',
+          data: percentages,
+          borderColor: '#F5A623',
+          backgroundColor: 'rgba(245,166,35,0.15)',
+          tension: 0.3,
+          fill: true,
+          pointBackgroundColor: '#F5A623',
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, max: 100, ticks: { color: '#B9C2D6', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.08)' } },
+          x: { ticks: { color: '#B9C2D6', font: { size: 10 } }, grid: { display: false } }
+        }
+      }
+    });
   }
 </script>
 
