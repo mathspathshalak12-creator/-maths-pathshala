@@ -115,6 +115,7 @@
 
   /* TEST SCORES */
   .score-item{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--line);}
+  .payment-item{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--line);}
 </style>
 </head>
 <body>
@@ -168,6 +169,17 @@
     </div>
 
     <div class="card">
+      <h2>Assign Homework</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Shows up on every student's dashboard until you remove it.</p>
+      <label>Title</label>
+      <input type="text" id="hw-title" placeholder="e.g. Chapter 5 - Arithmetic Progressions">
+      <label>Details</label>
+      <input type="text" id="hw-details" placeholder="e.g. Solve Q1 to Q10 from the exercise, due Monday">
+      <button class="btn" id="post-hw-btn">Assign Homework</button>
+      <div id="hw-list" style="margin-top:18px;"></div>
+    </div>
+
+    <div class="card">
       <div class="att-header">
         <h2 style="margin:0;">Mark Attendance</h2>
         <div class="att-date-picker">
@@ -189,7 +201,15 @@
 
     <div class="card">
       <h2>All Students</h2>
-      <ul class="student-list" id="student-list"><li>Loading...</li></ul>
+      <div class="row2" style="margin-top:0;">
+        <input type="text" id="student-search" placeholder="Search by name or email...">
+        <select id="student-filter">
+          <option value="all">All students</option>
+          <option value="Paid">Fee: Paid</option>
+          <option value="Due">Fee: Due</option>
+        </select>
+      </div>
+      <ul class="student-list" id="student-list" style="margin-top:14px;"><li>Loading...</li></ul>
     </div>
 
     <div class="card">
@@ -211,6 +231,17 @@
       </div>
       <label>Batch timing</label>
       <input type="text" id="f-batch" placeholder="Evening 5-6 PM">
+      <label>Next class</label>
+      <input type="text" id="f-next-class" placeholder="e.g. Monday, 9 July, 5:00 PM">
+
+      <label>Add a fee payment record</label>
+      <div class="row2">
+        <input type="number" id="f-payment-amount" placeholder="Amount, e.g. 2000">
+        <input type="date" id="f-payment-date">
+      </div>
+      <button class="btn btn-secondary btn-small" id="add-payment-btn">+ Add payment record</button>
+      <div id="payments-preview"></div>
+
       <label>Attendance percent</label>
       <input type="number" id="f-attendance-pct" placeholder="85">
 
@@ -284,6 +315,7 @@
   let currentAttendanceLog = [];
   let currentNotes = [];
   let currentTestScores = [];
+  let currentPayments = [];
 
   document.getElementById('admin-login-btn').addEventListener('click', () => {
     const email = document.getElementById('admin-email').value.trim();
@@ -320,9 +352,11 @@
       const todayStr = new Date().toISOString().split('T')[0];
       document.getElementById('f-att-date').value = todayStr;
       document.getElementById('f-test-date').value = todayStr;
+      document.getElementById('f-payment-date').value = todayStr;
       document.getElementById('bulk-att-date').value = todayStr;
       loadBulkAttendanceRows();
       loadNotices();
+      loadHomework();
     } else {
       loginScreen.style.display = 'block';
       adminScreen.style.display = 'none';
@@ -450,6 +484,8 @@
     }
   });
 
+  let allStudentsCache = [];
+
   async function loadStudentList(){
     const list = document.getElementById('student-list');
     list.innerHTML = 'Loading...';
@@ -458,6 +494,7 @@
     let total = 0, paid = 0, due = 0, markedToday = 0;
     const todayStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
 
+    allStudentsCache = [];
     if(snap.empty){
       list.innerHTML = '<li>No students yet — add one below.</li>';
       document.getElementById('stat-total').textContent = 0;
@@ -466,7 +503,6 @@
       document.getElementById('stat-marked-today').textContent = '0 / 0';
       return;
     }
-    list.innerHTML = '';
     snap.forEach(docSnap => {
       const data = docSnap.data();
       total++;
@@ -475,16 +511,46 @@
         const hasToday = data.attendance.log.some(e => e.date === todayStr);
         if(hasToday){ markedToday++; }
       }
-      const li = document.createElement('li');
-      li.innerHTML = `<div><div class="s-name">${data.name || 'Unnamed'}</div><div class="s-email">${docSnap.id}</div></div><span style="font-size:12px;color:var(--muted);">Edit →</span>`;
-      li.addEventListener('click', () => loadStudentIntoForm(docSnap.id, data));
-      list.appendChild(li);
+      allStudentsCache.push({ id: docSnap.id, data });
     });
 
     document.getElementById('stat-total').textContent = total;
     document.getElementById('stat-paid').textContent = paid;
     document.getElementById('stat-due').textContent = due;
     document.getElementById('stat-marked-today').textContent = markedToday + ' / ' + total;
+
+    renderStudentList();
+  }
+
+  function renderStudentList(){
+    const list = document.getElementById('student-list');
+    const searchTerm = document.getElementById('student-search').value.trim().toLowerCase();
+    const filterVal = document.getElementById('student-filter').value;
+
+    let filtered = allStudentsCache.filter(s => {
+      const matchesSearch = !searchTerm ||
+        (s.data.name || '').toLowerCase().includes(searchTerm) ||
+        s.id.toLowerCase().includes(searchTerm);
+      const matchesFilter = filterVal === 'all' || s.data.feeStatus === filterVal;
+      return matchesSearch && matchesFilter;
+    });
+
+    if(filtered.length === 0){
+      list.innerHTML = '<li>No matching students.</li>';
+      return;
+    }
+
+    list.innerHTML = '';
+    filtered.forEach(s => {
+      const li = document.createElement('li');
+      li.innerHTML = `<div><div class="s-name">${s.data.name || 'Unnamed'}</div><div class="s-email">${s.id}</div></div><span style="font-size:12px;color:var(--muted);">Edit →</span>`;
+      li.addEventListener('click', () => loadStudentIntoForm(s.id, s.data));
+      list.appendChild(li);
+    });
+  }
+
+  document.getElementById('student-search').addEventListener('input', renderStudentList);
+  document.getElementById('student-filter').addEventListener('change', renderStudentList);
   }
 
   function loadStudentIntoForm(email, data){
@@ -493,13 +559,16 @@
     document.getElementById('f-name').value = data.name || '';
     document.getElementById('f-fee').value = data.feeStatus || 'Due';
     document.getElementById('f-batch').value = data.batchTiming || '';
+    document.getElementById('f-next-class').value = data.nextClass || '';
     document.getElementById('f-attendance-pct').value = (data.attendance && data.attendance.percent) || '';
     currentAttendanceLog = (data.attendance && data.attendance.log) || [];
     currentNotes = data.notes || [];
     currentTestScores = data.testScores || [];
+    currentPayments = data.feeHistory || [];
     renderAttendancePreview();
     renderNotesPreview();
     renderScoresPreview();
+    renderPaymentsPreview();
     saveMsg.textContent = '';
     window.scrollTo({top: document.getElementById('form-heading').offsetTop - 20, behavior:'smooth'});
   }
@@ -510,14 +579,48 @@
     document.getElementById('f-name').value = '';
     document.getElementById('f-fee').value = 'Due';
     document.getElementById('f-batch').value = '';
+    document.getElementById('f-next-class').value = '';
     document.getElementById('f-attendance-pct').value = '';
     currentAttendanceLog = [];
     currentNotes = [];
     currentTestScores = [];
+    currentPayments = [];
     renderAttendancePreview();
     renderNotesPreview();
     renderScoresPreview();
+    renderPaymentsPreview();
     saveMsg.textContent = '';
+  });
+
+  function renderPaymentsPreview(){
+    const box = document.getElementById('payments-preview');
+    if(currentPayments.length === 0){
+      box.innerHTML = '<div style="font-size:12px;color:var(--muted);margin-top:8px;">No payment records yet</div>';
+      return;
+    }
+    box.innerHTML = currentPayments.map((p, i) =>
+      `<div class="payment-item"><span>${p.date} — ₹${p.amount}</span><button class="remove-btn" data-idx="${i}">Remove</button></div>`
+    ).join('');
+    box.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentPayments.splice(parseInt(btn.dataset.idx), 1);
+        renderPaymentsPreview();
+      });
+    });
+  }
+
+  document.getElementById('add-payment-btn').addEventListener('click', () => {
+    const amount = parseFloat(document.getElementById('f-payment-amount').value);
+    const dateInput = document.getElementById('f-payment-date').value;
+    if(isNaN(amount) || !dateInput){
+      alert('Please fill amount and date.');
+      return;
+    }
+    const dateObj = new Date(dateInput + 'T00:00:00');
+    const dateStr = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    currentPayments.unshift({ amount, date: dateStr });
+    document.getElementById('f-payment-amount').value = '';
+    renderPaymentsPreview();
   });
 
   function renderAttendancePreview(){
@@ -625,9 +728,11 @@
       name: document.getElementById('f-name').value.trim(),
       feeStatus: document.getElementById('f-fee').value,
       batchTiming: document.getElementById('f-batch').value.trim(),
+      nextClass: document.getElementById('f-next-class').value.trim(),
       attendance: { percent: pct, log: currentAttendanceLog },
       notes: currentNotes,
-      testScores: currentTestScores
+      testScores: currentTestScores,
+      feeHistory: currentPayments
     };
 
     try{
@@ -696,6 +801,64 @@
       showToast('Error: ' + err.message);
     } finally {
       btn.disabled = false; btn.textContent = 'Post Notice';
+    }
+  });
+
+  async function loadHomework(){
+    const list = document.getElementById('hw-list');
+    list.innerHTML = '<div style="font-size:13px;color:var(--muted);">Loading...</div>';
+    try{
+      const q = query(collection(db, "homework"), orderBy("createdAt", "desc"));
+      const snap = await getDocs(q);
+      if(snap.empty){
+        list.innerHTML = '<div style="font-size:13px;color:var(--muted);">No homework assigned yet.</div>';
+        return;
+      }
+      list.innerHTML = '';
+      snap.forEach(docSnap => {
+        const data = docSnap.data();
+        const dateStr = data.createdAt ? data.createdAt.toDate().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : '';
+        const item = document.createElement('div');
+        item.className = 'notice-item';
+        item.innerHTML = `
+          <div>
+            <div class="notice-title">${data.title}</div>
+            <div class="notice-msg">${data.details}</div>
+            <div class="notice-date">${dateStr}</div>
+          </div>
+          <button class="notice-delete" data-id="${docSnap.id}">Delete</button>
+        `;
+        item.querySelector('.notice-delete').addEventListener('click', async () => {
+          await deleteDoc(doc(db, "homework", docSnap.id));
+          loadHomework();
+          showToast('Homework removed.');
+        });
+        list.appendChild(item);
+      });
+    } catch(err){
+      list.innerHTML = '<div style="font-size:13px;color:#C0392B;">Error loading homework: ' + err.message + '</div>';
+    }
+  }
+
+  document.getElementById('post-hw-btn').addEventListener('click', async () => {
+    const title = document.getElementById('hw-title').value.trim();
+    const details = document.getElementById('hw-details').value.trim();
+    if(!title || !details){
+      showToast('Please fill both title and details.');
+      return;
+    }
+    const btn = document.getElementById('post-hw-btn');
+    btn.disabled = true; btn.textContent = 'Assigning...';
+    try{
+      await addDoc(collection(db, "homework"), { title, details, createdAt: serverTimestamp() });
+      document.getElementById('hw-title').value = '';
+      document.getElementById('hw-details').value = '';
+      showToast('Homework assigned!');
+      loadHomework();
+    } catch(err){
+      showToast('Error: ' + err.message);
+    } finally {
+      btn.disabled = false; btn.textContent = 'Assign Homework';
     }
   });
 </script>
