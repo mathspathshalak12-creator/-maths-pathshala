@@ -346,22 +346,6 @@
   .payment-history-list{list-style:none;font-size:13px;max-height:120px;overflow-y:auto;margin-top:8px;}
   .payment-history-list li{display:flex;justify-content:space-between;padding:5px 0;color:#E4E0D6;}
 
-  .dash-print-btn{
-    font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,0.1);
-    border:1px solid rgba(255,255,255,0.25);padding:8px 16px;border-radius:6px;cursor:pointer;
-  }
-
-  @media print{
-    header, .hero, .trust-strip, #notes, #why, #batch, #testimonials, #location, #register, footer,
-    .wa-float, .notes-tabs, .popup-overlay, #student-login-btn, .dash-logout, .dash-print-btn { display:none !important; }
-    #student-dashboard{ padding:0 !important; }
-    .dash-panel{ background:#fff !important; color:#000 !important; border:1px solid #000; }
-    .dash-welcome, .dash-box-value, .dash-attendance-pct { color:#000 !important; }
-    .dash-box{ background:#f5f5f5 !important; border-color:#ccc !important; color:#000 !important; }
-    .dash-box-label{ color:#333 !important; }
-    .att-present, .att-absent, .score-list li span:last-child { color:#000 !important; }
-  }
-
   /* TEST SCORES */
   .score-box{grid-column:span 2;}
   @media(max-width:800px){.score-box{grid-column:span 1;}}
@@ -447,7 +431,6 @@
           <div class="dash-email" id="dash-email"></div>
         </div>
         <div style="display:flex;gap:8px;">
-          <button class="dash-print-btn" id="dash-print-btn">🖨 Print Report</button>
           <button class="dash-logout" id="dash-refresh-btn">↻ Refresh</button>
         </div>
       </div>
@@ -1126,10 +1109,6 @@
       await loadHomework();
       btn.textContent = '↻ Refresh';
     }
-  });
-
-  document.getElementById('dash-print-btn').addEventListener('click', () => {
-    window.print();
   });
 
   async function loadNotices(){
