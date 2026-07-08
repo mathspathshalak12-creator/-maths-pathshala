@@ -6,6 +6,7 @@
 <title>Maths Pathshala — Kalyanpur, Kanpur</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
 <meta name="theme-color" content="#0B1E3D">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -55,6 +56,25 @@
   }
   .nav-cta:hover{background:var(--navy-2);}
   @media(max-width:720px){.navlinks{display:none;}}
+
+  .hamburger-btn{display:none;background:none;border:none;font-size:26px;cursor:pointer;color:var(--navy);padding:4px 6px;line-height:1;}
+  .mobile-menu{display:none;}
+  @media(max-width:720px){
+    nav{position:relative;}
+    .hamburger-btn{display:block;}
+    .nav-cta{display:none;}
+    .mobile-menu.show{
+      display:flex;flex-direction:column;gap:2px;
+      position:absolute;top:100%;left:0;right:0;
+      background:var(--paper);border-bottom:1px solid var(--line);
+      padding:12px 24px 18px;box-shadow:0 10px 24px rgba(0,0,0,0.1);
+    }
+    .mobile-menu a{padding:12px 0;font-size:15px;font-weight:500;color:var(--navy);border-bottom:1px solid var(--line);text-decoration:none;}
+    .mobile-menu a.nav-cta{
+      display:block !important;text-align:center;border-bottom:none;border-radius:6px;
+      margin-top:8px;padding:12px;color:#fff;
+    }
+  }
 
   /* HERO */
   .hero{
@@ -319,6 +339,28 @@
   }
   .notice-banner-title{font-size:13.5px;font-weight:700;color:var(--amber);}
   .notice-banner-msg{font-size:13px;color:#E4E0D6;margin-top:3px;}
+  .hw-banner{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);border-radius:10px;padding:12px 16px;margin-bottom:8px;}
+  .hw-banner-title{font-size:13.5px;font-weight:700;color:#fff;}
+  .hw-banner-msg{font-size:13px;color:#B9C2D6;margin-top:3px;}
+
+  .payment-history-list{list-style:none;font-size:13px;max-height:120px;overflow-y:auto;margin-top:8px;}
+  .payment-history-list li{display:flex;justify-content:space-between;padding:5px 0;color:#E4E0D6;}
+
+  .dash-print-btn{
+    font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,0.1);
+    border:1px solid rgba(255,255,255,0.25);padding:8px 16px;border-radius:6px;cursor:pointer;
+  }
+
+  @media print{
+    header, .hero, .trust-strip, #notes, #why, #batch, #testimonials, #location, #register, footer,
+    .wa-float, .notes-tabs, .popup-overlay, #student-login-btn, .dash-logout, .dash-print-btn { display:none !important; }
+    #student-dashboard{ padding:0 !important; }
+    .dash-panel{ background:#fff !important; color:#000 !important; border:1px solid #000; }
+    .dash-welcome, .dash-box-value, .dash-attendance-pct { color:#000 !important; }
+    .dash-box{ background:#f5f5f5 !important; border-color:#ccc !important; color:#000 !important; }
+    .dash-box-label{ color:#333 !important; }
+    .att-present, .att-absent, .score-list li span:last-child { color:#000 !important; }
+  }
 
   /* TEST SCORES */
   .score-box{grid-column:span 2;}
@@ -404,18 +446,27 @@
           <div class="dash-welcome">Welcome, <span id="dash-name">Student</span></div>
           <div class="dash-email" id="dash-email"></div>
         </div>
-        <button class="dash-logout" id="dash-refresh-btn">↻ Refresh</button>
+        <div style="display:flex;gap:8px;">
+          <button class="dash-print-btn" id="dash-print-btn">🖨 Print Report</button>
+          <button class="dash-logout" id="dash-refresh-btn">↻ Refresh</button>
+        </div>
       </div>
       <div class="dash-notices" id="dash-notices"></div>
+      <div class="dash-notices" id="dash-homework"></div>
       <div id="dash-found-content">
         <div class="dash-grid">
           <div class="dash-box">
             <div class="dash-box-label">Fee status</div>
             <span class="dash-fee-badge" id="dash-fee-badge">—</span>
+            <ul class="payment-history-list" id="dash-payment-list"></ul>
           </div>
           <div class="dash-box">
             <div class="dash-box-label">Batch timing</div>
             <div class="dash-box-value" id="dash-batch-value">—</div>
+          </div>
+          <div class="dash-box">
+            <div class="dash-box-label">Next class</div>
+            <div class="dash-box-value" id="dash-next-class">—</div>
           </div>
           <div class="dash-box">
             <div class="dash-box-label">Attendance</div>
@@ -455,6 +506,17 @@
     </div>
     <a href="javascript:void(0)" data-scroll="register" class="nav-cta">Register now</a>
     <a href="javascript:void(0)" id="student-login-btn" class="nav-cta" style="background:var(--navy);margin-left:10px;">Student Login</a>
+    <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle menu">☰</button>
+    <div class="mobile-menu" id="mobile-menu">
+      <a href="javascript:void(0)" data-scroll="programs">Batch classes</a>
+      <a href="javascript:void(0)" data-scroll="hometuition">Home tuition</a>
+      <a href="javascript:void(0)" data-scroll="notes">Notes</a>
+      <a href="javascript:void(0)" data-scroll="why">Why us</a>
+      <a href="javascript:void(0)" data-scroll="testimonials">Reviews</a>
+      <a href="javascript:void(0)" data-scroll="register">Register</a>
+      <a href="javascript:void(0)" data-scroll="register" class="nav-cta">Register now</a>
+      <a href="javascript:void(0)" id="mobile-login-btn" class="nav-cta" style="background:var(--navy);">Student Login</a>
+    </div>
   </nav>
 </header>
 
@@ -989,6 +1051,8 @@
   }
 
   let isLoggedIn = false;
+  const mobileLoginBtn = document.getElementById('mobile-login-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
 
   studentLoginBtn.addEventListener('click', () => {
     if(isLoggedIn){
@@ -996,6 +1060,20 @@
     } else {
       loginModal.classList.add('show');
     }
+  });
+  mobileLoginBtn.addEventListener('click', () => {
+    mobileMenu.classList.remove('show');
+    if(isLoggedIn){
+      signOut(auth);
+    } else {
+      loginModal.classList.add('show');
+    }
+  });
+  document.getElementById('hamburger-btn').addEventListener('click', () => {
+    mobileMenu.classList.toggle('show');
+  });
+  mobileMenu.querySelectorAll('a[data-scroll]').forEach(a => {
+    a.addEventListener('click', () => mobileMenu.classList.remove('show'));
   });
   document.getElementById('login-modal-close').addEventListener('click', () => {
     loginModal.classList.remove('show');
@@ -1028,11 +1106,14 @@
       isLoggedIn = true;
       await loadStudentDashboard(user.email);
       await loadNotices();
+      await loadHomework();
       studentLoginBtn.textContent = 'Logout';
+      mobileLoginBtn.textContent = 'Logout';
     } else {
       isLoggedIn = false;
       studentDashboard.style.display = 'none';
       studentLoginBtn.textContent = 'Student Login';
+      mobileLoginBtn.textContent = 'Student Login';
     }
   });
 
@@ -1042,8 +1123,13 @@
       btn.textContent = 'Refreshing...';
       await loadStudentDashboard(auth.currentUser.email);
       await loadNotices();
+      await loadHomework();
       btn.textContent = '↻ Refresh';
     }
+  });
+
+  document.getElementById('dash-print-btn').addEventListener('click', () => {
+    window.print();
   });
 
   async function loadNotices(){
@@ -1058,6 +1144,25 @@
         const banner = document.createElement('div');
         banner.className = 'notice-banner';
         banner.innerHTML = `<div class="notice-banner-title">📢 ${data.title}</div><div class="notice-banner-msg">${data.message}</div>`;
+        box.appendChild(banner);
+      });
+    } catch(err){
+      box.innerHTML = '';
+    }
+  }
+
+  async function loadHomework(){
+    const box = document.getElementById('dash-homework');
+    try{
+      const q = query(collection(db, "homework"), orderBy("createdAt", "desc"), limit(3));
+      const snap = await getDocs(q);
+      if(snap.empty){ box.innerHTML = ''; return; }
+      box.innerHTML = '';
+      snap.forEach(docSnap => {
+        const data = docSnap.data();
+        const banner = document.createElement('div');
+        banner.className = 'hw-banner';
+        banner.innerHTML = `<div class="hw-banner-title">📝 ${data.title}</div><div class="hw-banner-msg">${data.details}</div>`;
         box.appendChild(banner);
       });
     } catch(err){
@@ -1096,7 +1201,18 @@
       feeBadge.className = 'dash-fee-badge dash-fee-due';
     }
 
+    const paymentList = document.getElementById('dash-payment-list');
+    paymentList.innerHTML = '';
+    if(Array.isArray(data.feeHistory) && data.feeHistory.length > 0){
+      data.feeHistory.forEach(p => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span>${p.date}</span><span>₹${p.amount}</span>`;
+        paymentList.appendChild(li);
+      });
+    }
+
     document.getElementById('dash-batch-value').textContent = data.batchTiming || 'Not assigned yet';
+    document.getElementById('dash-next-class').textContent = data.nextClass || 'Not scheduled yet';
 
     const attPct = document.getElementById('dash-attendance-pct');
     const attList = document.getElementById('dash-attendance-list');
