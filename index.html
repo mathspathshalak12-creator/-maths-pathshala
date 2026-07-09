@@ -302,11 +302,23 @@
   /* EMBEDDED STUDENT DASHBOARD */
   #student-dashboard{display:none;padding:32px 0 0;}
   .dash-panel{
-    background:var(--navy);border-radius:16px;padding:28px 32px;color:#fff;
+    background:linear-gradient(155deg, var(--navy) 0%, var(--navy-2) 100%);
+    border-radius:16px;padding:28px 32px;color:#fff;
+    animation:dashFadeIn .4s ease;
+  }
+  @keyframes dashFadeIn{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
   }
   @media(max-width:600px){
     .dash-panel{padding:20px 16px;}
     #student-dashboard{padding:16px 0 0;}
+  }
+  .dash-avatar{
+    width:46px;height:46px;border-radius:50%;flex-shrink:0;
+    background:linear-gradient(135deg, var(--amber), var(--amber-dark));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:var(--navy);
   }
   .dash-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;}
   .dash-welcome{font-size:20px;font-weight:700;}
@@ -318,9 +330,13 @@
   }
   .dash-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
   @media(max-width:800px){.dash-grid{grid-template-columns:1fr;gap:12px;}}
-  .dash-box{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:16px 18px;overflow:hidden;}
+  .dash-box{
+    background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;
+    padding:16px 18px;overflow:hidden;transition:background .15s ease, transform .15s ease;
+  }
+  .dash-box:hover{background:rgba(255,255,255,0.09);transform:translateY(-1px);}
   @media(max-width:600px){.dash-box{padding:14px 16px;}}
-  .dash-box-label{font-size:11.5px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;}
+  .dash-box-label{font-size:11.5px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
   .dash-box-value{font-size:16px;font-weight:600;}
   .dash-fee-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:700;}
   .dash-fee-paid{background:#DFF4E7;color:#1E7A46;}
@@ -330,6 +346,9 @@
   .dash-notes-list li span:first-child{flex:1;min-width:0;word-break:break-word;}
   .dash-notes-list a{color:#fff;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,0.3);border-radius:6px;padding:4px 10px;white-space:nowrap;}
   .dash-notes-list a:hover{background:#fff;color:var(--navy);}
+
+  .att-progress-track{background:rgba(255,255,255,0.12);border-radius:20px;height:8px;overflow:hidden;margin:8px 0 12px;}
+  .att-progress-fill{height:100%;border-radius:20px;background:linear-gradient(90deg, var(--amber-dark), var(--amber));transition:width .6s ease;}
 
   /* NOTICES BANNER */
   .dash-notices{margin-bottom:16px;}
@@ -434,6 +453,9 @@
   }
 
   .forgot-pw-link{display:block;text-align:right;font-size:12.5px;color:var(--amber-dark);margin:-10px 0 16px;cursor:pointer;}
+
+  .hw-popup-card{max-width:380px;text-align:center;}
+  .hw-popup-icon{font-size:40px;margin-bottom:10px;}
 </style>
 </head>
 <body>
@@ -442,9 +464,12 @@
   <div class="wrap">
     <div class="dash-panel">
       <div class="dash-top">
-        <div>
-          <div class="dash-welcome">Welcome, <span id="dash-name">Student</span></div>
-          <div class="dash-email" id="dash-email"></div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div class="dash-avatar" id="dash-avatar">S</div>
+          <div>
+            <div class="dash-welcome">Welcome, <span id="dash-name">Student</span></div>
+            <div class="dash-email" id="dash-email"></div>
+          </div>
         </div>
         <div style="display:flex;gap:8px;">
           <button class="dash-logout" id="dash-refresh-btn">↻ Refresh</button>
@@ -455,29 +480,30 @@
       <div id="dash-found-content">
         <div class="dash-grid">
           <div class="dash-box">
-            <div class="dash-box-label">Fee status</div>
+            <div class="dash-box-label">💰 Fee status</div>
             <span class="dash-fee-badge" id="dash-fee-badge">—</span>
             <ul class="payment-history-list" id="dash-payment-list"></ul>
           </div>
           <div class="dash-box">
-            <div class="dash-box-label">Batch timing</div>
+            <div class="dash-box-label">🕒 Batch timing</div>
             <div class="dash-box-value" id="dash-batch-value">—</div>
           </div>
           <div class="dash-box">
-            <div class="dash-box-label">Next class</div>
+            <div class="dash-box-label">📅 Next class</div>
             <div class="dash-box-value" id="dash-next-class">—</div>
           </div>
           <div class="dash-box">
-            <div class="dash-box-label">Attendance</div>
+            <div class="dash-box-label">📊 Attendance</div>
             <div class="dash-attendance-pct" id="dash-attendance-pct">—</div>
+            <div class="att-progress-track"><div class="att-progress-fill" id="att-progress-fill" style="width:0%;"></div></div>
             <ul class="dash-attendance-list" id="dash-attendance-list"><li>No attendance recorded yet</li></ul>
           </div>
           <div class="dash-box">
-            <div class="dash-box-label">Your notes</div>
+            <div class="dash-box-label">📘 Your notes</div>
             <ul class="dash-notes-list" id="dash-notes-list"><li>No notes assigned yet</li></ul>
           </div>
           <div class="dash-box score-box">
-            <div class="dash-box-label">Test scores &amp; progress</div>
+            <div class="dash-box-label">📈 Test scores &amp; progress</div>
             <ul class="score-list" id="dash-scores-list"><li>No test scores yet</li></ul>
             <div class="score-chart-wrap"><canvas id="score-chart"></canvas></div>
           </div>
@@ -548,6 +574,17 @@
     <span class="forgot-pw-link" id="forgot-pw-link">Forgot password?</span>
     <button class="btn btn-primary" id="login-submit-btn" style="justify-content:center;">Login</button>
     <div class="login-msg" id="login-msg"></div>
+  </div>
+</div>
+
+<div class="popup-overlay" id="hw-popup">
+  <div class="popup-card hw-popup-card">
+    <button class="popup-close" id="hw-popup-close" aria-label="Close">✕</button>
+    <div class="hw-popup-icon">📝</div>
+    <div class="popup-badge" style="background:#FDF0DA;color:var(--amber-dark);">New homework</div>
+    <h3 id="hw-popup-title">Homework title</h3>
+    <p id="hw-popup-details" style="color:var(--muted);font-size:14.5px;margin:12px 0 20px;line-height:1.6;"></p>
+    <button class="btn btn-primary" id="hw-popup-ok" style="justify-content:center;width:100%;">Got it, thanks!</button>
   </div>
 </div>
 
@@ -1169,13 +1206,34 @@
       const snap = await getDocs(q);
       if(snap.empty){ box.innerHTML = ''; return; }
       box.innerHTML = '';
+      let latestDoc = null;
       snap.forEach(docSnap => {
+        if(!latestDoc){ latestDoc = docSnap; }
         const data = docSnap.data();
         const banner = document.createElement('div');
         banner.className = 'hw-banner';
         banner.innerHTML = `<div class="hw-banner-title">📝 ${data.title}</div><div class="hw-banner-msg">${data.details}</div>`;
         box.appendChild(banner);
       });
+
+      if(latestDoc && auth.currentUser){
+        const seenKey = 'hwSeen_' + auth.currentUser.email;
+        const lastSeenId = localStorage.getItem(seenKey);
+        if(lastSeenId !== latestDoc.id){
+          const data = latestDoc.data();
+          document.getElementById('hw-popup-title').textContent = data.title;
+          document.getElementById('hw-popup-details').textContent = data.details;
+          document.getElementById('hw-popup').classList.add('show');
+          document.getElementById('hw-popup-ok').onclick = () => {
+            localStorage.setItem(seenKey, latestDoc.id);
+            document.getElementById('hw-popup').classList.remove('show');
+          };
+          document.getElementById('hw-popup-close').onclick = () => {
+            localStorage.setItem(seenKey, latestDoc.id);
+            document.getElementById('hw-popup').classList.remove('show');
+          };
+        }
+      }
     } catch(err){
       box.innerHTML = '';
     }
@@ -1204,6 +1262,7 @@
     notFoundContent.style.display = 'none';
 
     document.getElementById('dash-name').textContent = data.name || "Student";
+    document.getElementById('dash-avatar').textContent = (data.name || "S").trim().charAt(0).toUpperCase();
 
     const feeBadge = document.getElementById('dash-fee-badge');
     if(data.feeStatus === 'Paid'){
@@ -1241,6 +1300,7 @@
         }
       }
       attPct.innerHTML = data.attendance.percent + '% attendance' + streakHtml;
+      document.getElementById('att-progress-fill').style.width = data.attendance.percent + '%';
       attList.innerHTML = '';
       if(Array.isArray(data.attendance.log) && data.attendance.log.length > 0){
         data.attendance.log.forEach(entry => {
@@ -1254,6 +1314,7 @@
       }
     } else {
       attPct.textContent = '—';
+      document.getElementById('att-progress-fill').style.width = '0%';
       attList.innerHTML = '<li>No attendance recorded yet</li>';
     }
 
