@@ -177,19 +177,21 @@
   .why-item p{font-size:13.5px;color:var(--muted);}
 
   /* BATCH / SEATS SIGNATURE */
-  .batch-panel{
-    background:var(--navy);color:#fff;border-radius:16px;padding:44px;
-    display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap;align-items:center;
+  .batch-cards-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+  @media(max-width:700px){.batch-cards-grid{grid-template-columns:1fr;}}
+  .batch-card{
+    background:var(--navy);color:#fff;border-radius:14px;padding:26px 28px;
   }
-  .batch-copy h3{font-size:26px;font-weight:700;margin-bottom:10px;}
-  .batch-copy p{color:#B9C2D6;max-width:400px;font-size:15px;}
-  .seats{display:flex;gap:10px;flex-wrap:wrap;max-width:220px;}
+  .batch-card-class{font-size:12px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.04em;}
+  .batch-card-name{font-size:20px;font-weight:700;margin:4px 0 14px;}
+  .seats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
   .seat{
-    width:36px;height:36px;border-radius:50%;border:2px solid var(--amber);
+    width:28px;height:28px;border-radius:50%;border:2px solid var(--amber);
     display:flex;align-items:center;justify-content:center;
   }
   .seat.filled{background:var(--amber);}
-  .seats-label{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--amber);margin-top:14px;letter-spacing:.02em;}
+  .seats-label{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--amber);letter-spacing:.02em;}
+  .seats-label.full{color:#F0938C;}
 
   /* REGISTER */
   .register-box{
@@ -324,6 +326,11 @@
   .dash-welcome{font-size:20px;font-weight:700;}
   .dash-welcome span{color:var(--amber);}
   .dash-email{font-size:13px;color:#B9C2D6;margin-top:2px;}
+  .batch-highlight{
+    display:inline-block;margin-top:8px;padding:5px 14px;border-radius:20px;
+    background:linear-gradient(90deg, var(--amber-dark), var(--amber));
+    color:var(--navy);font-size:12.5px;font-weight:700;letter-spacing:.01em;
+  }
   .dash-logout{
     font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,0.1);
     border:1px solid rgba(255,255,255,0.25);padding:8px 16px;border-radius:6px;cursor:pointer;
@@ -469,6 +476,7 @@
           <div>
             <div class="dash-welcome">Welcome, <span id="dash-name">Student</span></div>
             <div class="dash-email" id="dash-email"></div>
+            <span class="batch-highlight" id="dash-batch-highlight" style="display:none;"></span>
           </div>
         </div>
         <div style="display:flex;gap:8px;">
@@ -489,7 +497,7 @@
             <div class="dash-box-value" id="dash-batch-value">—</div>
           </div>
           <div class="dash-box">
-            <div class="dash-box-label">📅 NEXT TEST DATE </div>
+            <div class="dash-box-label">📅 Next class</div>
             <div class="dash-box-value" id="dash-next-class">—</div>
           </div>
           <div class="dash-box">
@@ -863,23 +871,13 @@
 
 <section id="batch">
   <div class="wrap">
-    <div class="batch-panel">
-      <div class="batch-copy">
-        <h3>Only 7 students per batch.</h3>
-        <p>Kept deliberately small so every student gets looked at, not just taught to.</p>
-      </div>
-      <div>
-        <div class="seats">
-          <div class="seat filled"></div>
-          <div class="seat filled"></div>
-          <div class="seat filled"></div>
-          <div class="seat filled"></div>
-          <div class="seat filled"></div>
-          <div class="seat"></div>
-          <div class="seat"></div>
-        </div>
-        <div class="seats-label">5 of 7 seats filled</div>
-      </div>
+    <div class="section-head">
+      <div class="section-tag">Live batches</div>
+      <h2>Only 7 students per batch.</h2>
+      <p>Kept deliberately small so every student gets looked at, not just taught to. See live seat availability for each batch below.</p>
+    </div>
+    <div class="batch-cards-grid" id="batch-cards-grid">
+      <div style="color:var(--muted);font-size:14px;">Loading batches...</div>
     </div>
   </div>
 </section>
@@ -989,17 +987,9 @@
   <div class="popup-card">
     <button class="popup-close" id="popup-close" aria-label="Close">✕</button>
     <div class="popup-badge">Limited seats</div>
-    <h3>Only 7 students per batch</h3>
+    <h3 id="popup-batch-title">Only 7 students per batch</h3>
     <p>Seats are filling up for the next Maths &amp; Science batch in Kalyanpur. Register now to hold your spot.</p>
-    <div class="popup-seats">
-      <div class="seat filled"></div>
-      <div class="seat filled"></div>
-      <div class="seat filled"></div>
-      <div class="seat filled"></div>
-      <div class="seat filled"></div>
-      <div class="seat"></div>
-      <div class="seat"></div>
-    </div>
+    <div class="popup-seats" id="popup-seats-display"></div>
     <div class="popup-ctas">
       <a href="javascript:void(0)" data-scroll="register" id="popup-register" class="btn btn-primary" style="justify-content:center;">Join now</a>
       <a href="javascript:void(0)" id="popup-wa" target="_blank" class="btn btn-outline" style="justify-content:center;">Ask on WhatsApp</a>
@@ -1086,6 +1076,56 @@
     loginMsg.textContent = text;
     loginMsg.className = 'login-msg ' + (type || '');
   }
+
+  async function loadSeatsDisplay(){
+    let batchStats = [];
+    try{
+      const snap = await getDoc(doc(db, "stats", "public"));
+      if(snap.exists()){
+        batchStats = snap.data().batchStats || [];
+      }
+    } catch(err){
+      batchStats = [];
+    }
+
+    const grid = document.getElementById('batch-cards-grid');
+    if(grid){
+      if(batchStats.length === 0){
+        grid.innerHTML = '<div style="color:var(--muted);font-size:14px;">Batch details coming soon — message us on WhatsApp for current availability.</div>';
+      } else {
+        grid.innerHTML = batchStats.map(b => {
+          const cap = Math.min(b.capacity || 7, 7);
+          const filled = Math.min(b.filled || 0, cap);
+          const seatsHtml = Array.from({length: cap}, (_, i) =>
+            `<div class="seat${i < filled ? ' filled' : ''}"></div>`
+          ).join('');
+          const isFull = filled >= cap;
+          const labelText = isFull ? 'Batch full — next batch forming soon' : `${filled} of ${cap} seats filled`;
+          return `
+            <div class="batch-card">
+              <div class="batch-card-class">Class ${b.class}</div>
+              <div class="batch-card-name">${b.name}</div>
+              <div class="seats">${seatsHtml}</div>
+              <div class="seats-label${isFull ? ' full' : ''}">${labelText}</div>
+            </div>`;
+        }).join('');
+      }
+    }
+
+    const popupSeats = document.getElementById('popup-seats-display');
+    const popupTitle = document.getElementById('popup-batch-title');
+    if(popupSeats && batchStats.length > 0){
+      const mostUrgent = batchStats.slice().sort((a, b) => (b.filled / (b.capacity || 7)) - (a.filled / (a.capacity || 7)))[0];
+      const cap = Math.min(mostUrgent.capacity || 7, 7);
+      const filled = Math.min(mostUrgent.filled || 0, cap);
+      popupSeats.innerHTML = Array.from({length: cap}, (_, i) =>
+        `<div class="seat${i < filled ? ' filled' : ''}"></div>`
+      ).join('');
+      if(popupTitle){ popupTitle.textContent = `Class ${mostUrgent.class} · ${mostUrgent.name} — only 7 students per batch`; }
+    }
+  }
+  loadSeatsDisplay();
+
 
   let isLoggedIn = false;
   const mobileLoginBtn = document.getElementById('mobile-login-btn');
@@ -1263,6 +1303,14 @@
 
     document.getElementById('dash-name').textContent = data.name || "Student";
     document.getElementById('dash-avatar').textContent = (data.name || "S").trim().charAt(0).toUpperCase();
+
+    const batchHighlight = document.getElementById('dash-batch-highlight');
+    if(data.class && data.batchName){
+      batchHighlight.textContent = `🎓 Class ${data.class} · ${data.batchName}`;
+      batchHighlight.style.display = 'inline-block';
+    } else {
+      batchHighlight.style.display = 'none';
+    }
 
     const feeBadge = document.getElementById('dash-fee-badge');
     if(data.feeStatus === 'Paid'){
