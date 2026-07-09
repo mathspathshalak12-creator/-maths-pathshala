@@ -303,6 +303,8 @@
       <input type="text" id="f-batch" placeholder="Evening 5-6 PM">
       <label>Next class</label>
       <input type="text" id="f-next-class" placeholder="e.g. Monday, 9 July, 5:00 PM">
+      <label>Next test (shows as a reminder popup when student logs in)</label>
+      <input type="text" id="f-next-test" placeholder="e.g. Unit Test 2 - Chapter 5, Monday 14 July">
 
       <label>Add a fee payment record</label>
       <div class="row2">
@@ -373,6 +375,8 @@
   <p id="pr-batch"></p>
   <h3>Next Class</h3>
   <p id="pr-next-class"></p>
+  <h3>Next Test</h3>
+  <p id="pr-next-test"></p>
   <h3>Attendance</h3>
   <p id="pr-attendance-pct"></p>
   <ul id="pr-attendance-log"></ul>
@@ -689,6 +693,7 @@
     document.getElementById('f-batch-name').value = data.batchName || '';
     document.getElementById('f-batch').value = data.batchTiming || '';
     document.getElementById('f-next-class').value = data.nextClass || '';
+    document.getElementById('f-next-test').value = data.nextTest || '';
     document.getElementById('f-attendance-pct').value = (data.attendance && data.attendance.percent) || '';
     currentAttendanceLog = (data.attendance && data.attendance.log) || [];
     currentNotes = data.notes || [];
@@ -711,6 +716,7 @@
     updateBatchDropdown();
     document.getElementById('f-batch').value = '';
     document.getElementById('f-next-class').value = '';
+    document.getElementById('f-next-test').value = '';
     document.getElementById('f-attendance-pct').value = '';
     currentAttendanceLog = [];
     currentNotes = [];
@@ -856,6 +862,7 @@
     const feeStatus = document.getElementById('f-fee').value;
     const batch = document.getElementById('f-batch').value.trim();
     const nextClass = document.getElementById('f-next-class').value.trim();
+    const nextTest = document.getElementById('f-next-test').value.trim();
     const attPct = document.getElementById('f-attendance-pct').value;
 
     document.getElementById('pr-generated').textContent = 'Generated on ' + new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
@@ -864,6 +871,7 @@
     document.getElementById('pr-fee').textContent = feeStatus;
     document.getElementById('pr-batch').textContent = batch || 'Not assigned';
     document.getElementById('pr-next-class').textContent = nextClass || 'Not scheduled';
+    document.getElementById('pr-next-test').textContent = nextTest || 'None scheduled';
     document.getElementById('pr-attendance-pct').textContent = (attPct || '0') + '% attendance';
 
     const paymentsList = document.getElementById('pr-payments');
@@ -905,6 +913,7 @@
       batchName: document.getElementById('f-batch-name').value,
       batchTiming: document.getElementById('f-batch').value.trim(),
       nextClass: document.getElementById('f-next-class').value.trim(),
+      nextTest: document.getElementById('f-next-test').value.trim(),
       attendance: { percent: pct, log: currentAttendanceLog },
       notes: currentNotes,
       testScores: currentTestScores,
