@@ -113,6 +113,17 @@
   .notice-date{font-size:11px;color:var(--muted);margin-top:6px;}
   .notice-delete{color:#C0392B;font-size:12px;font-weight:600;background:none;border:none;cursor:pointer;flex-shrink:0;}
 
+  /* BATCHES */
+  .batch-class-group{font-size:12px;font-weight:700;color:var(--amber-dark);text-transform:uppercase;letter-spacing:.03em;margin:16px 0 8px;}
+  .batch-class-group:first-child{margin-top:0;}
+  .batch-item{
+    display:flex;justify-content:space-between;align-items:center;gap:12px;
+    padding:12px 14px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;
+  }
+  .batch-item-name{font-weight:600;font-size:14px;}
+  .batch-item-meta{font-size:12px;color:var(--muted);margin-top:2px;}
+  .batch-item-full{color:#C0392B;font-weight:700;}
+
   /* TEST SCORES */
   .score-item{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--line);}
   .payment-item{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--line);}
@@ -175,6 +186,25 @@
         <div class="stat-num" id="stat-marked-today">—</div>
         <div class="stat-label">Attendance Marked Today</div>
       </div>
+    </div>
+
+    <div class="card">
+      <h2>Manage Batches</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Create named batches per class (e.g. "Rankers" for Class 9). Students get enrolled into these.</p>
+      <div class="row2">
+        <select id="batch-class-input">
+          <option value="9">Class 9</option>
+          <option value="10">Class 10</option>
+          <option value="11">Class 11</option>
+          <option value="12">Class 12</option>
+        </select>
+        <input type="text" id="batch-name-input" placeholder="Batch name, e.g. Rankers">
+      </div>
+      <div class="row2" style="margin-top:14px;">
+        <input type="number" id="batch-capacity-input" placeholder="Capacity (default 7)" value="7">
+        <button class="btn" id="add-batch-btn" style="margin-top:0;">+ Create Batch</button>
+      </div>
+      <div id="batches-list" style="margin-top:18px;"></div>
     </div>
 
     <div class="card">
@@ -252,6 +282,23 @@
           </select>
         </div>
       </div>
+      <div class="row2">
+        <div>
+          <label>Class</label>
+          <select id="f-class">
+            <option value="9">Class 9</option>
+            <option value="10">Class 10</option>
+            <option value="11">Class 11</option>
+            <option value="12">Class 12</option>
+          </select>
+        </div>
+        <div>
+          <label>Batch</label>
+          <select id="f-batch-name">
+            <option value="">Select class first</option>
+          </select>
+        </div>
+      </div>
       <label>Batch timing</label>
       <input type="text" id="f-batch" placeholder="Evening 5-6 PM">
       <label>Next class</label>
@@ -324,7 +371,7 @@
   <ul id="pr-payments"></ul>
   <h3>Batch Timing</h3>
   <p id="pr-batch"></p>
-  <h3>NEXT TEST DATE</h3>
+  <h3>Next Class</h3>
   <p id="pr-next-class"></p>
   <h3>Attendance</h3>
   <p id="pr-attendance-pct"></p>
@@ -363,6 +410,7 @@
   let currentNotes = [];
   let currentTestScores = [];
   let currentPayments = [];
+  let batchesCache = [];
 
   document.getElementById('admin-login-btn').addEventListener('click', () => {
     const email = document.getElementById('admin-email').value.trim();
@@ -378,29 +426,17 @@
     signOut(auth);
   });
 
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     if(user){
       loginScreen.style.display = 'none';
       adminScreen.style.display = 'block';
-      loadStudentList();
-      const todayStr = new Date().toISOString().split('T')[0];
-      document.getElementById('f-att-date').value = todayStr;
-    } else {
-      loginScreen.style.display = 'block';
-      adminScreen.style.display = 'none';
-    }
-  });
-
-  onAuthStateChanged(auth, (user) => {
-    if(user){
-      loginScreen.style.display = 'none';
-      adminScreen.style.display = 'block';
-      loadStudentList();
       const todayStr = new Date().toISOString().split('T')[0];
       document.getElementById('f-att-date').value = todayStr;
       document.getElementById('f-test-date').value = todayStr;
       document.getElementById('f-payment-date').value = todayStr;
       document.getElementById('bulk-att-date').value = todayStr;
+      await loadBatches();
+      await loadStudentList();
       loadBulkAttendanceRows();
       loadNotices();
       loadHomework();
@@ -566,7 +602,21 @@
     document.getElementById('stat-due').textContent = due;
     document.getElementById('stat-marked-today').textContent = markedToday + ' / ' + total;
 
+    await updatePublicStats();
+
     renderStudentList();
+  }
+
+  async function updatePublicStats(){
+    const batchStats = batchesCache.map(b => {
+      const filled = allStudentsCache.filter(s => s.data.class === b.class && s.data.batchName === b.name).length;
+      return { class: b.class, name: b.name, capacity: b.capacity || 7, filled };
+    });
+    try{
+      await setDoc(doc(db, "stats", "public"), { batchStats, updatedAt: serverTimestamp() }, { merge: true });
+    } catch(err){
+      console.log('Could not update public stats:', err.message);
+    }
   }
 
   function renderStudentList(){
@@ -634,6 +684,9 @@
     document.getElementById('f-email').value = email;
     document.getElementById('f-name').value = data.name || '';
     document.getElementById('f-fee').value = data.feeStatus || 'Due';
+    document.getElementById('f-class').value = data.class || '9';
+    updateBatchDropdown();
+    document.getElementById('f-batch-name').value = data.batchName || '';
     document.getElementById('f-batch').value = data.batchTiming || '';
     document.getElementById('f-next-class').value = data.nextClass || '';
     document.getElementById('f-attendance-pct').value = (data.attendance && data.attendance.percent) || '';
@@ -654,6 +707,8 @@
     document.getElementById('f-email').value = '';
     document.getElementById('f-name').value = '';
     document.getElementById('f-fee').value = 'Due';
+    document.getElementById('f-class').value = '9';
+    updateBatchDropdown();
     document.getElementById('f-batch').value = '';
     document.getElementById('f-next-class').value = '';
     document.getElementById('f-attendance-pct').value = '';
@@ -846,6 +901,8 @@
     const studentData = {
       name: document.getElementById('f-name').value.trim(),
       feeStatus: document.getElementById('f-fee').value,
+      class: document.getElementById('f-class').value,
+      batchName: document.getElementById('f-batch-name').value,
       batchTiming: document.getElementById('f-batch').value.trim(),
       nextClass: document.getElementById('f-next-class').value.trim(),
       attendance: { percent: pct, log: currentAttendanceLog },
@@ -978,6 +1035,88 @@
       showToast('Error: ' + err.message);
     } finally {
       btn.disabled = false; btn.textContent = 'Assign Homework';
+    }
+  });
+
+  async function loadBatches(){
+    const list = document.getElementById('batches-list');
+    list.innerHTML = '<div class="loading-row"><span class="spinner"></span>Loading batches...</div>';
+    try{
+      const snap = await getDocs(collection(db, "batches"));
+      batchesCache = [];
+      snap.forEach(docSnap => batchesCache.push({ id: docSnap.id, ...docSnap.data() }));
+
+      if(batchesCache.length === 0){
+        list.innerHTML = '<div style="font-size:13px;color:var(--muted);">No batches created yet. Add one above.</div>';
+      } else {
+        const classes = ['9','10','11','12'];
+        let html = '';
+        classes.forEach(cls => {
+          const batchesForClass = batchesCache.filter(b => b.class === cls);
+          if(batchesForClass.length === 0) return;
+          html += `<div class="batch-class-group">Class ${cls}</div>`;
+          batchesForClass.forEach(b => {
+            html += `
+              <div class="batch-item">
+                <div>
+                  <div class="batch-item-name">${b.name}</div>
+                  <div class="batch-item-meta">Capacity: ${b.capacity || 7}</div>
+                </div>
+                <button class="notice-delete" data-id="${b.id}">Delete</button>
+              </div>`;
+          });
+        });
+        list.innerHTML = html;
+        list.querySelectorAll('.notice-delete').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            await deleteDoc(doc(db, "batches", btn.dataset.id));
+            showToast('Batch deleted.');
+            await loadBatches();
+            loadStudentList();
+          });
+        });
+      }
+
+      updateBatchDropdown();
+    } catch(err){
+      list.innerHTML = '<div style="font-size:13px;color:#C0392B;">Error loading batches: ' + err.message + '</div>';
+    }
+  }
+
+  function updateBatchDropdown(){
+    const classVal = document.getElementById('f-class').value;
+    const batchSelect = document.getElementById('f-batch-name');
+    const batchesForClass = batchesCache.filter(b => b.class === classVal);
+    if(batchesForClass.length === 0){
+      batchSelect.innerHTML = '<option value="">No batches for this class yet</option>';
+    } else {
+      batchSelect.innerHTML = batchesForClass.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+    }
+  }
+
+  document.getElementById('f-class').addEventListener('change', updateBatchDropdown);
+
+  document.getElementById('add-batch-btn').addEventListener('click', async () => {
+    const cls = document.getElementById('batch-class-input').value;
+    const name = document.getElementById('batch-name-input').value.trim();
+    const capacity = parseInt(document.getElementById('batch-capacity-input').value) || 7;
+    if(!name){
+      showToast('Please enter a batch name.');
+      return;
+    }
+    const btn = document.getElementById('add-batch-btn');
+    btn.disabled = true; btn.textContent = 'Creating...';
+    try{
+      await addDoc(collection(db, "batches"), { class: cls, name, capacity, createdAt: serverTimestamp() });
+      document.getElementById('batch-name-input').value = '';
+      document.getElementById('batch-capacity-input').value = '7';
+      showToast('Batch created!');
+      await loadBatches();
+      loadStudentList();
+    } catch(err){
+      showToast('Error: ' + err.message);
+    } finally {
+      btn.disabled = false; btn.textContent = '+ Create Batch';
     }
   });
 </script>
