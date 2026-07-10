@@ -208,6 +208,26 @@
     </div>
 
     <div class="card">
+      <h2>Send Test Reminder to a Batch</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Sends the same reminder to every student enrolled in the selected class + batch — no need to update each student one by one.</p>
+      <div class="row2">
+        <select id="broadcast-class-input">
+          <option value="9">Class 9</option>
+          <option value="10">Class 10</option>
+          <option value="11">Class 11</option>
+          <option value="12">Class 12</option>
+        </select>
+        <select id="broadcast-batch-input">
+          <option value="">Select class first</option>
+        </select>
+      </div>
+      <label>Test details</label>
+      <input type="text" id="broadcast-test-input" placeholder="e.g. Unit Test 2 - Chapter 5, Monday 14 July">
+      <button class="btn" id="send-broadcast-btn">Send to Batch</button>
+      <div class="msg" id="broadcast-msg"></div>
+    </div>
+
+    <div class="card">
       <h2>Post a Notice</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">This appears on every student's dashboard as soon as they log in or refresh.</p>
       <label>Title</label>
@@ -352,6 +372,7 @@
         <button class="btn" id="save-student-btn">Save Student</button>
         <button class="btn btn-secondary" id="clear-form-btn">Clear Form (new student)</button>
         <button class="btn btn-secondary" id="print-report-btn">🖨 Print Report Card</button>
+        <button class="btn btn-secondary" id="delete-student-btn" style="color:#C0392B;border-color:#C0392B;">🗑 Delete This Student</button>
       </div>
       <div class="msg" id="save-msg"></div>
     </div>
@@ -644,8 +665,32 @@
     list.innerHTML = '';
     filtered.forEach(s => {
       const li = document.createElement('li');
-      li.innerHTML = `<div><div class="s-name">${s.data.name || 'Unnamed'}</div><div class="s-email">${s.id}</div></div><span style="font-size:12px;color:var(--muted);">Edit →</span>`;
-      li.addEventListener('click', () => loadStudentIntoForm(s.id, s.data));
+      li.innerHTML = `
+        <div>
+          <div class="s-name">${s.data.name || 'Unnamed'}</div>
+          <div class="s-email">${s.id}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <span style="font-size:12px;color:var(--muted);">Edit →</span>
+          <button class="notice-delete" data-email="${s.id}" data-name="${s.data.name || 'this student'}">🗑 Remove</button>
+        </div>`;
+      li.addEventListener('click', (e) => {
+        if(e.target.classList.contains('notice-delete')) return;
+        loadStudentIntoForm(s.id, s.data);
+      });
+      li.querySelector('.notice-delete').addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const email = e.target.dataset.email;
+        const name = e.target.dataset.name;
+        if(!confirm(`Remove ${name} permanently? This cannot be undone.`)) return;
+        try{
+          await deleteDoc(doc(db, "students", email));
+          showToast(`${name} removed.`);
+          loadStudentList();
+        } catch(err){
+          showToast('Error removing student: ' + err.message);
+        }
+      });
       list.appendChild(li);
     });
   }
@@ -897,6 +942,24 @@
     window.print();
   });
 
+  document.getElementById('delete-student-btn').addEventListener('click', async () => {
+    const email = document.getElementById('f-email').value.trim().toLowerCase();
+    const name = document.getElementById('f-name').value.trim() || email;
+    if(!email){
+      showToast('Load or select a student first.');
+      return;
+    }
+    if(!confirm(`Remove ${name} permanently? This cannot be undone.`)) return;
+    try{
+      await deleteDoc(doc(db, "students", email));
+      showToast(`${name} removed.`);
+      document.getElementById('clear-form-btn').click();
+      loadStudentList();
+    } catch(err){
+      showToast('Error removing student: ' + err.message);
+    }
+  });
+
   document.getElementById('save-student-btn').addEventListener('click', async () => {
     const email = document.getElementById('f-email').value.trim().toLowerCase();
     if(!email){
@@ -1087,6 +1150,7 @@
       }
 
       updateBatchDropdown();
+      updateBroadcastBatchDropdown();
     } catch(err){
       list.innerHTML = '<div style="font-size:13px;color:#C0392B;">Error loading batches: ' + err.message + '</div>';
     }
@@ -1103,7 +1167,64 @@
     }
   }
 
+  function updateBroadcastBatchDropdown(){
+    const classVal = document.getElementById('broadcast-class-input').value;
+    const batchSelect = document.getElementById('broadcast-batch-input');
+    const batchesForClass = batchesCache.filter(b => b.class === classVal);
+    if(batchesForClass.length === 0){
+      batchSelect.innerHTML = '<option value="">No batches for this class yet</option>';
+    } else {
+      batchSelect.innerHTML = batchesForClass.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+    }
+  }
+
   document.getElementById('f-class').addEventListener('change', updateBatchDropdown);
+  document.getElementById('broadcast-class-input').addEventListener('change', updateBroadcastBatchDropdown);
+
+  document.getElementById('send-broadcast-btn').addEventListener('click', async () => {
+    const cls = document.getElementById('broadcast-class-input').value;
+    const batchName = document.getElementById('broadcast-batch-input').value;
+    const testDetails = document.getElementById('broadcast-test-input').value.trim();
+    const msgBox = document.getElementById('broadcast-msg');
+
+    if(!batchName){
+      msgBox.textContent = 'No batch selected — create a batch for this class first.';
+      msgBox.className = 'msg error';
+      return;
+    }
+    if(!testDetails){
+      msgBox.textContent = 'Please enter the test details.';
+      msgBox.className = 'msg error';
+      return;
+    }
+
+    const matching = allStudentsCache.filter(s => s.data.class === cls && s.data.batchName === batchName);
+    if(matching.length === 0){
+      msgBox.textContent = 'No students found in this class + batch yet.';
+      msgBox.className = 'msg error';
+      return;
+    }
+
+    const btn = document.getElementById('send-broadcast-btn');
+    btn.disabled = true; btn.textContent = 'Sending...';
+    try{
+      const batch = writeBatch(db);
+      matching.forEach(s => {
+        batch.set(doc(db, "students", s.id), { nextTest: testDetails }, { merge: true });
+      });
+      await batch.commit();
+      msgBox.textContent = `Sent to ${matching.length} student(s) in Class ${cls} · ${batchName}.`;
+      msgBox.className = 'msg success';
+      document.getElementById('broadcast-test-input').value = '';
+      showToast(`Test reminder sent to ${matching.length} students!`);
+      loadStudentList();
+    } catch(err){
+      msgBox.textContent = 'Error: ' + err.message;
+      msgBox.className = 'msg error';
+    } finally {
+      btn.disabled = false; btn.textContent = 'Send to Batch';
+    }
+  });
 
   document.getElementById('add-batch-btn').addEventListener('click', async () => {
     const cls = document.getElementById('batch-class-input').value;
