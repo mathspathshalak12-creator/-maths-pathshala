@@ -334,10 +334,10 @@
       <button class="btn btn-secondary btn-small" id="add-payment-btn">+ Add payment record</button>
       <div id="payments-preview"></div>
 
-      <label>Attendance percent</label>
-      <input type="number" id="f-attendance-pct" placeholder="85">
+      <label>Attendance percent (auto-calculated from entries below)</label>
+      <div id="f-attendance-pct-display" style="padding:10px 12px;background:var(--cream);border:1.5px solid var(--line);border-radius:8px;font-weight:700;color:var(--navy);">—</div>
 
-      <label>Add attendance entry (any date)</label>
+      <label style="margin-top:16px;">Add attendance entry (any date)</label>
       <div class="row2">
         <input type="date" id="f-att-date">
         <select id="f-att-status">
@@ -739,7 +739,6 @@
     document.getElementById('f-batch').value = data.batchTiming || '';
     document.getElementById('f-next-class').value = data.nextClass || '';
     document.getElementById('f-next-test').value = data.nextTest || '';
-    document.getElementById('f-attendance-pct').value = (data.attendance && data.attendance.percent) || '';
     currentAttendanceLog = (data.attendance && data.attendance.log) || [];
     currentNotes = data.notes || [];
     currentTestScores = data.testScores || [];
@@ -762,7 +761,6 @@
     document.getElementById('f-batch').value = '';
     document.getElementById('f-next-class').value = '';
     document.getElementById('f-next-test').value = '';
-    document.getElementById('f-attendance-pct').value = '';
     currentAttendanceLog = [];
     currentNotes = [];
     currentTestScores = [];
@@ -807,10 +805,17 @@
 
   function renderAttendancePreview(){
     const box = document.getElementById('attendance-log-preview');
+    const pctDisplay = document.getElementById('f-attendance-pct-display');
+
     if(currentAttendanceLog.length === 0){
       box.innerHTML = '<div style="font-size:12px;color:var(--muted);margin-top:8px;">No entries yet</div>';
+      pctDisplay.textContent = '— (add attendance entries to calculate)';
       return;
     }
+    const presentCount = currentAttendanceLog.filter(e => e.status === 'Present').length;
+    const pct = Math.round((presentCount / currentAttendanceLog.length) * 100);
+    pctDisplay.textContent = pct + '% (' + presentCount + ' present out of ' + currentAttendanceLog.length + ' recorded days)';
+
     box.innerHTML = currentAttendanceLog.map((e, i) =>
       `<div class="attendance-log-item"><span>${e.date} — ${e.status}</span><button class="remove-btn" data-idx="${i}">Remove</button></div>`
     ).join('');
@@ -908,7 +913,9 @@
     const batch = document.getElementById('f-batch').value.trim();
     const nextClass = document.getElementById('f-next-class').value.trim();
     const nextTest = document.getElementById('f-next-test').value.trim();
-    const attPct = document.getElementById('f-attendance-pct').value;
+    const attPct = currentAttendanceLog.length > 0
+      ? Math.round((currentAttendanceLog.filter(e => e.status === 'Present').length / currentAttendanceLog.length) * 100)
+      : 0;
 
     document.getElementById('pr-generated').textContent = 'Generated on ' + new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
     document.getElementById('pr-name').textContent = name || 'Unnamed Student';
@@ -967,7 +974,9 @@
       saveMsg.className = 'msg error';
       return;
     }
-    const pct = parseInt(document.getElementById('f-attendance-pct').value) || 0;
+    const pct = currentAttendanceLog.length > 0
+      ? Math.round((currentAttendanceLog.filter(e => e.status === 'Present').length / currentAttendanceLog.length) * 100)
+      : 0;
 
     const studentData = {
       name: document.getElementById('f-name').value.trim(),
