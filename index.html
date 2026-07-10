@@ -1143,6 +1143,8 @@
 
 
   let isLoggedIn = false;
+  let currentStudentClass = null;
+  let currentStudentBatchName = null;
   const mobileLoginBtn = document.getElementById('mobile-login-btn');
   const mobileMenu = document.getElementById('mobile-menu');
 
@@ -1235,15 +1237,26 @@
     }
   });
 
+  function matchesStudentTarget(data){
+    if(!data.targetClass){ return true; }
+    if(data.targetClass !== currentStudentClass){ return false; }
+    if(!data.targetBatch){ return true; }
+    return data.targetBatch === currentStudentBatchName;
+  }
+
   async function loadNotices(){
     const box = document.getElementById('dash-notices');
     try{
-      const q = query(collection(db, "notices"), orderBy("createdAt", "desc"), limit(3));
+      const q = query(collection(db, "notices"), orderBy("createdAt", "desc"), limit(15));
       const snap = await getDocs(q);
       if(snap.empty){ box.innerHTML = ''; return; }
       box.innerHTML = '';
+      let shown = 0;
       snap.forEach(docSnap => {
+        if(shown >= 3) return;
         const data = docSnap.data();
+        if(!matchesStudentTarget(data)) return;
+        shown++;
         const banner = document.createElement('div');
         banner.className = 'notice-banner';
         banner.innerHTML = `<div class="notice-banner-title">📢 ${data.title}</div><div class="notice-banner-msg">${data.message}</div>`;
@@ -1257,14 +1270,18 @@
   async function loadHomework(){
     const box = document.getElementById('dash-homework');
     try{
-      const q = query(collection(db, "homework"), orderBy("createdAt", "desc"), limit(3));
+      const q = query(collection(db, "homework"), orderBy("createdAt", "desc"), limit(15));
       const snap = await getDocs(q);
       if(snap.empty){ box.innerHTML = ''; return; }
       box.innerHTML = '';
       let latestDoc = null;
+      let shown = 0;
       snap.forEach(docSnap => {
-        if(!latestDoc){ latestDoc = docSnap; }
         const data = docSnap.data();
+        if(!matchesStudentTarget(data)) return;
+        if(!latestDoc){ latestDoc = docSnap; }
+        if(shown >= 3) return;
+        shown++;
         const banner = document.createElement('div');
         banner.className = 'hw-banner';
         banner.innerHTML = `<div class="hw-banner-title">📝 ${data.title}</div><div class="hw-banner-msg">${data.details}</div>`;
@@ -1318,6 +1335,9 @@
 
     document.getElementById('dash-name').textContent = data.name || "Student";
     document.getElementById('dash-avatar').textContent = (data.name || "S").trim().charAt(0).toUpperCase();
+
+    currentStudentClass = data.class || null;
+    currentStudentBatchName = data.batchName || null;
 
     const batchHighlight = document.getElementById('dash-batch-highlight');
     if(data.class && data.batchName){
