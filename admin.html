@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Panel — Maths Pathshala</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
@@ -88,6 +89,14 @@
   .att-toggle-btn.present.active{background:#1E7A46;border-color:#1E7A46;color:#fff;}
   .att-toggle-btn.absent.active{background:#C0392B;border-color:#C0392B;color:#fff;}
   .att-toggle-btn:hover:not(.active){border-color:var(--navy);color:var(--navy);}
+
+  .score-row{
+    display:flex;justify-content:space-between;align-items:center;gap:12px;
+    padding:12px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;
+  }
+  .score-row-name{font-weight:600;font-size:14px;}
+  .score-row-email{font-size:11.5px;color:var(--muted);}
+  .score-row input{width:100px;padding:8px 10px;}
 
   .save-attendance-bar{
     position:sticky;bottom:16px;background:var(--navy);border-radius:12px;padding:14px 20px;
@@ -189,6 +198,33 @@
     </div>
 
     <div class="card">
+      <h2>Finance Overview</h2>
+      <div class="stats-grid" style="margin-top:14px;margin-bottom:0;">
+        <div class="stat-card good">
+          <div class="stat-num" id="fin-total-collected">—</div>
+          <div class="stat-label">Total Collected (All Time)</div>
+        </div>
+        <div class="stat-card good">
+          <div class="stat-num" id="fin-month-collected">—</div>
+          <div class="stat-label">Collected This Month</div>
+        </div>
+        <div class="stat-card warn">
+          <div class="stat-num" id="fin-due-count">—</div>
+          <div class="stat-label">Students With Fee Due</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="fin-payment-count">—</div>
+          <div class="stat-label">Total Payments Recorded</div>
+        </div>
+      </div>
+      <div style="margin-top:20px;">
+        <div style="height:220px;margin-bottom:20px;"><canvas id="finance-chart"></canvas></div>
+        <div style="font-size:13px;font-weight:700;color:var(--amber-dark);text-transform:uppercase;letter-spacing:.03em;margin-bottom:10px;">Recent Payments</div>
+        <div id="fin-recent-payments"><div style="font-size:13px;color:var(--muted);">No payments recorded yet.</div></div>
+      </div>
+    </div>
+
+    <div class="card">
       <h2>Manage Batches</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Create named batches per class (e.g. "Rankers" for Class 9). Students get enrolled into these.</p>
       <div class="row2">
@@ -228,8 +264,50 @@
     </div>
 
     <div class="card">
+      <h2>Bulk Test Score Entry</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Pick a batch and enter scores for the whole class at once — no need to open each student separately.</p>
+      <div class="row2">
+        <select id="bulk-score-class">
+          <option value="9">Class 9</option>
+          <option value="10">Class 10</option>
+          <option value="11">Class 11</option>
+          <option value="12">Class 12</option>
+        </select>
+        <select id="bulk-score-batch">
+          <option value="">Select class first</option>
+        </select>
+      </div>
+      <div class="row2" style="margin-top:14px;">
+        <input type="text" id="bulk-score-test-name" placeholder="Test name, e.g. Unit Test 2">
+        <input type="date" id="bulk-score-date">
+      </div>
+      <div class="row2" style="margin-top:14px;">
+        <input type="number" id="bulk-score-max" placeholder="Max marks, e.g. 50" value="50">
+        <button class="btn btn-secondary" id="load-bulk-score-students-btn" style="margin-top:0;">Load Students</button>
+      </div>
+      <div id="bulk-score-rows" style="margin-top:16px;"></div>
+      <div class="save-attendance-bar" id="save-bulk-scores-bar" style="display:none;">
+        <span id="save-bulk-scores-text">Ready to save</span>
+        <button class="btn" id="save-bulk-scores-btn" style="margin:0;">Save All Scores</button>
+      </div>
+    </div>
+
+    <div class="card">
       <h2>Post a Notice</h2>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">This appears on every student's dashboard as soon as they log in or refresh.</p>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Choose who should see this — everyone, or just one batch.</p>
+      <label>Send to</label>
+      <div class="row2">
+        <select id="notice-target-class">
+          <option value="">All students</option>
+          <option value="9">Class 9</option>
+          <option value="10">Class 10</option>
+          <option value="11">Class 11</option>
+          <option value="12">Class 12</option>
+        </select>
+        <select id="notice-target-batch">
+          <option value="">All batches</option>
+        </select>
+      </div>
       <label>Title</label>
       <input type="text" id="notice-title" placeholder="e.g. No class this Sunday">
       <label>Message</label>
@@ -240,7 +318,20 @@
 
     <div class="card">
       <h2>Assign Homework</h2>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Shows up on every student's dashboard until you remove it.</p>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Choose who should see this — everyone, or just one batch.</p>
+      <label>Send to</label>
+      <div class="row2">
+        <select id="hw-target-class">
+          <option value="">All students</option>
+          <option value="9">Class 9</option>
+          <option value="10">Class 10</option>
+          <option value="11">Class 11</option>
+          <option value="12">Class 12</option>
+        </select>
+        <select id="hw-target-batch">
+          <option value="">All batches</option>
+        </select>
+      </div>
       <label>Title</label>
       <input type="text" id="hw-title" placeholder="e.g. Chapter 5 - Arithmetic Progressions">
       <label>Details</label>
@@ -267,6 +358,13 @@
         <span id="save-bar-text">Ready to save</span>
         <button class="btn" id="save-bulk-attendance-btn" style="margin:0;">Save Attendance</button>
       </div>
+    </div>
+
+    <div class="card">
+      <h2>Batch Performance Comparison</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Average attendance and average test score % across each batch.</p>
+      <div style="height:260px;"><canvas id="batch-perf-chart"></canvas></div>
+      <div id="batch-perf-list" style="margin-top:16px;"></div>
     </div>
 
     <div class="card">
@@ -628,8 +726,173 @@
     document.getElementById('stat-marked-today').textContent = markedToday + ' / ' + total;
 
     await updatePublicStats();
+    updateFinanceOverview();
+    updateBatchPerformance();
 
     renderStudentList();
+  }
+
+  function updateFinanceOverview(){
+    let totalCollected = 0;
+    let monthCollected = 0;
+    let paymentCount = 0;
+    let dueCount = 0;
+    let allPayments = [];
+
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    allStudentsCache.forEach(s => {
+      if(s.data.feeStatus !== 'Paid'){ dueCount++; }
+      const history = s.data.feeHistory || [];
+      history.forEach(p => {
+        totalCollected += (p.amount || 0);
+        paymentCount++;
+        allPayments.push({ name: s.data.name || s.id, amount: p.amount, date: p.date, isoDate: p.isoDate });
+        if(p.isoDate){
+          const pd = new Date(p.isoDate + 'T00:00:00');
+          if(pd.getMonth() === currentMonth && pd.getFullYear() === currentYear){
+            monthCollected += (p.amount || 0);
+          }
+        }
+      });
+    });
+
+    document.getElementById('fin-total-collected').textContent = '₹' + totalCollected.toLocaleString('en-IN');
+    document.getElementById('fin-month-collected').textContent = '₹' + monthCollected.toLocaleString('en-IN');
+    document.getElementById('fin-due-count').textContent = dueCount;
+    document.getElementById('fin-payment-count').textContent = paymentCount;
+
+    const recentBox = document.getElementById('fin-recent-payments');
+    if(allPayments.length === 0){
+      recentBox.innerHTML = '<div style="font-size:13px;color:var(--muted);">No payments recorded yet.</div>';
+    } else {
+      allPayments.sort((a, b) => (b.isoDate || '').localeCompare(a.isoDate || ''));
+      recentBox.innerHTML = allPayments.slice(0, 10).map(p =>
+        `<div class="payment-item"><span>${p.name} — ${p.date}</span><span>₹${p.amount}</span></div>`
+      ).join('');
+    }
+
+    // Build last 6 months trend
+    const monthLabels = [];
+    const monthTotals = [];
+    for(let i = 5; i >= 0; i--){
+      const d = new Date(currentYear, currentMonth - i, 1);
+      const label = d.toLocaleDateString('en-GB', { month: 'short', year: '2-digit' });
+      monthLabels.push(label);
+      let total = 0;
+      allPayments.forEach(p => {
+        if(!p.isoDate) return;
+        const pd = new Date(p.isoDate + 'T00:00:00');
+        if(pd.getMonth() === d.getMonth() && pd.getFullYear() === d.getFullYear()){
+          total += (p.amount || 0);
+        }
+      });
+      monthTotals.push(total);
+    }
+
+    const financeCanvas = document.getElementById('finance-chart');
+    if(financeCanvas && typeof Chart !== 'undefined'){
+      if(window.financeChartInstance){ window.financeChartInstance.destroy(); }
+      window.financeChartInstance = new Chart(financeCanvas, {
+        type: 'bar',
+        data: {
+          labels: monthLabels,
+          datasets: [{
+            label: 'Collected (₹)',
+            data: monthTotals,
+            backgroundColor: '#F5A623',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, ticks: { color: '#5B6B85', font: { size: 11 } }, grid: { color: '#E4E0D6' } },
+            x: { ticks: { color: '#5B6B85', font: { size: 11 } }, grid: { display: false } }
+          }
+        }
+      });
+    }
+  }
+
+  function updateBatchPerformance(){
+    const listBox = document.getElementById('batch-perf-list');
+    if(batchesCache.length === 0){
+      listBox.innerHTML = '<div style="font-size:13px;color:var(--muted);">Create batches first to see performance comparison.</div>';
+      const chartCanvas = document.getElementById('batch-perf-chart');
+      if(window.batchPerfChartInstance){ window.batchPerfChartInstance.destroy(); }
+      return;
+    }
+
+    const perfData = batchesCache.map(b => {
+      const students = allStudentsCache.filter(s => s.data.class === b.class && s.data.batchName === b.name);
+      let avgAttendance = 0;
+      let avgScore = 0;
+
+      if(students.length > 0){
+        const attSum = students.reduce((sum, s) => sum + ((s.data.attendance && s.data.attendance.percent) || 0), 0);
+        avgAttendance = Math.round(attSum / students.length);
+
+        let scoreSum = 0, scoreCount = 0;
+        students.forEach(s => {
+          (s.data.testScores || []).forEach(t => {
+            if(t.max > 0){
+              scoreSum += (t.score / t.max) * 100;
+              scoreCount++;
+            }
+          });
+        });
+        avgScore = scoreCount > 0 ? Math.round(scoreSum / scoreCount) : 0;
+      }
+
+      return {
+        label: `Class ${b.class} · ${b.name}`,
+        studentCount: students.length,
+        avgAttendance,
+        avgScore
+      };
+    });
+
+    listBox.innerHTML = perfData.map(p => `
+      <div class="batch-item">
+        <div>
+          <div class="batch-item-name">${p.label}</div>
+          <div class="batch-item-meta">${p.studentCount} student(s)</div>
+        </div>
+        <div style="text-align:right;font-size:13px;">
+          <div style="color:var(--amber-dark);font-weight:700;">${p.avgAttendance}% attendance</div>
+          <div style="color:var(--navy);font-weight:700;">${p.avgScore}% avg score</div>
+        </div>
+      </div>
+    `).join('');
+
+    const chartCanvas = document.getElementById('batch-perf-chart');
+    if(chartCanvas && typeof Chart !== 'undefined'){
+      if(window.batchPerfChartInstance){ window.batchPerfChartInstance.destroy(); }
+      window.batchPerfChartInstance = new Chart(chartCanvas, {
+        type: 'bar',
+        data: {
+          labels: perfData.map(p => p.label),
+          datasets: [
+            { label: 'Avg Attendance %', data: perfData.map(p => p.avgAttendance), backgroundColor: '#0B1E3D', borderRadius: 6 },
+            { label: 'Avg Test Score %', data: perfData.map(p => p.avgScore), backgroundColor: '#F5A623', borderRadius: 6 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top', labels: { color: '#5B6B85', font: { size: 11 } } } },
+          scales: {
+            y: { beginAtZero: true, max: 100, ticks: { color: '#5B6B85', font: { size: 11 } }, grid: { color: '#E4E0D6' } },
+            x: { ticks: { color: '#5B6B85', font: { size: 10 } }, grid: { display: false } }
+          }
+        }
+      });
+    }
   }
 
   async function updatePublicStats(){
@@ -798,7 +1061,7 @@
     }
     const dateObj = new Date(dateInput + 'T00:00:00');
     const dateStr = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-    currentPayments.unshift({ amount, date: dateStr });
+    currentPayments.unshift({ amount, date: dateStr, isoDate: dateInput });
     document.getElementById('f-payment-amount').value = '';
     renderPaymentsPreview();
   });
@@ -1017,13 +1280,16 @@
       snap.forEach(docSnap => {
         const data = docSnap.data();
         const dateStr = data.createdAt ? data.createdAt.toDate().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : '';
+        const targetStr = data.targetClass
+          ? `Class ${data.targetClass}${data.targetBatch ? ' · ' + data.targetBatch : ' (all batches)'}`
+          : 'All students';
         const item = document.createElement('div');
         item.className = 'notice-item';
         item.innerHTML = `
           <div>
             <div class="notice-title">${data.title}</div>
             <div class="notice-msg">${data.message}</div>
-            <div class="notice-date">${dateStr}</div>
+            <div class="notice-date">${dateStr} · <span style="color:var(--amber-dark);font-weight:600;">${targetStr}</span></div>
           </div>
           <button class="notice-delete" data-id="${docSnap.id}">Delete</button>
         `;
@@ -1042,6 +1308,8 @@
   document.getElementById('post-notice-btn').addEventListener('click', async () => {
     const title = document.getElementById('notice-title').value.trim();
     const message = document.getElementById('notice-message').value.trim();
+    const targetClass = document.getElementById('notice-target-class').value;
+    const targetBatch = document.getElementById('notice-target-batch').value;
     if(!title || !message){
       showToast('Please fill both title and message.');
       return;
@@ -1049,7 +1317,7 @@
     const btn = document.getElementById('post-notice-btn');
     btn.disabled = true; btn.textContent = 'Posting...';
     try{
-      await addDoc(collection(db, "notices"), { title, message, createdAt: serverTimestamp() });
+      await addDoc(collection(db, "notices"), { title, message, targetClass, targetBatch, createdAt: serverTimestamp() });
       document.getElementById('notice-title').value = '';
       document.getElementById('notice-message').value = '';
       showToast('Notice posted!');
@@ -1075,13 +1343,16 @@
       snap.forEach(docSnap => {
         const data = docSnap.data();
         const dateStr = data.createdAt ? data.createdAt.toDate().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : '';
+        const targetStr = data.targetClass
+          ? `Class ${data.targetClass}${data.targetBatch ? ' · ' + data.targetBatch : ' (all batches)'}`
+          : 'All students';
         const item = document.createElement('div');
         item.className = 'notice-item';
         item.innerHTML = `
           <div>
             <div class="notice-title">${data.title}</div>
             <div class="notice-msg">${data.details}</div>
-            <div class="notice-date">${dateStr}</div>
+            <div class="notice-date">${dateStr} · <span style="color:var(--amber-dark);font-weight:600;">${targetStr}</span></div>
           </div>
           <button class="notice-delete" data-id="${docSnap.id}">Delete</button>
         `;
@@ -1100,6 +1371,8 @@
   document.getElementById('post-hw-btn').addEventListener('click', async () => {
     const title = document.getElementById('hw-title').value.trim();
     const details = document.getElementById('hw-details').value.trim();
+    const targetClass = document.getElementById('hw-target-class').value;
+    const targetBatch = document.getElementById('hw-target-batch').value;
     if(!title || !details){
       showToast('Please fill both title and details.');
       return;
@@ -1107,7 +1380,7 @@
     const btn = document.getElementById('post-hw-btn');
     btn.disabled = true; btn.textContent = 'Assigning...';
     try{
-      await addDoc(collection(db, "homework"), { title, details, createdAt: serverTimestamp() });
+      await addDoc(collection(db, "homework"), { title, details, targetClass, targetBatch, createdAt: serverTimestamp() });
       document.getElementById('hw-title').value = '';
       document.getElementById('hw-details').value = '';
       showToast('Homework assigned!');
@@ -1187,8 +1460,26 @@
     }
   }
 
+  function populateTargetBatchSelect(classSelectId, batchSelectId){
+    const classVal = document.getElementById(classSelectId).value;
+    const batchSelect = document.getElementById(batchSelectId);
+    if(!classVal){
+      batchSelect.innerHTML = '<option value="">All batches</option>';
+      return;
+    }
+    const batchesForClass = batchesCache.filter(b => b.class === classVal);
+    if(batchesForClass.length === 0){
+      batchSelect.innerHTML = '<option value="">No batches for this class yet</option>';
+    } else {
+      batchSelect.innerHTML = '<option value="">All batches in Class ' + classVal + '</option>' +
+        batchesForClass.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+    }
+  }
+
   document.getElementById('f-class').addEventListener('change', updateBatchDropdown);
   document.getElementById('broadcast-class-input').addEventListener('change', updateBroadcastBatchDropdown);
+  document.getElementById('notice-target-class').addEventListener('change', () => populateTargetBatchSelect('notice-target-class', 'notice-target-batch'));
+  document.getElementById('hw-target-class').addEventListener('change', () => populateTargetBatchSelect('hw-target-class', 'hw-target-batch'));
 
   document.getElementById('send-broadcast-btn').addEventListener('click', async () => {
     const cls = document.getElementById('broadcast-class-input').value;
@@ -1232,6 +1523,99 @@
       msgBox.className = 'msg error';
     } finally {
       btn.disabled = false; btn.textContent = 'Send to Batch';
+    }
+  });
+
+  document.getElementById('bulk-score-class').addEventListener('change', () => {
+    populateTargetBatchSelectPlain('bulk-score-class', 'bulk-score-batch');
+  });
+
+  function populateTargetBatchSelectPlain(classSelectId, batchSelectId){
+    const classVal = document.getElementById(classSelectId).value;
+    const batchSelect = document.getElementById(batchSelectId);
+    const batchesForClass = batchesCache.filter(b => b.class === classVal);
+    if(batchesForClass.length === 0){
+      batchSelect.innerHTML = '<option value="">No batches for this class yet</option>';
+    } else {
+      batchSelect.innerHTML = batchesForClass.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+    }
+  }
+
+  let bulkScoreStudents = [];
+
+  document.getElementById('load-bulk-score-students-btn').addEventListener('click', () => {
+    const cls = document.getElementById('bulk-score-class').value;
+    const batchName = document.getElementById('bulk-score-batch').value;
+    const rowsBox = document.getElementById('bulk-score-rows');
+
+    if(!batchName){
+      showToast('Select a batch first.');
+      return;
+    }
+    bulkScoreStudents = allStudentsCache.filter(s => s.data.class === cls && s.data.batchName === batchName);
+    if(bulkScoreStudents.length === 0){
+      rowsBox.innerHTML = '<div style="font-size:13px;color:var(--muted);">No students found in this class + batch.</div>';
+      document.getElementById('save-bulk-scores-bar').style.display = 'none';
+      return;
+    }
+
+    rowsBox.innerHTML = bulkScoreStudents.map(s => `
+      <div class="score-row" data-email="${s.id}">
+        <div>
+          <div class="score-row-name">${s.data.name || 'Unnamed'}</div>
+          <div class="score-row-email">${s.id}</div>
+        </div>
+        <input type="number" class="bulk-score-input" placeholder="Score">
+      </div>
+    `).join('');
+    document.getElementById('save-bulk-scores-bar').style.display = 'flex';
+    document.getElementById('save-bulk-scores-text').textContent = `${bulkScoreStudents.length} students loaded`;
+  });
+
+  document.getElementById('save-bulk-scores-btn').addEventListener('click', async () => {
+    const testName = document.getElementById('bulk-score-test-name').value.trim();
+    const dateInput = document.getElementById('bulk-score-date').value;
+    const maxMarks = parseFloat(document.getElementById('bulk-score-max').value);
+
+    if(!testName || !dateInput || isNaN(maxMarks)){
+      showToast('Please fill test name, date and max marks.');
+      return;
+    }
+
+    const dateObj = new Date(dateInput + 'T00:00:00');
+    const dateStr = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+
+    const rows = document.querySelectorAll('.score-row');
+    let savedCount = 0;
+    const btn = document.getElementById('save-bulk-scores-btn');
+    btn.disabled = true; btn.textContent = 'Saving...';
+
+    try{
+      const batch = writeBatch(db);
+      rows.forEach(row => {
+        const input = row.querySelector('.bulk-score-input');
+        const scoreVal = parseFloat(input.value);
+        if(isNaN(scoreVal)) return;
+        const email = row.dataset.email;
+        const student = bulkScoreStudents.find(s => s.id === email);
+        const existingScores = (student.data.testScores || []).slice();
+        existingScores.push({ name: testName, date: dateStr, score: scoreVal, max: maxMarks });
+        batch.set(doc(db, "students", email), { testScores: existingScores }, { merge: true });
+        savedCount++;
+      });
+      if(savedCount === 0){
+        showToast('Enter at least one score before saving.');
+        return;
+      }
+      await batch.commit();
+      showToast(`Saved scores for ${savedCount} student(s)!`);
+      document.getElementById('bulk-score-rows').innerHTML = '';
+      document.getElementById('save-bulk-scores-bar').style.display = 'none';
+      loadStudentList();
+    } catch(err){
+      showToast('Error: ' + err.message);
+    } finally {
+      btn.disabled = false; btn.textContent = 'Save All Scores';
     }
   });
 
