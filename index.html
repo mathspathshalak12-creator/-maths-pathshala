@@ -168,6 +168,27 @@
   /* WHY US GRID */
   .why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
   @media(max-width:900px){.why-grid{grid-template-columns:repeat(2,1fr);}}
+
+  /* SERVICES OVERVIEW */
+  .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media(max-width:900px){.services-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:600px){.services-grid{grid-template-columns:1fr;}}
+  .service-card{
+    background:var(--paper);border:1px solid var(--line);border-radius:14px;
+    padding:28px 24px;transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .service-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(11,30,61,0.08);}
+  .service-icon{
+    width:44px;height:44px;border-radius:10px;background:#FDF0DA;
+    display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px;
+  }
+  .service-card h3{font-size:17px;font-weight:700;margin-bottom:8px;}
+  .service-card p{font-size:14px;color:var(--muted);line-height:1.6;}
+  .service-tag{
+    display:inline-block;margin-top:12px;font-size:11.5px;font-weight:700;
+    color:var(--amber-dark);background:#FDF0DA;padding:3px 10px;border-radius:20px;
+    text-transform:uppercase;letter-spacing:.02em;
+  }
   .why-item{background:var(--paper);padding:28px 24px;}
   .why-item .ico{
     width:36px;height:36px;border-radius:8px;background:#FDF0DA;
@@ -534,6 +555,7 @@
   <nav>
     <div class="logo">Maths <span>Pathshala</span></div>
     <div class="navlinks">
+      <a href="javascript:void(0)" data-scroll="services">Services</a>
       <a href="javascript:void(0)" data-scroll="programs">Batch classes</a>
       <a href="javascript:void(0)" data-scroll="hometuition">Home tuition</a>
       <a href="javascript:void(0)" data-scroll="notes">Notes</a>
@@ -545,6 +567,7 @@
     <a href="javascript:void(0)" id="student-login-btn" class="nav-cta" style="background:var(--navy);margin-left:10px;">Student Login</a>
     <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle menu">☰</button>
     <div class="mobile-menu" id="mobile-menu">
+      <a href="javascript:void(0)" data-scroll="services">Services</a>
       <a href="javascript:void(0)" data-scroll="programs">Batch classes</a>
       <a href="javascript:void(0)" data-scroll="hometuition">Home tuition</a>
       <a href="javascript:void(0)" data-scroll="notes">Notes</a>
@@ -561,7 +584,7 @@
   <div class="hero-inner">
     <span class="eyebrow">Kalyanpur, Kanpur</span>
     <h1>Samjho concept, <span class="accent">karo best,</span> bano successful.</h1>
-    <p class="sub">Offline Maths &amp; Science batch classes for Class 9–12, plus home tuition for all classes — all boards, taught personally by Vipin Kumar. Small batches, real doubt-clearing, no shortcuts.</p>
+    <p class="sub">Offline Maths &amp; Science batch classes for Class 9–12, home tuition, and online classes for all classes — all boards, taught personally by Vipin Kumar. Small batches, real doubt-clearing, no shortcuts.</p>
     <div class="hero-ctas">
       <a href="javascript:void(0)" data-scroll="register" class="btn btn-primary">Register your seat</a>
       <a id="hero-wa" href="#" target="_blank" class="btn btn-outline">Chat on WhatsApp</a>
@@ -620,6 +643,60 @@
   </div>
 </div>
 
+<section id="services">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">What we offer</div>
+      <h2>Everything Maths Pathshala provides.</h2>
+      <p>One place for batch classes, home tuition, free resources, and a portal to track everything — here's the full picture.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">🏫</div>
+        <h3>Offline Batch Classes</h3>
+        <p>Small, in-person batches for Class 9–12 — Math &amp; Science for 9–10, Math for 11–12. Only 7 students per batch. All boards: CBSE, ICSE, UP Board.</p>
+        <span class="service-tag">Class 9–12 · All Boards</span>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🏠</div>
+        <h3>Home Tuition</h3>
+        <p>One-on-one teaching at your home, for any class from 1 to 12, in Maths and Science, on any board. Covering Keshavpuram Kalyanpur, Awas Vikas 1, Awas Vikas 3, Gooba Garden, and Indira Nagar.</p>
+        <span class="service-tag">All classes · All boards</span>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">💻</div>
+        <h3>Online Classes</h3>
+        <p>Same personal teaching, same syllabus coverage — over a video call for students who prefer learning from home, anywhere. All classes, all boards.</p>
+        <span class="service-tag">All classes · All boards</span>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📘</div>
+        <h3>Free Chapter-Wise Notes</h3>
+        <p>Handwritten, exam-oriented short notes for every NCERT chapter — free to download, no registration needed.</p>
+        <span class="service-tag">Free access</span>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📊</div>
+        <h3>Student Portal</h3>
+        <p>A personal dashboard for enrolled students — fee status, attendance, test scores with progress graphs, homework, and notices.</p>
+        <span class="service-tag">For enrolled students</span>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📝</div>
+        <h3>Regular Testing &amp; Doubt Support</h3>
+        <p>Weekly and monthly tests to track real progress, with doubts cleared directly in class — not left to pile up.</p>
+        <span class="service-tag">Included in every batch</span>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">💬</div>
+        <h3>Direct WhatsApp Support</h3>
+        <p>Questions about registration, timing, or fees? Message directly on WhatsApp and get a real, quick reply.</p>
+        <span class="service-tag">Always available</span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="tutor">
   <div class="wrap">
     <div class="section-head">
@@ -658,8 +735,17 @@
         <div class="tutor-tags">
           <span class="tag">Class 1–12, all subjects on request</span>
           <span class="tag">Fully personalised pace</span>
-          <span class="tag">Tutor comes to your home in Kalyanpur</span>
           <span class="tag">CBSE · ICSE · UP Board</span>
+        </div>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);">
+          <div style="font-size:13px;font-weight:700;color:var(--amber-dark);text-transform:uppercase;letter-spacing:.03em;margin-bottom:10px;">Areas covered</div>
+          <div class="tutor-tags">
+            <span class="tag">Kalyanpur</span>
+            <span class="tag">Awas Vikas 1</span>
+            <span class="tag">Awas Vikas 3</span>
+            <span class="tag">Govind Garden</span>
+            <span class="tag">Indira Nagar</span>
+          </div>
         </div>
       </div>
     </div>
@@ -958,10 +1044,11 @@
       <div class="location-copy">
         <div class="section-tag">Find us</div>
         <h3>Based in Kalyanpur, easy to reach.</h3>
-        <p>Classes run out of a fixed location in Kalyanpur, Kanpur — home tuition covers the surrounding area.</p>
+        <p>Batch classes run out of a fixed location in Kalyanpur, Kanpur. Home tuition and online classes cover a wider area.</p>
         <ul class="loc-list">
           <li>Kalyanpur, Kanpur, Uttar Pradesh</li>
-          <li>Home tuition within nearby localities</li>
+          <li>Home tuition: Kalyanpur, Awas Vikas 1, Awas Vikas 3, Govind Garden, Indira Nagar</li>
+          <li>Online classes available anywhere</li>
           <li>Call ahead to confirm batch timings</li>
         </ul>
       </div>
