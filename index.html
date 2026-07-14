@@ -257,6 +257,22 @@
     box-shadow:0 6px 20px rgba(0,0,0,0.25);
     transition:transform .15s ease;
   }
+  .app-float{
+    position:fixed;bottom:24px;left:24px;z-index:60;
+    background:var(--navy);color:#fff;
+    display:flex;align-items:center;gap:8px;
+    padding:12px 18px 12px 14px;border-radius:30px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.25);
+    text-decoration:none;font-size:13px;font-weight:700;
+    transition:transform .15s ease;
+  }
+  .app-float:hover{transform:scale(1.05);background:var(--navy-2);}
+  .app-float .app-float-icon{font-size:20px;}
+  @media(max-width:600px){
+    .app-float{padding:10px 14px 10px 12px;font-size:12px;}
+    .app-float span.app-float-text{display:none;}
+    .app-float .app-float-icon{font-size:22px;}
+  }
   /* TRUST STRIP */
   .trust-strip{
     border-top:1px solid var(--line);border-bottom:1px solid var(--line);
@@ -592,6 +608,7 @@
       <a href="javascript:void(0)" data-scroll="why">Why us</a>
       <a href="javascript:void(0)" data-scroll="testimonials">Reviews</a>
       <a href="javascript:void(0)" data-scroll="register">Register</a>
+      <a href="https://github.com/mathspathshalak12-creator/-maths-pathshala/releases/download/v1.0/app-release.apk">📲 Download App</a>
       <a href="javascript:void(0)" data-scroll="register" class="nav-cta">Register now</a>
       <a href="javascript:void(0)" id="mobile-login-btn" class="nav-cta" style="background:var(--navy);">Student Login</a>
     </div>
@@ -654,7 +671,7 @@
 
 <div class="trust-strip">
   <div class="wrap">
-    <span><span class="dot"></span>Subject Matter Expert, Physics Wallah</span>
+    <span><span class="dot"></span>Ex Subject Matter Expert, Physics Wallah</span>
     <span><span class="dot"></span>B.Sc · M.Sc Mathematics (pursuing)</span>
     <span><span class="dot"></span>Teaching since 2023</span>
     <span><span class="dot"></span>CBSE · ICSE · UP Board</span>
@@ -678,7 +695,7 @@
       <div class="service-card">
         <div class="service-icon">🏠</div>
         <h3>Home Tuition</h3>
-        <p>One-on-one teaching at your home, for any class from 1 to 12, in Maths and Science, on any board. Covering Kalyanpur, Awas Vikas 1, Awas Vikas 3, Govind Garden, and Indira Nagar.</p>
+        <p>One-on-one teaching at your home, for any class from 1 to 12, in Maths and Science, on any board. Covering Kalyanpur, Awas Vikas 1, Awas Vikas 3, Gooba Garden, and Indira Nagar.</p>
         <span class="service-tag">All classes · All boards</span>
       </div>
       <div class="service-card">
@@ -726,7 +743,7 @@
       <div class="tutor-initials">VK</div>
       <div class="tutor-info">
         <h3>Vipin Kumar</h3>
-        <div class="role">Subject Matter Expert, Physics Wallah · Mathematics Teacher since 2023</div>
+        <div class="role">Ex Subject Matter Expert, Physics Wallah · Mathematics Teacher since 2023</div>
         <div class="tutor-tags">
           <span class="tag">B.Sc</span>
           <span class="tag">M.Sc Mathematics (pursuing)</span>
@@ -758,7 +775,7 @@
         <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);">
           <div style="font-size:13px;font-weight:700;color:var(--amber-dark);text-transform:uppercase;letter-spacing:.03em;margin-bottom:10px;">Areas covered</div>
           <div class="tutor-tags">
-            <span class="tag"> Keshavpuram Kalyanpur</span>
+            <span class="tag">Kalyanpur</span>
             <span class="tag">Awas Vikas 1</span>
             <span class="tag">Awas Vikas 3</span>
             <span class="tag">Gooba Garden</span>
@@ -1065,12 +1082,12 @@
         <p>Batch classes run out of a fixed location in Kalyanpur, Kanpur. Home tuition and online classes cover a wider area.</p>
         <ul class="loc-list">
           <li>Kalyanpur, Kanpur, Uttar Pradesh</li>
-          <li>Home tuition:  Keshavpuram Kalyanpur, Awas Vikas 1, Awas Vikas 3, Gooba Garden, Indira Nagar</li>
+          <li>Home tuition: Kalyanpur, Awas Vikas 1, Awas Vikas 3, Gooba Garden, Indira Nagar</li>
           <li>Online classes available anywhere</li>
           <li>Call ahead to confirm batch timings</li>
         </ul>
       </div>
-      <div class="map-card"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7141.409758474859!2d80.2437696935791!3d26.497445499999994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399c37728e792a67%3A0x900d02ad0048b4d0!2sMaths%20Pathshala!5e0!3m2!1sen!2sin!4v1783847079796!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+      <div class="map-card">Google Maps location — add your embed link here</div>
     </div>
   </div>
 </section>
@@ -1097,6 +1114,7 @@
         <span>📍 Kalyanpur, Kanpur</span>
         <span>📞 95060 54813</span>
         <span>📸 @pathshalamaths</span>
+        <a href="https://github.com/mathspathshalak12-creator/-maths-pathshala/releases/download/v1.0/app-release.apk" style="color:var(--amber);font-weight:600;text-decoration:none;">📲 Download App</a>
       </div>
     </div>
     <div class="footer-bottom">Samjho concept, karo best, bano successful!</div>
@@ -1119,6 +1137,11 @@
 
 <a class="wa-float" id="float-wa" href="#" target="_blank" aria-label="Chat on WhatsApp">
   <svg width="30" height="30" viewBox="0 0 24 24" fill="white"><path d="M17.6 6.32A8.86 8.86 0 0 0 12.02 3.5 8.9 8.9 0 0 0 3.5 12.02c0 1.57.41 3.1 1.19 4.45L3.4 20.5l4.13-1.26a8.9 8.9 0 0 0 4.5 1.21h.01a8.9 8.9 0 0 0 8.5-8.52 8.86 8.86 0 0 0-2.94-6.6zM12.03 19.1a7.4 7.4 0 0 1-3.77-1.03l-.27-.16-2.8.86.86-2.72-.18-.28a7.4 7.4 0 0 1-1.14-3.95 7.44 7.44 0 0 1 7.34-7.34 7.4 7.4 0 0 1 5.24 2.17 7.4 7.4 0 0 1 2.17 5.24 7.44 7.44 0 0 1-7.35 7.21zm4.05-5.56c-.22-.11-1.3-.64-1.5-.71-.2-.08-.35-.11-.5.11-.15.22-.57.71-.7.86-.13.15-.26.16-.48.05-.22-.11-.94-.35-1.79-1.11-.66-.59-1.11-1.32-1.24-1.54-.13-.22-.01-.34.1-.45.1-.1.22-.26.33-.39.11-.13.15-.22.22-.37.07-.15.04-.28-.02-.39-.05-.11-.5-1.21-.69-1.65-.18-.44-.37-.38-.5-.38-.13 0-.28-.02-.43-.02-.15 0-.39.05-.6.28-.2.22-.79.77-.79 1.87 0 1.1.81 2.17.92 2.32.11.15 1.6 2.44 3.87 3.42.54.23.96.37 1.29.48.54.17 1.03.15 1.42.09.43-.06 1.3-.53 1.49-1.05.18-.51.18-.95.13-1.05-.05-.1-.2-.16-.42-.27z"/></svg>
+</a>
+
+<a class="app-float" href="https://github.com/mathspathshalak12-creator/-maths-pathshala/releases/download/v1.0/app-release.apk" aria-label="Download App">
+  <span class="app-float-icon">📲</span>
+  <span class="app-float-text">Download App</span>
 </a>
 
 <script>
@@ -1203,6 +1226,7 @@
   }
 
   async function loadSeatsDisplay(){
+    const SHOW_EXACT_THRESHOLD = 3; // below this, show generic urgency instead of exact count
     let batchStats = [];
     try{
       const snap = await getDoc(doc(db, "stats", "public"));
@@ -1221,16 +1245,25 @@
         grid.innerHTML = batchStats.map(b => {
           const cap = Math.min(b.capacity || 7, 7);
           const filled = Math.min(b.filled || 0, cap);
-          const seatsHtml = Array.from({length: cap}, (_, i) =>
-            `<div class="seat${i < filled ? ' filled' : ''}"></div>`
-          ).join('');
           const isFull = filled >= cap;
-          const labelText = isFull ? 'Batch full — next batch forming soon' : `${filled} of ${cap} seats filled`;
+          const showExact = filled >= SHOW_EXACT_THRESHOLD;
+
+          let seatsHtml, labelText;
+          if(showExact){
+            seatsHtml = Array.from({length: cap}, (_, i) =>
+              `<div class="seat${i < filled ? ' filled' : ''}"></div>`
+            ).join('');
+            labelText = isFull ? 'Batch full — next batch forming soon' : `${filled} of ${cap} seats filled`;
+          } else {
+            seatsHtml = '';
+            labelText = '🔥 Seats are limited — enroll fast!';
+          }
+
           return `
             <div class="batch-card">
               <div class="batch-card-class">Class ${b.class}</div>
               <div class="batch-card-name">${b.name}</div>
-              <div class="seats">${seatsHtml}</div>
+              ${seatsHtml ? `<div class="seats">${seatsHtml}</div>` : ''}
               <div class="seats-label${isFull ? ' full' : ''}">${labelText}</div>
             </div>`;
         }).join('');
@@ -1243,10 +1276,17 @@
       const mostUrgent = batchStats.slice().sort((a, b) => (b.filled / (b.capacity || 7)) - (a.filled / (a.capacity || 7)))[0];
       const cap = Math.min(mostUrgent.capacity || 7, 7);
       const filled = Math.min(mostUrgent.filled || 0, cap);
-      popupSeats.innerHTML = Array.from({length: cap}, (_, i) =>
-        `<div class="seat${i < filled ? ' filled' : ''}"></div>`
-      ).join('');
-      if(popupTitle){ popupTitle.textContent = `Class ${mostUrgent.class} · ${mostUrgent.name} — only 7 students per batch`; }
+      const showExact = filled >= SHOW_EXACT_THRESHOLD;
+
+      if(showExact){
+        popupSeats.innerHTML = Array.from({length: cap}, (_, i) =>
+          `<div class="seat${i < filled ? ' filled' : ''}"></div>`
+        ).join('');
+        if(popupTitle){ popupTitle.textContent = `Class ${mostUrgent.class} · ${mostUrgent.name} — only 7 students per batch`; }
+      } else {
+        popupSeats.innerHTML = '';
+        if(popupTitle){ popupTitle.textContent = 'Seats are limited — only 7 students per batch!'; }
+      }
     }
   }
   loadSeatsDisplay();
