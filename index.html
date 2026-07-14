@@ -207,6 +207,44 @@
     color:var(--amber-dark);background:#FDF0DA;padding:3px 10px;border-radius:20px;
     text-transform:uppercase;letter-spacing:.02em;
   }
+
+  /* PRICING */
+  .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media(max-width:800px){.pricing-grid{grid-template-columns:1fr;}}
+  .price-card{
+    background:var(--paper);border:1.5px solid var(--line);border-radius:14px;
+    padding:30px 26px;text-align:center;
+  }
+  .price-card.featured{border-color:var(--amber);position:relative;}
+  .price-card.featured:before{
+    content:"Most enrolled";position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+    background:var(--amber);color:var(--navy);font-size:11px;font-weight:700;
+    padding:4px 14px;border-radius:20px;text-transform:uppercase;letter-spacing:.02em;
+  }
+  .price-card-class{font-size:13px;font-weight:700;color:var(--amber-dark);text-transform:uppercase;letter-spacing:.03em;margin-bottom:10px;}
+  .price-card-amount{font-family:'Space Grotesk',sans-serif;font-size:34px;font-weight:700;color:var(--navy);}
+  .price-card-amount span{font-size:15px;font-weight:500;color:var(--muted);}
+  .price-card-desc{font-size:13.5px;color:var(--muted);margin-top:8px;}
+  .price-note{
+    background:var(--cream);border:1px solid var(--line);border-radius:10px;
+    padding:16px 20px;font-size:13.5px;color:var(--muted);margin-top:20px;text-align:center;
+  }
+
+  /* FAQ */
+  .faq-list{max-width:760px;margin:0 auto;}
+  .faq-item{border-bottom:1px solid var(--line);}
+  .faq-question{
+    display:flex;justify-content:space-between;align-items:center;gap:16px;
+    padding:20px 4px;cursor:pointer;font-weight:600;font-size:15.5px;color:var(--navy);
+  }
+  .faq-icon{font-size:20px;color:var(--amber-dark);transition:transform .2s ease;flex-shrink:0;}
+  .faq-item.open .faq-icon{transform:rotate(45deg);}
+  .faq-answer{
+    max-height:0;overflow:hidden;transition:max-height .3s ease;
+    font-size:14.5px;color:var(--muted);line-height:1.7;
+  }
+  .faq-item.open .faq-answer{max-height:300px;}
+  .faq-answer-inner{padding:0 4px 20px;}
   .why-item{background:var(--paper);padding:28px 24px;}
   .why-item .ico{
     width:36px;height:36px;border-radius:8px;background:#FDF0DA;
@@ -593,6 +631,7 @@
       <a href="javascript:void(0)" data-scroll="programs">Batch classes</a>
       <a href="javascript:void(0)" data-scroll="hometuition">Home tuition</a>
       <a href="javascript:void(0)" data-scroll="notes">Notes</a>
+      <a href="javascript:void(0)" data-scroll="pricing">Pricing</a>
       <a href="javascript:void(0)" data-scroll="why">Why us</a>
       <a href="javascript:void(0)" data-scroll="testimonials">Reviews</a>
       <a href="javascript:void(0)" data-scroll="register">Register</a>
@@ -605,6 +644,7 @@
       <a href="javascript:void(0)" data-scroll="programs">Batch classes</a>
       <a href="javascript:void(0)" data-scroll="hometuition">Home tuition</a>
       <a href="javascript:void(0)" data-scroll="notes">Notes</a>
+      <a href="javascript:void(0)" data-scroll="pricing">Pricing</a>
       <a href="javascript:void(0)" data-scroll="why">Why us</a>
       <a href="javascript:void(0)" data-scroll="testimonials">Reviews</a>
       <a href="javascript:void(0)" data-scroll="register">Register</a>
@@ -1018,6 +1058,34 @@
   </div>
 </section>
 
+<section id="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">Pricing</div>
+      <h2>Simple, upfront pricing.</h2>
+      <p>No hidden charges. Batch class fees are fixed per subject; home tuition and online classes are priced based on your location, subject, and board.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-card-class">Class 9 &amp; 10</div>
+        <div class="price-card-amount">₹1,000<span>/month</span></div>
+        <div class="price-card-desc">Per subject — Mathematics or Science</div>
+      </div>
+      <div class="price-card featured">
+        <div class="price-card-class">Class 11 &amp; 12</div>
+        <div class="price-card-amount">₹1,200<span>/month</span></div>
+        <div class="price-card-desc">Mathematics</div>
+      </div>
+      <div class="price-card">
+        <div class="price-card-class">Home &amp; Online Tuition</div>
+        <div class="price-card-amount" style="font-size:22px;">Custom quote</div>
+        <div class="price-card-desc">Based on location, subject, and board</div>
+      </div>
+    </div>
+    <div class="price-note">Prices are for offline batch classes at our Kalyanpur location. For home tuition or online classes, message us on WhatsApp with your class, subject, and board for an exact quote.</div>
+  </div>
+</section>
+
 <section id="testimonials">
   <div class="wrap">
     <div class="section-head">
@@ -1092,6 +1160,59 @@
   </div>
 </section>
 
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head" style="text-align:center;margin-left:auto;margin-right:auto;">
+      <div class="section-tag">Common questions</div>
+      <h2>Frequently asked questions.</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>Is there a trial class before I enroll?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer"><div class="faq-answer-inner">Yes — message us on WhatsApp and we'll set up a free trial class so you can experience the teaching style before committing.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>How and when do I pay the fee?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer"><div class="faq-answer-inner">Fees are collected monthly. You can pay via UPI, cash, or bank transfer — details are shared once you register. Your fee status is always visible on your student dashboard.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>What if my child misses a class?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer"><div class="faq-answer-inner">Let us know in advance where possible. Missed topics are covered through notes and doubt-clearing in the next session — attendance is tracked on the dashboard so nothing falls through the cracks.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>Do I need to buy separate books or study material?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer"><div class="faq-answer-inner">No separate material is required. Handwritten notes are provided for every chapter, and free chapter-wise notes are also available to download from this website.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>Which boards do you teach — CBSE, ICSE, or UP Board?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer"><div class="faq-answer-inner">All three. Teaching is adapted to whichever board your child follows, for both batch classes and home/online tuition.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>Can I switch from home tuition to a batch class later, or vice versa?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer"><div class="faq-answer-inner">Yes, that's no problem — just message us on WhatsApp and we'll help you switch based on seat availability.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="register">
   <div class="wrap">
     <div class="register-box">
@@ -1162,6 +1283,16 @@
     el.addEventListener('click', function(){
       var target = document.getElementById(el.getAttribute('data-scroll'));
       if(target){ target.scrollIntoView({behavior:'smooth', block:'start'}); }
+    });
+  });
+
+  document.querySelectorAll('.faq-item').forEach(function(item){
+    item.querySelector('.faq-question').addEventListener('click', function(){
+      var isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(function(openItem){
+        if(openItem !== item){ openItem.classList.remove('open'); }
+      });
+      item.classList.toggle('open', !isOpen);
     });
   });
 
