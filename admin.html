@@ -419,6 +419,8 @@
       </div>
       <label>Batch timing</label>
       <input type="text" id="f-batch" placeholder="Evening 5-6 PM">
+      <label>Admission date (shown to student — no fee details shown to them)</label>
+      <input type="date" id="f-admission-date">
       <label>Next class</label>
       <input type="text" id="f-next-class" placeholder="e.g. Monday, 9 July, 5:00 PM">
       <label>Next test (shows as a reminder popup when student logs in)</label>
@@ -1000,6 +1002,7 @@
     updateBatchDropdown();
     document.getElementById('f-batch-name').value = data.batchName || '';
     document.getElementById('f-batch').value = data.batchTiming || '';
+    document.getElementById('f-admission-date').value = data.admissionDate || '';
     document.getElementById('f-next-class').value = data.nextClass || '';
     document.getElementById('f-next-test').value = data.nextTest || '';
     currentAttendanceLog = (data.attendance && data.attendance.log) || [];
@@ -1022,6 +1025,7 @@
     document.getElementById('f-class').value = '9';
     updateBatchDropdown();
     document.getElementById('f-batch').value = '';
+    document.getElementById('f-admission-date').value = '';
     document.getElementById('f-next-class').value = '';
     document.getElementById('f-next-test').value = '';
     currentAttendanceLog = [];
@@ -1247,6 +1251,7 @@
       class: document.getElementById('f-class').value,
       batchName: document.getElementById('f-batch-name').value,
       batchTiming: document.getElementById('f-batch').value.trim(),
+      admissionDate: document.getElementById('f-admission-date').value,
       nextClass: document.getElementById('f-next-class').value.trim(),
       nextTest: document.getElementById('f-next-test').value.trim(),
       attendance: { percent: pct, log: currentAttendanceLog },
