@@ -10,7 +10,7 @@
 
 <!-- Open Graph / WhatsApp / Facebook preview -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Maths Pathshala — Maths &amp; Science Tuition in Kalyanpur, Kanpur"> 
+<meta property="og:title" content="Maths Pathshala — Maths &amp; Science Tuition in Kalyanpur, Kanpur">
 <meta property="og:description" content="Offline batches, home tuition, and online classes for Class 1-12, all boards. Only 7 students per batch. Taught personally by Vipin Kumar.">
 <meta property="og:image" content="https://mathspathshalak12-creator.github.io/-maths-pathshala/banner.png">
 <meta property="og:url" content="https://mathspathshalak12-creator.github.io/-maths-pathshala/">
@@ -583,7 +583,7 @@
           <div class="dash-box">
             <div class="dash-box-label">💰 Fee status</div>
             <span class="dash-fee-badge" id="dash-fee-badge">—</span>
-            <ul class="payment-history-list" id="dash-payment-list"></ul>
+            <ul class="payment-history-list" id="dash-monthly-fee-list"></ul>
           </div>
           <div class="dash-box">
             <div class="dash-box-label">🎓 Joined on</div>
@@ -1162,7 +1162,7 @@
           <li>Call ahead to confirm batch timings</li>
         </ul>
       </div>
-      <div class="map-card"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3570.7047307983116!2d80.25072197488065!3d26.49745027781402!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399c37728e792a67%3A0x900d02ad0048b4d0!2sMaths%20Pathshala!5e0!3m2!1sen!2sin!4v1784147994061!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+      <div class="map-card">Google Maps location — add your embed link here</div>
     </div>
   </div>
 </section>
@@ -1652,16 +1652,18 @@
       admissionBox.textContent = 'Not set yet';
     }
 
-    const paymentList = document.getElementById('dash-payment-list');
-    paymentList.innerHTML = '';
-    if(Array.isArray(data.feeHistory) && data.feeHistory.length > 0){
-      data.feeHistory.forEach(p => {
+    const monthlyFeeList = document.getElementById('dash-monthly-fee-list');
+    monthlyFeeList.innerHTML = '';
+    if(Array.isArray(data.monthlyFees) && data.monthlyFees.length > 0){
+      const sorted = data.monthlyFees.slice().sort((a, b) => (b.monthKey || '').localeCompare(a.monthKey || ''));
+      sorted.forEach(m => {
         const li = document.createElement('li');
-        li.innerHTML = `<span>Fee paid on</span><span>${p.date}</span>`;
-        paymentList.appendChild(li);
+        const statusClass = m.status === 'Paid' ? 'att-present' : 'att-absent';
+        li.innerHTML = `<span>${m.monthLabel}</span><span class="${statusClass}">${m.status}</span>`;
+        monthlyFeeList.appendChild(li);
       });
     } else {
-      paymentList.innerHTML = '<li style="color:#B9C2D6;">No payment dates recorded yet</li>';
+      monthlyFeeList.innerHTML = '<li style="color:#B9C2D6;">No monthly records yet</li>';
     }
 
     document.getElementById('dash-batch-value').textContent = data.batchTiming || 'Not assigned yet';
