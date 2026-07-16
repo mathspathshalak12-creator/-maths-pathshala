@@ -136,6 +136,10 @@
   /* TEST SCORES */
   .score-item{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--line);}
   .payment-item{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--line);}
+  .month-status-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:13px;border-top:1px solid var(--line);}
+  .month-status-badge{padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;}
+  .month-status-badge.paid{background:#DFF4E7;color:#1E7A46;}
+  .month-status-badge.due{background:#FBE2E1;color:#C0392B;}
 
   @media print{
     body *{ display:none !important; }
@@ -434,6 +438,17 @@
       <button class="btn btn-secondary btn-small" id="add-payment-btn">+ Add payment record</button>
       <div id="payments-preview"></div>
 
+      <label>Mark monthly fee status (Paid / Due) — this is what the student sees</label>
+      <div class="row2">
+        <input type="month" id="f-fee-month">
+        <select id="f-fee-month-status">
+          <option value="Paid">Paid</option>
+          <option value="Due">Due</option>
+        </select>
+      </div>
+      <button class="btn btn-secondary btn-small" id="set-month-status-btn">+ Set month status</button>
+      <div id="monthly-fee-preview"></div>
+
       <label>Attendance percent (auto-calculated from entries below)</label>
       <div id="f-attendance-pct-display" style="padding:10px 12px;background:var(--cream);border:1.5px solid var(--line);border-radius:8px;font-weight:700;color:var(--navy);">—</div>
 
@@ -535,6 +550,7 @@
   let currentNotes = [];
   let currentTestScores = [];
   let currentPayments = [];
+  let currentMonthlyFees = [];
   let batchesCache = [];
 
   document.getElementById('admin-login-btn').addEventListener('click', () => {
@@ -1009,10 +1025,12 @@
     currentNotes = data.notes || [];
     currentTestScores = data.testScores || [];
     currentPayments = data.feeHistory || [];
+    currentMonthlyFees = data.monthlyFees || [];
     renderAttendancePreview();
     renderNotesPreview();
     renderScoresPreview();
     renderPaymentsPreview();
+    renderMonthlyFeesPreview();
     saveMsg.textContent = '';
     window.scrollTo({top: document.getElementById('form-heading').offsetTop - 20, behavior:'smooth'});
   }
@@ -1032,10 +1050,12 @@
     currentNotes = [];
     currentTestScores = [];
     currentPayments = [];
+    currentMonthlyFees = [];
     renderAttendancePreview();
     renderNotesPreview();
     renderScoresPreview();
     renderPaymentsPreview();
+    renderMonthlyFeesPreview();
     saveMsg.textContent = '';
   });
 
@@ -1068,6 +1088,52 @@
     currentPayments.unshift({ amount, date: dateStr, isoDate: dateInput });
     document.getElementById('f-payment-amount').value = '';
     renderPaymentsPreview();
+  });
+
+  function renderMonthlyFeesPreview(){
+    const box = document.getElementById('monthly-fee-preview');
+    if(currentMonthlyFees.length === 0){
+      box.innerHTML = '<div style="font-size:12px;color:var(--muted);margin-top:8px;">No months marked yet</div>';
+      return;
+    }
+    // Sort most recent month first
+    const sorted = currentMonthlyFees.slice().sort((a, b) => (b.monthKey || '').localeCompare(a.monthKey || ''));
+    box.innerHTML = sorted.map((m) => {
+      const realIdx = currentMonthlyFees.indexOf(m);
+      const badgeClass = m.status === 'Paid' ? 'paid' : 'due';
+      return `<div class="month-status-item">
+        <span>${m.monthLabel}</span>
+        <span style="display:flex;align-items:center;gap:10px;">
+          <span class="month-status-badge ${badgeClass}">${m.status}</span>
+          <button class="remove-btn" data-idx="${realIdx}">Remove</button>
+        </span>
+      </div>`;
+    }).join('');
+    box.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentMonthlyFees.splice(parseInt(btn.dataset.idx), 1);
+        renderMonthlyFeesPreview();
+      });
+    });
+  }
+
+  document.getElementById('set-month-status-btn').addEventListener('click', () => {
+    const monthInput = document.getElementById('f-fee-month').value; // format: YYYY-MM
+    const status = document.getElementById('f-fee-month-status').value;
+    if(!monthInput){
+      alert('Please select a month.');
+      return;
+    }
+    const d = new Date(monthInput + '-01T00:00:00');
+    const monthLabel = d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+
+    const existingIdx = currentMonthlyFees.findIndex(m => m.monthKey === monthInput);
+    if(existingIdx >= 0){
+      currentMonthlyFees[existingIdx].status = status;
+    } else {
+      currentMonthlyFees.push({ monthKey: monthInput, monthLabel, status });
+    }
+    renderMonthlyFeesPreview();
   });
 
   function renderAttendancePreview(){
@@ -1257,7 +1323,8 @@
       attendance: { percent: pct, log: currentAttendanceLog },
       notes: currentNotes,
       testScores: currentTestScores,
-      feeHistory: currentPayments
+      feeHistory: currentPayments,
+      monthlyFees: currentMonthlyFees
     };
 
     try{
