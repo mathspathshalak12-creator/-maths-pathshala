@@ -541,6 +541,43 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
+  // OneSignal push notification config
+  const ONESIGNAL_APP_ID = "e0e20eda-ce19-4883-85ff-816fc9dac6d0";
+  const ONESIGNAL_REST_API_KEY = "os_v2_app_4dra5wwodfeihbp7qfx4twwg2a52uvko3p6utmfo3rk7hv3zcct6f7ypmisgt63fcogr4um5o46nmmggjx3kjygq7ig5r3tshwzhzla";
+
+  async function sendPushNotification(emails, title, message){
+    if(!emails || emails.length === 0) return;
+    try{
+      await fetch("https://onesignal.com/api/v1/notifications", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          "Authorization": "Basic " + ONESIGNAL_REST_API_KEY
+        },
+        body: JSON.stringify({
+          app_id: ONESIGNAL_APP_ID,
+          include_aliases: { external_id: emails.map(e => e.toLowerCase()) },
+          target_channel: "push",
+          headings: { en: title },
+          contents: { en: message }
+        })
+      });
+    } catch(err){
+      console.log('Push notification error:', err.message);
+    }
+  }
+
+  function getTargetEmails(targetClass, targetBatch){
+    return allStudentsCache
+      .filter(s => {
+        if(!targetClass) return true;
+        if(s.data.class !== targetClass) return false;
+        if(!targetBatch) return true;
+        return s.data.batchName === targetBatch;
+      })
+      .map(s => s.id);
+  }
+
   const loginScreen = document.getElementById('login-screen');
   const adminScreen = document.getElementById('admin-screen');
   const loginMsg = document.getElementById('login-msg');
@@ -699,6 +736,11 @@
       });
       await batch.commit();
       showToast(`Saved attendance for ${toSave.length} student(s)!`);
+      sendPushNotification(
+        toSave.map(row => row.dataset.email),
+        "Attendance Updated 📋",
+        `Your attendance for ${dateLabel} has been marked. Check your dashboard.`
+      );
       loadStudentList();
       loadBulkAttendanceRows();
     } catch(err){
@@ -1393,6 +1435,7 @@
       document.getElementById('notice-title').value = '';
       document.getElementById('notice-message').value = '';
       showToast('Notice posted!');
+      sendPushNotification(getTargetEmails(targetClass, targetBatch), "New Notice 📢 " + title, message);
       loadNotices();
     } catch(err){
       showToast('Error: ' + err.message);
@@ -1456,6 +1499,7 @@
       document.getElementById('hw-title').value = '';
       document.getElementById('hw-details').value = '';
       showToast('Homework assigned!');
+      sendPushNotification(getTargetEmails(targetClass, targetBatch), "New Homework 📝 " + title, details);
       loadHomework();
     } catch(err){
       showToast('Error: ' + err.message);
@@ -1589,6 +1633,7 @@
       msgBox.className = 'msg success';
       document.getElementById('broadcast-test-input').value = '';
       showToast(`Test reminder sent to ${matching.length} students!`);
+      sendPushNotification(matching.map(s => s.id), "Test Reminder ⏰", testDetails);
       loadStudentList();
     } catch(err){
       msgBox.textContent = 'Error: ' + err.message;
