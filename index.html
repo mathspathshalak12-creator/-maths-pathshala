@@ -1481,6 +1481,15 @@
       showLoginMsg('Please enter both email and password', 'error');
       return;
     }
+
+    // Ask for notification permission immediately, tied to this click
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(function(OneSignal) {
+      if(OneSignal.Notifications.permission !== true){
+        OneSignal.Notifications.requestPermission();
+      }
+    });
+
     const btn = document.getElementById('login-submit-btn');
     btn.disabled = true; btn.textContent = "Logging in...";
     signInWithEmailAndPassword(auth, email, password)
@@ -1522,9 +1531,6 @@
       OneSignalDeferred.push(async function(OneSignal) {
         try{
           await OneSignal.login(user.email.toLowerCase());
-          if(OneSignal.Notifications.permission !== true){
-            await OneSignal.Notifications.requestPermission();
-          }
         } catch(err){
           console.log('OneSignal login error:', err);
         }
