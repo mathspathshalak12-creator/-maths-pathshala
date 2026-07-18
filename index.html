@@ -23,6 +23,7 @@
 <meta name="twitter:image" content="https://mathspathshalak12-creator.github.io/-maths-pathshala/banner.png">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="icon-192.png">
 <meta name="theme-color" content="#0B1E3D">
@@ -1350,6 +1351,15 @@
   const auth = getAuth(fbApp);
   const db = getFirestore(fbApp);
 
+  // OneSignal push notification setup
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "e0e20eda-ce19-4883-85ff-816fc9dac6d0",
+      allowLocalhostAsSecureOrigin: true,
+    });
+  });
+
   const loginModal = document.getElementById('login-modal');
   const studentDashboard = document.getElementById('student-dashboard');
   const loginMsg = document.getElementById('login-msg');
@@ -1506,6 +1516,19 @@
       await loadHomework();
       studentLoginBtn.textContent = 'Logout';
       mobileLoginBtn.textContent = 'Logout';
+
+      // Link this student to OneSignal for push notifications
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        try{
+          await OneSignal.login(user.email.toLowerCase());
+          if(OneSignal.Notifications.permission !== true){
+            await OneSignal.Notifications.requestPermission();
+          }
+        } catch(err){
+          console.log('OneSignal login error:', err);
+        }
+      });
     } else {
       isLoggedIn = false;
       studentDashboard.style.display = 'none';
