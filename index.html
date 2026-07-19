@@ -574,6 +574,7 @@
           </div>
         </div>
         <div style="display:flex;gap:8px;">
+          <button class="dash-logout" id="dash-notif-btn" style="display:none;">🔔 Enable Notifications</button>
           <button class="dash-logout" id="dash-refresh-btn">↻ Refresh</button>
         </div>
       </div>
@@ -1360,6 +1361,25 @@
     });
   });
 
+  // Median app bridge setup — Median calls this function once its native bridge is ready.
+  // If the bridge loaded before this script ran, we call it ourselves right away.
+  window.medianBridgeReady = false;
+  window.median_library_ready = function(){
+    window.medianBridgeReady = true;
+    tryMedianOneSignalLogin();
+  };
+  if(window.median){ window.median_library_ready(); }
+
+  function tryMedianOneSignalLogin(){
+    if(window.medianBridgeReady && window.median && window.median.onesignal && window.currentStudentEmailForPush){
+      try{
+        window.median.onesignal.login(window.currentStudentEmailForPush);
+      } catch(err){
+        console.log('Median OneSignal login error:', err);
+      }
+    }
+  }
+
   const loginModal = document.getElementById('login-modal');
   const studentDashboard = document.getElementById('student-dashboard');
   const loginMsg = document.getElementById('login-msg');
@@ -1482,14 +1502,6 @@
       return;
     }
 
-    // Ask for notification permission immediately, tied to this click
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(function(OneSignal) {
-      if(OneSignal.Notifications.permission !== true){
-        OneSignal.Notifications.requestPermission();
-      }
-    });
-
     const btn = document.getElementById('login-submit-btn');
     btn.disabled = true; btn.textContent = "Logging in...";
     signInWithEmailAndPassword(auth, email, password)
@@ -1527,10 +1539,24 @@
       mobileLoginBtn.textContent = 'Logout';
 
       // Link this student to OneSignal for push notifications
+      const studentEmail = user.email.toLowerCase();
+      window.currentStudentEmailForPush = studentEmail;
+
+      // Case 1: Running inside the Median-wrapped app — use Median's native bridge
+      // (Median may not be "ready" yet when this runs, so we use their required ready-pattern)
+      tryMedianOneSignalLogin();
+
+      // Case 2: Running in a normal browser — use the OneSignal Web SDK
       window.OneSignalDeferred = window.OneSignalDeferred || [];
       OneSignalDeferred.push(async function(OneSignal) {
         try{
-          await OneSignal.login(user.email.toLowerCase());
+          await OneSignal.login(studentEmail);
+          const notifBtn = document.getElementById('dash-notif-btn');
+          if(!window.median && OneSignal.Notifications.permission !== true){
+            notifBtn.style.display = 'inline-flex';
+          } else {
+            notifBtn.style.display = 'none';
+          }
         } catch(err){
           console.log('OneSignal login error:', err);
         }
@@ -1552,6 +1578,17 @@
       await loadHomework();
       btn.textContent = '↻ Refresh';
     }
+  });
+
+  document.getElementById('dash-notif-btn').addEventListener('click', function(){
+    const notifBtn = this;
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.Notifications.requestPermission();
+      if(OneSignal.Notifications.permission === true){
+        notifBtn.style.display = 'none';
+      }
+    });
   });
 
   function matchesStudentTarget(data){
