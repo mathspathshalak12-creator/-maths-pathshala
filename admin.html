@@ -525,7 +525,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, writeBatch, addDoc, deleteDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, writeBatch, addDoc, deleteDoc, query, orderBy, serverTimestamp, where, documentId } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB3fzWzwiTxHJi1M3OQI3hgZJpi6lq-eww",
@@ -545,22 +545,49 @@
   const ONESIGNAL_APP_ID = "e0e20eda-ce19-4883-85ff-816fc9dac6d0";
   const ONESIGNAL_REST_API_KEY = "os_v2_app_4dra5wwodfeihbp7qfx4twwg2a52uvko3p6utmfo3rk7hv3zcct6f7ypmisgt63fcogr4um5o46nmmggjx3kjygq7ig5r3tshwzhzla";
 
+  async function getPlayerIdsForEmails(emails){
+    const lowerEmails = emails.map(e => e.toLowerCase());
+    const playerIds = [];
+    // Firestore 'in' queries support max 30 items per query
+    for(let i = 0; i < lowerEmails.length; i += 30){
+      const chunk = lowerEmails.slice(i, i + 30);
+      try{
+        const q = query(collection(db, "pushTokens"), where(documentId(), "in", chunk));
+        const snap = await getDocs(q);
+        snap.forEach(docSnap => {
+          const pid = docSnap.data().playerId;
+          if(pid){ playerIds.push(pid); }
+        });
+      } catch(err){
+        console.log('Error fetching push tokens:', err.message);
+      }
+    }
+    return playerIds;
+  }
+
   async function sendPushNotification(emails, title, message){
     if(!emails || emails.length === 0) return;
     try{
+      const playerIds = await getPlayerIdsForEmails(emails);
+      const payload = {
+        app_id: ONESIGNAL_APP_ID,
+        target_channel: "push",
+        headings: { en: title },
+        contents: { en: message }
+      };
+      if(playerIds.length > 0){
+        payload.include_subscription_ids = playerIds;
+      } else {
+        // Fallback: try external_id targeting in case some devices linked that way
+        payload.include_aliases = { external_id: emails.map(e => e.toLowerCase()) };
+      }
       await fetch("https://onesignal.com/api/v1/notifications", {
         method: "POST",
         headers: {
           "Content-Type": "application/json; charset=utf-8",
           "Authorization": "Basic " + ONESIGNAL_REST_API_KEY
         },
-        body: JSON.stringify({
-          app_id: ONESIGNAL_APP_ID,
-          include_aliases: { external_id: emails.map(e => e.toLowerCase()) },
-          target_channel: "push",
-          headings: { en: title },
-          contents: { en: message }
-        })
+        body: JSON.stringify(payload)
       });
     } catch(err){
       console.log('Push notification error:', err.message);
