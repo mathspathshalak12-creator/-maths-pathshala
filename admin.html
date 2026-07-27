@@ -581,16 +581,22 @@
         // Fallback: try external_id targeting in case some devices linked that way
         payload.include_aliases = { external_id: emails.map(e => e.toLowerCase()) };
       }
-      await fetch("https://onesignal.com/api/v1/notifications", {
+      const res = await fetch("https://onesignal.com/api/v1/notifications", {
         method: "POST",
         headers: {
           "Content-Type": "application/json; charset=utf-8",
-          "Authorization": "Basic " + ONESIGNAL_REST_API_KEY
+          "Authorization": "Key " + ONESIGNAL_REST_API_KEY
         },
         body: JSON.stringify(payload)
       });
+      if(!res.ok){
+        const errData = await res.json().catch(() => ({}));
+        console.log('Push notification failed:', errData);
+        showToast('⚠️ Push notification failed to send (check console)');
+      }
     } catch(err){
       console.log('Push notification error:', err.message);
+      showToast('⚠️ Push notification error — see console');
     }
   }
 
