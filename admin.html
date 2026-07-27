@@ -593,10 +593,12 @@
         const errData = await res.json().catch(() => ({}));
         console.log('Push notification failed:', errData);
         showToast('⚠️ Push notification failed to send (check console)');
+        alert('Push failed:\n' + JSON.stringify(errData));
       }
     } catch(err){
       console.log('Push notification error:', err.message);
       showToast('⚠️ Push notification error — see console');
+      alert('Push error:\n' + err.message);
     }
   }
 
