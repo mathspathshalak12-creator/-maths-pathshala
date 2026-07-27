@@ -398,48 +398,84 @@
   /* EMBEDDED STUDENT DASHBOARD */
   #student-dashboard{display:none;padding:32px 0 0;}
   .dash-panel{
-    background:linear-gradient(155deg, var(--navy) 0%, var(--navy-2) 100%);
-    border-radius:16px;padding:28px 32px;color:#fff;
-    animation:dashFadeIn .4s ease;
+    position:relative;overflow:hidden;
+    background:linear-gradient(155deg, #0B1E3D 0%, #0E2547 55%, #122A52 100%);
+    border-radius:20px;padding:32px 36px;color:#fff;
+    animation:dashFadeIn .5s cubic-bezier(.2,.8,.2,1);
+    box-shadow:0 20px 50px -12px rgba(11,30,61,0.5), 0 0 0 1px rgba(245,166,35,0.15);
+  }
+  .dash-panel::before{
+    content:"";position:absolute;top:-120px;right:-100px;width:320px;height:320px;
+    background:radial-gradient(circle, rgba(245,166,35,0.22) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .dash-panel::after{
+    content:"";position:absolute;bottom:-140px;left:-80px;width:280px;height:280px;
+    background:radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+    pointer-events:none;
   }
   @keyframes dashFadeIn{
-    from{ opacity:0; transform:translateY(10px); }
-    to{ opacity:1; transform:translateY(0); }
+    from{ opacity:0; transform:translateY(14px) scale(.99); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
   }
   @media(max-width:600px){
-    .dash-panel{padding:20px 16px;}
+    .dash-panel{padding:22px 18px;border-radius:16px;}
     #student-dashboard{padding:16px 0 0;}
   }
+  .dash-member-badge{
+    display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;
+    color:var(--amber);background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.35);
+    padding:4px 10px;border-radius:20px;letter-spacing:.03em;text-transform:uppercase;margin-bottom:10px;
+  }
   .dash-avatar{
-    width:46px;height:46px;border-radius:50%;flex-shrink:0;
+    width:52px;height:52px;border-radius:50%;flex-shrink:0;position:relative;z-index:1;
     background:linear-gradient(135deg, var(--amber), var(--amber-dark));
     display:flex;align-items:center;justify-content:center;
-    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:var(--navy);
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:var(--navy);
+    box-shadow:0 6px 16px rgba(245,166,35,0.35), 0 0 0 3px rgba(255,255,255,0.08);
   }
-  .dash-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;}
-  .dash-welcome{font-size:20px;font-weight:700;}
+  .dash-top{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:22px;}
+  .dash-welcome{font-size:22px;font-weight:700;letter-spacing:-.01em;}
   .dash-welcome span{color:var(--amber);}
-  .dash-email{font-size:13px;color:#B9C2D6;margin-top:2px;}
+  .dash-email{font-size:13px;color:#9FB0CC;margin-top:2px;}
   .batch-highlight{
-    display:inline-block;margin-top:8px;padding:5px 14px;border-radius:20px;
+    display:inline-block;margin-top:10px;padding:6px 16px;border-radius:20px;
     background:linear-gradient(90deg, var(--amber-dark), var(--amber));
     color:var(--navy);font-size:12.5px;font-weight:700;letter-spacing:.01em;
+    box-shadow:0 4px 12px rgba(245,166,35,0.3);
   }
   .dash-logout{
-    font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,0.1);
-    border:1px solid rgba(255,255,255,0.25);padding:8px 16px;border-radius:6px;cursor:pointer;
+    font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.18);padding:9px 18px;border-radius:24px;cursor:pointer;
+    backdrop-filter:blur(8px);transition:background .15s ease, transform .15s ease;
   }
-  .dash-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+  .dash-logout:hover{background:rgba(255,255,255,0.16);transform:translateY(-1px);}
+  .dash-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
   @media(max-width:800px){.dash-grid{grid-template-columns:1fr;gap:12px;}}
   .dash-box{
-    background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;
-    padding:16px 18px;overflow:hidden;transition:background .15s ease, transform .15s ease;
+    background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.1);border-radius:14px;
+    padding:18px 20px;overflow:hidden;backdrop-filter:blur(10px);
+    transition:background .2s ease, transform .2s ease, border-color .2s ease;
+    animation:boxFadeIn .5s ease backwards;
   }
-  .dash-box:hover{background:rgba(255,255,255,0.09);transform:translateY(-1px);}
-  @media(max-width:600px){.dash-box{padding:14px 16px;}}
-  .dash-box-label{font-size:11.5px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
-  .dash-box-value{font-size:16px;font-weight:600;}
-  .dash-fee-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:700;}
+  .dash-box:nth-child(1){animation-delay:.05s;}
+  .dash-box:nth-child(2){animation-delay:.1s;}
+  .dash-box:nth-child(3){animation-delay:.15s;}
+  .dash-box:nth-child(4){animation-delay:.2s;}
+  .dash-box:nth-child(5){animation-delay:.25s;}
+  .dash-box:nth-child(6){animation-delay:.3s;}
+  @keyframes boxFadeIn{
+    from{ opacity:0; transform:translateY(8px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .dash-box:hover{background:rgba(255,255,255,0.09);transform:translateY(-2px);border-color:rgba(245,166,35,0.3);}
+  @media(max-width:600px){.dash-box{padding:15px 17px;}}
+  .dash-box-label{
+    font-size:11px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.04em;
+    margin-bottom:10px;display:flex;align-items:center;gap:8px;
+  }
+  .dash-box-value{font-size:17px;font-weight:700;letter-spacing:-.01em;}
+  .dash-fee-badge{display:inline-block;padding:5px 14px;border-radius:20px;font-size:13px;font-weight:700;}
   .dash-fee-paid{background:#DFF4E7;color:#1E7A46;}
   .dash-fee-due{background:#FBE2E1;color:#C0392B;}
   .dash-notes-list{list-style:none;font-size:14px;max-height:180px;overflow-y:auto;padding-right:4px;}
@@ -448,18 +484,18 @@
   .dash-notes-list a{color:#fff;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,0.3);border-radius:6px;padding:4px 10px;white-space:nowrap;}
   .dash-notes-list a:hover{background:#fff;color:var(--navy);}
 
-  .att-progress-track{background:rgba(255,255,255,0.12);border-radius:20px;height:8px;overflow:hidden;margin:8px 0 12px;}
-  .att-progress-fill{height:100%;border-radius:20px;background:linear-gradient(90deg, var(--amber-dark), var(--amber));transition:width .6s ease;}
+  .att-progress-track{background:rgba(255,255,255,0.12);border-radius:20px;height:9px;overflow:hidden;margin:8px 0 12px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.2);}
+  .att-progress-fill{height:100%;border-radius:20px;background:linear-gradient(90deg, var(--amber-dark), var(--amber));transition:width .8s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 10px rgba(245,166,35,0.5);}
 
   /* NOTICES BANNER */
-  .dash-notices{margin-bottom:16px;}
+  .dash-notices{position:relative;z-index:1;margin-bottom:16px;}
   .notice-banner{
     background:rgba(245,166,35,0.14);border:1px solid rgba(245,166,35,0.4);
-    border-radius:10px;padding:12px 16px;margin-bottom:8px;
+    border-radius:12px;padding:14px 18px;margin-bottom:8px;backdrop-filter:blur(6px);
   }
   .notice-banner-title{font-size:13.5px;font-weight:700;color:var(--amber);}
   .notice-banner-msg{font-size:13px;color:#E4E0D6;margin-top:3px;}
-  .hw-banner{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);border-radius:10px;padding:12px 16px;margin-bottom:8px;}
+  .hw-banner{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);border-radius:12px;padding:14px 18px;margin-bottom:8px;backdrop-filter:blur(6px);}
   .hw-banner-title{font-size:13.5px;font-weight:700;color:#fff;}
   .hw-banner-msg{font-size:13px;color:#B9C2D6;margin-top:3px;}
 
@@ -568,6 +604,7 @@
         <div style="display:flex;align-items:center;gap:14px;">
           <div class="dash-avatar" id="dash-avatar">S</div>
           <div>
+            <span class="dash-member-badge">⭐ Verified Student</span>
             <div class="dash-welcome">Welcome, <span id="dash-name">Student</span></div>
             <div class="dash-email" id="dash-email"></div>
             <span class="batch-highlight" id="dash-batch-highlight" style="display:none;"></span>
@@ -1335,7 +1372,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB3fzWzwiTxHJi1M3OQI3hgZJpi6lq-eww",
@@ -1374,9 +1411,24 @@
     if(window.medianBridgeReady && window.median && window.median.onesignal && window.currentStudentEmailForPush){
       try{
         window.median.onesignal.login(window.currentStudentEmailForPush);
+        window.median.onesignal.info().then(function(info){
+          if(info && info.oneSignalUserId){
+            savePlayerIdToFirestore(window.currentStudentEmailForPush, info.oneSignalUserId, 'android');
+          }
+        }).catch(function(err){ console.log('Median onesignal.info error:', err); });
       } catch(err){
         console.log('Median OneSignal login error:', err);
       }
+    }
+  }
+
+  async function savePlayerIdToFirestore(email, playerId, platform){
+    try{
+      await setDoc(doc(db, "pushTokens", email.toLowerCase()), {
+        playerId, platform, updatedAt: new Date().toISOString()
+      }, { merge: true });
+    } catch(err){
+      console.log('Could not save push token:', err.message);
     }
   }
 
@@ -1557,6 +1609,10 @@
           } else {
             notifBtn.style.display = 'none';
           }
+          const webPlayerId = OneSignal.User.PushSubscription.id;
+          if(webPlayerId){
+            savePlayerIdToFirestore(studentEmail, webPlayerId, 'web');
+          }
         } catch(err){
           console.log('OneSignal login error:', err);
         }
@@ -1587,6 +1643,10 @@
       await OneSignal.Notifications.requestPermission();
       if(OneSignal.Notifications.permission === true){
         notifBtn.style.display = 'none';
+        const webPlayerId = OneSignal.User.PushSubscription.id;
+        if(webPlayerId && window.currentStudentEmailForPush){
+          savePlayerIdToFirestore(window.currentStudentEmailForPush, webPlayerId, 'web');
+        }
       }
     });
   });
