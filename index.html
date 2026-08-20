@@ -791,9 +791,9 @@
 
 <section class="hero">
   <div class="hero-inner">
-    <span class="eyebrow">Kalyanpur, Kanpur</span>
-    <h1>Samjho concept, <span class="accent">karo best,</span> bano successful.</h1>
-    <p class="sub">Offline coaching in Kalyanpur for Class 9–10 PCM and Class 11–12 Mathematics — taught personally by Vipin Kumar. Small batches, board-focused preparation, regular testing and real doubt support.</p>
+    <span class="eyebrow">📍 Kalyanpur, Kanpur · Offline Coaching</span>
+    <h1>Concept clear, practice pakki, <span class="accent">result pakka.</span></h1>
+    <p class="sub">Kalyanpur ka trusted offline coaching center for Class 9–10 PCM and Class 11–12 Mathematics — taught personally by Vipin Kumar, Ex Subject Matter Expert at Physics Wallah. Batches are kept deliberately small at just 7 students, with weekly testing, real doubt support, and a parent-facing dashboard so you always know exactly how your child is doing — attendance, test scores and monthly report cards, all in one place.</p>
     <div class="hero-ctas">
       <a href="javascript:void(0)" data-scroll="register" class="btn btn-primary">Register your seat</a>
       <a id="hero-wa" href="#" target="_blank" class="btn btn-outline">Chat on WhatsApp</a>
@@ -802,6 +802,7 @@
       <div><div class="num mono">7</div><div class="lbl">students per batch</div></div>
       <div><div class="num mono">9–12</div><div class="lbl">classes covered</div></div>
       <div><div class="num mono">3–8</div><div class="lbl">home tuition classes</div></div>
+      <div><div class="num mono">100%</div><div class="lbl">attendance &amp; progress tracked</div></div>
     </div>
   </div>
 </section>
@@ -1111,6 +1112,16 @@
         <div class="ico">📈</div>
         <h4>Board-focused prep</h4>
         <p>Syllabus paced to finish with real revision time before exams.</p>
+      </div>
+      <div class="why-item">
+        <div class="ico">📲</div>
+        <h4>Direct parent updates</h4>
+        <p>Fee reminders, test schedules and important notices sent straight to your WhatsApp — no missed updates, no middlemen.</p>
+      </div>
+      <div class="why-item">
+        <div class="ico">📊</div>
+        <h4>Real-time progress tracking</h4>
+        <p>A dedicated student login shows attendance %, test scores, batch rank and monthly report cards — anytime, from your phone.</p>
       </div>
     </div>
   </div>
@@ -1575,55 +1586,68 @@
   }
 
   async function loadHomework(){
-    const box = document.getElementById('dash-homework-removed');
+    const box = document.getElementById('dash-homework-list');
+    if(!box) return;
     try{
       const q = query(collection(db, "homework"), orderBy("createdAt", "desc"), limit(15));
       const snap = await getDocs(q);
-      if(snap.empty){ box.innerHTML = ''; return; }
+      if(snap.empty){
+        box.innerHTML = '<div class="empty-state">No homework posted yet.</div>';
+        return;
+      }
+
       box.innerHTML = '';
       let latestDoc = null;
       let shown = 0;
+
       snap.forEach(docSnap => {
+        if(shown >= 5) return;
         const data = docSnap.data();
         if(!matchesStudentTarget(data)) return;
-        if(!latestDoc){ latestDoc = docSnap; }
-        if(shown >= 3) return;
+        if(!latestDoc) latestDoc = docSnap;
         shown++;
-        const banner = document.createElement('div');
-        banner.className = 'hw-banner';
-        banner.innerHTML = `<div class="hw-banner-title">📝 ${data.title}</div><div class="hw-banner-msg">${data.details}</div>`;
-        box.appendChild(banner);
+
+        const item = document.createElement('div');
+        item.className = 'student-homework-item';
+        const due = data.dueDate ? `Due ${new Date(data.dueDate + 'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}` : 'No due date';
+        item.innerHTML = `<strong>📝 ${data.title || 'Homework'}</strong><p>${data.details || ''}</p><div class="student-homework-meta">${due}</div>`;
+        box.appendChild(item);
       });
+
+      if(shown === 0){
+        box.innerHTML = '<div class="empty-state">No homework for your class/batch yet.</div>';
+        return;
+      }
 
       if(latestDoc && auth.currentUser){
         const seenKey = 'hwSeen_' + auth.currentUser.email;
         const lastSeenId = localStorage.getItem(seenKey);
         if(lastSeenId !== latestDoc.id){
           const data = latestDoc.data();
-          document.getElementById('hw-popup-title').textContent = data.title;
-          document.getElementById('hw-popup-details').textContent = data.details;
+          document.getElementById('hw-popup-title').textContent = data.title || 'New homework';
+          document.getElementById('hw-popup-details').textContent =
+            `${data.details || ''}${data.dueDate ? ' · Due ' + new Date(data.dueDate + 'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : ''}`;
           document.getElementById('hw-popup').classList.add('show');
-          document.getElementById('hw-popup-ok').onclick = () => {
+          const closeHomeworkPopup = () => {
             localStorage.setItem(seenKey, latestDoc.id);
             document.getElementById('hw-popup').classList.remove('show');
           };
-          document.getElementById('hw-popup-close').onclick = () => {
-            localStorage.setItem(seenKey, latestDoc.id);
-            document.getElementById('hw-popup').classList.remove('show');
-          };
+          document.getElementById('hw-popup-ok').onclick = closeHomeworkPopup;
+          document.getElementById('hw-popup-close').onclick = closeHomeworkPopup;
         }
       }
     } catch(err){
-      box.innerHTML = '';
+      console.error('Homework load failed:', err);
+      box.innerHTML = '<div class="empty-state">Homework is temporarily unavailable.</div>';
     }
   }
 
   function parsePortalDate(value){
     if(!value) return null;
     if(/^\d{4}-\d{2}-\d{2}$/.test(value)) return new Date(value + 'T00:00:00');
-    const m = String(value).match(/^(\d{1,2})\s+([A-Za-z]{3})/);
+    const m = String(value).match(/^(\d{1,2})\s+([A-Za-z]{3})(?:\s+(\d{4}))?$/);
     if(m){
-      const year = new Date().getFullYear();
+      const year = m[3] || String(new Date().getFullYear());
       const x = new Date(`${m[1]} ${m[2]} ${year} 00:00:00`);
       if(!isNaN(x.getTime())) return x;
     }
@@ -1737,11 +1761,20 @@
 </body>
 </html>
 
+
+<style>
+  #dash-homework-list{display:grid;gap:9px}
+  .student-homework-item{padding:13px 14px;border:1px solid #e4e9f1;border-radius:11px;background:#f8fafc}
+  .student-homework-item strong{display:block;font-size:13.5px;color:#0b1e3d}
+  .student-homework-item p{font-size:12.5px;color:#5b6b85;margin-top:4px;line-height:1.55}
+  .student-homework-meta{font-size:10.5px;color:#8a95a6;margin-top:7px;font-weight:700}
+</style>
+
 <style>
 /* Maths Pathshala premium cleanup */
 .mp-brand-ribbon{background:linear-gradient(90deg,#071a35,#102f5b);color:#fff;padding:10px 18px;text-align:center;font-size:11px;letter-spacing:.08em}
 .mp-brand-ribbon strong{display:block;margin-top:3px;font-size:13px;letter-spacing:.02em}
-#dash-homework,#homework,#dash-next-class,#next-class,.next-class-card,.homework-section,.homework-card{display:none!important}
+#dash-next-class,#next-class,.next-class-card{display:none!important}
 @media print{.mp-brand-ribbon{display:none}}
 </style>
 
