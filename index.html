@@ -511,7 +511,7 @@
   .score-box{grid-column:span 2;}
   @media(max-width:800px){.score-box{grid-column:span 1;}}
   .score-list{list-style:none;font-size:13px;margin-top:10px;max-height:140px;overflow-y:auto;padding-right:4px;}
-  .score-list li{display:flex;justify-content:space-between;gap:10px;padding:5px 0;color:#E4E0D6;flex-wrap:wrap;}
+  .score-list li{display:flex;justify-content:space-between;gap:10px;padding:7px 0;color:#E4E0D6;flex-wrap:wrap;}
   .score-list li span:first-child{flex:1;min-width:0;word-break:break-word;}
   .score-list li span:last-child{white-space:nowrap;font-weight:600;color:#fff;}
   .score-chart-wrap{position:relative;margin-top:14px;height:160px;width:100%;}
@@ -671,7 +671,7 @@
   .daily-attendance-status{display:inline-flex;min-width:72px;justify-content:center;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:800;}
   .daily-attendance-status.present{background:#dff4e7;color:#1e7a46;}
   .daily-attendance-status.absent{background:#fbe2e1;color:#c0392b;}
-  .daily-attendance-status.unmarked{background:#eef1f5;color:#6b778c;}
+  .daily-attendance-status.unmarked{background:#eef1f5;color:#6b778c;} .daily-attendance-status.future{background:#f3f5f8;color:#8792a3;}
   .daily-attendance-summary{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 12px;}
   .daily-attendance-summary span{padding:6px 10px;border-radius:8px;background:#f7f9fc;font-size:11px;font-weight:700;color:#52627a;}
 </style>
@@ -1687,6 +1687,11 @@
     return Object.entries(map).sort((a,b)=>b[0].localeCompare(a[0])).map(([key,v])=>({...v,key,label:monthLabel(key),percent:v.total?Math.round(v.present/v.total*100):0}));
   }
 
+  function attendanceDateKey(value){
+    const d = parsePortalDate(value);
+    return d ? `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}` : '';
+  }
+
   function renderDailyAttendance(log){
     const table = document.getElementById('daily-attendance-table');
     const select = document.getElementById('attendance-month-select');
@@ -1694,10 +1699,17 @@
     if(!table || !select || !summary) return;
 
     const today = new Date();
+    const todayKey = attendanceDateKey(today);
     const currentKey = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+
+    // Normalize all old/new attendance date formats (e.g. "20 Aug 2026",
+    // "20/08/2026", ISO dates) to one internal YYYY-MM-DD key.
     const byDate = {};
     (Array.isArray(log) ? log : []).forEach(e => {
-      if(e && e.date) byDate[e.date] = e.status;
+      const key = attendanceDateKey(e && e.date);
+      if(key && (e.status === 'Present' || e.status === 'Absent')){
+        byDate[key] = e.status;
+      }
     });
 
     const monthKeys = [];
@@ -1721,20 +1733,24 @@
 
       for(let day=1; day<=days; day++){
         const d = new Date(year, month-1, day);
+        const dateKey = attendanceDateKey(d);
         const label = d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
         const dayName = d.toLocaleDateString('en-GB',{weekday:'short'});
-        const status = byDate[label] || 'Unmarked';
+        const status = byDate[dateKey] || 'Unmarked';
+        const isFuture = dateKey > todayKey;
 
         if(status==='Present') present++;
         else if(status==='Absent') absent++;
-        else unmarked++;
+        else if(!isFuture) unmarked++;
 
         const cls = status==='Present' ? 'att-present-row' : status==='Absent' ? 'att-absent-row' : '';
         const badge = status==='Present'
           ? '<span class="daily-attendance-status present">✓ Present</span>'
           : status==='Absent'
             ? '<span class="daily-attendance-status absent">✕ Absent</span>'
-            : '<span class="daily-attendance-status unmarked">— Unmarked</span>';
+            : isFuture
+              ? '<span class="daily-attendance-status future">— Upcoming</span>'
+              : '<span class="daily-attendance-status unmarked">— Not recorded</span>';
 
         html += `<tr class="${cls}"><td>${label}</td><td>${dayName}</td><td>${badge}</td></tr>`;
       }
@@ -1743,8 +1759,8 @@
       summary.innerHTML =
         `<span>✓ Present: ${present}</span>` +
         `<span>✕ Absent: ${absent}</span>` +
-        `<span>— Not marked: ${unmarked}</span>` +
-        `<span>Total days: ${days}</span>`;
+        `<span>— Not recorded: ${unmarked}</span>` +
+        `<span>Total calendar days: ${days}</span>`;
     }
 
     renderMonth(select.value);
@@ -1813,15 +1829,27 @@
 
   function renderScoreChart(scores){
     const canvas = document.getElementById('score-chart');
-    if(!canvas || typeof Chart === 'undefined'){ return; }
-    const labels = scores.map(s => s.date);
-    const percentages = scores.map(s => Math.round((s.score / s.max) * 100));
+    if(!canvas || typeof Chart === 'undefined') return;
+
+    const validScores = (Array.isArray(scores) ? scores : [])
+      .filter(s => Number.isFinite(Number(s.score)) && Number(s.max) > 0)
+      .slice()
+      .sort((a,b) => {
+        const da = parsePortalDate(a.date)?.getTime() || 0;
+        const db = parsePortalDate(b.date)?.getTime() || 0;
+        return da - db;
+      });
 
     if(window.scoreChartInstance){ window.scoreChartInstance.destroy(); }
+    if(!validScores.length) return;
+
+    const labels = validScores.map(s => `${s.name || 'Test'} · ${s.date || ''}`);
+    const percentages = validScores.map(s => scorePct(s));
+
     window.scoreChartInstance = new Chart(canvas, {
       type: 'line',
       data: {
-        labels: labels,
+        labels,
         datasets: [{
           label: 'Score %',
           data: percentages,
@@ -1830,20 +1858,56 @@
           tension: 0.3,
           fill: true,
           pointBackgroundColor: '#F5A623',
-          pointRadius: 4
+          pointRadius: 5,
+          pointHoverRadius: 7
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: items => validScores[items[0].dataIndex]?.name || 'Test',
+              label: item => {
+                const s = validScores[item.dataIndex];
+                return `Marks: ${s.score}/${s.max} (${scorePct(s)}%)`;
+              },
+              afterLabel: item => {
+                const s = validScores[item.dataIndex];
+                return `Date: ${s.date || '—'}`;
+              }
+            }
+          }
+        },
         scales: {
-          y: { beginAtZero: true, max: 100, ticks: { color: '#B9C2D6', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.08)' } },
-          x: { ticks: { color: '#B9C2D6', font: { size: 10 } }, grid: { display: false } }
+          y: {
+            beginAtZero: true,
+            max: 100,
+            title: { display: true, text: 'Percentage', color: '#B9C2D6' },
+            ticks: { color: '#B9C2D6', font: { size: 10 } },
+            grid: { color: 'rgba(255,255,255,0.08)' }
+          },
+          x: {
+            ticks: { color: '#B9C2D6', font: { size: 10 }, maxRotation: 45, minRotation: 0 },
+            grid: { display: false }
+          }
         }
       }
     });
+
+    // Keep an explicit marks table below the graph so raw marks are always visible,
+    // not only inside the chart tooltip.
+    const scoresList = document.getElementById('dash-scores-list');
+    if(scoresList){
+      scoresList.innerHTML = validScores.slice().reverse().map(s =>
+        `<li><span>${s.date || ''} — ${s.name || 'Test'}</span><strong>${s.score}/${s.max} · ${scorePct(s)}%</strong></li>`
+      ).join('');
+    }
   }
+
 </script>
 
 </body>
