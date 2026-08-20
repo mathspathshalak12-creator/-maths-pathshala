@@ -644,73 +644,123 @@
   footer{background:linear-gradient(145deg,#06152c,#102d57);}
   .wa-float{box-shadow:0 12px 28px rgba(0,0,0,.25);}
   @media(max-width:720px){.hero{min-height:auto;padding-top:72px;padding-bottom:62px;}.hero-meta{width:100%;}.hero-meta div{flex:1;min-width:0;padding:13px;}.hero:after{display:none;}section{padding:72px 0;}.register-box{padding:38px 22px;}}
+
+/* ===== PREMIUM STUDENT LMS DASHBOARD ===== */
+.student-lms-shell{background:#f5f7fb;border:1px solid rgba(11,30,61,.08);border-radius:26px;overflow:hidden;box-shadow:0 24px 60px rgba(11,30,61,.10);margin-bottom:26px}
+.student-lms-topbar{height:68px;background:#071b38;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 26px}
+.student-brand-lockup{display:flex;align-items:center;gap:11px}.student-brand-lockup strong{display:block;font-size:15px}.student-brand-lockup span{display:block;color:#aebbd0;font-size:10px;letter-spacing:.09em;text-transform:uppercase;margin-top:2px}.student-brand-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(145deg,#f5a623,#ffd37b);color:#071b38;display:grid;place-items:center;font-weight:900;font-size:18px}
+.student-hero-card{padding:28px;display:flex;align-items:center;justify-content:space-between;gap:25px;background:linear-gradient(135deg,#0b2348,#153e73);color:#fff}.student-identity{display:flex;align-items:center;gap:15px}.student-hero-copy{max-width:340px;text-align:right}.student-hero-copy span,.panel-kicker{font-size:10px;font-weight:800;letter-spacing:.12em;color:#f5a623}.student-hero-copy strong{display:block;font-size:18px;margin:5px 0}.student-hero-copy small{color:#b8c6da;line-height:1.5}.student-hero-card .dash-welcome{color:#fff}.student-hero-card .dash-email{color:#b8c6da}.student-hero-card .dash-avatar{background:linear-gradient(145deg,#f5a623,#d98b12);color:#071b38;box-shadow:none}
+.student-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:18px 22px}.student-kpi{background:#fff;border:1px solid #e4e9f1;border-radius:15px;padding:17px}.student-kpi span{display:block;color:#738096;font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}.student-kpi strong{display:block;color:#0b1e3d;font-size:26px;margin:7px 0 2px}.student-kpi small{color:#8c97a8;font-size:11px}
+.student-main-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:0 22px 22px}.student-panel{background:#fff;border:1px solid #e2e7ef;border-radius:17px;padding:21px;min-width:0}.student-panel-wide{grid-column:span 2}.student-panel-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:17px}.student-panel-head h3{margin:4px 0 0;font-size:18px;color:#0b1e3d}.student-panel-head p{font-size:12px;color:#77849a;margin:5px 0 0}.panel-pill{font-size:10px;background:#eef3fb;color:#36527a;border-radius:20px;padding:6px 10px;font-weight:700}.performance-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.performance-summary>div{background:#f7f9fc;border-radius:12px;padding:12px}.performance-summary span,.rank-stats span,.detail-list span{display:block;font-size:10px;color:#8792a4;text-transform:uppercase;letter-spacing:.04em}.performance-summary strong{display:block;color:#0b1e3d;font-size:20px;margin-top:4px}.student-score-chart{height:190px;margin:10px 0 4px}.student-score-list{max-height:160px;overflow:auto}.student-score-list li{padding:8px 0;border-bottom:1px solid #edf0f5}
+.rank-card{display:flex;gap:14px;align-items:center;padding:18px;border-radius:14px;background:linear-gradient(135deg,#081c3a,#173e70);color:#fff}.rank-medal{width:48px;height:48px;border-radius:14px;background:#f5a623;color:#071b38;display:grid;place-items:center;font-weight:900;font-size:21px}.rank-card strong{display:block;font-size:27px}.rank-card span{display:block;color:#bdc9da;font-size:11px;margin-top:3px;line-height:1.4}.rank-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:11px}.rank-stats>div{padding:12px;background:#f7f9fc;border-radius:11px}.rank-stats strong{display:block;font-size:16px;color:#0b1e3d;margin-top:4px}
+.attendance-hero{display:flex;align-items:baseline;gap:8px}.attendance-hero strong{font-size:29px;color:#0b1e3d}.attendance-hero span{font-size:11px;color:#8792a4}.streak-highlight{margin:12px 0;padding:9px 11px;border-radius:10px;background:#fff6df;color:#8a5c09;font-size:11px;font-weight:700}.monthly-attendance-list{display:grid;gap:7px;max-height:190px;overflow:auto}.month-att-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #edf0f5}.month-att-row strong{font-size:12px;color:#253550}.month-att-row span{font-size:10px;color:#7d8898}.month-att-row b{font-size:12px;color:#0b1e3d}
+.detail-list{display:grid;gap:0}.detail-list>div{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid #edf0f5}.detail-list strong{text-align:right;font-size:12px;color:#253550}
+.report-download-row{display:flex;gap:10px}.report-download-row select{flex:1;border:1px solid #dce2eb;border-radius:10px;padding:11px;background:#fff;color:#253550}.report-download-row .btn{margin:0}.report-preview{margin-top:13px;padding:13px;border-radius:11px;background:#f7f9fc;color:#66748a;font-size:12px;line-height:1.6}
+.student-notes-list li{padding:10px 0;border-bottom:1px solid #edf0f5}.student-notes-list a{color:#31598f;font-weight:700}
+@media(max-width:850px){.student-kpi-grid{grid-template-columns:1fr 1fr}.student-main-grid{grid-template-columns:1fr}.student-panel-wide{grid-column:auto}.student-hero-card{align-items:flex-start;flex-direction:column}.student-hero-copy{text-align:left}.student-lms-topbar{padding:0 17px}}
+@media(max-width:560px){.student-kpi-grid{grid-template-columns:1fr 1fr;padding:12px}.student-main-grid{padding:0 12px 12px}.student-hero-card{padding:21px}.student-panel{padding:16px}.performance-summary{grid-template-columns:1fr 1fr}.performance-summary>div:last-child{grid-column:span 2}.report-download-row{flex-direction:column}.report-download-row .btn{width:100%}}
 </style>
 </head>
 <body>
 
 <div id="student-dashboard">
   <div class="wrap">
-    <div class="dash-panel">
-      <div class="dash-top">
-        <div style="display:flex;align-items:center;gap:14px;">
+    <div class="student-lms-shell">
+      <div class="student-lms-topbar">
+        <div class="student-brand-lockup">
+          <div class="student-brand-mark">∑</div>
+          <div><strong>Maths Pathshala</strong><span>Student Learning Portal</span></div>
+        </div>
+        <button class="dash-logout" id="dash-refresh-btn">↻ Refresh</button>
+      </div>
+
+      <div class="student-hero-card">
+        <div class="student-identity">
           <div class="dash-avatar" id="dash-avatar">S</div>
           <div>
-            <span class="dash-member-badge">⭐ Verified Student</span>
-            <div class="dash-welcome">Welcome, <span id="dash-name">Student</span></div>
+            <span class="dash-member-badge">✓ Verified Student</span>
+            <div class="dash-welcome">Welcome back, <span id="dash-name">Student</span></div>
             <div class="dash-email" id="dash-email"></div>
             <span class="batch-highlight" id="dash-batch-highlight" style="display:none;"></span>
           </div>
         </div>
-        <div style="display:flex;gap:8px;">
-          <button class="dash-logout" id="dash-refresh-btn">↻ Refresh</button>
+        <div class="student-hero-copy">
+          <span>YOUR ACADEMIC SNAPSHOT</span>
+          <strong>BUILDING STRONG FOUNDATION IN MATHEMATICS</strong>
+          <small>Concepts that last. Confidence that grows. Progress you can see.</small>
         </div>
       </div>
+
       <div class="dash-notices" id="dash-notices"></div>
-      <div class="dash-notices" id="dash-homework"></div>
+
       <div id="dash-found-content">
-        <div class="dash-grid">
-          <div class="dash-box">
-            <div class="dash-box-label">💰 Fee status</div>
+        <div class="student-kpi-grid">
+          <div class="student-kpi"><span>Attendance</span><strong id="dash-kpi-attendance">—</strong><small id="dash-kpi-attendance-sub">Monthly view available below</small></div>
+          <div class="student-kpi"><span>Current streak</span><strong id="dash-kpi-streak">—</strong><small>Consecutive present classes</small></div>
+          <div class="student-kpi"><span>Batch rank</span><strong id="dash-kpi-rank">—</strong><small id="dash-kpi-rank-sub">Based on recorded tests</small></div>
+          <div class="student-kpi"><span>Best in batch</span><strong id="dash-kpi-highest">—</strong><small>Highest recorded test score</small></div>
+        </div>
+
+        <div class="student-main-grid">
+          <div class="student-panel student-panel-wide">
+            <div class="student-panel-head"><div><span class="panel-kicker">ACADEMIC PERFORMANCE</span><h3>Test Performance</h3></div><span class="panel-pill">Live records</span></div>
+            <div class="performance-summary">
+              <div><span>Average score</span><strong id="dash-average-score">—</strong></div>
+              <div><span>Tests attempted</span><strong id="dash-tests-count">0</strong></div>
+              <div><span>Best score</span><strong id="dash-best-score">—</strong></div>
+            </div>
+            <div class="score-chart-wrap student-score-chart"><canvas id="score-chart"></canvas></div>
+            <ul class="score-list student-score-list" id="dash-scores-list"><li>No test scores yet</li></ul>
+          </div>
+
+          <div class="student-panel">
+            <div class="student-panel-head"><div><span class="panel-kicker">BATCH</span><h3>Your Position</h3></div></div>
+            <div class="rank-card"><div class="rank-medal">#</div><div><strong id="dash-rank-big">—</strong><span id="dash-rank-detail">Batch rank will appear after tests are recorded.</span></div></div>
+            <div class="rank-stats"><div><span>Batch size</span><strong id="dash-batch-size">—</strong></div><div><span>Batch highest</span><strong id="dash-batch-highest">—</strong></div></div>
+          </div>
+
+          <div class="student-panel">
+            <div class="student-panel-head"><div><span class="panel-kicker">ATTENDANCE</span><h3>Monthly Attendance</h3></div></div>
+            <div class="attendance-hero"><strong id="dash-attendance-pct">—</strong><span>overall attendance</span></div>
+            <div class="att-progress-track"><div class="att-progress-fill" id="att-progress-fill" style="width:0%;"></div></div>
+            <div class="streak-highlight" id="dash-streak-highlight">🔥 Keep your attendance streak going</div>
+            <div class="monthly-attendance-list" id="dash-monthly-attendance"><div class="empty-state">No attendance recorded yet.</div></div>
+          </div>
+
+          <div class="student-panel">
+            <div class="student-panel-head"><div><span class="panel-kicker">CLASS DETAILS</span><h3>Your Schedule</h3></div></div>
+            <div class="detail-list">
+              <div><span>Class &amp; batch</span><strong id="dash-class-batch">—</strong></div>
+              <div><span>Batch timing</span><strong id="dash-batch-value">—</strong></div>
+              <div><span>Next test</span><strong id="dash-next-test">—</strong></div>
+              <div><span>Joined on</span><strong id="dash-admission-date">—</strong></div>
+            </div>
+          </div>
+
+          <div class="student-panel student-panel-wide">
+            <div class="student-panel-head"><div><span class="panel-kicker">MONTHLY REPORTS</span><h3>Progress Reports</h3><p>Your month, your progress, your report — professionally prepared for you and your parents.</p></div></div>
+            <div class="report-download-row">
+              <select id="dash-report-month"></select>
+              <button class="btn btn-primary" id="dash-download-report">↓ Download Monthly Report</button>
+            </div>
+            <div class="report-preview" id="dash-report-preview">Select a month to preview attendance, tests and progress.</div>
+          </div>
+
+          <div class="student-panel">
+            <div class="student-panel-head"><div><span class="panel-kicker">FEES</span><h3>Fee Status</h3></div></div>
             <span class="dash-fee-badge" id="dash-fee-badge">—</span>
             <ul class="payment-history-list" id="dash-monthly-fee-list"></ul>
           </div>
-          <div class="dash-box">
-            <div class="dash-box-label">🎓 Joined on</div>
-            <div class="dash-box-value" id="dash-admission-date">—</div>
-          </div>
-          <div class="dash-box">
-            <div class="dash-box-label">🕒 Batch timing</div>
-            <div class="dash-box-value" id="dash-batch-value">—</div>
-          </div>
-          <div class="dash-box">
-            <div class="dash-box-label">📅 Next class</div>
-            <div class="dash-box-value" id="dash-next-class">—</div>
-          </div>
-          <div class="dash-box">
-            <div class="dash-box-label">📝 Next test</div>
-            <div class="dash-box-value" id="dash-next-test">—</div>
-          </div>
-          <div class="dash-box">
-            <div class="dash-box-label">📊 Attendance</div>
-            <div class="dash-attendance-pct" id="dash-attendance-pct">—</div>
-            <div class="att-progress-track"><div class="att-progress-fill" id="att-progress-fill" style="width:0%;"></div></div>
-            <ul class="dash-attendance-list" id="dash-attendance-list"><li>No attendance recorded yet</li></ul>
-          </div>
-          <div class="dash-box">
-            <div class="dash-box-label">📘 Your notes</div>
-            <ul class="dash-notes-list" id="dash-notes-list"><li>No notes assigned yet</li></ul>
-          </div>
-          <div class="dash-box score-box">
-            <div class="dash-box-label">📈 Test scores &amp; progress</div>
-            <ul class="score-list" id="dash-scores-list"><li>No test scores yet</li></ul>
-            <div class="score-chart-wrap"><canvas id="score-chart"></canvas></div>
+
+          <div class="student-panel student-panel-wide">
+            <div class="student-panel-head"><div><span class="panel-kicker">LEARNING MATERIAL</span><h3>Your Notes</h3></div></div>
+            <ul class="dash-notes-list student-notes-list" id="dash-notes-list"><li>No notes assigned yet</li></ul>
           </div>
         </div>
       </div>
+
       <div id="dash-not-found-content" style="display:none;">
-        <div class="dash-not-found">
-          We couldn't find your student record. <a href="javascript:void(0)" id="dash-not-found-wa" target="_blank">Message us on WhatsApp</a> to get set up.
-        </div>
+        <div class="dash-not-found">We couldn't find your student record. <a href="javascript:void(0)" id="dash-not-found-wa" target="_blank">Message us on WhatsApp</a> to get set up.</div>
       </div>
     </div>
   </div>
@@ -1247,13 +1297,17 @@
 </footer>
 
 <div class="popup-overlay" id="seats-popup">
-  <div class="popup-card">
+  <div class="popup-card launch-popup-card">
     <button class="popup-close" id="popup-close" aria-label="Close">✕</button>
-    <div class="popup-badge">Admissions open</div>
-    <h3 id="popup-batch-title">Join Maths Pathshala</h3>
-    <p>Strong concepts, personal attention and small offline batches for serious school and board preparation. Hurry — limited admissions are taken in each batch.</p>
+    <div class="launch-popup-top"><span class="popup-badge">🚀 NEW BATCH LAUNCH</span><span class="launch-live-dot">● LIVE</span></div>
+    <div class="launch-popup-class" id="popup-batch-class">MATHS PATHSHALA</div>
+    <h3 id="popup-batch-title">Complete Maths — Special Launch</h3>
+    <p id="popup-batch-subtitle">A focused complete-syllabus Maths batch for serious board preparation.</p>
+    <div class="launch-price" id="popup-batch-price"></div>
+    <div class="launch-offer" id="popup-batch-offer"></div>
+    <div class="launch-popup-points"><span>✓ Complete syllabus</span><span>✓ Small batch</span><span>✓ Regular tests</span><span>✓ Personal doubt support</span></div>
     <div class="popup-ctas">
-      <a href="javascript:void(0)" data-scroll="register" id="popup-register" class="btn btn-primary" style="justify-content:center;">Join now</a>
+      <a href="javascript:void(0)" data-scroll="register" id="popup-register" class="btn btn-primary" style="justify-content:center;">Reserve My Seat</a>
       <a href="javascript:void(0)" id="popup-wa" target="_blank" class="btn btn-outline" style="justify-content:center;">Ask on WhatsApp</a>
     </div>
   </div>
@@ -1311,15 +1365,9 @@
     });
   });
 
-  // Limited seats popup
+  // Batch-launch popup is opened by loadSeatsDisplay() when an active launch exists.
   var popup = document.getElementById('seats-popup');
   document.getElementById('popup-wa').href = waLink;
-  if(!sessionStorage.getItem('seatsPopupSeen')){
-    setTimeout(function(){
-      popup.classList.add('show');
-      sessionStorage.setItem('seatsPopupSeen', 'true');
-    }, 6000);
-  }
   function closePopup(){ popup.classList.remove('show'); }
   document.getElementById('popup-close').addEventListener('click', closePopup);
   document.getElementById('popup-register').addEventListener('click', closePopup);
@@ -1361,14 +1409,51 @@
 
   async function loadSeatsDisplay(){
     let batchStats = [];
-    try{ const snap = await getDoc(doc(db, "stats", "public")); if(snap.exists()) batchStats = snap.data().batchStats || []; } catch(err){ batchStats = []; }
+    try{
+      const snap = await getDoc(doc(db, "stats", "public"));
+      if(snap.exists()) batchStats = snap.data().batchStats || [];
+    } catch(err){ batchStats = []; }
+
     const grid = document.getElementById('batch-cards-grid');
     if(grid){
-      if(batchStats.length === 0){ grid.innerHTML = '<div style="color:var(--muted);font-size:14px;">New batch details will appear here soon. Call or WhatsApp us for current admissions.</div>'; }
-      else { grid.innerHTML = batchStats.map(b => `<div class="batch-card"><div class="batch-card-class">Class ${b.class}</div><div class="batch-card-name">${b.name}</div><p style="font-size:13.5px;color:#D7E0EE;line-height:1.65;margin:8px 0 16px;">${b.intro || 'A focused offline coaching batch with structured teaching, regular practice and personal doubt support.'}</p><div class="seats-label">🔥 Limited admissions · Enroll early</div></div>`).join(''); }
+      if(batchStats.length === 0){
+        grid.innerHTML = '<div style="color:var(--muted);font-size:14px;">New batch details will appear here soon. Call or WhatsApp us for current admissions.</div>';
+      } else {
+        grid.innerHTML = batchStats.map(b => {
+          const hasOffer = Number(b.baseFee) > 0 && Number(b.offerPercent) > 0;
+          const launch = b.launchActive;
+          const price = Number(b.launchPrice || b.baseFee || 0);
+          return `<div class="batch-card ${launch?'batch-card-launch':''}">
+            <div class="batch-card-class">Class ${b.class}</div>
+            ${launch ? '<div class="batch-launch-pill">🚀 New launch</div>' : ''}
+            <div class="batch-card-name">${b.name}</div>
+            <p style="font-size:13.5px;color:#D7E0EE;line-height:1.65;margin:8px 0 16px;">${b.intro || 'A focused offline coaching batch with structured teaching, regular practice and personal doubt support.'}</p>
+            ${hasOffer ? `<div class="public-offer-price"><span>Launch offer</span><strong>₹${price.toLocaleString('en-IN')}</strong><s>₹${Number(b.baseFee).toLocaleString('en-IN')}</s><em>${b.offerPercent}% OFF</em></div>` : ''}
+            <div class="seats-label">🔥 Limited admissions · Enroll early</div>
+          </div>`;
+        }).join('');
+      }
     }
-    const popupTitle = document.getElementById('popup-batch-title');
-    if(popupTitle) popupTitle.textContent = 'Build strong concepts in a small batch';
+
+    const launch = batchStats.find(b => b.launchActive);
+    if(launch){
+      const popup = document.getElementById('seats-popup');
+      document.getElementById('popup-batch-class').textContent = `CLASS ${launch.class} · ${launch.name}`;
+      document.getElementById('popup-batch-title').textContent = launch.launchTitle || `${launch.name} — Admissions Open`;
+      document.getElementById('popup-batch-subtitle').textContent = launch.launchSubtitle || launch.intro || 'A focused Maths batch for serious students.';
+      const priceEl = document.getElementById('popup-batch-price');
+      const offerEl = document.getElementById('popup-batch-offer');
+      if(Number(launch.launchPrice || launch.baseFee) > 0){
+        priceEl.innerHTML = `₹${Number(launch.launchPrice || launch.baseFee).toLocaleString('en-IN')} <small>launch fee</small>`;
+        offerEl.innerHTML = launch.offerPercent ? `<s>₹${Number(launch.baseFee).toLocaleString('en-IN')}</s> <strong>${launch.offerPercent}% OFF</strong> · Limited launch offer` : 'Special launch pricing';
+      } else {
+        priceEl.textContent = 'Special launch admission';
+        offerEl.textContent = 'Limited launch offer · Contact us for details';
+      }
+      const launchWa = `${waLink}${waLink.includes('?')?'&':'?'}text=${encodeURIComponent(`Hi, I want details for the ${launch.name} batch (Class ${launch.class}).`)}`;
+      document.getElementById('popup-wa').href = launchWa;
+      setTimeout(() => popup.classList.add('show'), 1400);
+    }
   }
   loadSeatsDisplay();
 
@@ -1447,7 +1532,6 @@
       isLoggedIn = true;
       await loadStudentDashboard(user.email);
       await loadNotices();
-      await loadHomework();
       studentLoginBtn.textContent = 'Logout';
       mobileLoginBtn.textContent = 'Logout';
 
@@ -1465,7 +1549,6 @@
       btn.textContent = 'Refreshing...';
       await loadStudentDashboard(auth.currentUser.email);
       await loadNotices();
-      await loadHomework();
       btn.textContent = '↻ Refresh';
     }
   });
@@ -1501,7 +1584,7 @@
   }
 
   async function loadHomework(){
-    const box = document.getElementById('dash-homework');
+    const box = document.getElementById('dash-homework-removed');
     try{
       const q = query(collection(db, "homework"), orderBy("createdAt", "desc"), limit(15));
       const snap = await getDocs(q);
@@ -1544,6 +1627,101 @@
     }
   }
 
+  function parsePortalDate(value){
+    if(!value) return null;
+    if(/^\d{4}-\d{2}-\d{2}$/.test(value)) return new Date(value + 'T00:00:00');
+    const d = new Date(value);
+    if(!isNaN(d.getTime())) return d;
+    const m = String(value).match(/^(\d{1,2})\s+([A-Za-z]{3})/);
+    if(m){
+      const year = new Date().getFullYear();
+      const x = new Date(`${m[1]} ${m[2]} ${year} 00:00:00`);
+      if(!isNaN(x.getTime())) return x;
+    }
+    return null;
+  }
+  function monthKeyForDate(value){ const d=parsePortalDate(value); return d ? `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}` : ''; }
+  function monthLabel(key){
+    if(!key) return 'Unknown';
+    const [y,m]=key.split('-').map(Number); return new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+  }
+  function aggregateAttendance(log){
+    const map={}; (Array.isArray(log)?log:[]).forEach(e=>{ const k=monthKeyForDate(e.date); if(!k)return; if(!map[k])map[k]={present:0,total:0}; map[k].total++; if(e.status==='Present')map[k].present++; });
+    return Object.entries(map).sort((a,b)=>b[0].localeCompare(a[0])).map(([key,v])=>({...v,key,label:monthLabel(key),percent:v.total?Math.round(v.present/v.total*100):0}));
+  }
+  function calculateStreak(log){
+    const ordered=(Array.isArray(log)?log:[]).map(e=>({d:parsePortalDate(e.date),status:e.status})).filter(x=>x.d).sort((a,b)=>b.d-a.d);
+    let streak=0; for(const x of ordered){ if(x.status==='Present') streak++; else break; } return streak;
+  }
+  function scoresForMonth(scores,key){ return (Array.isArray(scores)?scores:[]).filter(s=>monthKeyForDate(s.date)===key); }
+  function scorePct(s){ return s && Number(s.max)>0 ? Math.round(Number(s.score)/Number(s.max)*100) : 0; }
+  function renderMonthlyReportOptions(data){
+    const select=document.getElementById('dash-report-month'), preview=document.getElementById('dash-report-preview');
+    const keys=new Set(); (data.attendance?.log||[]).forEach(e=>{const k=monthKeyForDate(e.date);if(k)keys.add(k)}); (data.testScores||[]).forEach(s=>{const k=monthKeyForDate(s.date);if(k)keys.add(k)}); (data.monthlyFees||[]).forEach(f=>{if(f.monthKey)keys.add(f.monthKey)});
+    const arr=[...keys].sort((a,b)=>b.localeCompare(a)); select.innerHTML=arr.length?arr.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join(''):'<option value="">No monthly data yet</option>';
+    const render=()=>{
+      const key=select.value; if(!key){preview.textContent='Monthly report will appear here once attendance or test records are available.';return;}
+      const att=aggregateAttendance(data.attendance?.log||[]).find(x=>x.key===key)||{present:0,total:0,percent:0}; const tests=scoresForMonth(data.testScores,key); const avg=tests.length?Math.round(tests.reduce((a,s)=>a+scorePct(s),0)/tests.length):0; const best=tests.length?Math.max(...tests.map(scorePct)):0;
+      preview.innerHTML=`<strong>${monthLabel(key)}</strong> · Attendance ${att.percent}% (${att.present}/${att.total}) · ${tests.length} test${tests.length===1?'':'s'} · Average ${tests.length?avg+'%':'—'} · Best ${tests.length?best+'%':'—'}`;
+    }; select.onchange=render; render();
+    document.getElementById('dash-download-report').onclick=()=>openStudentMonthlyReport(data,select.value);
+  }
+  function openStudentMonthlyReport(data,key){
+    if(!key){alert('No monthly records available yet.');return;}
+    const att=aggregateAttendance(data.attendance?.log||[]).find(x=>x.key===key)||{present:0,total:0,percent:0};
+    const tests=scoresForMonth(data.testScores,key);
+    const avg=tests.length?Math.round(tests.reduce((a,s)=>a+scorePct(s),0)/tests.length):0;
+    const best=tests.length?Math.max(...tests.map(scorePct)):0;
+    const rank=data.batchStats?.monthly?.[key]?.rank || data.batchStats?.rank;
+    const size=data.batchStats?.monthly?.[key]?.size || data.batchStats?.size;
+    const highest=data.batchStats?.monthly?.[key]?.highest ?? data.batchStats?.highest;
+    const remark = tests.length && avg >= 85 ? 'Excellent academic consistency this month. Keep pushing your limits.' :
+                    tests.length && avg >= 70 ? 'Good progress this month. Focus on accuracy and regular revision.' :
+                    'Stay consistent, strengthen fundamentals and keep practising every week.';
+    const testRows = tests.length ? tests.map(s=>`<tr><td>${s.date||''}</td><td>${s.name||'Test'}</td><td><b>${s.score}/${s.max}</b></td><td>${scorePct(s)}%</td></tr>`).join('') : '<tr><td colspan="4">No test recorded for this month.</td></tr>';
+    const win=window.open('','_blank','width=980,height=980');
+    if(!win)return;
+    win.document.write(`<!doctype html><html><head><title>Maths Pathshala · ${data.name||'Student'} · ${monthLabel(key)}</title>
+    <style>
+      @page{size:A4;margin:12mm}
+      *{box-sizing:border-box}body{margin:0;background:#eef2f7;font-family:Inter,Arial,sans-serif;color:#14233b}
+      .page{max-width:820px;margin:24px auto;background:#fff;min-height:1120px;border:1px solid #e4e9f1;box-shadow:0 18px 50px rgba(8,27,56,.12);overflow:hidden}
+      .hero{padding:34px 38px;background:linear-gradient(135deg,#071a35,#153c70);color:#fff;position:relative}
+      .hero:after{content:"";position:absolute;width:170px;height:170px;border:1px solid rgba(245,166,35,.35);border-radius:50%;right:-45px;top:-65px}
+      .brand{font-size:11px;letter-spacing:.16em;color:#f5a623;font-weight:800}.tagline{font-size:11px;letter-spacing:.05em;opacity:.8;margin-top:4px}
+      h1{font-size:31px;margin:18px 0 5px}.meta{font-size:13px;color:#dce6f5}
+      .body{padding:28px 38px}.period{display:flex;justify-content:space-between;gap:15px;align-items:end;margin-bottom:18px}.period h2{margin:0;font-size:22px}.period span{font-size:11px;color:#77849a}
+      .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpi{padding:15px;border:1px solid #e5eaf1;border-radius:12px;background:#f8fafc}.kpi small{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#7d8a9e}.kpi b{display:block;font-size:23px;margin-top:6px;color:#0b1e3d}
+      h3{font-size:15px;margin:26px 0 10px;padding-bottom:8px;border-bottom:1px solid #e7ebf1;color:#0b1e3d}.remark{padding:15px 17px;border-left:4px solid #f5a623;background:#fff8e9;border-radius:10px;font-size:13px;line-height:1.65}
+      table{width:100%;border-collapse:collapse}th,td{padding:10px 8px;border-bottom:1px solid #e8edf3;text-align:left;font-size:11.5px}th{font-size:10px;text-transform:uppercase;color:#7a8799;letter-spacing:.05em;background:#f8fafc}
+      .attendance{display:grid;grid-template-columns:1fr 2fr;gap:12px}.attendance-box{padding:16px;border-radius:12px;background:#0b1e3d;color:#fff}.attendance-box b{font-size:30px;color:#f5a623}.attendance-box small{display:block;color:#c9d4e5;margin-top:4px}.attendance-copy{padding:16px;border:1px solid #e5eaf1;border-radius:12px;font-size:12px;line-height:1.7;color:#66748a}
+      .footer{margin-top:32px;padding-top:15px;border-top:1px solid #e7ebf1;display:flex;justify-content:space-between;gap:15px;font-size:10px;color:#7d899b}.footer strong{color:#0b1e3d}
+      @media(max-width:650px){.page{margin:0;box-shadow:none}.hero,.body{padding:25px 20px}.kpis{grid-template-columns:1fr 1fr}.attendance{grid-template-columns:1fr}}
+      @media print{body{background:#fff}.page{margin:0;border:0;box-shadow:none}}
+    </style></head><body><div class="page">
+      <section class="hero"><div class="brand">MATHS PATHSHALA · MONTHLY ACADEMIC REPORT</div><div class="tagline">BUILDING STRONG FOUNDATION IN MATHEMATICS</div>
+      <h1>${data.name||'Student'}</h1><div class="meta">Class ${data.class||'—'} · ${data.batchName||'Batch not assigned'}</div></section>
+      <section class="body">
+        <div class="period"><h2>${monthLabel(key)}</h2><span>Prepared for student & parent · Maths Pathshala</span></div>
+        <div class="kpis">
+          <div class="kpi"><small>Attendance</small><b>${att.percent}%</b></div>
+          <div class="kpi"><small>Test Average</small><b>${tests.length?avg+'%':'—'}</b></div>
+          <div class="kpi"><small>Batch Rank</small><b>${rank&&size?'#'+rank:'—'}</b></div>
+          <div class="kpi"><small>Best Score</small><b>${tests.length?best+'%':'—'}</b></div>
+        </div>
+        <h3>Attendance Snapshot</h3>
+        <div class="attendance"><div class="attendance-box"><b>${att.present}/${att.total}</b><small>present out of recorded classes</small></div><div class="attendance-copy">Monthly attendance: <strong>${att.percent}%</strong>. Regular attendance builds the consistency needed for strong mathematical foundations.</div></div>
+        <h3>Test Performance</h3>
+        <table><tr><th>Date</th><th>Test</th><th>Score</th><th>Percentage</th></tr>${testRows}</table>
+        <h3>Batch Performance</h3>
+        <div class="attendance-copy">Batch: <strong>${data.batchName||'—'}</strong> · Batch size: <strong>${size||'—'}</strong> · Highest recorded score: <strong>${highest!=null?highest+'%':'—'}</strong></div>
+        <h3>Teacher's Monthly Remark</h3>
+        <div class="remark">${remark}</div>
+        <div class="footer"><span><strong>Maths Pathshala</strong><br>Building Strong Foundation in Mathematics</span><span>Generated on ${new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}<br>For academic progress tracking</span></div>
+      </section></div><script>setTimeout(()=>window.print(),350)<\/script></body></html>`);
+    win.document.close();win.focus();
+  }
+
   async function loadStudentDashboard(email){
     document.getElementById('dash-name').innerHTML = '<span class="spinner"></span>Loading...';
     studentDashboard.style.display = 'block';
@@ -1551,147 +1729,24 @@
     const docSnap = await getDoc(docRef);
     const foundContent = document.getElementById('dash-found-content');
     const notFoundContent = document.getElementById('dash-not-found-content');
-
     document.getElementById('dash-email').textContent = email;
-
-    if(!docSnap.exists()){
-      foundContent.style.display = 'none';
-      notFoundContent.style.display = 'block';
-      document.getElementById('dash-name').textContent = 'Student';
-      studentDashboard.style.display = 'block';
-      return;
-    }
-
-    const data = docSnap.data();
-    foundContent.style.display = 'block';
-    notFoundContent.style.display = 'none';
-
-    document.getElementById('dash-name').textContent = data.name || "Student";
-    document.getElementById('dash-avatar').textContent = (data.name || "S").trim().charAt(0).toUpperCase();
-
-    currentStudentClass = data.class || null;
-    currentStudentBatchName = data.batchName || null;
-
-    const batchHighlight = document.getElementById('dash-batch-highlight');
-    if(data.class && data.batchName){
-      batchHighlight.textContent = `🎓 Class ${data.class} · ${data.batchName}`;
-      batchHighlight.style.display = 'inline-block';
-    } else {
-      batchHighlight.style.display = 'none';
-    }
-
-    const feeBadge = document.getElementById('dash-fee-badge');
-    if(data.feeStatus === 'Paid'){
-      feeBadge.textContent = 'Paid';
-      feeBadge.className = 'dash-fee-badge dash-fee-paid';
-    } else {
-      feeBadge.textContent = data.feeStatus || 'Due';
-      feeBadge.className = 'dash-fee-badge dash-fee-due';
-    }
-
-    const admissionBox = document.getElementById('dash-admission-date');
-    if(data.admissionDate){
-      const d = new Date(data.admissionDate + 'T00:00:00');
-      admissionBox.textContent = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-    } else {
-      admissionBox.textContent = 'Not set yet';
-    }
-
-    const monthlyFeeList = document.getElementById('dash-monthly-fee-list');
-    monthlyFeeList.innerHTML = '';
-    if(Array.isArray(data.monthlyFees) && data.monthlyFees.length > 0){
-      const sorted = data.monthlyFees.slice().sort((a, b) => (b.monthKey || '').localeCompare(a.monthKey || ''));
-      sorted.forEach(m => {
-        const li = document.createElement('li');
-        const statusClass = m.status === 'Paid' ? 'att-present' : 'att-absent';
-        li.innerHTML = `<span>${m.monthLabel}</span><span class="${statusClass}">${m.status}</span>`;
-        monthlyFeeList.appendChild(li);
-      });
-    } else {
-      monthlyFeeList.innerHTML = '<li style="color:#B9C2D6;">No monthly records yet</li>';
-    }
-
-    document.getElementById('dash-batch-value').textContent = data.batchTiming || 'Not assigned yet';
-    document.getElementById('dash-next-class').textContent = data.nextClass || 'Not scheduled yet';
-    document.getElementById('dash-next-test').textContent = data.nextTest || 'None scheduled';
-
-    if(data.nextTest && data.nextTest.trim()){
-      const seenKey = 'testSeen_' + email;
-      const lastSeenTest = localStorage.getItem(seenKey);
-      if(lastSeenTest !== data.nextTest){
-        document.getElementById('test-popup-title').textContent = data.nextTest;
-        document.getElementById('test-popup').classList.add('show');
-        document.getElementById('test-popup-ok').onclick = () => {
-          localStorage.setItem(seenKey, data.nextTest);
-          document.getElementById('test-popup').classList.remove('show');
-        };
-        document.getElementById('test-popup-close').onclick = () => {
-          localStorage.setItem(seenKey, data.nextTest);
-          document.getElementById('test-popup').classList.remove('show');
-        };
-      }
-    }
-
-    const attPct = document.getElementById('dash-attendance-pct');
-    const attList = document.getElementById('dash-attendance-list');
-    if(data.attendance && typeof data.attendance.percent === 'number'){
-      let streakHtml = '';
-      if(Array.isArray(data.attendance.log) && data.attendance.log.length > 0){
-        let streak = 0;
-        for(const entry of data.attendance.log){
-          if(entry.status === 'Present'){ streak++; } else { break; }
-        }
-        if(streak >= 2){
-          streakHtml = `<span class="streak-badge">🔥 ${streak} day streak</span>`;
-        }
-      }
-      attPct.innerHTML = data.attendance.percent + '% attendance' + streakHtml;
-      document.getElementById('att-progress-fill').style.width = data.attendance.percent + '%';
-      attList.innerHTML = '';
-      if(Array.isArray(data.attendance.log) && data.attendance.log.length > 0){
-        data.attendance.log.forEach(entry => {
-          const li = document.createElement('li');
-          const statusClass = entry.status === 'Present' ? 'att-present' : 'att-absent';
-          li.innerHTML = `<span>${entry.date}</span><span class="${statusClass}">${entry.status}</span>`;
-          attList.appendChild(li);
-        });
-      } else {
-        attList.innerHTML = '<li>No recent records</li>';
-      }
-    } else {
-      attPct.textContent = '—';
-      document.getElementById('att-progress-fill').style.width = '0%';
-      attList.innerHTML = '<li>No attendance recorded yet</li>';
-    }
-
-    const notesList = document.getElementById('dash-notes-list');
-    notesList.innerHTML = '';
-    if(Array.isArray(data.notes) && data.notes.length > 0){
-      data.notes.forEach(note => {
-        const li = document.createElement('li');
-        li.innerHTML = `<span>${note.title}</span><span style="display:flex;gap:6px;"><a href="${note.url}" target="_blank">View</a><a href="${note.url}" download>Download</a></span>`;
-        notesList.appendChild(li);
-      });
-    } else {
-      notesList.innerHTML = '<li>No notes assigned yet</li>';
-    }
-
-    const scoresList = document.getElementById('dash-scores-list');
-    scoresList.innerHTML = '';
-    if(Array.isArray(data.testScores) && data.testScores.length > 0){
-      data.testScores.forEach(s => {
-        const li = document.createElement('li');
-        li.innerHTML = `<span>${s.date} — ${s.name}</span><span>${s.score}/${s.max}</span>`;
-        scoresList.appendChild(li);
-      });
-      renderScoreChart(data.testScores);
-    } else {
-      scoresList.innerHTML = '<li>No test scores yet</li>';
-      const canvas = document.getElementById('score-chart');
-      if(canvas && window.scoreChartInstance){ window.scoreChartInstance.destroy(); }
-    }
-
-    studentDashboard.style.display = 'block';
+    if(!docSnap.exists()){ foundContent.style.display='none'; notFoundContent.style.display='block'; document.getElementById('dash-name').textContent='Student'; return; }
+    const data=docSnap.data(); foundContent.style.display='block'; notFoundContent.style.display='none';
+    document.getElementById('dash-name').textContent=data.name||'Student'; document.getElementById('dash-avatar').textContent=(data.name||'S').trim().charAt(0).toUpperCase();
+    currentStudentClass=data.class||null; currentStudentBatchName=data.batchName||null;
+    const bh=document.getElementById('dash-batch-highlight'); bh.textContent=data.class&&data.batchName?`🎓 Class ${data.class} · ${data.batchName}`:''; bh.style.display=data.class&&data.batchName?'inline-block':'none';
+    document.getElementById('dash-class-batch').textContent=data.class&&data.batchName?`Class ${data.class} · ${data.batchName}`:'—';
+    const feeBadge=document.getElementById('dash-fee-badge'); feeBadge.textContent=data.feeStatus||'Due'; feeBadge.className='dash-fee-badge '+(data.feeStatus==='Paid'?'dash-fee-paid':'dash-fee-due');
+    document.getElementById('dash-admission-date').textContent=data.admissionDate?new Date(data.admissionDate+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'Not set yet';
+    const monthlyFeeList=document.getElementById('dash-monthly-fee-list'); monthlyFeeList.innerHTML=''; const mf=Array.isArray(data.monthlyFees)?data.monthlyFees.slice().sort((a,b)=>(b.monthKey||'').localeCompare(a.monthKey||'')):[]; monthlyFeeList.innerHTML=mf.length?mf.slice(0,6).map(m=>`<li><span>${m.monthLabel||monthLabel(m.monthKey)}</span><span class="${m.status==='Paid'?'att-present':'att-absent'}">${m.status}</span></li>`).join(''):'<li style="color:#B9C2D6">No monthly records yet</li>';
+    document.getElementById('dash-batch-value').textContent=data.batchTiming||'Not assigned yet'; document.getElementById('dash-next-class').textContent=data.nextClass||'Not scheduled yet'; document.getElementById('dash-next-test').textContent=data.nextTest||'None scheduled';
+    const log=Array.isArray(data.attendance?.log)?data.attendance.log:[]; const overall=typeof data.attendance?.percent==='number'?data.attendance.percent:(log.length?Math.round(log.filter(e=>e.status==='Present').length/log.length*100):0); const streak=calculateStreak(log); document.getElementById('dash-attendance-pct').textContent=overall+'%'; document.getElementById('dash-kpi-attendance').textContent=overall+'%'; document.getElementById('dash-kpi-streak').textContent=streak?`🔥 ${streak}`:'—'; document.getElementById('att-progress-fill').style.width=overall+'%'; document.getElementById('dash-streak-highlight').textContent=streak?`🔥 ${streak} consecutive present classes — keep it going!`:'🔥 Your attendance streak starts with the next class.';
+    const months=aggregateAttendance(log); document.getElementById('dash-monthly-attendance').innerHTML=months.length?months.map(m=>`<div class="month-att-row"><strong>${m.label}</strong><span>${m.present}/${m.total} present</span><b>${m.percent}%</b></div>`).join(''):'<div class="empty-state">No attendance recorded yet.</div>';
+    const stats=data.batchStats||{}; const rank=stats.rank&&stats.size?`#${stats.rank}`:'—'; document.getElementById('dash-kpi-rank').textContent=rank; document.getElementById('dash-kpi-rank-sub').textContent=stats.size?`Out of ${stats.size} students in your batch`:'Based on recorded tests'; document.getElementById('dash-rank-big').textContent=rank; document.getElementById('dash-rank-detail').textContent=stats.size?`You are ranked ${stats.rank} of ${stats.size} in your batch.`:'Rank will appear after batch test records are updated.'; document.getElementById('dash-batch-size').textContent=stats.size||'—'; document.getElementById('dash-batch-highest').textContent=stats.highest!=null?stats.highest+'%':'—'; document.getElementById('dash-kpi-highest').textContent=stats.highest!=null?stats.highest+'%':'—';
+    const scores=Array.isArray(data.testScores)?data.testScores:[]; const avg=scores.length?Math.round(scores.reduce((a,s)=>a+scorePct(s),0)/scores.length):0; const best=scores.length?Math.max(...scores.map(scorePct)):0; document.getElementById('dash-average-score').textContent=scores.length?avg+'%':'—'; document.getElementById('dash-tests-count').textContent=scores.length; document.getElementById('dash-best-score').textContent=scores.length?best+'%':'—'; const scoresList=document.getElementById('dash-scores-list'); scoresList.innerHTML=scores.length?scores.slice().reverse().map(s=>`<li><span>${s.date||''} — ${s.name||'Test'}</span><span>${s.score}/${s.max} · ${scorePct(s)}%</span></li>`).join(''):'<li>No test scores yet</li>'; if(scores.length)renderScoreChart(scores); else if(window.scoreChartInstance)window.scoreChartInstance.destroy();
+    const notesList=document.getElementById('dash-notes-list'); const notes=Array.isArray(data.notes)?data.notes:[]; notesList.innerHTML=notes.length?notes.map(n=>`<li><span>${n.title}</span><span><a href="${n.url}" target="_blank">View</a> · <a href="${n.url}" download>Download</a></span></li>`).join(''):'<li>No notes assigned yet</li>';
+    renderMonthlyReportOptions(data);
+    studentDashboard.style.display='block';
   }
 
   function renderScoreChart(scores){
@@ -1731,3 +1786,27 @@
 
 </body>
 </html>
+
+<style>
+/* Maths Pathshala premium cleanup */
+.mp-brand-ribbon{background:linear-gradient(90deg,#071a35,#102f5b);color:#fff;padding:10px 18px;text-align:center;font-size:11px;letter-spacing:.08em}
+.mp-brand-ribbon strong{display:block;margin-top:3px;font-size:13px;letter-spacing:.02em}
+#dash-homework,#homework,#dash-next-class,#next-class,.next-class-card,.homework-section,.homework-card{display:none!important}
+@media print{.mp-brand-ribbon{display:none}}
+</style>
+
+<style>
+.batch-card-launch{border-color:rgba(245,166,35,.55)!important;position:relative;overflow:hidden}
+.batch-card-launch:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 90% 0%,rgba(245,166,35,.16),transparent 35%);pointer-events:none}
+.public-offer-price{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:12px 0 15px}
+.public-offer-price span{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#f5c66d;font-weight:800;width:100%}
+.public-offer-price strong{font-size:26px;color:#fff}.public-offer-price s{color:#9aa9be;font-size:13px}.public-offer-price em{font-style:normal;background:#f5a623;color:#071a35;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:900}
+.launch-popup-card{max-width:510px!important;padding:30px!important}
+.launch-popup-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.launch-live-dot{font-size:10px;color:#62c98a;font-weight:900;letter-spacing:.08em}.launch-live-dot:first-letter{color:#62c98a}
+.launch-popup-class{font-size:11px;color:var(--amber);font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.launch-popup-card h3{font-size:28px!important;line-height:1.12!important;margin:8px 0 10px!important}.launch-popup-card>p{font-size:14px!important;line-height:1.7!important}
+.launch-price{font-size:34px;font-weight:900;color:var(--navy);margin-top:18px}.launch-price small{font-size:11px;color:var(--muted);font-weight:600}.launch-offer{margin-top:3px;color:var(--muted);font-size:12px}.launch-offer strong{color:#198754}
+.launch-popup-points{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:18px 0;font-size:12px;color:#42536c}
+.launch-popup-points span{padding:9px 10px;background:#f7f9fc;border-radius:9px}
+@media(max-width:600px){.launch-popup-points{grid-template-columns:1fr}.launch-popup-card h3{font-size:24px!important}}
+</style>
