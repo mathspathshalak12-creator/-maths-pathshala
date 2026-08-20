@@ -1564,6 +1564,8 @@
       });
   });
 
+  let dashboardAutoRefreshTimer = null;
+
   onAuthStateChanged(auth, async (user) => {
     if(user){
       isLoggedIn = true;
@@ -1572,7 +1574,17 @@
       studentLoginBtn.textContent = 'Logout';
       mobileLoginBtn.textContent = 'Logout';
 
+      // Keep the dashboard in sync with admin mark entries. Firebase data can change
+      // while the student page is already open, so refresh the student document automatically.
+      if(dashboardAutoRefreshTimer) clearInterval(dashboardAutoRefreshTimer);
+      dashboardAutoRefreshTimer = setInterval(async () => {
+        if(auth.currentUser && document.visibilityState !== 'hidden'){
+          await loadStudentDashboard(auth.currentUser.email);
+        }
+      }, 10000);
+
     } else {
+      if(dashboardAutoRefreshTimer){ clearInterval(dashboardAutoRefreshTimer); dashboardAutoRefreshTimer = null; }
       isLoggedIn = false;
       studentDashboard.style.display = 'none';
       studentLoginBtn.textContent = 'Student Login';
