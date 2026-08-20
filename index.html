@@ -655,7 +655,7 @@
 .rank-card{display:flex;gap:14px;align-items:center;padding:18px;border-radius:14px;background:linear-gradient(135deg,#081c3a,#173e70);color:#fff}.rank-medal{width:48px;height:48px;border-radius:14px;background:#f5a623;color:#071b38;display:grid;place-items:center;font-weight:900;font-size:21px}.rank-card strong{display:block;font-size:27px}.rank-card span{display:block;color:#bdc9da;font-size:11px;margin-top:3px;line-height:1.4}.rank-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:11px}.rank-stats>div{padding:12px;background:#f7f9fc;border-radius:11px}.rank-stats strong{display:block;font-size:16px;color:#0b1e3d;margin-top:4px}
 .attendance-hero{display:flex;align-items:baseline;gap:8px}.attendance-hero strong{font-size:29px;color:#0b1e3d}.attendance-hero span{font-size:11px;color:#8792a4}.streak-highlight{margin:12px 0;padding:9px 11px;border-radius:10px;background:#fff6df;color:#8a5c09;font-size:11px;font-weight:700}.monthly-attendance-list{display:grid;gap:7px;max-height:190px;overflow:auto}.month-att-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #edf0f5}.month-att-row strong{font-size:12px;color:#253550}.month-att-row span{font-size:10px;color:#7d8898}.month-att-row b{font-size:12px;color:#0b1e3d}
 .detail-list{display:grid;gap:0}.detail-list>div{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid #edf0f5}.detail-list strong{text-align:right;font-size:12px;color:#253550}
-.report-download-row{display:flex;gap:10px}.report-download-row select{flex:1;border:1px solid #dce2eb;border-radius:10px;padding:11px;background:#fff;color:#253550}.report-download-row .btn{margin:0}.report-preview{margin-top:13px;padding:13px;border-radius:11px;background:#f7f9fc;color:#66748a;font-size:12px;line-height:1.6}
+
 .student-notes-list li{padding:10px 0;border-bottom:1px solid #edf0f5}.student-notes-list a{color:#31598f;font-weight:700}
 @media(max-width:850px){.student-kpi-grid{grid-template-columns:1fr 1fr}.student-main-grid{grid-template-columns:1fr}.student-panel-wide{grid-column:auto}.student-hero-card{align-items:flex-start;flex-direction:column}.student-hero-copy{text-align:left}.student-lms-topbar{padding:0 17px}}
 @media(max-width:560px){.student-kpi-grid{grid-template-columns:1fr 1fr;padding:12px}.student-main-grid{padding:0 12px 12px}.student-hero-card{padding:21px}.student-panel{padding:16px}.performance-summary{grid-template-columns:1fr 1fr}.performance-summary>div:last-child{grid-column:span 2}.report-download-row{flex-direction:column}.report-download-row .btn{width:100%}}
@@ -735,15 +735,6 @@
               <div><span>Next test</span><strong id="dash-next-test">—</strong></div>
               <div><span>Joined on</span><strong id="dash-admission-date">—</strong></div>
             </div>
-          </div>
-
-          <div class="student-panel student-panel-wide">
-            <div class="student-panel-head"><div><span class="panel-kicker">MONTHLY REPORTS</span><h3>Progress Reports</h3><p>Your month, your progress, your report — professionally prepared for you and your parents.</p></div></div>
-            <div class="report-download-row">
-              <select id="dash-report-month"></select>
-              <button class="btn btn-primary" id="dash-download-report">↓ Download Monthly Report</button>
-            </div>
-            <div class="report-preview" id="dash-report-preview">Select a month to preview attendance, tests and progress.</div>
           </div>
 
           <div class="student-panel">
@@ -1655,83 +1646,32 @@
   }
   function scoresForMonth(scores,key){ return (Array.isArray(scores)?scores:[]).filter(s=>monthKeyForDate(s.date)===key); }
   function scorePct(s){ return s && Number(s.max)>0 ? Math.round(Number(s.score)/Number(s.max)*100) : 0; }
-  function renderMonthlyReportOptions(data){
-    const select=document.getElementById('dash-report-month'), preview=document.getElementById('dash-report-preview');
-    const keys=new Set(); (data.attendance?.log||[]).forEach(e=>{const k=monthKeyForDate(e.date);if(k)keys.add(k)}); (data.testScores||[]).forEach(s=>{const k=monthKeyForDate(s.date);if(k)keys.add(k)}); (data.monthlyFees||[]).forEach(f=>{if(f.monthKey)keys.add(f.monthKey)});
-    const arr=[...keys].sort((a,b)=>b.localeCompare(a)); select.innerHTML=arr.length?arr.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join(''):'<option value="">No monthly data yet</option>';
-    const render=()=>{
-      const key=select.value; if(!key){preview.textContent='Monthly report will appear here once attendance or test records are available.';return;}
-      const att=aggregateAttendance(data.attendance?.log||[]).find(x=>x.key===key)||{present:0,total:0,percent:0}; const tests=scoresForMonth(data.testScores,key); const avg=tests.length?Math.round(tests.reduce((a,s)=>a+scorePct(s),0)/tests.length):0; const best=tests.length?Math.max(...tests.map(scorePct)):0;
-      preview.innerHTML=`<strong>${monthLabel(key)}</strong> · Attendance ${att.percent}% (${att.present}/${att.total}) · ${tests.length} test${tests.length===1?'':'s'} · Average ${tests.length?avg+'%':'—'} · Best ${tests.length?best+'%':'—'}`;
-    }; select.onchange=render; render();
-    document.getElementById('dash-download-report').onclick=()=>openStudentMonthlyReport(data,select.value);
-  }
-  function openStudentMonthlyReport(data,key){
-    if(!key){alert('No monthly records available yet.');return;}
-    const att=aggregateAttendance(data.attendance?.log||[]).find(x=>x.key===key)||{present:0,total:0,percent:0};
-    const tests=scoresForMonth(data.testScores,key);
-    const avg=tests.length?Math.round(tests.reduce((a,s)=>a+scorePct(s),0)/tests.length):0;
-    const best=tests.length?Math.max(...tests.map(scorePct)):0;
-    const rank=data.batchStats?.monthly?.[key]?.rank || data.batchStats?.rank;
-    const size=data.batchStats?.monthly?.[key]?.size || data.batchStats?.size;
-    const highest=data.batchStats?.monthly?.[key]?.highest ?? data.batchStats?.highest;
-    const remark = tests.length && avg >= 85 ? 'Excellent academic consistency this month. Keep pushing your limits.' :
-                    tests.length && avg >= 70 ? 'Good progress this month. Focus on accuracy and regular revision.' :
-                    'Stay consistent, strengthen fundamentals and keep practising every week.';
-    const testRows = tests.length ? tests.map(s=>`<tr><td>${s.date||''}</td><td>${s.name||'Test'}</td><td><b>${s.score}/${s.max}</b></td><td>${scorePct(s)}%</td></tr>`).join('') : '<tr><td colspan="4">No test recorded for this month.</td></tr>';
-    const win=window.open('','_blank','width=980,height=980');
-    if(!win)return;
-    win.document.write(`<!doctype html><html><head><title>Maths Pathshala · ${data.name||'Student'} · ${monthLabel(key)}</title>
-    <style>
-      @page{size:A4;margin:12mm}
-      *{box-sizing:border-box}body{margin:0;background:#eef2f7;font-family:Inter,Arial,sans-serif;color:#14233b}
-      .page{max-width:820px;margin:24px auto;background:#fff;min-height:1120px;border:1px solid #e4e9f1;box-shadow:0 18px 50px rgba(8,27,56,.12);overflow:hidden}
-      .hero{padding:34px 38px;background:linear-gradient(135deg,#071a35,#153c70);color:#fff;position:relative}
-      .hero:after{content:"";position:absolute;width:170px;height:170px;border:1px solid rgba(245,166,35,.35);border-radius:50%;right:-45px;top:-65px}
-      .brand{font-size:11px;letter-spacing:.16em;color:#f5a623;font-weight:800}.tagline{font-size:11px;letter-spacing:.05em;opacity:.8;margin-top:4px}
-      h1{font-size:31px;margin:18px 0 5px}.meta{font-size:13px;color:#dce6f5}
-      .body{padding:28px 38px}.period{display:flex;justify-content:space-between;gap:15px;align-items:end;margin-bottom:18px}.period h2{margin:0;font-size:22px}.period span{font-size:11px;color:#77849a}
-      .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpi{padding:15px;border:1px solid #e5eaf1;border-radius:12px;background:#f8fafc}.kpi small{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#7d8a9e}.kpi b{display:block;font-size:23px;margin-top:6px;color:#0b1e3d}
-      h3{font-size:15px;margin:26px 0 10px;padding-bottom:8px;border-bottom:1px solid #e7ebf1;color:#0b1e3d}.remark{padding:15px 17px;border-left:4px solid #f5a623;background:#fff8e9;border-radius:10px;font-size:13px;line-height:1.65}
-      table{width:100%;border-collapse:collapse}th,td{padding:10px 8px;border-bottom:1px solid #e8edf3;text-align:left;font-size:11.5px}th{font-size:10px;text-transform:uppercase;color:#7a8799;letter-spacing:.05em;background:#f8fafc}
-      .attendance{display:grid;grid-template-columns:1fr 2fr;gap:12px}.attendance-box{padding:16px;border-radius:12px;background:#0b1e3d;color:#fff}.attendance-box b{font-size:30px;color:#f5a623}.attendance-box small{display:block;color:#c9d4e5;margin-top:4px}.attendance-copy{padding:16px;border:1px solid #e5eaf1;border-radius:12px;font-size:12px;line-height:1.7;color:#66748a}
-      .footer{margin-top:32px;padding-top:15px;border-top:1px solid #e7ebf1;display:flex;justify-content:space-between;gap:15px;font-size:10px;color:#7d899b}.footer strong{color:#0b1e3d}
-      @media(max-width:650px){.page{margin:0;box-shadow:none}.hero,.body{padding:25px 20px}.kpis{grid-template-columns:1fr 1fr}.attendance{grid-template-columns:1fr}}
-      @media print{body{background:#fff}.page{margin:0;border:0;box-shadow:none}}
-    </style></head><body><div class="page">
-      <section class="hero"><div class="brand">MATHS PATHSHALA · MONTHLY ACADEMIC REPORT</div><div class="tagline">BUILDING STRONG FOUNDATION IN MATHEMATICS</div>
-      <h1>${data.name||'Student'}</h1><div class="meta">Class ${data.class||'—'} · ${data.batchName||'Batch not assigned'}</div></section>
-      <section class="body">
-        <div class="period"><h2>${monthLabel(key)}</h2><span>Prepared for student & parent · Maths Pathshala</span></div>
-        <div class="kpis">
-          <div class="kpi"><small>Attendance</small><b>${att.percent}%</b></div>
-          <div class="kpi"><small>Test Average</small><b>${tests.length?avg+'%':'—'}</b></div>
-          <div class="kpi"><small>Batch Rank</small><b>${rank&&size?'#'+rank:'—'}</b></div>
-          <div class="kpi"><small>Best Score</small><b>${tests.length?best+'%':'—'}</b></div>
-        </div>
-        <h3>Attendance Snapshot</h3>
-        <div class="attendance"><div class="attendance-box"><b>${att.present}/${att.total}</b><small>present out of recorded classes</small></div><div class="attendance-copy">Monthly attendance: <strong>${att.percent}%</strong>. Regular attendance builds the consistency needed for strong mathematical foundations.</div></div>
-        <h3>Test Performance</h3>
-        <table><tr><th>Date</th><th>Test</th><th>Score</th><th>Percentage</th></tr>${testRows}</table>
-        <h3>Batch Performance</h3>
-        <div class="attendance-copy">Batch: <strong>${data.batchName||'—'}</strong> · Batch size: <strong>${size||'—'}</strong> · Highest recorded score: <strong>${highest!=null?highest+'%':'—'}</strong></div>
-        <h3>Teacher's Monthly Remark</h3>
-        <div class="remark">${remark}</div>
-        <div class="footer"><span><strong>Maths Pathshala</strong><br>Building Strong Foundation in Mathematics</span><span>Generated on ${new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}<br>For academic progress tracking</span></div>
-      </section></div><script>setTimeout(()=>window.print(),350)<\/script></body></html>`);
-    win.document.close();win.focus();
-  }
 
   async function loadStudentDashboard(email){
     document.getElementById('dash-name').innerHTML = '<span class="spinner"></span>Loading...';
     studentDashboard.style.display = 'block';
-    const docRef = doc(db, "students", email.toLowerCase());
-    const docSnap = await getDoc(docRef);
+    try {
     const foundContent = document.getElementById('dash-found-content');
     const notFoundContent = document.getElementById('dash-not-found-content');
     document.getElementById('dash-email').textContent = email;
-    if(!docSnap.exists()){ foundContent.style.display='none'; notFoundContent.style.display='block'; document.getElementById('dash-name').textContent='Student'; return; }
-    const data=docSnap.data(); foundContent.style.display='block'; notFoundContent.style.display='none';
+
+    let docSnap = await getDoc(doc(db, "students", email.toLowerCase()));
+    // Older profiles may have been saved with the email's original casing.
+    // Try the authenticated email exactly before showing "profile not found".
+    if(!docSnap.exists() && email !== email.toLowerCase()){
+      docSnap = await getDoc(doc(db, "students", email));
+    }
+
+    if(!docSnap.exists()){
+      foundContent.style.display='none';
+      notFoundContent.style.display='block';
+      document.getElementById('dash-name').textContent='Student';
+      return;
+    }
+
+    const data=docSnap.data();
+    foundContent.style.display='block';
+    notFoundContent.style.display='none';
     document.getElementById('dash-name').textContent=data.name||'Student'; document.getElementById('dash-avatar').textContent=(data.name||'S').trim().charAt(0).toUpperCase();
     currentStudentClass=data.class||null; currentStudentBatchName=data.batchName||null;
     const bh=document.getElementById('dash-batch-highlight'); bh.textContent=data.class&&data.batchName?`🎓 Class ${data.class} · ${data.batchName}`:''; bh.style.display=data.class&&data.batchName?'inline-block':'none';
@@ -1745,8 +1685,18 @@
     const stats=data.batchStats||{}; const rank=stats.rank&&stats.size?`#${stats.rank}`:'—'; document.getElementById('dash-kpi-rank').textContent=rank; document.getElementById('dash-kpi-rank-sub').textContent=stats.size?`Out of ${stats.size} students in your batch`:'Based on recorded tests'; document.getElementById('dash-rank-big').textContent=rank; document.getElementById('dash-rank-detail').textContent=stats.size?`You are ranked ${stats.rank} of ${stats.size} in your batch.`:'Rank will appear after batch test records are updated.'; document.getElementById('dash-batch-size').textContent=stats.size||'—'; document.getElementById('dash-batch-highest').textContent=stats.highest!=null?stats.highest+'%':'—'; document.getElementById('dash-kpi-highest').textContent=stats.highest!=null?stats.highest+'%':'—';
     const scores=Array.isArray(data.testScores)?data.testScores:[]; const avg=scores.length?Math.round(scores.reduce((a,s)=>a+scorePct(s),0)/scores.length):0; const best=scores.length?Math.max(...scores.map(scorePct)):0; document.getElementById('dash-average-score').textContent=scores.length?avg+'%':'—'; document.getElementById('dash-tests-count').textContent=scores.length; document.getElementById('dash-best-score').textContent=scores.length?best+'%':'—'; const scoresList=document.getElementById('dash-scores-list'); scoresList.innerHTML=scores.length?scores.slice().reverse().map(s=>`<li><span>${s.date||''} — ${s.name||'Test'}</span><span>${s.score}/${s.max} · ${scorePct(s)}%</span></li>`).join(''):'<li>No test scores yet</li>'; if(scores.length)renderScoreChart(scores); else if(window.scoreChartInstance)window.scoreChartInstance.destroy();
     const notesList=document.getElementById('dash-notes-list'); const notes=Array.isArray(data.notes)?data.notes:[]; notesList.innerHTML=notes.length?notes.map(n=>`<li><span>${n.title}</span><span><a href="${n.url}" target="_blank">View</a> · <a href="${n.url}" download>Download</a></span></li>`).join(''):'<li>No notes assigned yet</li>';
-    renderMonthlyReportOptions(data);
     studentDashboard.style.display='block';
+    } catch(err) {
+      console.error('Student dashboard load failed:', err);
+      const foundContent = document.getElementById('dash-found-content');
+      const notFoundContent = document.getElementById('dash-not-found-content');
+      if(foundContent) foundContent.style.display='none';
+      if(notFoundContent){
+        notFoundContent.style.display='block';
+        notFoundContent.innerHTML = '<div class="dash-not-found"><strong>We could not load your dashboard.</strong><br><span style="font-size:12px;color:#B9C2D6;">Please refresh once. If the problem continues, contact Maths Pathshala.</span></div>';
+      }
+      document.getElementById('dash-name').textContent='Student';
+    }
   }
 
   function renderScoreChart(scores){
