@@ -660,6 +660,22 @@
 @media(max-width:850px){.student-kpi-grid{grid-template-columns:1fr 1fr}.student-main-grid{grid-template-columns:1fr}.student-panel-wide{grid-column:auto}.student-hero-card{align-items:flex-start;flex-direction:column}.student-hero-copy{text-align:left}.student-lms-topbar{padding:0 17px}}
 @media(max-width:560px){.student-kpi-grid{grid-template-columns:1fr 1fr;padding:12px}.student-main-grid{padding:0 12px 12px}.student-hero-card{padding:21px}.student-panel{padding:16px}.performance-summary{grid-template-columns:1fr 1fr}.performance-summary>div:last-child{grid-column:span 2}.report-download-row{flex-direction:column}.report-download-row .btn{width:100%}}
 </style>
+
+<style>
+  .daily-attendance-table-wrap{max-height:420px;overflow:auto;border:1px solid #e5e9f0;border-radius:10px;}
+  .daily-attendance-table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;}
+  .daily-attendance-table th{position:sticky;top:0;background:#f5f7fa;color:#5b6b85;text-align:left;padding:10px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;z-index:1;}
+  .daily-attendance-table td{padding:10px 12px;border-top:1px solid #edf0f5;color:#253550;}
+  .daily-attendance-table tr.att-present-row td{background:#f3fbf6;}
+  .daily-attendance-table tr.att-absent-row td{background:#fdf3f2;}
+  .daily-attendance-status{display:inline-flex;min-width:72px;justify-content:center;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:800;}
+  .daily-attendance-status.present{background:#dff4e7;color:#1e7a46;}
+  .daily-attendance-status.absent{background:#fbe2e1;color:#c0392b;}
+  .daily-attendance-status.unmarked{background:#eef1f5;color:#6b778c;}
+  .daily-attendance-summary{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 12px;}
+  .daily-attendance-summary span{padding:6px 10px;border-radius:8px;background:#f7f9fc;font-size:11px;font-weight:700;color:#52627a;}
+</style>
+
 </head>
 <body>
 
@@ -725,6 +741,25 @@
             <div class="att-progress-track"><div class="att-progress-fill" id="att-progress-fill" style="width:0%;"></div></div>
             <div class="streak-highlight" id="dash-streak-highlight">🔥 Keep your attendance streak going</div>
             <div class="monthly-attendance-list" id="dash-monthly-attendance"><div class="empty-state">No attendance recorded yet.</div></div>
+          </div>
+
+
+          <div class="student-panel student-panel-wide">
+            <div class="student-panel-head">
+              <div><span class="panel-kicker">ATTENDANCE CALENDAR</span><h3>Daily Attendance</h3></div>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <select id="attendance-month-select" style="padding:7px 9px;border:1px solid #dfe5ee;border-radius:8px;font-size:12px;color:#253550;"></select>
+              </div>
+            </div>
+            <div class="daily-attendance-summary" id="daily-attendance-summary"></div>
+            <div class="daily-attendance-table-wrap">
+              <table class="daily-attendance-table">
+                <thead>
+                  <tr><th>Date</th><th>Day</th><th>Status</th></tr>
+                </thead>
+                <tbody id="daily-attendance-table"></tbody>
+              </table>
+            </div>
           </div>
 
           <div class="student-panel">
@@ -1586,59 +1621,46 @@
   }
 
   async function loadHomework(){
-    const box = document.getElementById('dash-homework-list');
-    if(!box) return;
+    const box = document.getElementById('dash-homework');
     try{
       const q = query(collection(db, "homework"), orderBy("createdAt", "desc"), limit(15));
       const snap = await getDocs(q);
-      if(snap.empty){
-        box.innerHTML = '<div class="empty-state">No homework posted yet.</div>';
-        return;
-      }
-
+      if(snap.empty){ box.innerHTML = ''; return; }
       box.innerHTML = '';
       let latestDoc = null;
       let shown = 0;
-
       snap.forEach(docSnap => {
-        if(shown >= 5) return;
         const data = docSnap.data();
         if(!matchesStudentTarget(data)) return;
-        if(!latestDoc) latestDoc = docSnap;
+        if(!latestDoc){ latestDoc = docSnap; }
+        if(shown >= 3) return;
         shown++;
-
-        const item = document.createElement('div');
-        item.className = 'student-homework-item';
-        const due = data.dueDate ? `Due ${new Date(data.dueDate + 'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}` : 'No due date';
-        item.innerHTML = `<strong>📝 ${data.title || 'Homework'}</strong><p>${data.details || ''}</p><div class="student-homework-meta">${due}</div>`;
-        box.appendChild(item);
+        const banner = document.createElement('div');
+        banner.className = 'hw-banner';
+        banner.innerHTML = `<div class="hw-banner-title">📝 ${data.title}</div><div class="hw-banner-msg">${data.details}</div>`;
+        box.appendChild(banner);
       });
-
-      if(shown === 0){
-        box.innerHTML = '<div class="empty-state">No homework for your class/batch yet.</div>';
-        return;
-      }
 
       if(latestDoc && auth.currentUser){
         const seenKey = 'hwSeen_' + auth.currentUser.email;
         const lastSeenId = localStorage.getItem(seenKey);
         if(lastSeenId !== latestDoc.id){
           const data = latestDoc.data();
-          document.getElementById('hw-popup-title').textContent = data.title || 'New homework';
-          document.getElementById('hw-popup-details').textContent =
-            `${data.details || ''}${data.dueDate ? ' · Due ' + new Date(data.dueDate + 'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : ''}`;
+          document.getElementById('hw-popup-title').textContent = data.title;
+          document.getElementById('hw-popup-details').textContent = data.details;
           document.getElementById('hw-popup').classList.add('show');
-          const closeHomeworkPopup = () => {
+          document.getElementById('hw-popup-ok').onclick = () => {
             localStorage.setItem(seenKey, latestDoc.id);
             document.getElementById('hw-popup').classList.remove('show');
           };
-          document.getElementById('hw-popup-ok').onclick = closeHomeworkPopup;
-          document.getElementById('hw-popup-close').onclick = closeHomeworkPopup;
+          document.getElementById('hw-popup-close').onclick = () => {
+            localStorage.setItem(seenKey, latestDoc.id);
+            document.getElementById('hw-popup').classList.remove('show');
+          };
         }
       }
     } catch(err){
-      console.error('Homework load failed:', err);
-      box.innerHTML = '<div class="empty-state">Homework is temporarily unavailable.</div>';
+      box.innerHTML = '';
     }
   }
 
@@ -1664,6 +1686,71 @@
     const map={}; (Array.isArray(log)?log:[]).forEach(e=>{ const k=monthKeyForDate(e.date); if(!k)return; if(!map[k])map[k]={present:0,total:0}; map[k].total++; if(e.status==='Present')map[k].present++; });
     return Object.entries(map).sort((a,b)=>b[0].localeCompare(a[0])).map(([key,v])=>({...v,key,label:monthLabel(key),percent:v.total?Math.round(v.present/v.total*100):0}));
   }
+
+  function renderDailyAttendance(log){
+    const table = document.getElementById('daily-attendance-table');
+    const select = document.getElementById('attendance-month-select');
+    const summary = document.getElementById('daily-attendance-summary');
+    if(!table || !select || !summary) return;
+
+    const today = new Date();
+    const currentKey = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+    const byDate = {};
+    (Array.isArray(log) ? log : []).forEach(e => {
+      if(e && e.date) byDate[e.date] = e.status;
+    });
+
+    const monthKeys = [];
+    const start = new Date(today.getFullYear(), today.getMonth()-11, 1);
+    for(let i=0;i<12;i++){
+      const d = new Date(start.getFullYear(), start.getMonth()+i, 1);
+      monthKeys.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
+    }
+
+    select.innerHTML = monthKeys.reverse().map(key => {
+      const [y,m] = key.split('-').map(Number);
+      const label = new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+      return `<option value="${key}" ${key===currentKey?'selected':''}>${label}</option>`;
+    }).join('');
+
+    function renderMonth(key){
+      const [year, month] = key.split('-').map(Number);
+      const days = new Date(year, month, 0).getDate();
+      let present=0, absent=0, unmarked=0;
+      let html='';
+
+      for(let day=1; day<=days; day++){
+        const d = new Date(year, month-1, day);
+        const label = d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+        const dayName = d.toLocaleDateString('en-GB',{weekday:'short'});
+        const status = byDate[label] || 'Unmarked';
+
+        if(status==='Present') present++;
+        else if(status==='Absent') absent++;
+        else unmarked++;
+
+        const cls = status==='Present' ? 'att-present-row' : status==='Absent' ? 'att-absent-row' : '';
+        const badge = status==='Present'
+          ? '<span class="daily-attendance-status present">✓ Present</span>'
+          : status==='Absent'
+            ? '<span class="daily-attendance-status absent">✕ Absent</span>'
+            : '<span class="daily-attendance-status unmarked">— Unmarked</span>';
+
+        html += `<tr class="${cls}"><td>${label}</td><td>${dayName}</td><td>${badge}</td></tr>`;
+      }
+
+      table.innerHTML = html;
+      summary.innerHTML =
+        `<span>✓ Present: ${present}</span>` +
+        `<span>✕ Absent: ${absent}</span>` +
+        `<span>— Not marked: ${unmarked}</span>` +
+        `<span>Total days: ${days}</span>`;
+    }
+
+    renderMonth(select.value);
+    select.onchange = () => renderMonth(select.value);
+  }
+
   function calculateStreak(log){
     const ordered=(Array.isArray(log)?log:[]).map(e=>({d:parsePortalDate(e.date),status:e.status})).filter(x=>x.d).sort((a,b)=>b.d-a.d);
     let streak=0; for(const x of ordered){ if(x.status==='Present') streak++; else break; } return streak;
@@ -1705,6 +1792,7 @@
     const monthlyFeeList=document.getElementById('dash-monthly-fee-list'); monthlyFeeList.innerHTML=''; const mf=Array.isArray(data.monthlyFees)?data.monthlyFees.slice().sort((a,b)=>(b.monthKey||'').localeCompare(a.monthKey||'')):[]; monthlyFeeList.innerHTML=mf.length?mf.slice(0,6).map(m=>`<li><span>${m.monthLabel||monthLabel(m.monthKey)}</span><span class="${m.status==='Paid'?'att-present':'att-absent'}">${m.status}</span></li>`).join(''):'<li style="color:#B9C2D6">No monthly records yet</li>';
     document.getElementById('dash-batch-value').textContent=data.batchTiming||'Not assigned yet'; document.getElementById('dash-next-test').textContent=data.nextTest||'None scheduled';
     const log=Array.isArray(data.attendance?.log)?data.attendance.log:[]; const overall=typeof data.attendance?.percent==='number'?data.attendance.percent:(log.length?Math.round(log.filter(e=>e.status==='Present').length/log.length*100):0); const streak=calculateStreak(log); document.getElementById('dash-attendance-pct').textContent=overall+'%'; document.getElementById('dash-kpi-attendance').textContent=overall+'%'; document.getElementById('dash-kpi-streak').textContent=streak?`🔥 ${streak}`:'—'; document.getElementById('att-progress-fill').style.width=overall+'%'; document.getElementById('dash-streak-highlight').textContent=streak?`🔥 ${streak} consecutive present classes — keep it going!`:'🔥 Your attendance streak starts with the next class.';
+    renderDailyAttendance(log);
     const months=aggregateAttendance(log); document.getElementById('dash-monthly-attendance').innerHTML=months.length?months.map(m=>`<div class="month-att-row"><strong>${m.label}</strong><span>${m.present}/${m.total} present</span><b>${m.percent}%</b></div>`).join(''):'<div class="empty-state">No attendance recorded yet.</div>';
     const stats=data.batchStats||{}; const rank=stats.rank&&stats.size?`#${stats.rank}`:'—'; document.getElementById('dash-kpi-rank').textContent=rank; document.getElementById('dash-kpi-rank-sub').textContent=stats.size?`Out of ${stats.size} students in your batch`:'Based on recorded tests'; document.getElementById('dash-rank-big').textContent=rank; document.getElementById('dash-rank-detail').textContent=stats.size?`You are ranked ${stats.rank} of ${stats.size} in your batch.`:'Rank will appear after batch test records are updated.'; document.getElementById('dash-batch-size').textContent=stats.size||'—'; document.getElementById('dash-batch-highest').textContent=stats.highest!=null?stats.highest+'%':'—'; document.getElementById('dash-kpi-highest').textContent=stats.highest!=null?stats.highest+'%':'—';
     const scores=Array.isArray(data.testScores)?data.testScores:[]; const avg=scores.length?Math.round(scores.reduce((a,s)=>a+scorePct(s),0)/scores.length):0; const best=scores.length?Math.max(...scores.map(scorePct)):0; document.getElementById('dash-average-score').textContent=scores.length?avg+'%':'—'; document.getElementById('dash-tests-count').textContent=scores.length; document.getElementById('dash-best-score').textContent=scores.length?best+'%':'—'; const scoresList=document.getElementById('dash-scores-list'); scoresList.innerHTML=scores.length?scores.slice().reverse().map(s=>`<li><span>${s.date||''} — ${s.name||'Test'}</span><span>${s.score}/${s.max} · ${scorePct(s)}%</span></li>`).join(''):'<li>No test scores yet</li>'; if(scores.length)renderScoreChart(scores); else if(window.scoreChartInstance)window.scoreChartInstance.destroy();
@@ -1760,15 +1848,6 @@
 
 </body>
 </html>
-
-
-<style>
-  #dash-homework-list{display:grid;gap:9px}
-  .student-homework-item{padding:13px 14px;border:1px solid #e4e9f1;border-radius:11px;background:#f8fafc}
-  .student-homework-item strong{display:block;font-size:13.5px;color:#0b1e3d}
-  .student-homework-item p{font-size:12.5px;color:#5b6b85;margin-top:4px;line-height:1.55}
-  .student-homework-meta{font-size:10.5px;color:#8a95a6;margin-top:7px;font-weight:700}
-</style>
 
 <style>
 /* Maths Pathshala premium cleanup */
