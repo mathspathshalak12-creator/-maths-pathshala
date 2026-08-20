@@ -1621,14 +1621,14 @@
   function parsePortalDate(value){
     if(!value) return null;
     if(/^\d{4}-\d{2}-\d{2}$/.test(value)) return new Date(value + 'T00:00:00');
-    const d = new Date(value);
-    if(!isNaN(d.getTime())) return d;
     const m = String(value).match(/^(\d{1,2})\s+([A-Za-z]{3})/);
     if(m){
       const year = new Date().getFullYear();
       const x = new Date(`${m[1]} ${m[2]} ${year} 00:00:00`);
       if(!isNaN(x.getTime())) return x;
     }
+    const d = new Date(value);
+    if(!isNaN(d.getTime())) return d;
     return null;
   }
   function monthKeyForDate(value){ const d=parsePortalDate(value); return d ? `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}` : ''; }
@@ -1679,7 +1679,7 @@
     const feeBadge=document.getElementById('dash-fee-badge'); feeBadge.textContent=data.feeStatus||'Due'; feeBadge.className='dash-fee-badge '+(data.feeStatus==='Paid'?'dash-fee-paid':'dash-fee-due');
     document.getElementById('dash-admission-date').textContent=data.admissionDate?new Date(data.admissionDate+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'Not set yet';
     const monthlyFeeList=document.getElementById('dash-monthly-fee-list'); monthlyFeeList.innerHTML=''; const mf=Array.isArray(data.monthlyFees)?data.monthlyFees.slice().sort((a,b)=>(b.monthKey||'').localeCompare(a.monthKey||'')):[]; monthlyFeeList.innerHTML=mf.length?mf.slice(0,6).map(m=>`<li><span>${m.monthLabel||monthLabel(m.monthKey)}</span><span class="${m.status==='Paid'?'att-present':'att-absent'}">${m.status}</span></li>`).join(''):'<li style="color:#B9C2D6">No monthly records yet</li>';
-    document.getElementById('dash-batch-value').textContent=data.batchTiming||'Not assigned yet'; document.getElementById('dash-next-class').textContent=data.nextClass||'Not scheduled yet'; document.getElementById('dash-next-test').textContent=data.nextTest||'None scheduled';
+    document.getElementById('dash-batch-value').textContent=data.batchTiming||'Not assigned yet'; document.getElementById('dash-next-test').textContent=data.nextTest||'None scheduled';
     const log=Array.isArray(data.attendance?.log)?data.attendance.log:[]; const overall=typeof data.attendance?.percent==='number'?data.attendance.percent:(log.length?Math.round(log.filter(e=>e.status==='Present').length/log.length*100):0); const streak=calculateStreak(log); document.getElementById('dash-attendance-pct').textContent=overall+'%'; document.getElementById('dash-kpi-attendance').textContent=overall+'%'; document.getElementById('dash-kpi-streak').textContent=streak?`🔥 ${streak}`:'—'; document.getElementById('att-progress-fill').style.width=overall+'%'; document.getElementById('dash-streak-highlight').textContent=streak?`🔥 ${streak} consecutive present classes — keep it going!`:'🔥 Your attendance streak starts with the next class.';
     const months=aggregateAttendance(log); document.getElementById('dash-monthly-attendance').innerHTML=months.length?months.map(m=>`<div class="month-att-row"><strong>${m.label}</strong><span>${m.present}/${m.total} present</span><b>${m.percent}%</b></div>`).join(''):'<div class="empty-state">No attendance recorded yet.</div>';
     const stats=data.batchStats||{}; const rank=stats.rank&&stats.size?`#${stats.rank}`:'—'; document.getElementById('dash-kpi-rank').textContent=rank; document.getElementById('dash-kpi-rank-sub').textContent=stats.size?`Out of ${stats.size} students in your batch`:'Based on recorded tests'; document.getElementById('dash-rank-big').textContent=rank; document.getElementById('dash-rank-detail').textContent=stats.size?`You are ranked ${stats.rank} of ${stats.size} in your batch.`:'Rank will appear after batch test records are updated.'; document.getElementById('dash-batch-size').textContent=stats.size||'—'; document.getElementById('dash-batch-highest').textContent=stats.highest!=null?stats.highest+'%':'—'; document.getElementById('dash-kpi-highest').textContent=stats.highest!=null?stats.highest+'%':'—';
