@@ -570,7 +570,7 @@
         <select id="admin-report-month"><option value="">Select month for report</option></select>
         <button class="btn btn-secondary" id="admin-download-month-report">↓ Open &amp; Download Report Card</button>
       </div>
-      <div class="report-help">Each report is generated for one month only, so it can be shared separately with parents.</div>
+      <div class="report-help">Admin-only: select one month and open the branded report card. Students do not see this download control.</div>
       <div class="msg" id="save-msg"></div>
     </div>
     </main>
@@ -1204,6 +1204,9 @@
     renderPaymentsPreview();
     renderMonthlyFeesPreview();
     saveMsg.textContent = '';
+    if(!currentAttendanceLog.length && !currentTestScores.length && !currentMonthlyFees.length){
+      console.info('Selected student has no attendance/test/monthly-fee records in this Firestore document.', email);
+    }
     window.scrollTo({top: document.getElementById('form-heading').offsetTop - 20, behavior:'smooth'});
   }
 
@@ -1935,4 +1938,9 @@
 .launch-preview{margin-top:12px;padding:14px 16px;border:1px solid #ead9b6;background:linear-gradient(135deg,#fffaf0,#fff);border-radius:14px;color:#66748a;font-size:13px}
 .launch-preview strong{color:#0b1e3d;margin:0 5px}.launch-preview em{font-style:normal;background:#e7f6ed;color:#217a48;padding:4px 8px;border-radius:999px;font-weight:800}
 .batch-launch-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;background:#fff3d9;color:#9b6512;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+</style>
+
+<style>
+/* Final data-safety polish */
+#dash-download-report,.student-report-download{display:none!important}
 </style>
