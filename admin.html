@@ -259,8 +259,17 @@
         <div class="stat-num" id="stat-low-attendance">—</div>
         <div class="stat-label">Attendance Below 75%</div>
       </div>
-
-    
+<div class="card enrolment-card" id="enrolments">
+      <div class="card-title-row"><div><span class="section-kicker">Admissions desk</span><h2>Pending Enrolments</h2><p>Register every enquiry here first. Approve it only after speaking with the parent, then open the student profile to finish admission.</p></div><span class="pending-pill" id="pending-enrolment-count">0 pending</span></div>
+      <div class="enrolment-form-grid">
+        <input type="text" id="e-name" placeholder="Student name">
+        <input type="tel" id="e-parent-phone" placeholder="Parent WhatsApp number">
+        <input type="email" id="e-email" placeholder="Student email (optional for enquiry)">
+        <select id="e-class"><option value="3">Class 3</option><option value="4">Class 4</option><option value="5">Class 5</option><option value="6">Class 6</option><option value="7">Class 7</option><option value="8">Class 8</option><option value="9">Class 9</option><option value="10">Class 10</option><option value="11">Class 11</option><option value="12">Class 12</option></select>
+        <select id="e-service"><option value="Offline Coaching">Offline Coaching</option><option value="Home Tuition">Home Tuition (Class 3–8)</option></select>
+        <button class="btn" id="add-enrolment-btn" style="margin-top:0;">+ Add enquiry</button>
+      </div>
+        </div>
       <div class="msg" id="enrolment-msg"></div>
       <div id="enrolments-list" class="enrolments-list"></div>
     </div>
