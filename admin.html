@@ -1904,7 +1904,15 @@
         return;
       }
       await batch.commit();
-      showToast(`Saved scores for ${savedCount} student(s)!`);
+
+      // Recalculate batch rank/average/highest immediately after marks are saved.
+      // This writes fresh batchStats back to every student in the same class + batch,
+      // so the student dashboard can show the new rank without any manual profile save.
+      const scoreClass = document.getElementById('bulk-score-class').value;
+      const scoreBatch = document.getElementById('bulk-score-batch').value;
+      await refreshBatchInsights(scoreClass, scoreBatch);
+
+      showToast(`Saved scores for ${savedCount} student(s) and updated batch rank!`);
       document.getElementById('bulk-score-rows').innerHTML = '';
       document.getElementById('save-bulk-scores-bar').style.display = 'none';
       loadStudentList();
