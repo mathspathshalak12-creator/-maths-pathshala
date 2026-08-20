@@ -3,23 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Maths Pathshala — Mathematics Coaching &amp; Home Tuition in Kalyanpur, Kanpur</title>
-<meta name="description" content="Maths Pathshala provides small offline Mathematics coaching batches for Class 9-12 and personal home tuition for Class 4-12 in Kalyanpur, Kanpur. Taught personally by Vipin Kumar. Only 7 students per batch.">
-<meta name="keywords" content="maths tuition Kanpur, mathematics coaching Kalyanpur, home tuition Kanpur, class 4 5 6 7 8 all subjects, class 9 10 11 12 maths tuition">
+<title>Maths Pathshala — Offline Coaching for Class 9–12 in Kalyanpur, Kanpur</title>
+<meta name="description" content="Maths Pathshala provides small offline coaching batches in Kalyanpur, Kanpur for Class 9–10 PCM and Class 11–12 Mathematics, with home tuition for Class 3–8 all subjects. Taught personally by Vipin Kumar.">
+<meta name="keywords" content="offline coaching Kalyanpur Kanpur, class 9 10 PCM coaching, class 11 12 Mathematics coaching, home tuition class 3 4 5 6 7 8">
 <meta name="author" content="Vipin Kumar">
 
 <!-- Open Graph / WhatsApp / Facebook preview -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Maths Pathshala — Mathematics Coaching &amp; Home Tuition in Kalyanpur, Kanpur">
-<meta property="og:description" content="Small offline Mathematics batches for Class 9-12 and personal home tuition for Class 4-12. Only 7 students per batch.">
+<meta property="og:title" content="Maths Pathshala — Offline Coaching in Kalyanpur, Kanpur">
+<meta property="og:description" content="Small offline coaching batches for Class 9–10 PCM and Class 11–12 Mathematics, plus home tuition for Class 3–8. Personal teaching and small-batch attention.">
 <meta property="og:image" content="https://mathspathshalak12-creator.github.io/-maths-pathshala/banner.png">
 <meta property="og:url" content="https://mathspathshalak12-creator.github.io/-maths-pathshala/">
 <meta property="og:locale" content="en_IN">
 
 <!-- Twitter card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Maths Pathshala — Mathematics Coaching &amp; Home Tuition in Kalyanpur, Kanpur">
-<meta name="twitter:description" content="Small offline Mathematics batches for Class 9-12 and personal home tuition for Class 4-12. Only 7 students per batch.">
+<meta name="twitter:title" content="Maths Pathshala — Offline Coaching in Kalyanpur, Kanpur">
+<meta name="twitter:description" content="Small offline coaching batches for Class 9–10 PCM and Class 11–12 Mathematics, plus home tuition for Class 3–8. Personal teaching and small-batch attention.">
 <meta name="twitter:image" content="https://mathspathshalak12-creator.github.io/-maths-pathshala/banner.png">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
@@ -192,9 +192,15 @@
   @media(max-width:900px){.services-grid{grid-template-columns:repeat(2,1fr);}}
   @media(max-width:600px){.services-grid{grid-template-columns:1fr;}}
   .service-card{
-    background:var(--paper);border:1px solid var(--line);border-radius:14px;
-    padding:28px 24px;transition:transform .15s ease, box-shadow .15s ease;
+    background:linear-gradient(145deg,#fff,#fffcf7);border:1px solid rgba(11,30,61,.10);border-radius:18px;
+    padding:30px 26px;transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;position:relative;overflow:hidden;
   }
+  .service-card:before{content:"";position:absolute;left:0;top:0;width:4px;height:100%;background:var(--amber);opacity:.75;}
+  .service-card-featured{box-shadow:0 12px 28px rgba(11,30,61,.07);}
+  .service-number{position:absolute;right:20px;top:18px;font:700 11px/1 'JetBrains Mono',monospace;color:var(--amber-dark);letter-spacing:.08em;}
+  .service-points{list-style:none;margin-top:16px;padding-top:12px;border-top:1px solid var(--line);}
+  .service-points li{font-size:13px;color:var(--muted);padding:5px 0;}
+  .service-points li:before{content:"✓";color:var(--amber-dark);font-weight:700;margin-right:8px;}
   .service-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(11,30,61,0.08);}
   .service-icon{
     width:44px;height:44px;border-radius:10px;background:#FDF0DA;
@@ -716,7 +722,7 @@
     <div class="navlinks">
       <a href="javascript:void(0)" data-scroll="services">Services</a>
       <a href="javascript:void(0)" data-scroll="programs">Batch classes</a>
-      <a href="javascript:void(0)" data-scroll="hometuition">Home tuition</a>
+      <a href="javascript:void(0)" data-scroll="hometuition">Home tuition (3–8)</a>
       <a href="javascript:void(0)" data-scroll="notes">Notes</a>
       <a href="javascript:void(0)" data-scroll="pricing">Pricing</a>
       <a href="javascript:void(0)" data-scroll="why">Why us</a>
@@ -729,7 +735,7 @@
     <div class="mobile-menu" id="mobile-menu">
       <a href="javascript:void(0)" data-scroll="services">Services</a>
       <a href="javascript:void(0)" data-scroll="programs">Batch classes</a>
-      <a href="javascript:void(0)" data-scroll="hometuition">Home tuition</a>
+      <a href="javascript:void(0)" data-scroll="hometuition">Home tuition (3–8)</a>
       <a href="javascript:void(0)" data-scroll="notes">Notes</a>
       <a href="javascript:void(0)" data-scroll="pricing">Pricing</a>
       <a href="javascript:void(0)" data-scroll="why">Why us</a>
@@ -746,7 +752,7 @@
   <div class="hero-inner">
     <span class="eyebrow">Kalyanpur, Kanpur</span>
     <h1>Samjho concept, <span class="accent">karo best,</span> bano successful.</h1>
-    <p class="sub">Offline Mathematics coaching for Class 9–12, and focused home tuition from Class 4–12 — taught personally by Vipin Kumar. Small batches, real doubt-clearing, no shortcuts.</p>
+    <p class="sub">Offline coaching in Kalyanpur for Class 9–10 PCM and Class 11–12 Mathematics — taught personally by Vipin Kumar. Small batches, board-focused preparation, regular testing and real doubt support.</p>
     <div class="hero-ctas">
       <a href="javascript:void(0)" data-scroll="register" class="btn btn-primary">Register your seat</a>
       <a id="hero-wa" href="#" target="_blank" class="btn btn-outline">Chat on WhatsApp</a>
@@ -754,7 +760,7 @@
     <div class="hero-meta">
       <div><div class="num mono">7</div><div class="lbl">students per batch</div></div>
       <div><div class="num mono">9–12</div><div class="lbl">classes covered</div></div>
-      <div><div class="num mono">4–12</div><div class="lbl">home tuition classes</div></div>
+      <div><div class="num mono">3–8</div><div class="lbl">home tuition classes</div></div>
     </div>
   </div>
 </section>
@@ -808,47 +814,15 @@
 <section id="services">
   <div class="wrap">
     <div class="section-head">
-      <div class="section-tag">What we offer</div>
-      <h2>Everything Maths Pathshala provides.</h2>
-      <p>One place for batch classes, home tuition, free resources, and a portal to track everything — here's the full picture.</p>
+      <div class="section-tag">Our core services</div>
+      <h2>Focused coaching. Clear direction. Better preparation.</h2>
+      <p>Maths Pathshala is built around one clear goal: strong offline academic support for school students, especially Class 10 and Class 12 board preparation.</p>
     </div>
     <div class="services-grid">
-      <div class="service-card">
-        <div class="service-icon">🏫</div>
-        <h3>Offline Batch Classes</h3>
-        <p>Focused, in-person Mathematics coaching for Class 9–12. Every class has one small batch of only 7 students, so doubts never get ignored.</p>
-        <span class="service-tag">Class 9–12 · Mathematics</span>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">🏠</div>
-        <h3>Home Tuition</h3>
-        <p>One-on-one teaching at your home: all subjects for Class 4–8, and Mathematics for Class 9–12. Covering Kalyanpur and nearby areas.</p>
-        <span class="service-tag">Class 4–12 · Personal tuition</span>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">📘</div>
-        <h3>Free Chapter-Wise Notes</h3>
-        <p>Handwritten, exam-oriented short notes for every NCERT chapter — free to download, no registration needed.</p>
-        <span class="service-tag">Free access</span>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">📊</div>
-        <h3>Student Portal</h3>
-        <p>A personal dashboard for enrolled students — fee status, attendance, test scores with progress graphs, homework, and notices.</p>
-        <span class="service-tag">For enrolled students</span>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">📝</div>
-        <h3>Regular Testing &amp; Doubt Support</h3>
-        <p>Weekly and monthly tests to track real progress, with doubts cleared directly in class — not left to pile up.</p>
-        <span class="service-tag">Included in every batch</span>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">💬</div>
-        <h3>Direct WhatsApp Support</h3>
-        <p>Questions about registration, timing, or fees? Message directly on WhatsApp and get a real, quick reply.</p>
-        <span class="service-tag">Always available</span>
-      </div>
+      <div class="service-card service-card-featured"><div class="service-icon">🏫</div><div class="service-number">01</div><h3>Offline Coaching — Class 9 &amp; 10</h3><p>Complete <strong>PCM coaching</strong> with Mathematics, Physics and Chemistry. Concepts are taught from the foundation, followed by problem practice, doubt solving and regular tests.</p><ul class="service-points"><li>Mathematics + Physics + Chemistry</li><li>Board-focused preparation</li><li>Concept building + question practice</li><li>Small-batch personal attention</li></ul><span class="service-tag">Class 9–10 · PCM · Offline</span></div>
+      <div class="service-card service-card-featured"><div class="service-icon">🎓</div><div class="service-number">02</div><h3>Offline Coaching — Class 11 &amp; 12</h3><p>Focused <strong>Mathematics-only coaching</strong> for students preparing for school exams and board examinations, with emphasis on concepts, written practice and exam strategy.</p><ul class="service-points"><li>Mathematics only</li><li>Board-oriented chapter planning</li><li>Regular tests and analysis</li><li>Dedicated doubt support</li></ul><span class="service-tag">Class 11–12 · Mathematics · Offline</span></div>
+      <div class="service-card"><div class="service-icon">🏠</div><div class="service-number">03</div><h3>Home Tuition — Class 3 to 8</h3><p>Personalised home tuition for <strong>all subjects</strong> from Class 3–8. Ideal for students who need a slower pace, stronger basics or one-to-one academic attention.</p><ul class="service-points"><li>All subjects</li><li>Personalised pace</li><li>Foundation and school support</li><li>Nearby Kalyanpur areas</li></ul><span class="service-tag">Class 3–8 · All subjects</span></div>
+      <div class="service-card"><div class="service-icon">📝</div><div class="service-number">04</div><h3>Testing, Doubts &amp; Progress Support</h3><p>Students are not just taught chapters — their preparation is checked through regular tests, doubt support, attendance tracking and progress records.</p><ul class="service-points"><li>Regular chapter &amp; test practice</li><li>Doubt clearing</li><li>Progress tracking for enrolled students</li><li>Exam-oriented preparation</li></ul><span class="service-tag">Built into the learning system</span></div>
     </div>
   </div>
 </section>
@@ -878,37 +852,8 @@
 
 <section id="hometuition">
   <div class="wrap">
-    <div class="section-head">
-      <div class="section-tag">Home tuition</div>
-      <h2>Prefer one-on-one, at home?</h2>
-      <p>For families who want individual attention rather than a batch, home tuition is available for Class 4–8 (all subjects) and Class 9–12 (Mathematics).</p>
-    </div>
-    <div class="tutor-card">
-      <div class="tutor-initials mono">1:1</div>
-      <div class="tutor-info">
-        <h3>Home tuition — made for your child</h3>
-        <div class="role">Class 4–8: all subjects · Class 9–12: Mathematics</div>
-        <div class="tutor-tags">
-          <span class="tag">Class 4–8: all subjects</span>
-          <span class="tag">Class 9–12: Mathematics</span>
-          <span class="tag">Fully personalised pace</span>
-          <span class="tag">CBSE · ICSE · UP Board</span>
-        </div>
-        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);">
-          <div style="font-size:13px;font-weight:700;color:var(--amber-dark);text-transform:uppercase;letter-spacing:.03em;margin-bottom:10px;">Areas covered</div>
-          <div class="tutor-tags">
-            <span class="tag">Kalyanpur</span>
-            <span class="tag">Awas Vikas 1</span>
-            <span class="tag">Awas Vikas 3</span>
-            <span class="tag">Gooba Garden</span>
-            <span class="tag">Indira Nagar</span>
-          </div>
-        </div>
-        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);font-size:14px;color:var(--muted);">
-          <strong style="color:var(--navy);">Pricing:</strong> Depends on location, subject, and board — message us on WhatsApp for an exact quote.
-        </div>
-      </div>
-    </div>
+    <div class="section-head"><div class="section-tag">Home tuition</div><h2>Personal attention for Classes 3–8.</h2><p>One-to-one home tuition for Class 3–8 students covering all subjects. This service is kept focused so students get consistent attention and a personalised learning pace.</p></div>
+    <div class="tutor-card"><div class="tutor-initials mono">1:1</div><div class="tutor-info"><h3>Home tuition — Class 3 to 8</h3><div class="role">All subjects · Personalised teaching · Nearby areas</div><div class="tutor-tags"><span class="tag">Class 3–8</span><span class="tag">All subjects</span><span class="tag">One-to-one attention</span><span class="tag">CBSE · ICSE · UP Board</span></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);"><div style="font-size:13px;font-weight:700;color:var(--amber-dark);text-transform:uppercase;letter-spacing:.03em;margin-bottom:10px;">Areas covered</div><div class="tutor-tags"><span class="tag">Kalyanpur</span><span class="tag">Awas Vikas 1</span><span class="tag">Awas Vikas 3</span><span class="tag">Gooba Garden</span><span class="tag">Indira Nagar</span></div></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);font-size:14px;color:var(--muted);"><strong style="color:var(--navy);">Fee:</strong> Discussed personally based on class, location and requirement. Please call or WhatsApp for availability.</div></div></div>
   </div>
 </section>
 
@@ -916,17 +861,17 @@
   <div class="wrap">
     <div class="section-head">
       <div class="section-tag">Batch classes</div>
-      <h2>Two tracks, matched to the board exam ahead.</h2>
-      <p>Choose based on your child's class — each track is built around what that stage actually needs.</p>
+      <h2>Offline tracks built for the board years that matter most.</h2>
+      <p>Focused offline coaching with a clear subject structure for each class group.</p>
     </div>
     <div class="programs">
       <div class="prog-card">
         <span class="class-tag">Class 9 &amp; 10</span>
         <h3>Foundation track</h3>
-        <div class="subjects">Mathematics</div>
+        <div class="subjects">Mathematics · Physics · Chemistry</div>
         <ul>
-          <li>Board exam pattern practice from day one</li>
-          <li>Concept-first teaching, not rote formulas</li>
+          <li>Complete PCM foundation for school and board preparation</li>
+          <li>Concept-first teaching with structured problem practice</li>
           <li>Weekly tests to track real progress</li>
         </ul>
       </div>
@@ -1114,7 +1059,7 @@
       <div class="why-item">
         <div class="ico">👤</div>
         <h4>Personal attention</h4>
-        <p>7 students per batch means every question gets answered.</p>
+        <p>Small batches mean every student gets direct attention and doubts are addressed.</p>
       </div>
       <div class="why-item">
         <div class="ico">📝</div>
@@ -1134,8 +1079,8 @@
   <div class="wrap">
     <div class="section-head">
       <div class="section-tag">Live batches</div>
-      <h2>Only 7 students per batch.</h2>
-      <p>Kept deliberately small so every student gets looked at, not just taught to. See live seat availability for each batch below.</p>
+      <h2>Small batches. Serious attention.</h2>
+      <p>Every batch is intentionally kept small so students get direct attention, active doubt support and a better classroom experience. Current batch names are shown below.</p>
     </div>
     <div class="batch-cards-grid" id="batch-cards-grid">
       <div style="color:var(--muted);font-size:14px;">Loading batches...</div>
@@ -1143,33 +1088,7 @@
   </div>
 </section>
 
-<section id="pricing">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="section-tag">Pricing</div>
-      <h2>Simple, upfront pricing.</h2>
-      <p>No hidden charges. Batch class fees are fixed per class; home tuition is priced based on location and the student’s requirement.</p>
-    </div>
-    <div class="pricing-grid">
-      <div class="price-card">
-        <div class="price-card-class">Class 9 &amp; 10</div>
-        <div class="price-card-amount">₹1,000<span>/month</span></div>
-        <div class="price-card-desc">Small-group Mathematics coaching</div>
-      </div>
-      <div class="price-card featured">
-        <div class="price-card-class">Class 11 &amp; 12</div>
-        <div class="price-card-amount">₹1,200<span>/month</span></div>
-        <div class="price-card-desc">Mathematics</div>
-      </div>
-      <div class="price-card">
-        <div class="price-card-class">Home &amp; Online Tuition</div>
-        <div class="price-card-amount" style="font-size:22px;">Custom quote</div>
-        <div class="price-card-desc">Based on location, subject, and board</div>
-      </div>
-    </div>
-    <div class="price-note">Prices are for offline Mathematics coaching at our Kalyanpur location. For home tuition, message us with your class and location for an exact quote.</div>
-  </div>
-</section>
+<section id="pricing"><div class="wrap"><div class="section-head"><div class="section-tag">Fee &amp; admission</div><h2>Let’s discuss the right plan for your child.</h2><p>We keep the fee structure reasonable and transparent, but final fees are discussed personally based on the class, subjects, batch and academic requirement.</p></div><div class="pricing-grid"><div class="price-card featured"><div class="price-card-class">Class 9 &amp; 10</div><div class="price-card-amount" style="font-size:25px;">PCM Coaching</div><div class="price-card-desc">Mathematics · Physics · Chemistry · Offline</div></div><div class="price-card"><div class="price-card-class">Class 11 &amp; 12</div><div class="price-card-amount" style="font-size:25px;">Mathematics</div><div class="price-card-desc">Focused offline board preparation</div></div><div class="price-card"><div class="price-card-class">Class 3–8</div><div class="price-card-amount" style="font-size:25px;">Home Tuition</div><div class="price-card-desc">All subjects · Personalised support</div></div></div><div class="price-note"><strong>Fee details are not published online.</strong> Call or WhatsApp us to discuss availability, batch timing and the fee for your child's requirement.</div></div></section>
 
 <section id="testimonials">
   <div class="wrap">
@@ -1232,11 +1151,11 @@
       <div class="location-copy">
         <div class="section-tag">Find us</div>
         <h3>Based in Kalyanpur, easy to reach.</h3>
-        <p>Batch classes run out of a fixed location in Kalyanpur, Kanpur. Home tuition covers nearby areas.</p>
+        <p>Our primary focus is offline coaching in Kalyanpur, Kanpur for Class 9–12. Home tuition is separately available for Class 3–8 in nearby areas.</p>
         <ul class="loc-list">
           <li>Kalyanpur, Kanpur, Uttar Pradesh</li>
-          <li>Home tuition: Kalyanpur, Awas Vikas 1, Awas Vikas 3, Gooba Garden, Indira Nagar</li>
-          <li>Personal home tuition in nearby areas</li>
+          <li>Home tuition (Class 3–8): Kalyanpur, Awas Vikas 1, Awas Vikas 3, Gooba Garden, Indira Nagar</li>
+          <li>Class 3–8 home tuition in nearby areas</li>
           <li>Call ahead to confirm batch timings</li>
         </ul>
       </div>
@@ -1285,11 +1204,11 @@
           <span>Which boards do you teach — CBSE, ICSE, or UP Board?</span>
           <span class="faq-icon">+</span>
         </div>
-        <div class="faq-answer"><div class="faq-answer-inner">All three. Teaching is adapted to whichever board your child follows, for both batch classes and home/online tuition.</div></div>
+        <div class="faq-answer"><div class="faq-answer-inner">All three. Teaching is adapted to whichever board your child follows, for offline batch classes and Class 3–8 home tuition.</div></div>
       </div>
       <div class="faq-item">
         <div class="faq-question">
-          <span>Can I switch from home tuition to a batch class later, or vice versa?</span>
+          <span>Which classes and subjects are available for home tuition?</span>
           <span class="faq-icon">+</span>
         </div>
         <div class="faq-answer"><div class="faq-answer-inner">Yes, that's no problem — just message us on WhatsApp and we'll help you switch based on seat availability.</div></div>
@@ -1307,7 +1226,7 @@
         <a id="form-btn" href="#" target="_blank" class="btn btn-primary">Apply for admission</a>
         <a id="register-wa" href="#" target="_blank" class="btn btn-outline">Ask a question on WhatsApp</a>
       </div>
-      <p class="note">Offline coaching seats are limited to 7 students per batch and are confirmed only after approval.</p>
+      <p class="note">Admissions are intentionally limited so every batch stays small and focused. Final admission is confirmed after a short discussion.</p>
     </div>
   </div>
 </section>
@@ -1330,10 +1249,9 @@
 <div class="popup-overlay" id="seats-popup">
   <div class="popup-card">
     <button class="popup-close" id="popup-close" aria-label="Close">✕</button>
-    <div class="popup-badge">Limited seats</div>
-    <h3 id="popup-batch-title">Only 7 students per batch</h3>
-    <p>Seats are filling up for the next Mathematics batch in Kalyanpur. Apply now and we will confirm availability.</p>
-    <div class="popup-seats" id="popup-seats-display"></div>
+    <div class="popup-badge">Admissions open</div>
+    <h3 id="popup-batch-title">Join Maths Pathshala</h3>
+    <p>Strong concepts, personal attention and small offline batches for serious school and board preparation. Hurry — limited admissions are taken in each batch.</p>
     <div class="popup-ctas">
       <a href="javascript:void(0)" data-scroll="register" id="popup-register" class="btn btn-primary" style="justify-content:center;">Join now</a>
       <a href="javascript:void(0)" id="popup-wa" target="_blank" class="btn btn-outline" style="justify-content:center;">Ask on WhatsApp</a>
@@ -1442,68 +1360,15 @@
   }
 
   async function loadSeatsDisplay(){
-    const SHOW_EXACT_THRESHOLD = 3; // below this, show generic urgency instead of exact count
     let batchStats = [];
-    try{
-      const snap = await getDoc(doc(db, "stats", "public"));
-      if(snap.exists()){
-        batchStats = snap.data().batchStats || [];
-      }
-    } catch(err){
-      batchStats = [];
-    }
-
+    try{ const snap = await getDoc(doc(db, "stats", "public")); if(snap.exists()) batchStats = snap.data().batchStats || []; } catch(err){ batchStats = []; }
     const grid = document.getElementById('batch-cards-grid');
     if(grid){
-      if(batchStats.length === 0){
-        grid.innerHTML = '<div style="color:var(--muted);font-size:14px;">Batch details coming soon — message us on WhatsApp for current availability.</div>';
-      } else {
-        grid.innerHTML = batchStats.map(b => {
-          const cap = Math.min(b.capacity || 7, 7);
-          const filled = Math.min(b.filled || 0, cap);
-          const isFull = filled >= cap;
-          const showExact = filled >= SHOW_EXACT_THRESHOLD;
-
-          let seatsHtml, labelText;
-          if(showExact){
-            seatsHtml = Array.from({length: cap}, (_, i) =>
-              `<div class="seat${i < filled ? ' filled' : ''}"></div>`
-            ).join('');
-            labelText = isFull ? 'Batch full — next batch forming soon' : `${filled} of ${cap} seats filled`;
-          } else {
-            seatsHtml = '';
-            labelText = '🔥 Seats are limited — enroll fast!';
-          }
-
-          return `
-            <div class="batch-card">
-              <div class="batch-card-class">Class ${b.class}</div>
-              <div class="batch-card-name">${b.name}</div>
-              ${seatsHtml ? `<div class="seats">${seatsHtml}</div>` : ''}
-              <div class="seats-label${isFull ? ' full' : ''}">${labelText}</div>
-            </div>`;
-        }).join('');
-      }
+      if(batchStats.length === 0){ grid.innerHTML = '<div style="color:var(--muted);font-size:14px;">New batch details will appear here soon. Call or WhatsApp us for current admissions.</div>'; }
+      else { grid.innerHTML = batchStats.map(b => `<div class="batch-card"><div class="batch-card-class">Class ${b.class}</div><div class="batch-card-name">${b.name}</div><p style="font-size:13.5px;color:#D7E0EE;line-height:1.65;margin:8px 0 16px;">${b.intro || 'A focused offline coaching batch with structured teaching, regular practice and personal doubt support.'}</p><div class="seats-label">🔥 Limited admissions · Enroll early</div></div>`).join(''); }
     }
-
-    const popupSeats = document.getElementById('popup-seats-display');
     const popupTitle = document.getElementById('popup-batch-title');
-    if(popupSeats && batchStats.length > 0){
-      const mostUrgent = batchStats.slice().sort((a, b) => (b.filled / (b.capacity || 7)) - (a.filled / (a.capacity || 7)))[0];
-      const cap = Math.min(mostUrgent.capacity || 7, 7);
-      const filled = Math.min(mostUrgent.filled || 0, cap);
-      const showExact = filled >= SHOW_EXACT_THRESHOLD;
-
-      if(showExact){
-        popupSeats.innerHTML = Array.from({length: cap}, (_, i) =>
-          `<div class="seat${i < filled ? ' filled' : ''}"></div>`
-        ).join('');
-        if(popupTitle){ popupTitle.textContent = `Class ${mostUrgent.class} · ${mostUrgent.name} — only 7 students per batch`; }
-      } else {
-        popupSeats.innerHTML = '';
-        if(popupTitle){ popupTitle.textContent = 'Seats are limited — only 7 students per batch!'; }
-      }
-    }
+    if(popupTitle) popupTitle.textContent = 'Build strong concepts in a small batch';
   }
   loadSeatsDisplay();
 
