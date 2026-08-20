@@ -52,7 +52,7 @@
   .logout-link{font-size:13px;color:var(--muted);cursor:pointer;}
 
   /* OVERVIEW STATS */
-  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;}
+  .stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:20px;}
   @media(max-width:800px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
   .stat-card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:18px 20px;}
   .stat-num{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--navy);}
@@ -80,17 +80,11 @@
   .att-row.marked-absent{border-color:#C0392B;background:#FDF3F2;}
   .att-row-name{font-weight:600;font-size:14px;}
   .att-row-email{font-size:11.5px;color:var(--muted);}
-  .att-toggle-group{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
-  .att-row-actions{display:flex;gap:6px;align-items:center;justify-content:flex-end;flex-wrap:wrap;}
+  .att-toggle-group{display:flex;gap:6px;flex-shrink:0;}
+  .att-row-actions{display:flex;gap:7px;align-items:center;justify-content:flex-end;flex-wrap:wrap;}
   .wa-parent-btn{padding:6px 10px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid #25D366;background:#25D366;color:#fff;text-decoration:none;white-space:nowrap;}
-  .wa-parent-btn:hover{filter:brightness(.92);}
-  .low-attendance-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:999px;background:#FBE2E1;color:#C0392B;font-size:10px;font-weight:800;margin-left:6px;white-space:nowrap;}
-  .homework-admin-item{padding:12px 14px;border:1px solid rgba(11,30,61,.10);border-radius:10px;margin-bottom:8px;background:#fffdf9;}
-  .homework-admin-item strong{font-size:13px;}
-  .homework-admin-meta{font-size:11px;color:var(--muted);margin-top:3px;}
-  .overview-stats{grid-template-columns:repeat(5,1fr);}
-  @media(max-width:900px){.overview-stats{grid-template-columns:repeat(3,1fr);}}
-  @media(max-width:600px){.overview-stats{grid-template-columns:1fr 1fr;}}
+  .low-attendance-badge{display:inline-flex;padding:3px 8px;border-radius:999px;background:#FBE2E1;color:#C0392B;font-size:10px;font-weight:800;margin-left:6px;}
+
   .att-toggle-btn{
     padding:7px 16px;border-radius:20px;font-size:12.5px;font-weight:700;
     border:1.5px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;
@@ -244,7 +238,7 @@
       <span class="logout-link" id="admin-logout">Logout</span>
     </div>
 
-    <div class="stats-grid overview-stats">
+    <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-num" id="stat-total">—</div>
         <div class="stat-label">Total Students</div>
@@ -755,29 +749,13 @@
 
   let bulkStudentsCache = [];
 
-  function normalizeWhatsAppNumber(phone){
-    let digits = String(phone || '').replace(/\D/g, '');
+
+  function parentWaLink(phone, studentName, dateLabel){
+    let digits = String(phone || '').replace(/\D/g,'');
     if(digits.length === 10) digits = '91' + digits;
-    return digits;
-  }
-
-  function parentWhatsAppHref(phone, studentName, dateLabel){
-    const number = normalizeWhatsAppNumber(phone);
-    if(!number) return '';
-    const message = `Hello, this is Maths Pathshala. ${studentName || 'Your child'} was marked absent on ${dateLabel}. Please check their student dashboard for attendance details.`;
-    return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
-  }
-
-  function refreshAttendanceWhatsApp(row, dateLabel){
-    const actions = row.querySelector('.att-row-actions');
-    if(!actions) return;
-    const phone = row.dataset.parentPhone || '';
-    const name = row.dataset.studentName || 'Student';
-    if(row.dataset.status === 'Absent' && normalizeWhatsAppNumber(phone)){
-      actions.innerHTML = `<a class="wa-parent-btn" href="${parentWhatsAppHref(phone,name,dateLabel)}" target="_blank" rel="noopener">💬 WhatsApp Parent</a>`;
-    } else {
-      actions.innerHTML = '';
-    }
+    if(!digits) return '';
+    const text = encodeURIComponent(`Hello, this is Maths Pathshala. ${studentName || 'Your child'} was marked absent on ${dateLabel}. Please check the student dashboard for attendance details.`);
+    return `https://wa.me/${digits}?text=${text}`;
   }
 
   async function loadBulkAttendanceRows(){
@@ -813,13 +791,14 @@
       row.innerHTML = `
         <div>
           <div class="att-row-name">${student.data.name || 'Unnamed'}</div>
-          <div class="att-row-email">${student.id}${student.data.parentPhone ? ' · Parent WhatsApp saved' : ' · No parent WhatsApp saved'}</div>
+          <div class="att-row-email">${student.id}</div>
         </div>
         <div class="att-row-actions">
           <div class="att-toggle-group">
             <button class="att-toggle-btn present ${currentStatus === 'Present' ? 'active' : ''}" data-status="Present">Present</button>
             <button class="att-toggle-btn absent ${currentStatus === 'Absent' ? 'active' : ''}" data-status="Absent">Absent</button>
           </div>
+          <span class="wa-slot"></span>
         </div>
       `;
       row.querySelectorAll('.att-toggle-btn').forEach(btn => {
@@ -830,6 +809,13 @@
           btn.classList.add('active');
           row.classList.remove('marked-present', 'marked-absent');
           row.classList.add(status === 'Present' ? 'marked-present' : 'marked-absent');
+          const slot = row.querySelector('.wa-slot');
+          const phone = row.dataset.parentPhone || '';
+          if(slot){
+            slot.innerHTML = (status === 'Absent' && parentWaLink(phone,row.dataset.studentName,dateLabel))
+              ? `<a class="wa-parent-btn" href="${parentWaLink(phone,row.dataset.studentName,dateLabel)}" target="_blank" rel="noopener">💬 Parent</a>`
+              : '';
+          }
           updateAttendanceSummary();
         });
       });
@@ -928,6 +914,8 @@
         const hasToday = data.attendance.log.some(e => e.date === todayStr);
         if(hasToday){ markedToday++; }
       }
+      const ap = Number(data.attendance && data.attendance.percent);
+      if(Number.isFinite(ap) && ap < 75){ lowAttendance++; }
       allStudentsCache.push({ id: docSnap.id, data });
     });
 
@@ -935,7 +923,7 @@
     document.getElementById('stat-paid').textContent = paid;
     document.getElementById('stat-due').textContent = due;
     document.getElementById('stat-marked-today').textContent = markedToday + ' / ' + total;
-    document.getElementById('stat-low-attendance').textContent = lowAttendance;
+    if(document.getElementById('stat-low-attendance')) document.getElementById('stat-low-attendance').textContent = lowAttendance;
 
     updateFinanceOverview();
     updateBatchPerformance();
@@ -1923,81 +1911,99 @@
   document.getElementById('batch-base-fee-input').addEventListener('input', updateLaunchPreview);
   document.getElementById('batch-offer-input').addEventListener('input', updateLaunchPreview);
 
+
   async function loadHomeworkAdminList(){
     const box = document.getElementById('homework-admin-list');
     if(!box) return;
     try{
-      const snap = await getDocs(query(collection(db, 'homework'), orderBy('createdAt','desc')));
-      const items = [];
-      snap.forEach(d => items.push({id:d.id, ...d.data()}));
-      box.innerHTML = items.slice(0,8).map(h => {
-        const target = h.targetClass ? `Class ${h.targetClass}${h.targetBatch ? ' · ' + h.targetBatch : ''}` : 'All students';
+      const snap = await getDocs(query(collection(db, "homework"), orderBy("createdAt", "desc")));
+      if(snap.empty){
+        box.innerHTML = '<div style="font-size:13px;color:var(--muted);">No homework posted yet.</div>';
+        return;
+      }
+      box.innerHTML = '';
+      let count = 0;
+      snap.forEach(docSnap => {
+        if(count >= 8) return;
+        const h = docSnap.data();
+        const target = h.targetClass
+          ? `Class ${h.targetClass}${h.targetBatch ? ' · ' + h.targetBatch : ''}`
+          : 'All classes';
         const due = h.dueDate ? ` · Due ${dateInputToLabel(h.dueDate)}` : '';
-        return `<div class="homework-admin-item"><strong>📝 ${h.title || 'Homework'}</strong><div class="homework-admin-meta">${target}${due} · ${h.details || ''}</div></div>`;
-      }).join('') || '<div style="font-size:13px;color:var(--muted);">No homework posted yet.</div>';
-    }catch(err){
-      box.innerHTML = '<div class="msg error">Could not load homework.</div>';
+        const item = document.createElement('div');
+        item.style.cssText = 'padding:12px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:#fffdf9;';
+        item.innerHTML = `<strong>📝 ${h.title || 'Homework'}</strong>
+          <div style="font-size:11.5px;color:var(--muted);margin-top:4px;">${target}${due}</div>
+          <div style="font-size:12.5px;color:var(--muted);margin-top:4px;">${h.details || ''}</div>`;
+        box.appendChild(item);
+        count++;
+      });
+    } catch(err){
+      box.innerHTML = '<div class="msg error">Could not load homework: ' + err.message + '</div>';
     }
   }
 
-  document.getElementById('post-homework-btn').addEventListener('click', async () => {
-    const title = document.getElementById('homework-title').value.trim();
-    const details = document.getElementById('homework-details').value.trim();
-    const targetClass = document.getElementById('homework-target-class').value;
-    const targetBatch = document.getElementById('homework-target-batch').value;
-    const dueDate = document.getElementById('homework-due-date').value;
-    const msg = document.getElementById('homework-msg');
-    const btn = document.getElementById('post-homework-btn');
-
-    if(!title || !details){
-      msg.textContent = 'Homework title and details are required.';
-      msg.className = 'msg error';
-      return;
-    }
-    btn.disabled = true; btn.textContent = 'Posting...';
-    try{
-      await addDoc(collection(db, 'homework'), {
-        title, details, dueDate,
-        targetClass, targetBatch,
-        createdAt: serverTimestamp()
-      });
-      document.getElementById('homework-title').value = '';
-      document.getElementById('homework-details').value = '';
-      document.getElementById('homework-due-date').value = '';
-      msg.textContent = 'Homework posted successfully.';
-      msg.className = 'msg success';
-      await loadHomeworkAdminList();
-      showToast('Homework posted.');
-    }catch(err){
-      msg.textContent = 'Error posting homework: ' + err.message;
-      msg.className = 'msg error';
-    }finally{
-      btn.disabled = false; btn.textContent = '+ Post Homework';
-    }
-  });
-
-  document.getElementById('homework-target-class').addEventListener('change', () => {
-    updateBatchDropdown();
-    const source = document.getElementById('homework-target-batch');
-    if(source) source.value = '';
-  });
-
-  async function refreshHomeworkTargetBatches(){
-    const cls = document.getElementById('homework-target-class').value;
+  async function refreshHomeworkBatchDropdown(){
+    const cls = document.getElementById('homework-target-class')?.value || '';
     const select = document.getElementById('homework-target-batch');
     if(!select) return;
     select.innerHTML = '<option value="">All batches</option>';
     if(!cls) return;
     batchesCache.filter(b => b.class === cls).forEach(b => {
       const opt = document.createElement('option');
-      opt.value = b.name; opt.textContent = b.name;
+      opt.value = b.name;
+      opt.textContent = b.name;
       select.appendChild(opt);
     });
   }
 
-  document.getElementById('homework-target-class').addEventListener('change', refreshHomeworkTargetBatches);
+  const postHomeworkBtn = document.getElementById('post-homework-btn');
+  if(postHomeworkBtn){
+    postHomeworkBtn.addEventListener('click', async () => {
+      const title = document.getElementById('homework-title').value.trim();
+      const details = document.getElementById('homework-details').value.trim();
+      const targetClass = document.getElementById('homework-target-class').value;
+      const targetBatch = document.getElementById('homework-target-batch').value;
+      const dueDate = document.getElementById('homework-due-date').value;
+      const msg = document.getElementById('homework-msg');
 
-  loadHomeworkAdminList();
+      if(!title || !details){
+        msg.textContent = 'Please enter homework title and details.';
+        msg.className = 'msg error';
+        return;
+      }
+
+      postHomeworkBtn.disabled = true;
+      postHomeworkBtn.textContent = 'Posting...';
+
+      try{
+        await addDoc(collection(db, "homework"), {
+          title,
+          details,
+          targetClass,
+          targetBatch,
+          dueDate,
+          createdAt: serverTimestamp()
+        });
+
+        document.getElementById('homework-title').value = '';
+        document.getElementById('homework-details').value = '';
+        document.getElementById('homework-due-date').value = '';
+        msg.textContent = 'Homework posted successfully.';
+        msg.className = 'msg success';
+        await loadHomeworkAdminList();
+        showToast('Homework posted.');
+      }catch(err){
+        msg.textContent = 'Error posting homework: ' + err.message;
+        msg.className = 'msg error';
+      }finally{
+        postHomeworkBtn.disabled = false;
+        postHomeworkBtn.textContent = '+ Post Homework';
+      }
+    });
+  }
+
+  document.getElementById('homework-target-class')?.addEventListener('change', refreshHomeworkBatchDropdown);
 
   document.getElementById('add-batch-btn').addEventListener('click', async () => {
     const cls = document.getElementById('batch-class-input').value;
@@ -2037,6 +2043,8 @@
       btn.disabled = false; btn.textContent = '+ Launch / Create Batch';
     }
   });
+
+  loadHomeworkAdminList();
 </script>
 </body>
 </html>
@@ -2044,7 +2052,7 @@
 <style>
 /* Maths Pathshala Academic Command Center — premium cleanup */
 .admin-brand-line{font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
-#next-class,#f-next-class{display:none!important}
+#next-class,#f-next-class,.next-class-card{display:none!important}
 </style>
 
 <style>
