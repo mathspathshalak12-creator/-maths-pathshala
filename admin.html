@@ -161,7 +161,7 @@
   @keyframes spin{ to{ transform:rotate(360deg); } }
   .loading-row{display:flex;align-items:center;font-size:13px;color:var(--muted);padding:10px 0;}
 
-  /* PREMIUM ADMIN WORKSPACE */
+  /* PREMIUM ACADEMIC COMMAND CENTER */
   :root{--ink:#07182f;--gold-soft:#fff2d9;--shadow:0 18px 45px rgba(7,24,47,.09);}
   body{padding:32px 24px;background:radial-gradient(circle at 0 0,#fff 0,transparent 29rem),linear-gradient(135deg,#fffdf9 0%,#f6f2e9 100%);}
   .wrap{max-width:1180px;}
@@ -191,9 +191,16 @@
   .enrolment-card{background:radial-gradient(circle at 97% 0%,rgba(245,166,35,.16),transparent 17rem),#fff;}.enrolment-form-grid{display:grid;grid-template-columns:1.3fr 1.1fr 1.3fr .8fr 1.4fr auto;gap:10px;margin-top:20px;align-items:center;}.enrolment-form-grid .btn{white-space:nowrap;}.enrolments-list{display:grid;gap:9px;margin-top:18px;}.enrolment-item{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px;border:1px solid rgba(11,30,61,.10);border-radius:12px;background:#fffdf9;}.enrolment-name{font-weight:700;font-size:14px;}.enrolment-meta{font-size:12px;color:var(--muted);margin-top:3px;}.enrolment-actions{display:flex;gap:8px;align-items:center;}.status-chip{border-radius:20px;padding:4px 9px;background:#fff0d4;color:#a76100;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
   @media(max-width:960px){.admin-layout{grid-template-columns:1fr;}.admin-sidebar{position:relative;top:0;min-height:0;}.admin-nav{display:flex;overflow:auto;margin-top:14px;}.admin-nav a{white-space:nowrap;}.sidebar-note{display:none;}.enrolment-form-grid{grid-template-columns:repeat(2,1fr);}.enrolment-form-grid .btn{width:max-content;}}
   @media(max-width:600px){body{padding:16px;}.card{padding:22px 18px;}.top-bar{padding:15px;}.stats-grid{grid-template-columns:1fr 1fr;gap:10px;}.enrolment-form-grid{grid-template-columns:1fr;}.enrolment-form-grid .btn{width:100%;}.card-title-row,.enrolment-item{align-items:flex-start;flex-direction:column;}.enrolment-actions{width:100%;justify-content:space-between;}}
+
+/* ===== PREMIUM ACADEMIC COMMAND CENTER ===== */
+.admin-layout{background:#f4f6fa!important}.admin-sidebar{background:linear-gradient(180deg,#06162f,#0c2850)!important;color:#fff!important}.admin-brand{padding:22px 18px!important}.admin-nav a{border-radius:10px!important;margin:3px 8px!important}.admin-nav a:hover{background:rgba(255,255,255,.08)!important}.admin-main{background:#f4f6fa!important}.top-bar{background:#fff!important;border:1px solid #e2e7ef!important;border-radius:16px!important;box-shadow:0 8px 25px rgba(11,30,61,.05)!important}.card{border:1px solid #e2e7ef!important;border-radius:18px!important;box-shadow:0 8px 25px rgba(11,30,61,.045)!important}.card h2{color:#0b1e3d!important}.section-kicker{color:#b5760f!important;font-weight:800!important;letter-spacing:.1em!important}.stat-card{border:1px solid #e2e7ef!important;border-radius:15px!important;background:#fff!important}.stat-num{color:#0b1e3d!important}.btn{border-radius:10px!important}.student-insight-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0}.student-insight-strip>div{background:#f7f9fc;border:1px solid #e4e9f1;border-radius:12px;padding:11px}.student-insight-strip span{display:block;font-size:9px;text-transform:uppercase;color:#8490a2;letter-spacing:.06em;font-weight:700}.student-insight-strip strong{display:block;font-size:17px;color:#0b1e3d;margin-top:4px}.monthly-report-tools{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-top:12px}.monthly-report-tools .btn{margin:0}.report-help{font-size:11px;color:#78859a;margin-top:7px}@media(max-width:800px){.student-insight-strip{grid-template-columns:1fr 1fr}.monthly-report-tools{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+<div class="mp-admin-brandline">
+  <strong>BUILDING STRONG FOUNDATION IN MATHEMATICS</strong>
+  <span>Academic Command Center</span>
+</div>
 
 <div class="wrap">
 
@@ -209,17 +216,17 @@
 
   <div id="admin-screen" class="admin-layout">
     <aside class="admin-sidebar">
-      <div class="admin-brand"><span>∑</span><div>Maths <b>Pathshala</b><small>ADMIN WORKSPACE</small></div></div>
+      <div class="admin-brand"><span>∑</span><div>Maths <b>Pathshala</b><small>ACADEMIC COMMAND CENTER</small></div></div>
       <nav class="admin-nav">
-        <a href="#overview">Overview</a>
+        <a href="#overview">Dashboard</a>
         <a href="#enrolments">Enrolments <em id="pending-nav-count">0</em></a>
         <a href="#batches-section">Batches</a>
         <a href="#students-section">Students</a>
         <a href="#attendance-section">Attendance</a>
         <a href="#fees-section">Fees</a>
-        <a href="#communication-section">Communication</a>
+        <a href="#communication-section">Student Updates</a>
       </nav>
-      <div class="sidebar-note">Offline coaching: <b>7 seats per batch</b><br>Home tuition: Classes 4–12</div>
+      <div class="sidebar-note">Primary focus: <b>Offline coaching</b><br>Class 9–10: PCM · Class 11–12: Mathematics<br>Home tuition: Class 3–8</div>
     </aside>
     <main class="admin-main">
     <div class="top-bar" id="overview">
@@ -252,8 +259,8 @@
         <input type="text" id="e-name" placeholder="Student name">
         <input type="tel" id="e-parent-phone" placeholder="Parent WhatsApp number">
         <input type="email" id="e-email" placeholder="Student email (optional for enquiry)">
-        <select id="e-class"><option value="4">Class 4</option><option value="5">Class 5</option><option value="6">Class 6</option><option value="7">Class 7</option><option value="8">Class 8</option><option value="9">Class 9</option><option value="10">Class 10</option><option value="11">Class 11</option><option value="12">Class 12</option></select>
-        <select id="e-service"><option value="Home Tuition">Home Tuition</option><option value="Offline Coaching">Offline Coaching (Class 9–12 Maths)</option></select>
+        <select id="e-class"><option value="3">Class 3</option><option value="4">Class 4</option><option value="5">Class 5</option><option value="6">Class 6</option><option value="7">Class 7</option><option value="8">Class 8</option><option value="9">Class 9</option><option value="10">Class 10</option><option value="11">Class 11</option><option value="12">Class 12</option></select>
+        <select id="e-service"><option value="Offline Coaching">Offline Coaching</option><option value="Home Tuition">Home Tuition (Class 3–8)</option></select>
         <button class="btn" id="add-enrolment-btn" style="margin-top:0;">+ Add enquiry</button>
       </div>
       <div class="msg" id="enrolment-msg"></div>
@@ -301,14 +308,24 @@
         </select>
         <input type="text" id="batch-name-input" placeholder="Batch name, e.g. Rankers">
       </div>
+      <div style="margin-top:14px;"><input type="text" id="batch-intro-input" placeholder="Short batch intro, e.g. Complete Maths syllabus + weekly tests + doubt support"></div>
       <div class="row2" style="margin-top:14px;">
-        <input type="number" id="batch-capacity-input" placeholder="Capacity (default 7)" value="7">
         <input type="text" id="batch-timing-input" placeholder="Timing, e.g. Mon/Wed/Fri · 5 PM">
+        <input type="number" id="batch-base-fee-input" min="0" step="100" placeholder="Original fee (optional), e.g. 10000">
       </div>
       <div class="row2" style="margin-top:14px;">
-        <input type="number" id="batch-fee-input" placeholder="Monthly fee, e.g. 2000">
-        <button class="btn" id="add-batch-btn" style="margin-top:0;">+ Create Batch</button>
+        <input type="number" id="batch-offer-input" min="0" max="100" step="1" value="0" placeholder="Offer %, e.g. 30">
+        <input type="text" id="batch-launch-title-input" placeholder="Launch headline, e.g. Board Booster — Complete Maths">
       </div>
+      <div class="row2" style="margin-top:14px;">
+        <input type="text" id="batch-launch-subtitle-input" placeholder="Launch subtitle, e.g. Complete syllabus in one focused batch">
+        <select id="batch-launch-active-input">
+          <option value="yes">Launch popup: ON</option>
+          <option value="no">Launch popup: OFF</option>
+        </select>
+      </div>
+      <div class="launch-preview" id="batch-launch-preview">Set an original fee and offer to preview the launch price.</div>
+      <div class="row2" style="margin-top:14px;"><button class="btn" id="add-batch-btn" style="margin-top:0;">+ Launch / Create Batch</button></div>
       <div id="batches-list" style="margin-top:18px;"></div>
     </div>
 
@@ -333,7 +350,7 @@
     </div>
 
     <div class="card" id="attendance-section">
-      <h2>Bulk Test Score Entry</h2>
+      <h2>Test Results &amp; Batch Scoring</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Pick a batch and enter scores for the whole class at once — no need to open each student separately.</p>
       <div class="row2">
         <select id="bulk-score-class">
@@ -384,34 +401,9 @@
       <button class="btn" id="post-notice-btn">Post Notice</button>
       <div id="notices-list" style="margin-top:18px;"></div>
     </div>
-
-    <div class="card">
-      <h2>Assign Homework</h2>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Choose who should see this — everyone, or just one batch.</p>
-      <label>Send to</label>
-      <div class="row2">
-        <select id="hw-target-class">
-          <option value="">All students</option>
-          <option value="9">Class 9</option>
-          <option value="10">Class 10</option>
-          <option value="11">Class 11</option>
-          <option value="12">Class 12</option>
-        </select>
-        <select id="hw-target-batch">
-          <option value="">All batches</option>
-        </select>
-      </div>
-      <label>Title</label>
-      <input type="text" id="hw-title" placeholder="e.g. Chapter 5 - Arithmetic Progressions">
-      <label>Details</label>
-      <input type="text" id="hw-details" placeholder="e.g. Solve Q1 to Q10 from the exercise, due Monday">
-      <button class="btn" id="post-hw-btn">Assign Homework</button>
-      <div id="hw-list" style="margin-top:18px;"></div>
-    </div>
-
-    <div class="card">
+<div class="card">
       <div class="att-header">
-        <h2 style="margin:0;">Mark Attendance</h2>
+        <h2 style="margin:0;">Attendance Management</h2>
         <div class="att-date-picker">
           <label style="margin:0;">Date:</label>
           <input type="date" id="bulk-att-date">
@@ -431,7 +423,7 @@
 
     <div class="card">
       <h2>Batch Performance Comparison</h2>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Average attendance and average test score % across each batch.</p>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Attendance, test performance and batch-level academic insights.</p>
       <div style="height:260px;"><canvas id="batch-perf-chart"></canvas></div>
       <div id="batch-perf-list" style="margin-top:16px;"></div>
     </div>
@@ -475,6 +467,7 @@
         <div>
           <label>Class</label>
           <select id="f-class">
+            <option value="3">Class 3</option>
             <option value="4">Class 4</option>
             <option value="5">Class 5</option>
             <option value="6">Class 6</option>
@@ -494,7 +487,7 @@
         </div>
       </div>
       <div class="row2">
-        <div><label>Service</label><select id="f-service-mode"><option value="Home Tuition">Home Tuition</option><option value="Offline Coaching">Offline Coaching</option></select></div>
+        <div><label>Service</label><select id="f-service-mode"><option value="Offline Coaching">Offline Coaching</option><option value="Home Tuition">Home Tuition (Class 3–8)</option></select></div>
         <div><label>Parent WhatsApp</label><input type="tel" id="f-parent-phone" placeholder="e.g. 95060 54813"></div>
       </div>
       <label>Student status</label>
@@ -503,8 +496,6 @@
       <input type="text" id="f-batch" placeholder="Evening 5-6 PM">
       <label>Admission date (shown to student — no fee details shown to them)</label>
       <input type="date" id="f-admission-date">
-      <label>Next class</label>
-      <input type="text" id="f-next-class" placeholder="e.g. Monday, 9 July, 5:00 PM">
       <label>Next test (shows as a reminder popup when student logs in)</label>
       <input type="text" id="f-next-test" placeholder="e.g. Unit Test 2 - Chapter 5, Monday 14 July">
 
@@ -565,9 +556,21 @@
         <button class="btn" id="save-student-btn">Save Student</button>
         <button class="btn btn-secondary" id="message-parent-btn">Message Parent</button>
         <button class="btn btn-secondary" id="clear-form-btn">Clear Form (new student)</button>
-        <button class="btn btn-secondary" id="print-report-btn">🖨 Print Report Card</button>
+        <button class="btn btn-secondary" id="print-report-btn" style="display:none!important;">🖨 Print Report Card</button>
         <button class="btn btn-secondary" id="delete-student-btn" style="color:#C0392B;border-color:#C0392B;">🗑 Delete This Student</button>
       </div>
+      
+      <div class="student-insight-strip" id="student-insight-strip">
+        <div><span>Batch Rank</span><strong id="admin-student-rank">—</strong></div>
+        <div><span>Batch Size</span><strong id="admin-student-batch-size">—</strong></div>
+        <div><span>Highest Score</span><strong id="admin-student-highest">—</strong></div>
+        <div><span>Test Average</span><strong id="admin-student-average">—</strong></div>
+      </div>
+      <div class="monthly-report-tools">
+        <select id="admin-report-month"><option value="">Select month for report</option></select>
+        <button class="btn btn-secondary" id="admin-download-month-report">↓ Open &amp; Download Report Card</button>
+      </div>
+      <div class="report-help">Each report is generated for one month only, so it can be shared separately with parents.</div>
       <div class="msg" id="save-msg"></div>
     </div>
     </main>
@@ -589,8 +592,6 @@
   <ul id="pr-payments"></ul>
   <h3>Batch Timing</h3>
   <p id="pr-batch"></p>
-  <h3>Next Class</h3>
-  <p id="pr-next-class"></p>
   <h3>Next Test</h3>
   <p id="pr-next-test"></p>
   <h3>Attendance</h3>
@@ -676,7 +677,6 @@
       loadEnrolments();
       loadBulkAttendanceRows();
       loadNotices();
-      loadHomework();
     } else {
       loginScreen.style.display = 'block';
       adminScreen.style.display = 'none';
@@ -711,7 +711,7 @@
         document.getElementById('f-email').value = entry.email || '';
         document.getElementById('f-parent-phone').value = entry.parentPhone || '';
         document.getElementById('f-class').value = entry.class || '9';
-        document.getElementById('f-service-mode').value = entry.service || 'Home Tuition';
+        document.getElementById('f-service-mode').value = entry.service || 'Offline Coaching';
         updateBatchDropdown();
         document.getElementById('form-heading').textContent = 'Create student profile: ' + (entry.name || 'New student');
         document.getElementById('students-section').scrollIntoView({ behavior:'smooth', block:'start' });
@@ -1076,7 +1076,15 @@
   async function updatePublicStats(){
     const batchStats = batchesCache.map(b => {
       const filled = allStudentsCache.filter(s => s.data.class === b.class && s.data.batchName === b.name).length;
-      return { class: b.class, name: b.name, capacity: b.capacity || 7, filled };
+      return {
+        class: b.class, name: b.name,
+        intro: b.intro || "Focused offline coaching with regular practice, testing and doubt support.",
+        capacity: b.capacity || 7, filled,
+        baseFee: b.baseFee || 0, offerPercent: b.offerPercent || 0, launchPrice: b.launchPrice || 0,
+        launchTitle: b.launchTitle || `${b.name} — Admissions Open`,
+        launchSubtitle: b.launchSubtitle || "A focused Maths batch for serious students.",
+        launchActive: !!b.launchActive
+      };
     });
     try{
       await setDoc(doc(db, "stats", "public"), { batchStats, updatedAt: serverTimestamp() }, { merge: true });
@@ -1144,7 +1152,7 @@
       showToast('No students to export.');
       return;
     }
-    const headers = ['Name', 'Email', 'Fee Status', 'Batch Timing', 'Next Class', 'Attendance %'];
+    const headers = ['Name', 'Email', 'Fee Status', 'Batch Timing', 'Attendance %'];
     const rows = allStudentsCache.map(s => [
       s.data.name || '',
       s.id,
@@ -1175,18 +1183,19 @@
     document.getElementById('f-name').value = data.name || '';
     document.getElementById('f-fee').value = data.feeStatus || 'Due';
     document.getElementById('f-class').value = data.class || '9';
-    document.getElementById('f-service-mode').value = data.serviceMode || 'Home Tuition';
+    document.getElementById('f-service-mode').value = data.serviceMode || 'Offline Coaching';
     document.getElementById('f-parent-phone').value = data.parentPhone || '';
     document.getElementById('f-student-status').value = data.studentStatus || 'Active';
     updateBatchDropdown();
     document.getElementById('f-batch-name').value = data.batchName || '';
     document.getElementById('f-batch').value = data.batchTiming || '';
     document.getElementById('f-admission-date').value = data.admissionDate || '';
-    document.getElementById('f-next-class').value = data.nextClass || '';
     document.getElementById('f-next-test').value = data.nextTest || '';
     currentAttendanceLog = (data.attendance && data.attendance.log) || [];
     currentNotes = data.notes || [];
     currentTestScores = data.testScores || [];
+    currentStudentBatchStats = data.batchStats || {};
+    renderAdminStudentInsights(data);
     currentPayments = data.feeHistory || [];
     currentMonthlyFees = data.monthlyFees || [];
     renderAttendancePreview();
@@ -1204,13 +1213,12 @@
     document.getElementById('f-name').value = '';
     document.getElementById('f-fee').value = 'Due';
     document.getElementById('f-class').value = '9';
-    document.getElementById('f-service-mode').value = 'Home Tuition';
+    document.getElementById('f-service-mode').value = 'Offline Coaching';
     document.getElementById('f-parent-phone').value = '';
     document.getElementById('f-student-status').value = 'Active';
     updateBatchDropdown();
     document.getElementById('f-batch').value = '';
     document.getElementById('f-admission-date').value = '';
-    document.getElementById('f-next-class').value = '';
     document.getElementById('f-next-test').value = '';
     currentAttendanceLog = [];
     currentNotes = [];
@@ -1301,6 +1309,35 @@
     }
     renderMonthlyFeesPreview();
   });
+
+
+  function adminParseDate(value){
+    if(!value) return null; if(/^\d{4}-\d{2}-\d{2}$/.test(value)) return new Date(value+'T00:00:00'); const d=new Date(value); if(!isNaN(d.getTime())) return d; const m=String(value).match(/^(\d{1,2})\s+([A-Za-z]{3})/); if(m){const x=new Date(`${m[1]} ${m[2]} ${new Date().getFullYear()} 00:00:00`);if(!isNaN(x.getTime()))return x;} return null;
+  }
+  function adminMonthKey(value){const d=adminParseDate(value);return d?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`:'';}
+  function adminMonthLabel(key){if(!key)return 'Unknown';const [y,m]=key.split('-').map(Number);return new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});}
+  function adminScorePct(s){return s&&Number(s.max)>0?Math.round(Number(s.score)/Number(s.max)*100):0;}
+  async function refreshBatchInsights(classVal,batchName){
+    if(!classVal||!batchName) return;
+    try{
+      const snap=await getDocs(collection(db,'students')); const students=[]; snap.forEach(d=>{const x=d.data();if(x.class===classVal&&x.batchName===batchName&&(x.studentStatus||'Active')==='Active')students.push({id:d.id,data:x});});
+      const metrics=students.map(s=>{const scores=Array.isArray(s.data.testScores)?s.data.testScores:[];const avg=scores.length?scores.reduce((a,t)=>a+adminScorePct(t),0)/scores.length:0;return {...s,avg};}).sort((a,b)=>b.avg-a.avg);
+      const size=metrics.length; const highest=metrics.length?Math.max(...metrics.flatMap(s=>(s.data.testScores||[]).map(adminScorePct)),0):0;
+      const monthly={};
+      metrics.forEach(s=>(s.data.testScores||[]).forEach(t=>{const k=adminMonthKey(t.date);if(k){if(!monthly[k])monthly[k]=[];monthly[k].push({id:s.id,score:adminScorePct(t)});}}));
+      const monthStats={}; Object.entries(monthly).forEach(([k,arr])=>{const byStudent={};arr.forEach(x=>{byStudent[x.id]=Math.max(byStudent[x.id]||0,x.score)});const vals=Object.entries(byStudent).sort((a,b)=>b[1]-a[1]);const hi=vals.length?vals[0][1]:0;vals.forEach((x,i)=>{if(!monthStats[k])monthStats[k]={};monthStats[k][x[0]]={rank:i+1,size:vals.length,highest:hi};});});
+      const wb=writeBatch(db); metrics.forEach((s,i)=>{wb.set(doc(db,'students',s.id),{batchStats:{rank:i+1,size,highest,average:Math.round(s.avg),monthly:Object.fromEntries(Object.entries(monthStats).map(([k,v])=>[k,v[s.id]||{size:v?Object.keys(v).length:0,highest:0}]))}},{merge:true});}); await wb.commit();
+      const me=metrics.find(s=>s.id===document.getElementById('f-email').value.trim().toLowerCase()); if(me){renderAdminStudentInsights({...me.data,batchStats:{rank:metrics.indexOf(me)+1,size,highest,average:Math.round(me.avg)}});}
+    }catch(err){console.warn('Batch insight refresh failed',err);}
+  }
+  function renderAdminStudentInsights(data){
+    const bs=data.batchStats||{}; document.getElementById('admin-student-rank').textContent=bs.rank&&bs.size?`#${bs.rank}`:'—'; document.getElementById('admin-student-batch-size').textContent=bs.size||'—'; document.getElementById('admin-student-highest').textContent=bs.highest!=null?bs.highest+'%':'—'; document.getElementById('admin-student-average').textContent=bs.average!=null?bs.average+'%':'—';
+    const select=document.getElementById('admin-report-month'); const keys=new Set(); (currentAttendanceLog||[]).forEach(e=>{const k=adminMonthKey(e.date);if(k)keys.add(k)}); (currentTestScores||[]).forEach(s=>{const k=adminMonthKey(s.date);if(k)keys.add(k)}); (currentMonthlyFees||[]).forEach(f=>{if(f.monthKey)keys.add(f.monthKey)}); const arr=[...keys].sort((a,b)=>b.localeCompare(a)); select.innerHTML=arr.length?arr.map(k=>`<option value="${k}">${adminMonthLabel(k)}</option>`).join(''):'<option value="">No monthly data</option>';
+  }
+  function openAdminMonthlyReport(){
+    const key=document.getElementById('admin-report-month').value; if(!key){showToast('Select a month first.');return;} const name=document.getElementById('f-name').value.trim()||'Student'; const cls=document.getElementById('f-class').value; const batch=document.getElementById('f-batch-name').value; const att=(currentAttendanceLog||[]).filter(e=>adminMonthKey(e.date)===key); const present=att.filter(e=>e.status==='Present').length; const tests=(currentTestScores||[]).filter(s=>adminMonthKey(s.date)===key); const avg=tests.length?Math.round(tests.reduce((a,s)=>a+adminScorePct(s),0)/tests.length):0; const best=tests.length?Math.max(...tests.map(adminScorePct)):0; const bs=(currentStudentBatchStats||{}); const win=window.open('','_blank','width=900,height=900'); if(!win)return; win.document.write(`<html><head><title>Maths Pathshala Monthly Report</title><style>body{font-family:Arial;color:#14233b;background:#f4f6fa}.page{max-width:820px;margin:25px auto;background:#fff;padding:38px;border-radius:18px}.head{background:#081b38;color:#fff;padding:25px;border-radius:14px}.head small{color:#f5a623}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}.box{background:#f5f7fa;padding:13px;border-radius:10px}.box small{display:block;color:#78859a}.box b{display:block;font-size:20px;margin-top:5px}table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #e5e8ed;text-align:left;font-size:12px}@media print{body{background:#fff}.page{margin:0;box-shadow:none}}</style></head><body><div class="page"><div class="head"><small>MATHS PATHSHALA · MONTHLY PROGRESS REPORT</small><h1>${name}</h1><div>Class ${cls||'—'} · ${batch||'Batch not assigned'}</div></div><p><b>Month:</b> ${adminMonthLabel(key)}</p><div class="grid"><div class="box"><small>Attendance</small><b>${att.length?Math.round(present/att.length*100):0}%</b></div><div class="box"><small>Present</small><b>${present}/${att.length}</b></div><div class="box"><small>Test Average</small><b>${tests.length?avg+'%':'—'}</b></div><div class="box"><small>Batch Rank</small><b>${bs.rank&&bs.size?'#'+bs.rank+'/'+bs.size:'—'}</b></div></div><h2>Test Performance</h2>${tests.length?`<table><tr><th>Date</th><th>Test</th><th>Score</th><th>%</th></tr>${tests.map(s=>`<tr><td>${s.date||''}</td><td>${s.name||''}</td><td>${s.score}/${s.max}</td><td>${adminScorePct(s)}%</td></tr>`).join('')}</table><p><b>Best score:</b> ${best}%</p>`:'<p>No tests recorded this month.</p>'}<h2>Attendance Summary</h2><p>${present} present out of ${att.length} recorded classes.</p><h2>Teacher Note</h2><p>Regular attendance, consistent practice and timely test preparation are key to strong board performance.</p><p style="margin-top:35px;color:#78859a;font-size:11px">Generated by Maths Pathshala · Share this report with parents for monthly progress tracking.</p></div></body></html>`); win.document.close();win.focus();setTimeout(()=>win.print(),250);
+  }
+  let currentStudentBatchStats={};
 
   function renderAttendancePreview(){
     const box = document.getElementById('attendance-log-preview');
@@ -1410,7 +1447,6 @@
     }
     const feeStatus = document.getElementById('f-fee').value;
     const batch = document.getElementById('f-batch').value.trim();
-    const nextClass = document.getElementById('f-next-class').value.trim();
     const nextTest = document.getElementById('f-next-test').value.trim();
     const attPct = currentAttendanceLog.length > 0
       ? Math.round((currentAttendanceLog.filter(e => e.status === 'Present').length / currentAttendanceLog.length) * 100)
@@ -1421,7 +1457,6 @@
     document.getElementById('pr-email').textContent = email;
     document.getElementById('pr-fee').textContent = feeStatus;
     document.getElementById('pr-batch').textContent = batch || 'Not assigned';
-    document.getElementById('pr-next-class').textContent = nextClass || 'Not scheduled';
     document.getElementById('pr-next-test').textContent = nextTest || 'None scheduled';
     document.getElementById('pr-attendance-pct').textContent = (attPct || '0') + '% attendance';
 
@@ -1447,6 +1482,8 @@
 
     window.print();
   });
+
+  document.getElementById('admin-download-month-report').addEventListener('click', openAdminMonthlyReport);
 
   document.getElementById('delete-student-btn').addEventListener('click', async () => {
     const email = document.getElementById('f-email').value.trim().toLowerCase();
@@ -1496,13 +1533,13 @@
       batchName: document.getElementById('f-batch-name').value,
       batchTiming: document.getElementById('f-batch').value.trim(),
       admissionDate: document.getElementById('f-admission-date').value,
-      nextClass: document.getElementById('f-next-class').value.trim(),
       nextTest: document.getElementById('f-next-test').value.trim(),
       attendance: { percent: pct, log: currentAttendanceLog },
       notes: currentNotes,
       testScores: currentTestScores,
       feeHistory: currentPayments,
-      monthlyFees: currentMonthlyFees
+      monthlyFees: currentMonthlyFees,
+      batchStats: currentStudentBatchStats
     };
 
     try{
@@ -1510,6 +1547,7 @@
       saveMsg.textContent = 'Saved successfully!';
       saveMsg.className = 'msg success';
       loadStudentList();
+      await refreshBatchInsights(studentData.class, studentData.batchName);
     } catch(err){
       saveMsg.textContent = 'Error saving: ' + err.message;
       saveMsg.className = 'msg error';
@@ -1580,70 +1618,6 @@
     }
   });
 
-  async function loadHomework(){
-    const list = document.getElementById('hw-list');
-    list.innerHTML = '<div style="font-size:13px;color:var(--muted);">Loading...</div>';
-    try{
-      const q = query(collection(db, "homework"), orderBy("createdAt", "desc"));
-      const snap = await getDocs(q);
-      if(snap.empty){
-        list.innerHTML = '<div style="font-size:13px;color:var(--muted);">No homework assigned yet.</div>';
-        return;
-      }
-      list.innerHTML = '';
-      snap.forEach(docSnap => {
-        const data = docSnap.data();
-        const dateStr = data.createdAt ? data.createdAt.toDate().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : '';
-        const targetStr = data.targetClass
-          ? `Class ${data.targetClass}${data.targetBatch ? ' · ' + data.targetBatch : ' (all batches)'}`
-          : 'All students';
-        const item = document.createElement('div');
-        item.className = 'notice-item';
-        item.innerHTML = `
-          <div>
-            <div class="notice-title">${data.title}</div>
-            <div class="notice-msg">${data.details}</div>
-            <div class="notice-date">${dateStr} · <span style="color:var(--amber-dark);font-weight:600;">${targetStr}</span></div>
-          </div>
-          <button class="notice-delete" data-id="${docSnap.id}">Delete</button>
-        `;
-        item.querySelector('.notice-delete').addEventListener('click', async () => {
-          await deleteDoc(doc(db, "homework", docSnap.id));
-          loadHomework();
-          showToast('Homework removed.');
-        });
-        list.appendChild(item);
-      });
-    } catch(err){
-      list.innerHTML = '<div style="font-size:13px;color:#C0392B;">Error loading homework: ' + err.message + '</div>';
-    }
-  }
-
-  document.getElementById('post-hw-btn').addEventListener('click', async () => {
-    const title = document.getElementById('hw-title').value.trim();
-    const details = document.getElementById('hw-details').value.trim();
-    const targetClass = document.getElementById('hw-target-class').value;
-    const targetBatch = document.getElementById('hw-target-batch').value;
-    if(!title || !details){
-      showToast('Please fill both title and details.');
-      return;
-    }
-    const btn = document.getElementById('post-hw-btn');
-    btn.disabled = true; btn.textContent = 'Assigning...';
-    try{
-      await addDoc(collection(db, "homework"), { title, details, targetClass, targetBatch, createdAt: serverTimestamp() });
-      document.getElementById('hw-title').value = '';
-      document.getElementById('hw-details').value = '';
-      showToast('Homework assigned!');
-      sendPushNotification(getTargetEmails(targetClass, targetBatch), "New Homework 📝 " + title, details);
-      loadHomework();
-    } catch(err){
-      showToast('Error: ' + err.message);
-    } finally {
-      btn.disabled = false; btn.textContent = 'Assign Homework';
-    }
-  });
-
   async function loadBatches(){
     const list = document.getElementById('batches-list');
     list.innerHTML = '<div class="loading-row"><span class="spinner"></span>Loading batches...</div>';
@@ -1666,7 +1640,7 @@
               <div class="batch-item">
                 <div>
                   <div class="batch-item-name">${b.name}</div>
-                  <div class="batch-item-meta">${b.timing || 'Timing to be set'} · ₹${b.monthlyFee || '—'}/month · ${b.capacity || 7} seats</div>
+                  <div class="batch-item-meta">${b.timing || 'Timing to be set'}${b.launchActive ? ' · 🚀 Launch LIVE' : ''}${b.offerPercent ? ` · ${b.offerPercent}% OFF` : ''}</div>
                 </div>
                 <button class="notice-delete" data-id="${b.id}">Delete</button>
               </div>`;
@@ -1696,9 +1670,9 @@
     const serviceMode = document.getElementById('f-service-mode').value;
     const batchesForClass = batchesCache.filter(b => b.class === classVal);
     if(batchesForClass.length === 0){
-      batchSelect.innerHTML = '<option value="">Home Tuition — no batch</option>';
+      batchSelect.innerHTML = '<option value="">No batch / home tuition</option>';
     } else {
-      batchSelect.innerHTML = '<option value="">Home Tuition — no batch</option>' +
+      batchSelect.innerHTML = '<option value="">No batch / home tuition</option>' +
         batchesForClass.map(b => `<option value="${b.name}" data-timing="${b.timing || ''}">${b.name}</option>`).join('');
     }
     if(serviceMode === 'Home Tuition'){
@@ -1886,33 +1860,79 @@
     }
   });
 
+  const launchPreview = document.getElementById('batch-launch-preview');
+  function updateLaunchPreview(){
+    const base = parseFloat(document.getElementById('batch-base-fee-input').value);
+    const offer = Math.min(100, Math.max(0, parseFloat(document.getElementById('batch-offer-input').value) || 0));
+    if(!base){
+      launchPreview.innerHTML = 'Set an original fee and offer to preview the launch price.';
+      return;
+    }
+    const finalFee = Math.round(base * (1 - offer / 100));
+    launchPreview.innerHTML = offer
+      ? `<span>Original: <s>₹${base.toLocaleString('en-IN')}</s></span> <strong>Launch price: ₹${finalFee.toLocaleString('en-IN')}</strong> <em>${offer}% OFF</em>`
+      : `<strong>Public price: ₹${base.toLocaleString('en-IN')}</strong> <span>No offer applied.</span>`;
+  }
+  document.getElementById('batch-base-fee-input').addEventListener('input', updateLaunchPreview);
+  document.getElementById('batch-offer-input').addEventListener('input', updateLaunchPreview);
+
   document.getElementById('add-batch-btn').addEventListener('click', async () => {
     const cls = document.getElementById('batch-class-input').value;
     const name = document.getElementById('batch-name-input').value.trim();
-    const capacity = parseInt(document.getElementById('batch-capacity-input').value) || 7;
+    const capacity = 7;
     const timing = document.getElementById('batch-timing-input').value.trim() || 'Timing to be confirmed';
-    const monthlyFee = parseFloat(document.getElementById('batch-fee-input').value) || 0;
+    const intro = document.getElementById('batch-intro-input').value.trim() || 'Focused offline coaching with regular practice, testing and doubt support.';
+    const baseFee = parseFloat(document.getElementById('batch-base-fee-input').value) || 0;
+    const offerPercent = Math.min(100, Math.max(0, parseFloat(document.getElementById('batch-offer-input').value) || 0));
+    const launchTitle = document.getElementById('batch-launch-title-input').value.trim() || `${name} — Admissions Open`;
+    const launchSubtitle = document.getElementById('batch-launch-subtitle-input').value.trim() || 'A focused Maths batch for serious students.';
+    const launchActive = document.getElementById('batch-launch-active-input').value === 'yes';
+    const launchPrice = baseFee ? Math.round(baseFee * (1 - offerPercent / 100)) : 0;
     if(!name){
       showToast('Please enter a batch name.');
       return;
     }
     const btn = document.getElementById('add-batch-btn');
-    btn.disabled = true; btn.textContent = 'Creating...';
+    btn.disabled = true; btn.textContent = 'Launching...';
     try{
-      await addDoc(collection(db, "batches"), { class: cls, name, capacity, timing, monthlyFee, createdAt: serverTimestamp() });
-      document.getElementById('batch-name-input').value = '';
-      document.getElementById('batch-capacity-input').value = '7';
-      document.getElementById('batch-timing-input').value = '';
-      document.getElementById('batch-fee-input').value = '';
-      showToast('Batch created!');
+      await addDoc(collection(db, "batches"), {
+        class: cls, name, capacity, timing, intro,
+        baseFee, offerPercent, launchPrice,
+        launchTitle, launchSubtitle, launchActive,
+        createdAt: serverTimestamp()
+      });
+      ['batch-name-input','batch-intro-input','batch-timing-input','batch-base-fee-input','batch-launch-title-input','batch-launch-subtitle-input'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('batch-offer-input').value = '0';
+      document.getElementById('batch-launch-active-input').value = 'yes';
+      updateLaunchPreview();
+      showToast(launchActive ? 'Batch launched with promotion!' : 'Batch created!');
       await loadBatches();
       loadStudentList();
     } catch(err){
       showToast('Error: ' + err.message);
     } finally {
-      btn.disabled = false; btn.textContent = '+ Create Batch';
+      btn.disabled = false; btn.textContent = '+ Launch / Create Batch';
     }
   });
 </script>
 </body>
 </html>
+
+<style>
+/* Maths Pathshala Academic Command Center — premium cleanup */
+.admin-brand-line{font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+#homework-section,#homework,#hw-section,#next-class,#f-next-class,.homework-section,.homework-card,.next-class-card{display:none!important}
+</style>
+
+<style>
+.mp-admin-brandline{padding:12px 22px;background:linear-gradient(90deg,#071a35,#102f5b);color:#fff;display:flex;justify-content:space-between;gap:15px;align-items:center;font-size:12px}
+.mp-admin-brandline strong{letter-spacing:.04em}
+.mp-admin-brandline span{opacity:.75}
+@media(max-width:700px){.mp-admin-brandline{display:block}.mp-admin-brandline span{display:block;margin-top:3px}}
+</style>
+
+<style>
+.launch-preview{margin-top:12px;padding:14px 16px;border:1px solid #ead9b6;background:linear-gradient(135deg,#fffaf0,#fff);border-radius:14px;color:#66748a;font-size:13px}
+.launch-preview strong{color:#0b1e3d;margin:0 5px}.launch-preview em{font-style:normal;background:#e7f6ed;color:#217a48;padding:4px 8px;border-radius:999px;font-weight:800}
+.batch-launch-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;background:#fff3d9;color:#9b6512;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+</style>
