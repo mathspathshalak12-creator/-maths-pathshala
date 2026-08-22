@@ -228,6 +228,7 @@
         <a href="#attendance-section">Attendance</a>
         <a href="#fees-section">Fees</a>
         <a href="#communication-section">Student Updates</a>
+        <a href="#homework-section">Homework</a>
         <a href="#popup-manager-section">Popups</a>
         <a href="#branding-section">Branding</a>
       </nav>
@@ -262,7 +263,11 @@
       <div class="card-title-row"><div><span class="section-kicker">Private finance</span><h2>Finance Overview</h2><p>Fee amounts stay hidden by default. Reveal them only when you need the actual figures.</p></div><button class="btn btn-secondary btn-small" id="toggle-finance-amounts">Show amounts</button></div>
       <div class="stats-grid" style="margin-top:14px;margin-bottom:0;">
         <div class="stat-card good">
-          <div class="stat-num" id="fin-month-collected">—</div>
+          <div class="stat-num" id="fin-total-collected">••••</div>
+          <div class="stat-label">Total Collected (All Time)</div>
+        </div>
+        <div class="stat-card good">
+          <div class="stat-num" id="fin-month-collected">••••</div>
           <div class="stat-label">Collected This Month</div>
         </div>
         <div class="stat-card warn">
@@ -270,8 +275,8 @@
           <div class="stat-label">Students With Fee Due</div>
         </div>
         <div class="stat-card">
-          <div class="stat-num">••••</div>
-          <div class="stat-label">Amounts hidden by default</div>
+          <div class="stat-num" id="fin-payment-count">—</div>
+          <div class="stat-label">Total Payments Recorded</div>
         </div>
       </div>
       <div style="margin-top:20px;">
@@ -416,6 +421,33 @@
       <input type="text" id="notice-message" placeholder="e.g. Class postponed to Monday due to a holiday.">
       <button class="btn" id="post-notice-btn">Post Notice</button>
       <div id="notices-list" style="margin-top:18px;"></div>
+    </div>
+
+    <div class="card" id="homework-section">
+      <h2>Post Homework</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Post homework for everyone, or target one class / batch. It shows on the student portal and as a popup.</p>
+      <label>Send to</label>
+      <div class="row2">
+        <select id="homework-target-class">
+          <option value="">All classes</option>
+          <option value="9">Class 9</option>
+          <option value="10">Class 10</option>
+          <option value="11">Class 11</option>
+          <option value="12">Class 12</option>
+        </select>
+        <select id="homework-target-batch">
+          <option value="">All batches</option>
+        </select>
+      </div>
+      <label>Title</label>
+      <input type="text" id="homework-title" placeholder="e.g. Chapter 5 — Exercise 5.2">
+      <label>Details</label>
+      <input type="text" id="homework-details" placeholder="e.g. Solve Q1-10, submit by next class.">
+      <label>Due date (optional)</label>
+      <input type="date" id="homework-due-date">
+      <button class="btn" id="post-homework-btn">+ Post Homework</button>
+      <div class="msg" id="homework-msg"></div>
+      <div id="homework-admin-list" style="margin-top:18px;"></div>
     </div>
 <div class="card">
       <div class="att-header">
@@ -690,14 +722,10 @@
       document.getElementById('f-test-date').value = todayStr;
       document.getElementById('f-payment-date').value = todayStr;
       document.getElementById('bulk-att-date').value = todayStr;
-      await Promise.allSettled([
-        loadBatches(),
-        loadStudentList(),
-        loadNotices()
-      ]);
-      // Student data is already cached by loadStudentList(), so attendance
-      // rows reuse that cache instead of downloading the students again.
-      try{ await loadBulkAttendanceRows(); }catch(err){ console.warn('Attendance rows load skipped:', err); }
+      await loadBatches();
+      await loadStudentList();
+      loadBulkAttendanceRows();
+      loadNotices();
     } else {
       loginScreen.style.display = 'block';
       adminScreen.style.display = 'none';
@@ -954,19 +982,15 @@
       });
     });
 
-    const finTotal=document.getElementById('fin-total-collected');
-    if(finTotal){ finTotal.dataset.amount='₹'+totalCollected.toLocaleString('en-IN'); finTotal.textContent='••••'; }
-    const finMonth=document.getElementById('fin-month-collected');
-    if(finMonth){ finMonth.dataset.amount='₹'+monthCollected.toLocaleString('en-IN'); finMonth.textContent='••••'; }
-    const finDue=document.getElementById('fin-due-count');
-    if(finDue) finDue.textContent=dueCount;
-    const finPaymentCount=document.getElementById('fin-payment-count');
-    if(finPaymentCount) finPaymentCount.textContent=paymentCount;
+    document.getElementById('fin-total-collected').dataset.amount = '₹' + totalCollected.toLocaleString('en-IN'); document.getElementById('fin-total-collected').textContent = '••••';
+    document.getElementById('fin-month-collected').dataset.amount = '₹' + monthCollected.toLocaleString('en-IN'); document.getElementById('fin-month-collected').textContent = '••••';
+    document.getElementById('fin-due-count').textContent = dueCount;
+    document.getElementById('fin-payment-count').textContent = paymentCount;
 
     const recentBox = document.getElementById('fin-recent-payments');
-    if(recentBox && allPayments.length === 0){
+    if(allPayments.length === 0){
       recentBox.innerHTML = '<div style="font-size:13px;color:var(--muted);">No payments recorded yet.</div>';
-    } else if(recentBox){
+    } else {
       allPayments.sort((a, b) => (b.isoDate || '').localeCompare(a.isoDate || ''));
       recentBox.innerHTML = allPayments.slice(0, 10).map(p =>
         `<div class="payment-item"><span>${p.name} — ${p.date}</span><span>₹${p.amount}</span></div>`
@@ -975,7 +999,7 @@
 
     const dueBox = document.getElementById('fin-due-students');
     const dueStudents = allStudentsCache.filter(s => s.data.feeStatus !== 'Paid' && (s.data.studentStatus || 'Active') === 'Active');
-    if(dueBox) dueBox.innerHTML = dueStudents.length
+    dueBox.innerHTML = dueStudents.length
       ? dueStudents.map(s => `<div class="payment-item"><span><b>${s.data.name || 'Unnamed'}</b><small style="display:block;color:var(--muted);margin-top:2px;">${s.data.parentPhone || 'No parent WhatsApp saved'}</small></span><button class="btn btn-secondary btn-small due-open-student" data-email="${s.id}">Open profile</button></div>`).join('')
       : '<div style="font-size:13px;color:var(--muted);">No active students with fee due.</div>';
     dueBox.querySelectorAll('.due-open-student').forEach(btn => btn.addEventListener('click', () => {
@@ -1354,75 +1378,18 @@
   function adminMonthLabel(key){if(!key)return 'Unknown';const [y,m]=key.split('-').map(Number);return new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});}
   function adminScorePct(s){return s&&Number(s.max)>0?Math.round(Number(s.score)/Number(s.max)*100):0;}
   async function refreshBatchInsights(classVal,batchName){
-    if(!classVal || !batchName) return;
+    if(!classVal||!batchName) return;
     try{
-      // Only fetch students in the selected class + batch instead of the
-      // entire students collection.
-      const q = query(
-        collection(db,'students'),
-        where('class','==',classVal),
-        where('batchName','==',batchName),
-        where('studentStatus','==','Active')
-      );
-      const snap = await getDocs(q);
-      const students = [];
-      snap.forEach(d => students.push({id:d.id,data:d.data()}));
-
-      // Older records without studentStatus are still treated as active.
-      if(!students.length){
-        const fallbackSnap = await getDocs(query(
-          collection(db,'students'),
-          where('class','==',classVal),
-          where('batchName','==',batchName)
-        ));
-        fallbackSnap.forEach(d => {
-          const x=d.data();
-          if((x.studentStatus||'Active')==='Active') students.push({id:d.id,data:x});
-        });
-      }
-
+      const snap=await getDocs(collection(db,'students')); const students=[];
+      snap.forEach(d=>{const x=d.data();if(x.class===classVal&&x.batchName===batchName&&(x.studentStatus||'Active')==='Active')students.push({id:d.id,data:x});});
       let latestDate=0, latestName='';
-      students.forEach(s => (Array.isArray(s.data.testScores)?s.data.testScores:[]).forEach(t => {
-        const d=adminParseDate(t.date)?.getTime()||0;
-        if(d>latestDate){ latestDate=d; latestName=t.name||'Latest Test'; }
-      }));
-
-      const latestEntries=students.map(s=>{
-        const scores=Array.isArray(s.data.testScores)?s.data.testScores:[];
-        const candidates=scores.filter(t=>(adminParseDate(t.date)?.getTime()||0)===latestDate);
-        const t=candidates[candidates.length-1];
-        return {id:s.id,data:s.data,test:t,pct:t?adminScorePct(t):null};
-      }).filter(x=>x.pct!=null).sort((a,b)=>b.pct-a.pct);
-
-      const size=latestEntries.length;
-      const highest=size?latestEntries[0].pct:0;
-      const rankMap={};
-      latestEntries.forEach((x,i)=>{
-        rankMap[x.id]={rank:i+1,size,highest,name:x.test.name||latestName,date:x.test.date||'',pct:x.pct};
-      });
-
-      // Firestore writeBatch has a 500-operation limit. Keep a safe margin.
-      for(let start=0; start<students.length; start+=450){
-        const chunk=students.slice(start,start+450);
-        const wb=writeBatch(db);
-        chunk.forEach(s=>{
-          const recent=rankMap[s.id]||{};
-          wb.set(doc(db,'students',s.id),{batchStats:{recentTest:recent}},{merge:true});
-        });
-        await wb.commit();
-      }
-
-      const email=(document.getElementById('f-email')?.value||'').trim().toLowerCase();
-      const me=students.find(s=>s.id===email);
-      if(me){
-        renderAdminStudentInsights({
-          ...me.data,
-          batchStats:{...(me.data.batchStats||{}),recentTest:rankMap[me.id]||{}}
-        });
-      }
-    }catch(err){
-      console.warn('Batch insight refresh failed:',err);
-    }
+      students.forEach(s=>(Array.isArray(s.data.testScores)?s.data.testScores:[]).forEach(t=>{const d=adminParseDate(t.date)?.getTime()||0;if(d>latestDate){latestDate=d;latestName=t.name||'Latest Test';}}));
+      const latestEntries=students.map(s=>{const scores=Array.isArray(s.data.testScores)?s.data.testScores:[];const candidates=scores.filter(t=>(adminParseDate(t.date)?.getTime()||0)===latestDate);const t=candidates[candidates.length-1];return {id:s.id,data:s.data,test:t,pct:t?adminScorePct(t):null};}).filter(x=>x.pct!=null).sort((a,b)=>b.pct-a.pct);
+      const size=latestEntries.length; const highest=size?latestEntries[0].pct:0;
+      const rankMap={}; latestEntries.forEach((x,i)=>{rankMap[x.id]={rank:i+1,size,highest,name:x.test.name||latestName,date:x.test.date||''};});
+      const wb=writeBatch(db); students.forEach(s=>{const recent=rankMap[s.id]||{}; wb.set(doc(db,'students',s.id),{batchStats:{recentTest:recent}},{merge:true});}); await wb.commit();
+      const me=students.find(s=>s.id===document.getElementById('f-email').value.trim().toLowerCase()); if(me){renderAdminStudentInsights({...me.data,batchStats:{...(me.data.batchStats||{}),recentTest:rankMap[me.id]||{}}});}
+    }catch(err){console.warn('Batch insight refresh failed',err);}
   }
   function renderAdminStudentInsights(data){
     const bs=data.batchStats||{}; const recent=bs.recentTest||{}; document.getElementById('admin-student-rank').textContent=recent.rank&&recent.size?`#${recent.rank}`:'—'; document.getElementById('admin-student-batch-size').textContent=recent.size||'—'; document.getElementById('admin-student-highest').textContent=recent.highest!=null?recent.highest+'%':'—'; document.getElementById('admin-student-average').textContent=recent.pct!=null?recent.pct+'%':'—';
@@ -1977,7 +1944,8 @@
     if(type==='custom') html=`${popupField('p-eyebrow','Small label','SPECIAL')}${popupField('p-title','Title','Your custom popup')}${popupField('p-description','Description','Your message here.')}${popupField('p-offer-text','Offer / supporting text','Optional offer text')}${popupField('p-cta','CTA text','Know More')}${popupField('p-link','CTA link','https://...')}${popupField('p-wa','WhatsApp message','Hi, I want more details.')}`;
     popupFields.innerHTML=html;
     if(type==='batchOffer'||type==='batchLaunch') populatePopupBatchSelect(data.batchId||'');
-    Object.entries(data).forEach(([k,v])=>{const el=document.getElementById('p-'+k);if(el)el.value=Array.isArray(v)?v.join(', '):(v??'');});
+    const popupFieldIdMap={festivalName:'festival-name',offerText:'offer-text',ctaText:'cta',ctaLink:'link',whatsappMessage:'wa',originalPrice:'original',offerPrice:'offer-price',batchId:'batch'};
+    Object.entries(data).forEach(([k,v])=>{const el=document.getElementById('p-'+(popupFieldIdMap[k]||k));if(el)el.value=Array.isArray(v)?v.join(', '):(v??'');});
   }
   async function populatePopupBatchSelect(selected=''){ const el=document.getElementById('p-batch'); if(!el)return; const snap=await getDocs(collection(db,'batches')); const arr=[]; snap.forEach(d=>arr.push({id:d.id,...d.data()})); el.outerHTML=`<select id="p-batch" style="width:100%;margin-bottom:10px;"><option value="">Select existing batch</option>${arr.map(b=>`<option value="${b.id}" ${b.id===selected?'selected':''}>Class ${b.class||''} · ${b.name||b.id}</option>`).join('')}</select>`; }
   function collectPopupData(){ const type=popupTypeInput.value; const val=id=>document.getElementById('p-'+id)?.value?.trim()||''; const d={type,enabled:popupEnabledInput.value==='true',startAt:document.getElementById('popup-start-input').value||'',endAt:document.getElementById('popup-end-input').value||'',updatedAt:serverTimestamp()}; if(type==='festival'){Object.assign(d,{festivalName:val('festival-name'),title:val('title'),description:val('description'),offerText:val('offer-text'),ctaText:val('cta'),whatsappMessage:val('wa')});} if(type==='announcement'){Object.assign(d,{title:val('title'),description:val('description'),ctaText:val('cta'),ctaLink:val('link')});} if(type==='batchOffer'||type==='batchLaunch'){Object.assign(d,{batchId:val('batch'),title:val('title'),description:val('description'),originalPrice:Number(val('original'))||0,offerPrice:Number(val('offer-price'))||0,discount:Number(val('discount'))||0,ctaText:val('cta'),whatsappMessage:val('wa'),points:val('points').split(',').map(x=>x.trim()).filter(Boolean),eyebrow:type==='batchLaunch'?'🚀 NEW BATCH LAUNCH':'🎯 BATCH OFFER'});} if(type==='custom'){Object.assign(d,{eyebrow:val('eyebrow'),title:val('title'),description:val('description'),offerText:val('offer-text'),ctaText:val('cta'),ctaLink:val('link'),whatsappMessage:val('wa')});} return d; }
