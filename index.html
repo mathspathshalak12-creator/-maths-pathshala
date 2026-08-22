@@ -708,6 +708,7 @@
       </div>
 
       <div class="dash-notices" id="dash-notices"></div>
+      <div id="dash-homework"></div>
 
       <div id="dash-found-content">
         <div class="student-kpi-grid">
@@ -1577,6 +1578,7 @@
       isLoggedIn = true;
       await loadStudentDashboard(user.email);
       await loadNotices();
+      await loadHomework();
       studentLoginBtn.textContent = 'Logout';
       mobileLoginBtn.textContent = 'Logout';
 
@@ -1604,6 +1606,7 @@
       btn.textContent = 'Refreshing...';
       await loadStudentDashboard(auth.currentUser.email);
       await loadNotices();
+      await loadHomework();
       btn.textContent = '↻ Refresh';
     }
   });
@@ -1971,6 +1974,7 @@
 .public-offer-price{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:12px 0 15px}
 .public-offer-price span{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#f5c66d;font-weight:800;width:100%}
 .public-offer-price strong{font-size:26px;color:#fff}.public-offer-price s{color:#9aa9be;font-size:13px}.public-offer-price em{font-style:normal;background:#f5a623;color:#071a35;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:900}
+.batch-launch-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;margin-bottom:10px;border-radius:999px;background:#f5a623;color:#071a35;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
 .launch-popup-card{max-width:510px!important;padding:30px!important}
 .launch-popup-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.launch-live-dot{font-size:10px;color:#62c98a;font-weight:900;letter-spacing:.08em}.launch-live-dot:first-letter{color:#62c98a}
 .launch-popup-class{font-size:11px;color:var(--amber);font-weight:900;letter-spacing:.12em;text-transform:uppercase}
