@@ -223,14 +223,15 @@
       <div class="admin-brand"><span>∑</span><div>Maths <b>Pathshala</b><small>ACADEMIC COMMAND CENTER</small></div></div>
       <nav class="admin-nav">
         <a href="#overview">Dashboard</a>
-        <a href="#enrolments">Enrolments <em id="pending-nav-count">0</em></a>
         <a href="#batches-section">Batches</a>
         <a href="#students-section">Students</a>
         <a href="#attendance-section">Attendance</a>
         <a href="#fees-section">Fees</a>
         <a href="#communication-section">Student Updates</a>
+        <a href="#popup-manager-section">Popups</a>
+        <a href="#branding-section">Branding</a>
       </nav>
-      <div class="sidebar-note">Primary focus: <b>Offline coaching</b><br>Class 9–10: PCM · Class 11–12: Mathematics<br>Home tuition: Class 3–8</div>
+      <div class="sidebar-note">Primary focus: <b>Offline coaching</b><br>Class 9–10: PCM · Class 11–12: Mathematics<br>Home tuition: Class 3–8 all subjects · Class 9–12 Mathematics</div>
     </aside>
     <main class="admin-main">
     <div class="top-bar" id="overview">
@@ -243,45 +244,23 @@
         <div class="stat-num" id="stat-total">—</div>
         <div class="stat-label">Total Students</div>
       </div>
-      <div class="stat-card good">
-        <div class="stat-num" id="stat-paid">—</div>
-        <div class="stat-label">Fees Paid</div>
-      </div>
       <div class="stat-card warn">
         <div class="stat-num" id="stat-due">—</div>
         <div class="stat-label">Fees Due</div>
       </div>
       <div class="stat-card">
-        <div class="stat-num" id="stat-marked-today">—</div>
-        <div class="stat-label">Attendance Marked Today</div>
+        <div class="stat-num" id="stat-present-today">—</div>
+        <div class="stat-label">Present Today</div>
       </div>
       <div class="stat-card warn">
-        <div class="stat-num" id="stat-low-attendance">—</div>
-        <div class="stat-label">Attendance Below 75%</div>
+        <div class="stat-num" id="stat-absent-today">—</div>
+        <div class="stat-label">Absent Today</div>
       </div>
-    </div>
-
-    <div class="card enrolment-card" id="enrolments">
-      <div class="card-title-row"><div><span class="section-kicker">Admissions desk</span><h2>Pending Enrolments</h2><p>Register every enquiry here first. Approve it only after speaking with the parent, then open the student profile to finish admission.</p></div><span class="pending-pill" id="pending-enrolment-count">0 pending</span></div>
-      <div class="enrolment-form-grid">
-        <input type="text" id="e-name" placeholder="Student name">
-        <input type="tel" id="e-parent-phone" placeholder="Parent WhatsApp number">
-        <input type="email" id="e-email" placeholder="Student email (optional for enquiry)">
-        <select id="e-class"><option value="3">Class 3</option><option value="4">Class 4</option><option value="5">Class 5</option><option value="6">Class 6</option><option value="7">Class 7</option><option value="8">Class 8</option><option value="9">Class 9</option><option value="10">Class 10</option><option value="11">Class 11</option><option value="12">Class 12</option></select>
-        <select id="e-service"><option value="Offline Coaching">Offline Coaching</option><option value="Home Tuition">Home Tuition (Class 3–8)</option></select>
-        <button class="btn" id="add-enrolment-btn" style="margin-top:0;">+ Add enquiry</button>
-      </div>
-      <div class="msg" id="enrolment-msg"></div>
-      <div id="enrolments-list" class="enrolments-list"></div>
     </div>
 
     <div class="card" id="fees-section">
-      <h2>Finance Overview</h2>
+      <div class="card-title-row"><div><span class="section-kicker">Private finance</span><h2>Finance Overview</h2><p>Fee amounts stay hidden by default. Reveal them only when you need the actual figures.</p></div><button class="btn btn-secondary btn-small" id="toggle-finance-amounts">Show amounts</button></div>
       <div class="stats-grid" style="margin-top:14px;margin-bottom:0;">
-        <div class="stat-card good">
-          <div class="stat-num" id="fin-total-collected">—</div>
-          <div class="stat-label">Total Collected (All Time)</div>
-        </div>
         <div class="stat-card good">
           <div class="stat-num" id="fin-month-collected">—</div>
           <div class="stat-label">Collected This Month</div>
@@ -291,8 +270,8 @@
           <div class="stat-label">Students With Fee Due</div>
         </div>
         <div class="stat-card">
-          <div class="stat-num" id="fin-payment-count">—</div>
-          <div class="stat-label">Total Payments Recorded</div>
+          <div class="stat-num">••••</div>
+          <div class="stat-label">Amounts hidden by default</div>
         </div>
       </div>
       <div style="margin-top:20px;">
@@ -302,6 +281,35 @@
         <div style="font-size:13px;font-weight:700;color:#C0392B;text-transform:uppercase;letter-spacing:.03em;margin:20px 0 10px;">Fee follow-up</div>
         <div id="fin-due-students"><div style="font-size:13px;color:var(--muted);">No pending fees.</div></div>
       </div>
+    </div>
+
+    <div class="card" id="popup-manager-section">
+      <div class="card-title-row"><div><span class="section-kicker">Website & app</span><h2>Popup Manager</h2><p>Choose one popup type. Each type has its own relevant fields. The active configuration is shared through Firebase so the website and a compatible app can use the same popup data. Select Festival, Announcement, Batch Offer, Batch Launch or Custom; each type uses its own fields.</p></div><span class="status-chip" id="popup-manager-status">OFF</span></div>
+      <div class="row2" style="margin-top:16px;">
+        <select id="popup-type-input">
+          <option value="festival">🎉 Festival Popup</option>
+          <option value="announcement">📢 Announcement Popup</option>
+          <option value="batchOffer">🎯 Batch Offer Popup</option>
+          <option value="batchLaunch">🚀 Batch Launch Popup</option>
+          <option value="custom">✨ Custom Popup</option>
+        </select>
+        <select id="popup-enabled-input"><option value="true">Enabled</option><option value="false">Disabled</option></select>
+      </div>
+      <div id="popup-fields" style="margin-top:14px;"></div>
+      <div class="row2" style="margin-top:14px;"><input type="datetime-local" id="popup-start-input"><input type="datetime-local" id="popup-end-input"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;"><button class="btn" id="save-popup-btn">Save Popup</button><button class="btn btn-secondary" id="clear-popup-btn">Turn Popup Off</button></div>
+      <div class="msg" id="popup-msg"></div>
+      <p style="font-size:11px;color:var(--muted);margin-top:10px;">Popup display rule: maximum once per visit/session. Leaving the site and returning later starts a new visit.</p>
+    </div>
+
+    <div class="card" id="branding-section">
+      <div style="margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--cream);">
+        <div style="font-weight:800;color:var(--navy);margin-bottom:6px;">Public Contact & Socials</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.9;">📞 9506054813 · ✉️ mathspathshala.k12@gmail.com<br>📸 Instagram: @pathshalamaths · ▶️ YouTube: Maths Pathshala K12<br>CBSE · ICSE · UP Board · Kalyanpur, Kanpur</div>
+      </div>
+      <div class="card-title-row"><div><span class="section-kicker">Brand assets</span><h2>Report Card Signature</h2><p>Upload your teacher signature once. Generated monthly reports will reuse it automatically.</p></div></div>
+      <div class="row2" style="margin-top:14px;"><input type="file" id="teacher-signature-input" accept="image/png,image/jpeg,image/webp"><button class="btn" id="upload-signature-btn">Upload Signature</button></div>
+      <div id="signature-preview" style="margin-top:12px;"></div><div class="msg" id="signature-msg"></div>
     </div>
 
     <div class="card" id="batches-section">
@@ -569,7 +577,7 @@
       </div>
       
       <div class="student-insight-strip" id="student-insight-strip">
-        <div><span>Batch Rank</span><strong id="admin-student-rank">—</strong></div>
+        <div><span>Recent Test Rank</span><strong id="admin-student-rank">—</strong></div>
         <div><span>Batch Size</span><strong id="admin-student-batch-size">—</strong></div>
         <div><span>Highest Score</span><strong id="admin-student-highest">—</strong></div>
         <div><span>Test Average</span><strong id="admin-student-average">—</strong></div>
@@ -615,6 +623,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, collection, getDocs, writeBatch, addDoc, deleteDoc, query, orderBy, serverTimestamp, where, documentId } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB3fzWzwiTxHJi1M3OQI3hgZJpi6lq-eww",
@@ -629,6 +638,7 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+  const storage = getStorage(app);
 
   // Push notifications are disabled until a secure server-side setup is added.
   // Keeping this as a no-op preserves the existing attendance/notice flows.
@@ -682,7 +692,6 @@
       document.getElementById('bulk-att-date').value = todayStr;
       await loadBatches();
       await loadStudentList();
-      loadEnrolments();
       loadBulkAttendanceRows();
       loadNotices();
     } else {
@@ -698,48 +707,11 @@
     setTimeout(() => toast.classList.remove('show'), 2500);
   }
 
-  async function loadEnrolments(){
-    const list = document.getElementById('enrolments-list');
-    const count = document.getElementById('pending-enrolment-count');
-    const navCount = document.getElementById('pending-nav-count');
-    list.innerHTML = '<div class="loading-row"><span class="spinner"></span>Loading enrolments...</div>';
-    try{
-      const snap = await getDocs(collection(db, 'enrolments'));
-      const pending = [];
-      snap.forEach(item => { const data = item.data(); if((data.status || 'pending') === 'pending') pending.push({ id:item.id, ...data }); });
-      count.textContent = `${pending.length} pending`;
-      navCount.textContent = pending.length;
-      if(!pending.length){ list.innerHTML = '<div style="font-size:13px;color:var(--muted);padding:5px 0;">No pending enquiries. Add a new enquiry above after receiving a registration.</div>'; return; }
-      list.innerHTML = pending.map(e => `<div class="enrolment-item"><div><div class="enrolment-name">${e.name || 'Unnamed student'} <span class="status-chip">Pending</span></div><div class="enrolment-meta">Class ${e.class || '—'} · ${e.service || '—'} · ${e.parentPhone || 'No parent number'}${e.email ? ' · ' + e.email : ''}</div></div><div class="enrolment-actions"><button class="btn btn-secondary btn-small enrolment-reject" data-id="${e.id}">Remove</button><button class="btn btn-small enrolment-approve" data-id="${e.id}">Approve & create profile</button></div></div>`).join('');
-      list.querySelectorAll('.enrolment-approve').forEach(btn => btn.addEventListener('click', async () => {
-        const entry = pending.find(e => e.id === btn.dataset.id); if(!entry) return;
-        await setDoc(doc(db, 'enrolments', entry.id), { status:'approved', approvedAt:serverTimestamp() }, { merge:true });
-        document.getElementById('clear-form-btn').click();
-        document.getElementById('f-name').value = entry.name || '';
-        document.getElementById('f-email').value = entry.email || '';
-        document.getElementById('f-parent-phone').value = entry.parentPhone || '';
-        document.getElementById('f-class').value = entry.class || '9';
-        document.getElementById('f-service-mode').value = entry.service || 'Offline Coaching';
-        updateBatchDropdown();
-        document.getElementById('form-heading').textContent = 'Create student profile: ' + (entry.name || 'New student');
-        document.getElementById('students-section').scrollIntoView({ behavior:'smooth', block:'start' });
-        showToast('Approved. Complete the student profile and save it.');
-        loadEnrolments();
-      }));
-      list.querySelectorAll('.enrolment-reject').forEach(btn => btn.addEventListener('click', async () => { if(confirm('Remove this enquiry?')) { await deleteDoc(doc(db, 'enrolments', btn.dataset.id)); loadEnrolments(); showToast('Enquiry removed.'); } }));
-    } catch(err){ list.innerHTML = '<div class="msg error">Could not load enrolments: ' + err.message + '</div>'; }
-  }
-
-  document.getElementById('add-enrolment-btn').addEventListener('click', async () => {
-    const name = document.getElementById('e-name').value.trim();
-    const parentPhone = document.getElementById('e-parent-phone').value.trim();
-    const msg = document.getElementById('enrolment-msg');
-    if(!name || !parentPhone){ msg.textContent = 'Student name and parent WhatsApp are required.'; msg.className = 'msg error'; return; }
-    const btn = document.getElementById('add-enrolment-btn'); btn.disabled = true; btn.textContent = 'Saving...';
-    try{
-      await addDoc(collection(db, 'enrolments'), { name, parentPhone, email:document.getElementById('e-email').value.trim().toLowerCase(), class:document.getElementById('e-class').value, service:document.getElementById('e-service').value, status:'pending', createdAt:serverTimestamp() });
-      document.getElementById('e-name').value = ''; document.getElementById('e-parent-phone').value = ''; document.getElementById('e-email').value = ''; msg.textContent = 'Enquiry added to pending enrolments.'; msg.className = 'msg success'; loadEnrolments();
-    } catch(err){ msg.textContent = 'Error saving enquiry: ' + err.message; msg.className = 'msg error'; } finally { btn.disabled = false; btn.textContent = '+ Add enquiry'; }
+  let financeAmountsVisible=false;
+  document.getElementById('toggle-finance-amounts').addEventListener('click',()=>{
+    financeAmountsVisible=!financeAmountsVisible;
+    ['fin-total-collected','fin-month-collected'].forEach(id=>{const el=document.getElementById(id); if(el) el.textContent=financeAmountsVisible?(el.dataset.amount||'₹0'):'••••';});
+    document.getElementById('toggle-finance-amounts').textContent=financeAmountsVisible?'Hide amounts':'Show amounts';
   });
 
   function dateInputToLabel(dateInputValue){
@@ -913,16 +885,15 @@
     list.innerHTML = '<li class="loading-row"><span class="spinner"></span>Loading...</li>';
     const snap = await getDocs(collection(db, "students"));
 
-    let total = 0, paid = 0, due = 0, markedToday = 0, lowAttendance = 0;
+    let total = 0, paid = 0, due = 0, markedToday = 0, presentToday = 0, absentToday = 0, lowAttendance = 0;
     const todayStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
     allStudentsCache = [];
     if(snap.empty){
       list.innerHTML = '<li>No students yet — add one below.</li>';
       document.getElementById('stat-total').textContent = 0;
-      document.getElementById('stat-paid').textContent = 0;
       document.getElementById('stat-due').textContent = 0;
-      document.getElementById('stat-marked-today').textContent = '0 / 0';
+      if(document.getElementById('stat-present-today')) document.getElementById('stat-present-today').textContent = 0; if(document.getElementById('stat-absent-today')) document.getElementById('stat-absent-today').textContent = 0;
       return;
     }
     snap.forEach(docSnap => {
@@ -932,7 +903,7 @@
       if(data.attendance && Array.isArray(data.attendance.log)){
         const todayKey = adminAttendanceDateKey(todayStr);
         const hasToday = data.attendance.log.some(e => adminAttendanceDateKey(e.date) === todayKey);
-        if(hasToday){ markedToday++; }
+        if(hasToday){ markedToday++; const todayEntry = data.attendance.log.slice().reverse().find(e => adminAttendanceDateKey(e.date) === todayKey); if(todayEntry && todayEntry.status === 'Present') presentToday++; if(todayEntry && todayEntry.status === 'Absent') absentToday++; }
       }
       const ap = Number(data.attendance && data.attendance.percent);
       if(Number.isFinite(ap) && ap < 75){ lowAttendance++; }
@@ -940,9 +911,9 @@
     });
 
     document.getElementById('stat-total').textContent = total;
-    document.getElementById('stat-paid').textContent = paid;
     document.getElementById('stat-due').textContent = due;
-    document.getElementById('stat-marked-today').textContent = markedToday + ' / ' + total;
+    if(document.getElementById('stat-present-today')) document.getElementById('stat-present-today').textContent = presentToday;
+    if(document.getElementById('stat-absent-today')) document.getElementById('stat-absent-today').textContent = absentToday;
     if(document.getElementById('stat-low-attendance')) document.getElementById('stat-low-attendance').textContent = lowAttendance;
 
     updateFinanceOverview();
@@ -979,8 +950,8 @@
       });
     });
 
-    document.getElementById('fin-total-collected').textContent = '₹' + totalCollected.toLocaleString('en-IN');
-    document.getElementById('fin-month-collected').textContent = '₹' + monthCollected.toLocaleString('en-IN');
+    document.getElementById('fin-total-collected').dataset.amount = '₹' + totalCollected.toLocaleString('en-IN'); document.getElementById('fin-total-collected').textContent = '••••';
+    document.getElementById('fin-month-collected').dataset.amount = '₹' + monthCollected.toLocaleString('en-IN'); document.getElementById('fin-month-collected').textContent = '••••';
     document.getElementById('fin-due-count').textContent = dueCount;
     document.getElementById('fin-payment-count').textContent = paymentCount;
 
@@ -1215,9 +1186,11 @@
       s.data.parentPhone || '',
       (s.data.attendance && s.data.attendance.percent) || 0
     ]);
-    let csv = headers.join(',') + '\n';
+    let csv = headers.join(',') + '
+';
     rows.forEach(row => {
-      csv += row.map(val => `"${String(val).replace(/"/g, '""')}"`).join(',') + '\n';
+      csv += row.map(val => `"${String(val).replace(/"/g, '""')}"`).join(',') + '
+';
     });
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -1377,24 +1350,27 @@
   async function refreshBatchInsights(classVal,batchName){
     if(!classVal||!batchName) return;
     try{
-      const snap=await getDocs(collection(db,'students')); const students=[]; snap.forEach(d=>{const x=d.data();if(x.class===classVal&&x.batchName===batchName&&(x.studentStatus||'Active')==='Active')students.push({id:d.id,data:x});});
-      const metrics=students.map(s=>{const scores=Array.isArray(s.data.testScores)?s.data.testScores:[];const avg=scores.length?scores.reduce((a,t)=>a+adminScorePct(t),0)/scores.length:0;return {...s,avg};}).sort((a,b)=>b.avg-a.avg);
-      const size=metrics.length; const highest=metrics.length?Math.max(...metrics.flatMap(s=>(s.data.testScores||[]).map(adminScorePct)),0):0;
-      const monthly={};
-      metrics.forEach(s=>(s.data.testScores||[]).forEach(t=>{const k=adminMonthKey(t.date);if(k){if(!monthly[k])monthly[k]=[];monthly[k].push({id:s.id,score:adminScorePct(t)});}}));
-      const monthStats={}; Object.entries(monthly).forEach(([k,arr])=>{const byStudent={};arr.forEach(x=>{byStudent[x.id]=Math.max(byStudent[x.id]||0,x.score)});const vals=Object.entries(byStudent).sort((a,b)=>b[1]-a[1]);const hi=vals.length?vals[0][1]:0;vals.forEach((x,i)=>{if(!monthStats[k])monthStats[k]={};monthStats[k][x[0]]={rank:i+1,size:vals.length,highest:hi};});});
-      const wb=writeBatch(db); metrics.forEach((s,i)=>{wb.set(doc(db,'students',s.id),{batchStats:{rank:i+1,size,highest,average:Math.round(s.avg),monthly:Object.fromEntries(Object.entries(monthStats).map(([k,v])=>[k,v[s.id]||{size:v?Object.keys(v).length:0,highest:0}]))}},{merge:true});}); await wb.commit();
-      const me=metrics.find(s=>s.id===document.getElementById('f-email').value.trim().toLowerCase()); if(me){renderAdminStudentInsights({...me.data,batchStats:{rank:metrics.indexOf(me)+1,size,highest,average:Math.round(me.avg)}});}
+      const snap=await getDocs(collection(db,'students')); const students=[];
+      snap.forEach(d=>{const x=d.data();if(x.class===classVal&&x.batchName===batchName&&(x.studentStatus||'Active')==='Active')students.push({id:d.id,data:x});});
+      let latestDate=0, latestName='';
+      students.forEach(s=>(Array.isArray(s.data.testScores)?s.data.testScores:[]).forEach(t=>{const d=adminParseDate(t.date)?.getTime()||0;if(d>latestDate){latestDate=d;latestName=t.name||'Latest Test';}}));
+      const latestEntries=students.map(s=>{const scores=Array.isArray(s.data.testScores)?s.data.testScores:[];const candidates=scores.filter(t=>(adminParseDate(t.date)?.getTime()||0)===latestDate);const t=candidates[candidates.length-1];return {id:s.id,data:s.data,test:t,pct:t?adminScorePct(t):null};}).filter(x=>x.pct!=null).sort((a,b)=>b.pct-a.pct);
+      const size=latestEntries.length; const highest=size?latestEntries[0].pct:0;
+      const rankMap={}; latestEntries.forEach((x,i)=>{rankMap[x.id]={rank:i+1,size,highest,name:x.test.name||latestName,date:x.test.date||''};});
+      const wb=writeBatch(db); students.forEach(s=>{const recent=rankMap[s.id]||{}; wb.set(doc(db,'students',s.id),{batchStats:{recentTest:recent}},{merge:true});}); await wb.commit();
+      const me=students.find(s=>s.id===document.getElementById('f-email').value.trim().toLowerCase()); if(me){renderAdminStudentInsights({...me.data,batchStats:{...(me.data.batchStats||{}),recentTest:rankMap[me.id]||{}}});}
     }catch(err){console.warn('Batch insight refresh failed',err);}
   }
   function renderAdminStudentInsights(data){
-    const bs=data.batchStats||{}; document.getElementById('admin-student-rank').textContent=bs.rank&&bs.size?`#${bs.rank}`:'—'; document.getElementById('admin-student-batch-size').textContent=bs.size||'—'; document.getElementById('admin-student-highest').textContent=bs.highest!=null?bs.highest+'%':'—'; document.getElementById('admin-student-average').textContent=bs.average!=null?bs.average+'%':'—';
+    const bs=data.batchStats||{}; const recent=bs.recentTest||{}; document.getElementById('admin-student-rank').textContent=recent.rank&&recent.size?`#${recent.rank}`:'—'; document.getElementById('admin-student-batch-size').textContent=recent.size||'—'; document.getElementById('admin-student-highest').textContent=recent.highest!=null?recent.highest+'%':'—'; document.getElementById('admin-student-average').textContent=recent.pct!=null?recent.pct+'%':'—';
     const select=document.getElementById('admin-report-month'); const keys=new Set(); (currentAttendanceLog||[]).forEach(e=>{const k=adminMonthKey(e.date);if(k)keys.add(k)}); (currentTestScores||[]).forEach(s=>{const k=adminMonthKey(s.date);if(k)keys.add(k)}); (currentMonthlyFees||[]).forEach(f=>{if(f.monthKey)keys.add(f.monthKey)}); const arr=[...keys].sort((a,b)=>b.localeCompare(a)); select.innerHTML=arr.length?arr.map(k=>`<option value="${k}">${adminMonthLabel(k)}</option>`).join(''):'<option value="">No monthly data</option>';
   }
   function openAdminMonthlyReport(){
-    const key=document.getElementById('admin-report-month').value; if(!key){showToast('Select a month first.');return;} const name=document.getElementById('f-name').value.trim()||'Student'; const cls=document.getElementById('f-class').value; const batch=document.getElementById('f-batch-name').value; const att=(currentAttendanceLog||[]).filter(e=>adminMonthKey(e.date)===key); const present=att.filter(e=>e.status==='Present').length; const tests=(currentTestScores||[]).filter(s=>adminMonthKey(s.date)===key); const avg=tests.length?Math.round(tests.reduce((a,s)=>a+adminScorePct(s),0)/tests.length):0; const best=tests.length?Math.max(...tests.map(adminScorePct)):0; const bs=(currentStudentBatchStats||{}); const win=window.open('','_blank','width=900,height=900'); if(!win)return; win.document.write(`<html><head><title>Maths Pathshala Monthly Report</title><style>body{font-family:Arial;color:#14233b;background:#f4f6fa}.page{max-width:820px;margin:25px auto;background:#fff;padding:38px;border-radius:18px}.head{background:#081b38;color:#fff;padding:25px;border-radius:14px}.head small{color:#f5a623}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}.box{background:#f5f7fa;padding:13px;border-radius:10px}.box small{display:block;color:#78859a}.box b{display:block;font-size:20px;margin-top:5px}table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #e5e8ed;text-align:left;font-size:12px}@media print{body{background:#fff}.page{margin:0;box-shadow:none}}</style></head><body><div class="page"><div class="head"><small>MATHS PATHSHALA · MONTHLY PROGRESS REPORT</small><h1>${name}</h1><div>Class ${cls||'—'} · ${batch||'Batch not assigned'}</div></div><p><b>Month:</b> ${adminMonthLabel(key)}</p><div class="grid"><div class="box"><small>Attendance</small><b>${att.length?Math.round(present/att.length*100):0}%</b></div><div class="box"><small>Present</small><b>${present}/${att.length}</b></div><div class="box"><small>Test Average</small><b>${tests.length?avg+'%':'—'}</b></div><div class="box"><small>Batch Rank</small><b>${bs.rank&&bs.size?'#'+bs.rank+'/'+bs.size:'—'}</b></div></div><h2>Test Performance</h2>${tests.length?`<table><tr><th>Date</th><th>Test</th><th>Score</th><th>%</th></tr>${tests.map(s=>`<tr><td>${s.date||''}</td><td>${s.name||''}</td><td>${s.score}/${s.max}</td><td>${adminScorePct(s)}%</td></tr>`).join('')}</table><p><b>Best score:</b> ${best}%</p>`:'<p>No tests recorded this month.</p>'}<h2>Attendance Summary</h2><p>${present} present out of ${att.length} recorded classes.</p><h2>Teacher Note</h2><p>Regular attendance, consistent practice and timely test preparation are key to strong board performance.</p><p style="margin-top:35px;color:#78859a;font-size:11px">Generated by Maths Pathshala · Share this report with parents for monthly progress tracking.</p></div></body></html>`); win.document.close();win.focus();setTimeout(()=>win.print(),250);
+    const key=document.getElementById('admin-report-month').value; if(!key){showToast('Select a month first.');return;} const name=document.getElementById('f-name').value.trim()||'Student'; const cls=document.getElementById('f-class').value; const batch=document.getElementById('f-batch-name').value; const att=(currentAttendanceLog||[]).filter(e=>adminMonthKey(e.date)===key); const present=att.filter(e=>e.status==='Present').length; const tests=(currentTestScores||[]).filter(s=>adminMonthKey(s.date)===key); const avg=tests.length?Math.round(tests.reduce((a,s)=>a+adminScorePct(s),0)/tests.length):0; const best=tests.length?Math.max(...tests.map(adminScorePct)):0; const bs=(currentStudentBatchStats||{}); const win=window.open('','_blank','width=900,height=900'); if(!win)return; win.document.write(`<html><head><title>Maths Pathshala Monthly Report</title><style>body{font-family:Arial;color:#14233b;background:#f4f6fa}.page{max-width:820px;margin:25px auto;background:#fff;padding:38px;border-radius:18px}.head{background:#081b38;color:#fff;padding:25px;border-radius:14px}.head small{color:#f5a623}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}.box{background:#f5f7fa;padding:13px;border-radius:10px}.box small{display:block;color:#78859a}.box b{display:block;font-size:20px;margin-top:5px}table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #e5e8ed;text-align:left;font-size:12px}@media print{body{background:#fff}.page{margin:0;box-shadow:none}}</style></head><body><div class="page"><div class="head"><small>MATHS PATHSHALA · MONTHLY PROGRESS REPORT</small><h1>${name}</h1><div>Class ${cls||'—'} · ${batch||'Batch not assigned'}</div></div><p><b>Month:</b> ${adminMonthLabel(key)}</p><div class="grid"><div class="box"><small>Attendance</small><b>${att.length?Math.round(present/att.length*100):0}%</b></div><div class="box"><small>Present</small><b>${present}/${att.length}</b></div><div class="box"><small>Test Average</small><b>${tests.length?avg+'%':'—'}</b></div><div class="box"><small>Recent Test Rank</small><b>${bs.rank&&bs.size?'#'+bs.rank+'/'+bs.size:'—'}</b></div></div><h2>Test Performance</h2>${tests.length?`<table><tr><th>Date</th><th>Test</th><th>Score</th><th>%</th></tr>${tests.map(s=>`<tr><td>${s.date||''}</td><td>${s.name||''}</td><td>${s.score}/${s.max}</td><td>${adminScorePct(s)}%</td></tr>`).join('')}</table><p><b>Best score:</b> ${best}%</p>`:'<p>No tests recorded this month.</p>'}<h2>Attendance Summary</h2><p>${present} present out of ${att.length} recorded classes.</p><h2>Teacher Note</h2><p>Regular attendance, consistent practice and timely test preparation are key to strong board performance.</p>${teacherSignatureUrl?`<div style="margin-top:28px;"><div style="font-size:11px;color:#777;">Teacher</div><img src="${teacherSignatureUrl}" alt="Teacher signature" style="max-width:180px;max-height:70px;margin-top:6px;"><div style="font-weight:700;margin-top:4px;">Vipin Kumar</div></div>`:''}<p style="margin-top:35px;color:#78859a;font-size:11px">Generated by Maths Pathshala · Share this report with parents for monthly progress tracking.</p></div></body></html>`); win.document.close();win.focus();setTimeout(()=>win.print(),250);
   }
   let currentStudentBatchStats={};
+  let teacherSignatureUrl="";
+  getDoc(doc(db,'siteSettings','branding')).then(s=>{if(s.exists()) teacherSignatureUrl=s.data().teacherSignatureUrl||'';}).catch(()=>{});
 
   function renderAttendancePreview(){
     const box = document.getElementById('attendance-log-preview');
@@ -1922,6 +1898,36 @@
       btn.disabled = false; btn.textContent = 'Save All Scores';
     }
   });
+
+  const popupFields=document.getElementById('popup-fields');
+  const popupTypeInput=document.getElementById('popup-type-input');
+  const popupEnabledInput=document.getElementById('popup-enabled-input');
+  const popupMsg=document.getElementById('popup-msg');
+  let popupLoadedData={};
+  function popupField(id,label,placeholder='',type='text'){ return `<label style="display:block;font-size:12px;font-weight:700;color:#52627a;margin-bottom:6px;">${label}</label><input id="${id}" type="${type}" placeholder="${placeholder}" style="width:100%;margin-bottom:10px;">`; }
+  function renderPopupFields(data={}){
+    const type=popupTypeInput.value; let html='';
+    if(type==='festival') html=`<div class="row2">${popupField('p-festival-name','Festival name','Diwali Offer')}${popupField('p-title','Heading','Diwali Special Offer')}</div>${popupField('p-description','Description','A special festive opportunity for serious learners.')}${popupField('p-offer-text','Offer text','Limited festive admission offer')}${popupField('p-cta','CTA text','Get Offer Details')}${popupField('p-wa','WhatsApp message','Hi, I want details about the festival offer.')}`;
+    if(type==='announcement') html=`${popupField('p-title','Announcement title','Important announcement')}${popupField('p-description','Message','Write the announcement here.')}${popupField('p-cta','CTA text','Got it')}${popupField('p-link','CTA link','https://...')}`;
+    if(type==='batchOffer') html=`${popupField('p-batch','Select batch','Choose existing batch')}${popupField('p-title','Offer title','Special batch offer')}${popupField('p-description','Description','Limited offer for this batch.')}${'<div class="row2">'+popupField('p-original','Original fee','10000','number')+popupField('p-offer-price','Offer fee','7000','number')+'</div>'}${popupField('p-discount','Discount %','30','number')}${popupField('p-cta','CTA text','Reserve My Seat')}${popupField('p-wa','WhatsApp message','Hi, I want details about this batch offer.')}`;
+    if(type==='batchLaunch') html=`${popupField('p-batch','Select batch','Choose existing launch-active batch')}${popupField('p-title','Launch title','Complete Maths — Special Launch')}${popupField('p-description','Launch subtitle','A focused complete-syllabus Maths batch for serious board preparation.')}${'<div class="row2">'+popupField('p-original','Original fee','10000','number')+popupField('p-offer-price','Launch fee','7000','number')+'</div>'}${popupField('p-discount','Discount %','30','number')}${popupField('p-points','Popup points (comma separated)','Complete syllabus, Small batch, Regular tests, Personal doubt support')}${popupField('p-cta','CTA text','Reserve My Seat')}${popupField('p-wa','WhatsApp message','Hi, I want details about this new batch.')}`;
+    if(type==='custom') html=`${popupField('p-eyebrow','Small label','SPECIAL')}${popupField('p-title','Title','Your custom popup')}${popupField('p-description','Description','Your message here.')}${popupField('p-offer-text','Offer / supporting text','Optional offer text')}${popupField('p-cta','CTA text','Know More')}${popupField('p-link','CTA link','https://...')}${popupField('p-wa','WhatsApp message','Hi, I want more details.')}`;
+    popupFields.innerHTML=html;
+    if(type==='batchOffer'||type==='batchLaunch') populatePopupBatchSelect(data.batchId||'');
+    Object.entries(data).forEach(([k,v])=>{const el=document.getElementById('p-'+k);if(el)el.value=Array.isArray(v)?v.join(', '):(v??'');});
+  }
+  async function populatePopupBatchSelect(selected=''){ const el=document.getElementById('p-batch'); if(!el)return; const snap=await getDocs(collection(db,'batches')); const arr=[]; snap.forEach(d=>arr.push({id:d.id,...d.data()})); el.outerHTML=`<select id="p-batch" style="width:100%;margin-bottom:10px;"><option value="">Select existing batch</option>${arr.map(b=>`<option value="${b.id}" ${b.id===selected?'selected':''}>Class ${b.class||''} · ${b.name||b.id}</option>`).join('')}</select>`; }
+  function collectPopupData(){ const type=popupTypeInput.value; const val=id=>document.getElementById('p-'+id)?.value?.trim()||''; const d={type,enabled:popupEnabledInput.value==='true',startAt:document.getElementById('popup-start-input').value||'',endAt:document.getElementById('popup-end-input').value||'',updatedAt:serverTimestamp()}; if(type==='festival'){Object.assign(d,{festivalName:val('festival-name'),title:val('title'),description:val('description'),offerText:val('offer-text'),ctaText:val('cta'),whatsappMessage:val('wa')});} if(type==='announcement'){Object.assign(d,{title:val('title'),description:val('description'),ctaText:val('cta'),ctaLink:val('link')});} if(type==='batchOffer'||type==='batchLaunch'){Object.assign(d,{batchId:val('batch'),title:val('title'),description:val('description'),originalPrice:Number(val('original'))||0,offerPrice:Number(val('offer-price'))||0,discount:Number(val('discount'))||0,ctaText:val('cta'),whatsappMessage:val('wa'),points:val('points').split(',').map(x=>x.trim()).filter(Boolean),eyebrow:type==='batchLaunch'?'🚀 NEW BATCH LAUNCH':'🎯 BATCH OFFER'});} if(type==='custom'){Object.assign(d,{eyebrow:val('eyebrow'),title:val('title'),description:val('description'),offerText:val('offer-text'),ctaText:val('cta'),ctaLink:val('link'),whatsappMessage:val('wa')});} return d; }
+  async function loadPopupManager(){ try{const snap=await getDoc(doc(db,'siteSettings','popup')); if(!snap.exists()){renderPopupFields({});return;} const d=snap.data()||{}; popupLoadedData=d; popupTypeInput.value=d.type||'batchLaunch'; popupEnabledInput.value=String(d.enabled!==false); document.getElementById('popup-start-input').value=d.startAt||''; document.getElementById('popup-end-input').value=d.endAt||''; renderPopupFields(d); document.getElementById('popup-manager-status').textContent=d.enabled?'ON':'OFF';}catch(e){popupMsg.textContent='Could not load popup settings: '+e.message;popupMsg.className='msg error';} }
+  popupTypeInput.addEventListener('change',()=>renderPopupFields({}));
+  popupEnabledInput.addEventListener('change',()=>document.getElementById('popup-manager-status').textContent=popupEnabledInput.value==='true'?'ON':'OFF');
+  document.getElementById('save-popup-btn').addEventListener('click',async()=>{const d=collectPopupData();try{await setDoc(doc(db,'siteSettings','popup'),d,{merge:true});popupLoadedData=d;document.getElementById('popup-manager-status').textContent=d.enabled?'ON':'OFF';popupMsg.textContent='Popup saved successfully.';popupMsg.className='msg success';}catch(e){popupMsg.textContent='Could not save popup: '+e.message;popupMsg.className='msg error';}});
+  document.getElementById('clear-popup-btn').addEventListener('click',async()=>{try{await setDoc(doc(db,'siteSettings','popup'),{enabled:false,updatedAt:serverTimestamp()},{merge:true});popupEnabledInput.value='false';document.getElementById('popup-manager-status').textContent='OFF';popupMsg.textContent='Popup turned off.';popupMsg.className='msg success';}catch(e){popupMsg.textContent='Could not turn popup off: '+e.message;popupMsg.className='msg error';}});
+  loadPopupManager();
+
+  document.getElementById('upload-signature-btn').addEventListener('click',async()=>{const file=document.getElementById('teacher-signature-input').files[0];const msg=document.getElementById('signature-msg');if(!file){msg.textContent='Choose a signature image first.';msg.className='msg error';return;}try{const path=`report-assets/teacher-signature-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;const snap=await uploadBytes(storageRef(storage,path),file);const url=await getDownloadURL(snap.ref);await setDoc(doc(db,'siteSettings','branding'),{teacherSignatureUrl:url,updatedAt:serverTimestamp()},{merge:true});document.getElementById('signature-preview').innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Current signature</div><img src="${url}" alt="Teacher signature" style="max-width:240px;max-height:90px;background:#fff;padding:8px;border:1px solid #e5e9f0;border-radius:8px;">`;msg.textContent='Signature uploaded. Future report cards can reuse it automatically.';msg.className='msg success';}catch(e){msg.textContent='Signature upload failed: '+e.message;msg.className='msg error';}});
+  async function loadBranding(){try{const snap=await getDoc(doc(db,'siteSettings','branding'));const u=snap.exists()?snap.data().teacherSignatureUrl:'';if(u)document.getElementById('signature-preview').innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Current signature</div><img src="${u}" alt="Teacher signature" style="max-width:240px;max-height:90px;background:#fff;padding:8px;border:1px solid #e5e9f0;border-radius:8px;">`;}catch(e){}}
+  loadBranding();
 
   const launchPreview = document.getElementById('batch-launch-preview');
   function updateLaunchPreview(){
