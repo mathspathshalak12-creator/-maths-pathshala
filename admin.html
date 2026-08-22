@@ -1186,11 +1186,9 @@
       s.data.parentPhone || '',
       (s.data.attendance && s.data.attendance.percent) || 0
     ]);
-    let csv = headers.join(',') + '
-';
+    let csv = headers.join(',') + '\n';
     rows.forEach(row => {
-      csv += row.map(val => `"${String(val).replace(/"/g, '""')}"`).join(',') + '
-';
+      csv += row.map(val => `"${String(val).replace(/"/g, '""')}"`).join(',') + '\n';
     });
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
