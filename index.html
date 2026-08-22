@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Maths Pathshala — Offline Coaching for Class 9–12 in Kalyanpur, Kanpur</title>
-<meta name="description" content="Maths Pathshala provides small offline coaching batches in Kalyanpur, Kanpur for Class 9–10 PCM and Class 11–12 Mathematics, with home tuition for Class 3–8 all subjects. Taught personally by Vipin Kumar.">
+<meta name="description" content="Maths Pathshala provides small offline coaching batches in Kalyanpur, Kanpur for Class 9–10 PCM and Class 11–12 Mathematics, with home tuition for Class 3–8 all subjects and Mathematics home tuition for Class 9–12 across CBSE, ICSE and UP Board in listed nearby areas. Taught personally by Vipin Kumar.">
 <meta name="keywords" content="offline coaching Kalyanpur Kanpur, class 9 10 PCM coaching, class 11 12 Mathematics coaching, home tuition class 3 4 5 6 7 8">
 <meta name="author" content="Vipin Kumar">
 
 <!-- Open Graph / WhatsApp / Facebook preview -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Maths Pathshala — Offline Coaching in Kalyanpur, Kanpur">
-<meta property="og:description" content="Small offline coaching batches for Class 9–10 PCM and Class 11–12 Mathematics, plus home tuition for Class 3–8. Personal teaching and small-batch attention.">
+<meta property="og:description" content="Small offline coaching batches for Class 9–10 PCM and Class 11–12 Mathematics, plus home tuition for Class 3–8 all subjects and Mathematics home tuition for Class 9–12 across CBSE, ICSE and UP Board in listed nearby areas. Personal teaching and small-batch attention.">
 <meta property="og:image" content="https://mathspathshalak12-creator.github.io/-maths-pathshala/banner.png">
 <meta property="og:url" content="https://mathspathshalak12-creator.github.io/-maths-pathshala/">
 <meta property="og:locale" content="en_IN">
@@ -19,7 +19,7 @@
 <!-- Twitter card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Maths Pathshala — Offline Coaching in Kalyanpur, Kanpur">
-<meta name="twitter:description" content="Small offline coaching batches for Class 9–10 PCM and Class 11–12 Mathematics, plus home tuition for Class 3–8. Personal teaching and small-batch attention.">
+<meta name="twitter:description" content="Small offline coaching batches for Class 9–10 PCM and Class 11–12 Mathematics, plus home tuition for Class 3–8 all subjects and Mathematics home tuition for Class 9–12 across CBSE, ICSE and UP Board in listed nearby areas. Personal teaching and small-batch attention.">
 <meta name="twitter:image" content="https://mathspathshalak12-creator.github.io/-maths-pathshala/banner.png">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
@@ -713,17 +713,17 @@
         <div class="student-kpi-grid">
           <div class="student-kpi"><span>Attendance</span><strong id="dash-kpi-attendance">—</strong><small id="dash-kpi-attendance-sub">Monthly view available below</small></div>
           <div class="student-kpi"><span>Current streak</span><strong id="dash-kpi-streak">—</strong><small>Consecutive present classes</small></div>
-          <div class="student-kpi"><span>Batch rank</span><strong id="dash-kpi-rank">—</strong><small id="dash-kpi-rank-sub">Based on recorded tests</small></div>
-          <div class="student-kpi"><span>Best in batch</span><strong id="dash-kpi-highest">—</strong><small>Highest recorded test score</small></div>
+          <div class="student-kpi"><span>Recent test rank</span><strong id="dash-kpi-rank">—</strong><small id="dash-kpi-rank-sub">Based on the latest test</small></div>
+          <div class="student-kpi"><span>Latest test score</span><strong id="dash-kpi-latest-score">—</strong><small>Score in the most recent test</small></div>
         </div>
 
         <div class="student-main-grid">
           <div class="student-panel student-panel-wide">
             <div class="student-panel-head"><div><span class="panel-kicker">ACADEMIC PERFORMANCE</span><h3>Test Performance</h3></div><span class="panel-pill">Live records</span></div>
             <div class="performance-summary">
-              <div><span>Average score</span><strong id="dash-average-score">—</strong></div>
+              <div><span>Latest test score</span><strong id="dash-average-score">—</strong></div>
               <div><span>Tests attempted</span><strong id="dash-tests-count">0</strong></div>
-              <div><span>Best score</span><strong id="dash-best-score">—</strong></div>
+              <div><span>Latest test highest</span><strong id="dash-best-score">—</strong></div>
             </div>
             <div class="score-chart-wrap student-score-chart"><canvas id="score-chart"></canvas></div>
             <ul class="score-list student-score-list" id="dash-scores-list"><li>No test scores yet</li></ul>
@@ -732,7 +732,7 @@
           <div class="student-panel">
             <div class="student-panel-head"><div><span class="panel-kicker">BATCH</span><h3>Your Position</h3></div></div>
             <div class="rank-card"><div class="rank-medal">#</div><div><strong id="dash-rank-big">—</strong><span id="dash-rank-detail">Batch rank will appear after tests are recorded.</span></div></div>
-            <div class="rank-stats"><div><span>Batch size</span><strong id="dash-batch-size">—</strong></div><div><span>Batch highest</span><strong id="dash-batch-highest">—</strong></div></div>
+            <div class="rank-stats"><div><span>Latest test rank</span><strong id="dash-rank-big-secondary">—</strong></div><div><span>Latest test</span><strong id="dash-latest-test-name">—</strong></div></div>
           </div>
 
           <div class="student-panel">
@@ -798,9 +798,9 @@
     <div class="navlinks">
       <a href="javascript:void(0)" data-scroll="services">Services</a>
       <a href="javascript:void(0)" data-scroll="programs">Batch classes</a>
-      <a href="javascript:void(0)" data-scroll="hometuition">Home tuition (3–8)</a>
+      <a href="javascript:void(0)" data-scroll="hometuition">Home Tuition</a>
       <a href="javascript:void(0)" data-scroll="notes">Notes</a>
-      <a href="javascript:void(0)" data-scroll="pricing">Pricing</a>
+      <a href="javascript:void(0)" data-scroll="pricing">Admission</a>
       <a href="javascript:void(0)" data-scroll="why">Why us</a>
       <a href="javascript:void(0)" data-scroll="testimonials">Reviews</a>
       <a href="javascript:void(0)" data-scroll="register">Register</a>
@@ -811,9 +811,9 @@
     <div class="mobile-menu" id="mobile-menu">
       <a href="javascript:void(0)" data-scroll="services">Services</a>
       <a href="javascript:void(0)" data-scroll="programs">Batch classes</a>
-      <a href="javascript:void(0)" data-scroll="hometuition">Home tuition (3–8)</a>
+      <a href="javascript:void(0)" data-scroll="hometuition">Home Tuition</a>
       <a href="javascript:void(0)" data-scroll="notes">Notes</a>
-      <a href="javascript:void(0)" data-scroll="pricing">Pricing</a>
+      <a href="javascript:void(0)" data-scroll="pricing">Admission</a>
       <a href="javascript:void(0)" data-scroll="why">Why us</a>
       <a href="javascript:void(0)" data-scroll="testimonials">Reviews</a>
       <a href="javascript:void(0)" data-scroll="register">Register</a>
@@ -826,18 +826,19 @@
 
 <section class="hero">
   <div class="hero-inner">
-    <span class="eyebrow">📍 Kalyanpur, Kanpur · Offline Coaching</span>
-    <h1>Concept clear, practice pakki, <span class="accent">result pakka.</span></h1>
-    <p class="sub">Kalyanpur ka trusted offline coaching center for Class 9–10 PCM and Class 11–12 Mathematics — taught personally by Vipin Kumar, Ex Subject Matter Expert at Physics Wallah. Batches are kept deliberately small at just 7 students, with weekly testing, real doubt support, and a parent-facing dashboard so you always know exactly how your child is doing — attendance, test scores and monthly report cards, all in one place.</p>
+    <span class="eyebrow">📍 Kalyanpur, Kanpur · Maths Pathshala</span>
+    <h1>Strong concepts. <span class="accent">Serious preparation.</span> Better results.</h1>
+    <p class="sub">Personal offline coaching for Class 9–10 PCM and Class 11–12 Mathematics, taught directly by Vipin Kumar. Small batches, regular testing, doubt support and a parent-friendly academic dashboard — all designed to keep preparation focused.</p>
     <div class="hero-ctas">
-      <a href="javascript:void(0)" data-scroll="register" class="btn btn-primary">Register your seat</a>
-      <a id="hero-wa" href="#" target="_blank" class="btn btn-outline">Chat on WhatsApp</a>
+      <a href="javascript:void(0)" data-scroll="register" class="btn btn-primary">Enquire for Admission</a>
+      <a id="hero-wa" href="#" target="_blank" class="btn btn-outline">WhatsApp Us</a>
+      <a href="javascript:void(0)" data-scroll="programs" class="btn btn-outline">Explore Programs</a>
     </div>
     <div class="hero-meta">
-      <div><div class="num mono">7</div><div class="lbl">students per batch</div></div>
-      <div><div class="num mono">9–12</div><div class="lbl">classes covered</div></div>
-      <div><div class="num mono">3–8</div><div class="lbl">home tuition classes</div></div>
-      <div><div class="num mono">100%</div><div class="lbl">attendance &amp; progress tracked</div></div>
+      <div><div class="num mono">9–10</div><div class="lbl">PCM · Offline</div></div>
+      <div><div class="num mono">11–12</div><div class="lbl">Mathematics · Offline</div></div>
+      <div><div class="num mono">3–12</div><div class="lbl">Home Tuition</div></div>
+      <div><div class="num mono">2-Day</div><div class="lbl">Demo Available</div></div>
     </div>
   </div>
 </section>
@@ -881,9 +882,9 @@
 
 <div class="trust-strip">
   <div class="wrap">
-    <span><span class="dot"></span>Ex Subject Matter Expert, Physics Wallah</span>
+    <span><span class="dot"></span>Ex Subject Matter Expert, Physics Wallah &amp; Vedantu</span>
     <span><span class="dot"></span>B.Sc · M.Sc Mathematics (pursuing)</span>
-    <span><span class="dot"></span>Teaching since 2023</span>
+    <span><span class="dot"></span>Teaching since Class 12</span>
     <span><span class="dot"></span>CBSE · ICSE · UP Board</span>
   </div>
 </div>
@@ -898,7 +899,7 @@
     <div class="services-grid">
       <div class="service-card service-card-featured"><div class="service-icon">🏫</div><div class="service-number">01</div><h3>Offline Coaching — Class 9 &amp; 10</h3><p>Complete <strong>PCM coaching</strong> with Mathematics, Physics and Chemistry. Concepts are taught from the foundation, followed by problem practice, doubt solving and regular tests.</p><ul class="service-points"><li>Mathematics + Physics + Chemistry</li><li>Board-focused preparation</li><li>Concept building + question practice</li><li>Small-batch personal attention</li></ul><span class="service-tag">Class 9–10 · PCM · Offline</span></div>
       <div class="service-card service-card-featured"><div class="service-icon">🎓</div><div class="service-number">02</div><h3>Offline Coaching — Class 11 &amp; 12</h3><p>Focused <strong>Mathematics-only coaching</strong> for students preparing for school exams and board examinations, with emphasis on concepts, written practice and exam strategy.</p><ul class="service-points"><li>Mathematics only</li><li>Board-oriented chapter planning</li><li>Regular tests and analysis</li><li>Dedicated doubt support</li></ul><span class="service-tag">Class 11–12 · Mathematics · Offline</span></div>
-      <div class="service-card"><div class="service-icon">🏠</div><div class="service-number">03</div><h3>Home Tuition — Class 3 to 8</h3><p>Personalised home tuition for <strong>all subjects</strong> from Class 3–8. Ideal for students who need a slower pace, stronger basics or one-to-one academic attention.</p><ul class="service-points"><li>All subjects</li><li>Personalised pace</li><li>Foundation and school support</li><li>Nearby Kalyanpur areas</li></ul><span class="service-tag">Class 3–8 · All subjects</span></div>
+      <div class="service-card"><div class="service-icon">🏠</div><div class="service-number">03</div><h3>Home Tuition — Classes 3 to 12</h3><p>Personalised home tuition for <strong>all subjects in Class 3–8</strong>, plus <strong>Mathematics for Class 9–12</strong>. Available for CBSE, ICSE and UP Board students in the listed nearby areas.</p><ul class="service-points"><li>Class 3–8: All subjects</li><li>Class 9–12: Mathematics</li><li>CBSE · ICSE · UP Board</li><li>Personalised one-to-one attention</li></ul><span class="service-tag">Class 3–12 · Selected subjects</span></div>
       <div class="service-card"><div class="service-icon">📝</div><div class="service-number">04</div><h3>Testing, Doubts &amp; Progress Support</h3><p>Students are not just taught chapters — their preparation is checked through regular tests, doubt support, attendance tracking and progress records.</p><ul class="service-points"><li>Regular chapter &amp; test practice</li><li>Doubt clearing</li><li>Progress tracking for enrolled students</li><li>Exam-oriented preparation</li></ul><span class="service-tag">Built into the learning system</span></div>
     </div>
   </div>
@@ -909,17 +910,17 @@
     <div class="section-head">
       <div class="section-tag">Your teacher</div>
       <h2>Taught personally, not passed around.</h2>
-      <p>Every batch is taught directly by Vipin Kumar — no rotating faculty, no juniors filling in.</p>
+      <p>Every batch is taught directly by Vipin Kumar. He has been teaching students since Class 12 and has professional experience as an SME with Physics Wallah and Vedantu.</p>
     </div>
     <div class="tutor-card">
       <div class="tutor-initials">VK</div>
       <div class="tutor-info">
         <h3>Vipin Kumar</h3>
-        <div class="role">Ex Subject Matter Expert, Physics Wallah · Mathematics Teacher since 2023</div>
+        <div class="role">Ex Subject Matter Expert, Physics Wallah &amp; Vedantu · Mathematics Teacher since Class 12</div>
         <div class="tutor-tags">
           <span class="tag">B.Sc</span>
           <span class="tag">M.Sc Mathematics (pursuing)</span>
-          <span class="tag">Class 9–12 specialist</span>
+          <span class="tag">Class 9–12 specialist</span><span class="tag">3 years online SME experience at PW</span>
           <span class="tag">CBSE · ICSE · UP Board</span>
         </div>
       </div>
@@ -929,8 +930,8 @@
 
 <section id="hometuition">
   <div class="wrap">
-    <div class="section-head"><div class="section-tag">Home tuition</div><h2>Personal attention for Classes 3–8.</h2><p>One-to-one home tuition for Class 3–8 students covering all subjects. This service is kept focused so students get consistent attention and a personalised learning pace.</p></div>
-    <div class="tutor-card"><div class="tutor-initials mono">1:1</div><div class="tutor-info"><h3>Home tuition — Class 3 to 8</h3><div class="role">All subjects · Personalised teaching · Nearby areas</div><div class="tutor-tags"><span class="tag">Class 3–8</span><span class="tag">All subjects</span><span class="tag">One-to-one attention</span><span class="tag">CBSE · ICSE · UP Board</span></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);"><div style="font-size:13px;font-weight:700;color:var(--amber-dark);text-transform:uppercase;letter-spacing:.03em;margin-bottom:10px;">Areas covered</div><div class="tutor-tags"><span class="tag">Kalyanpur</span><span class="tag">Awas Vikas 1</span><span class="tag">Awas Vikas 3</span><span class="tag">Gooba Garden</span><span class="tag">Indira Nagar</span></div></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);font-size:14px;color:var(--muted);"><strong style="color:var(--navy);">Fee:</strong> Discussed personally based on class, location and requirement. Please call or WhatsApp for availability.</div></div></div>
+    <div class="section-head"><div class="section-tag">Home tuition</div><h2>Personalised home tuition, where it makes sense.</h2><p>Home tuition is available for all subjects in Class 3–8, and Mathematics for Class 9–12 students of CBSE, ICSE and UP Board in the listed nearby areas.</p></div>
+    <div class="tutor-card"><div class="tutor-initials mono">1:1</div><div class="tutor-info"><h3>Home tuition — Class 3 to 12</h3><div class="role">Class 3–8: All subjects · Class 9–12: Mathematics · Nearby areas</div><div class="tutor-tags"><span class="tag">Class 3–8 · All subjects</span><span class="tag">Class 9–12 · Mathematics</span><span class="tag">One-to-one attention</span><span class="tag">CBSE · ICSE · UP Board</span></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);"><div style="font-size:13px;font-weight:700;color:var(--amber-dark);text-transform:uppercase;letter-spacing:.03em;margin-bottom:10px;">Areas covered</div><div class="tutor-tags"><span class="tag">Kalyanpur</span><span class="tag">Awas Vikas 1</span><span class="tag">Awas Vikas 3</span><span class="tag">Gooba Garden</span><span class="tag">Indira Nagar</span></div></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);font-size:14px;color:var(--muted);"><strong style="color:var(--navy);">Fee:</strong> Discussed personally based on class, location and requirement. Please call or WhatsApp for availability.</div></div></div>
   </div>
 </section>
 
@@ -1175,59 +1176,19 @@
   </div>
 </section>
 
-<section id="pricing"><div class="wrap"><div class="section-head"><div class="section-tag">Fee &amp; admission</div><h2>Let’s discuss the right plan for your child.</h2><p>We keep the fee structure reasonable and transparent, but final fees are discussed personally based on the class, subjects, batch and academic requirement.</p></div><div class="pricing-grid"><div class="price-card featured"><div class="price-card-class">Class 9 &amp; 10</div><div class="price-card-amount" style="font-size:25px;">PCM Coaching</div><div class="price-card-desc">Mathematics · Physics · Chemistry · Offline</div></div><div class="price-card"><div class="price-card-class">Class 11 &amp; 12</div><div class="price-card-amount" style="font-size:25px;">Mathematics</div><div class="price-card-desc">Focused offline board preparation</div></div><div class="price-card"><div class="price-card-class">Class 3–8</div><div class="price-card-amount" style="font-size:25px;">Home Tuition</div><div class="price-card-desc">All subjects · Personalised support</div></div></div><div class="price-note"><strong>Fee details are not published online.</strong> Call or WhatsApp us to discuss availability, batch timing and the fee for your child's requirement.</div></div></section>
+<section id="pricing"><div class="wrap"><div class="section-head"><div class="section-tag">Admission &amp; fees</div><h2>Let’s discuss the right plan for your child.</h2><p>We keep the fee structure reasonable and transparent, but final fees are discussed personally based on the class, subjects, batch and academic requirement.</p></div><div class="pricing-grid"><div class="price-card featured"><div class="price-card-class">Class 9 &amp; 10</div><div class="price-card-amount" style="font-size:25px;">PCM Coaching</div><div class="price-card-desc">Mathematics · Physics · Chemistry · Offline</div></div><div class="price-card"><div class="price-card-class">Class 11 &amp; 12</div><div class="price-card-amount" style="font-size:25px;">Mathematics</div><div class="price-card-desc">Focused offline board preparation</div></div><div class="price-card"><div class="price-card-class">Class 3–8</div><div class="price-card-amount" style="font-size:25px;">Home Tuition</div><div class="price-card-desc">All subjects · Personalised support</div></div></div><div class="price-note"><strong>Fee details are not published online.</strong> Call or WhatsApp us to discuss availability, batch timing and the fee for your child's requirement. <strong>2-day demo</strong> is available, and monthly fees are charged in advance at the beginning of each month.</div></div></section>
 
 <section id="testimonials">
   <div class="wrap">
     <div class="section-head">
-      <div class="section-tag">Parent &amp; student feedback</div>
-      <h2>What students in Kalyanpur are saying.</h2>
-      <p>A few notes from students who've been through a batch — and many more like them.</p>
+      <div class="section-tag">Reviews</div>
+      <h2>Real feedback matters.</h2>
+      <p>We prefer genuine parent and student feedback over made-up testimonials. Check the Maths Pathshala Google profile for the latest reviews and ratings.</p>
     </div>
-    <div class="testimonials">
-      <div class="t-card">
-        <div class="t-stars">★★★★★</div>
-        <p class="t-quote">"Concepts finally made sense instead of just memorising steps. The doubt-clearing sessions helped me the most before my boards."</p>
-        <div class="t-person">
-          <div class="t-avatar">PA</div>
-          <div><div class="t-name">Prashant Agnihotri</div><div class="t-meta">Class 10, Saraswati Gyan Mandir, Kanpur</div></div>
-        </div>
-      </div>
-      <div class="t-card">
-        <div class="t-stars">★★★★★</div>
-        <p class="t-quote">"Small batch meant sir actually noticed when I was stuck. Regular tests kept me on track through the whole year."</p>
-        <div class="t-person">
-          <div class="t-avatar">SY</div>
-          <div><div class="t-name">Suryansh Yadav</div><div class="t-meta">Class 10, Swaraj India</div></div>
-        </div>
-      </div>
-      <div class="t-card">
-        <div class="t-stars">★★★★★</div>
-        <p class="t-quote">"Even for competitive-level Maths after boards, the foundation from here held up well. Solid, no-shortcuts teaching."</p>
-        <div class="t-person">
-          <div class="t-avatar">TA</div>
-          <div><div class="t-name">Taufiq Ahmed</div><div class="t-meta">Class 12 pass out, MPEC, Kanpur</div></div>
-        </div>
-      </div>
-      <div class="t-card">
-        <div class="t-stars">★★★★★</div>
-        <p class="t-quote">"Class 12 Maths felt overwhelming until these sessions broke it down properly, topic by topic. Genuinely helped."</p>
-        <div class="t-person">
-          <div class="t-avatar">AY</div>
-          <div><div class="t-name">Aman Yadav</div><div class="t-meta">Class 12 pass out, MPEC, Kanpur</div></div>
-        </div>
-      </div>
-      <div class="t-card">
-        <div class="t-stars">★★★★★</div>
-        <p class="t-quote">"Scored 95% in Class 10 — the weekly tests and handwritten notes made revision so much easier closer to the exams."</p>
-        <div class="t-person">
-          <div class="t-avatar">KY</div>
-          <div><div class="t-name">Krishna Yadav</div><div class="t-meta">Class 10, 95% · Sir Padampat Singania School, Kanpur</div></div>
-        </div>
-      </div>
-      <div class="t-card" style="align-items:center;justify-content:center;text-align:center;background:var(--cream);border-style:dashed;">
-        <p class="t-quote" style="color:var(--muted);">And many more students across Kalyanpur who've cleared their boards with confidence.</p>
-      </div>
+    <div class="services-grid" style="grid-template-columns:repeat(3,1fr);">
+      <div class="service-card"><div class="service-icon">⭐</div><h3>Google Reviews</h3><p>See the latest reviews shared by parents and students on our business profile.</p><a class="btn btn-outline" target="_blank" rel="noopener" href="https://www.google.com/search?q=Maths+Pathshala+Kalyanpur+Kanpur">View on Google</a></div>
+      <div class="service-card"><div class="service-icon">💬</div><h3>Want to ask a parent?</h3><p>For a genuine admission decision, speak with us directly and ask about the current batch and teaching approach.</p><a class="btn btn-outline" id="reviews-wa" href="#" target="_blank">Ask on WhatsApp</a></div>
+      <div class="service-card"><div class="service-icon">📈</div><h3>Progress you can see</h3><p>Enrolled students and parents get attendance, test performance and monthly progress records through the student portal.</p><a class="btn btn-outline" href="javascript:void(0)" data-scroll="register">Know More</a></div>
     </div>
   </div>
 </section>
@@ -1238,7 +1199,7 @@
       <div class="location-copy">
         <div class="section-tag">Find us</div>
         <h3>Based in Kalyanpur, easy to reach.</h3>
-        <p>Our primary focus is offline coaching in Kalyanpur, Kanpur for Class 9–12. Home tuition is separately available for Class 3–8 in nearby areas.</p>
+        <p>Our primary focus is offline coaching in Kalyanpur, Kanpur for Class 9–12. Home tuition is available for Class 3–8 (all subjects) and Mathematics for Class 9–12 across CBSE, ICSE and UP Board in the listed nearby areas.</p>
         <ul class="loc-list">
           <li>Kalyanpur, Kanpur, Uttar Pradesh</li>
           <li>Home tuition (Class 3–8): Kalyanpur, Awas Vikas 1, Awas Vikas 3, Gooba Garden, Indira Nagar</li>
@@ -1291,15 +1252,26 @@
           <span>Which boards do you teach — CBSE, ICSE, or UP Board?</span>
           <span class="faq-icon">+</span>
         </div>
-        <div class="faq-answer"><div class="faq-answer-inner">All three. Teaching is adapted to whichever board your child follows, for offline batch classes and Class 3–8 home tuition.</div></div>
+        <div class="faq-answer"><div class="faq-answer-inner">All three — CBSE, ICSE and UP Board. Offline batches are available for Class 9–12, and home tuition is available for Class 3–8 (all subjects) plus Mathematics for Class 9–12 in the listed nearby areas.</div></div>
       </div>
       <div class="faq-item">
         <div class="faq-question">
           <span>Which classes and subjects are available for home tuition?</span>
           <span class="faq-icon">+</span>
         </div>
-        <div class="faq-answer"><div class="faq-answer-inner">Yes, that's no problem — just message us on WhatsApp and we'll help you switch based on seat availability.</div></div>
+        <div class="faq-answer"><div class="faq-answer-inner">Home tuition is available for Class 3–8 in all subjects. Mathematics home tuition is also available for Class 9–12 students following CBSE, ICSE or UP Board in the listed nearby areas.</div></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<section id="socials">
+  <div class="wrap">
+    <div class="section-head"><div class="section-tag">Stay connected</div><h2>Maths Pathshala online</h2><p>Follow the teaching updates, maths content and announcements on our social channels.</p></div>
+    <div class="why-grid">
+      <a class="why-item" href="https://www.instagram.com/pathshalamaths/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;"><div class="ico">📸</div><h4>Instagram</h4><p>@pathshalamaths</p></a>
+      <a class="why-item" href="https://youtube.com/@mathspathshala-k12?si=uGU8TM4jOdQ4_4zd" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;"><div class="ico">▶️</div><h4>YouTube</h4><p>Maths Pathshala K12</p></a>
+      <a class="why-item" href="tel:+919506054813" style="text-decoration:none;color:inherit;"><div class="ico">📞</div><h4>Call / WhatsApp</h4><p>9506054813</p></a>
     </div>
   </div>
 </section>
@@ -1324,25 +1296,27 @@
       <div class="footer-logo">Maths Pathshala</div>
       <div class="footer-contact">
         <span>📍 Kalyanpur, Kanpur</span>
-        <span>📞 95060 54813</span>
-        <span>📸 @pathshalamaths</span>
+        <a href="tel:+919506054813" style="color:inherit;text-decoration:none;">📞 95060 54813</a>
+        <a href="mailto:mathspathshala.k12@gmail.com" style="color:inherit;text-decoration:none;">✉️ mathspathshala.k12@gmail.com</a>
+        <a href="https://www.instagram.com/pathshalamaths/" target="_blank" rel="noopener" style="color:var(--amber);font-weight:600;text-decoration:none;">📸 Instagram · @pathshalamaths</a>
+        <a href="https://youtube.com/@mathspathshala-k12?si=uGU8TM4jOdQ4_4zd" target="_blank" rel="noopener" style="color:var(--amber);font-weight:600;text-decoration:none;">▶️ YouTube · Maths Pathshala K12</a>
         <a href="https://github.com/mathspathshalak12-creator/-maths-pathshala/releases/download/v1.0/Maths-Pathshala.apk" style="color:var(--amber);font-weight:600;text-decoration:none;">📲 Download App</a>
       </div>
     </div>
-    <div class="footer-bottom">Samjho concept, karo best, bano successful!</div>
+    <div class="footer-bottom">Maths Pathshala · Kalyanpur, Kanpur · CBSE · ICSE · UP Board<br>Samjho concept, karo best, bano successful!</div>
   </div>
 </footer>
 
 <div class="popup-overlay" id="seats-popup">
-  <div class="popup-card launch-popup-card">
+  <div class="popup-card launch-popup-card universal-site-popup">
     <button class="popup-close" id="popup-close" aria-label="Close">✕</button>
-    <div class="launch-popup-top"><span class="popup-badge">🚀 NEW BATCH LAUNCH</span><span class="launch-live-dot">● LIVE</span></div>
+    <div class="launch-popup-top"><span class="popup-badge" id="site-popup-badge">🚀 NEW BATCH LAUNCH</span><span class="launch-live-dot" id="site-popup-live">● LIVE</span></div>
     <div class="launch-popup-class" id="popup-batch-class">MATHS PATHSHALA</div>
     <h3 id="popup-batch-title">Complete Maths — Special Launch</h3>
     <p id="popup-batch-subtitle">A focused complete-syllabus Maths batch for serious board preparation.</p>
     <div class="launch-price" id="popup-batch-price"></div>
     <div class="launch-offer" id="popup-batch-offer"></div>
-    <div class="launch-popup-points"><span>✓ Complete syllabus</span><span>✓ Small batch</span><span>✓ Regular tests</span><span>✓ Personal doubt support</span></div>
+    <div class="launch-popup-points" id="site-popup-points"><span>✓ Complete syllabus</span><span>✓ Small batch</span><span>✓ Regular tests</span><span>✓ Personal doubt support</span></div>
     <div class="popup-ctas">
       <a href="javascript:void(0)" data-scroll="register" id="popup-register" class="btn btn-primary" style="justify-content:center;">Reserve My Seat</a>
       <a href="javascript:void(0)" id="popup-wa" target="_blank" class="btn btn-outline" style="justify-content:center;">Ask on WhatsApp</a>
@@ -1369,6 +1343,7 @@
   const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${waMessage}`;
 
   document.getElementById('hero-wa').href = waLink;
+  const reviewsWa=document.getElementById('reviews-wa'); if(reviewsWa) reviewsWa.href=waLink;
   document.getElementById('register-wa').href = waLink;
   document.getElementById('float-wa').href = waLink;
   document.getElementById('form-btn').href = GOOGLE_FORM_LINK;
@@ -1444,56 +1419,59 @@
     loginMsg.className = 'login-msg ' + (type || '');
   }
 
+  function popupSessionKey(){ return 'mp_popup_seen_' + new Date().toISOString().slice(0,10); }
+  function popupAlreadyShown(){ return sessionStorage.getItem(popupSessionKey()) === '1'; }
+  function markPopupShown(){ sessionStorage.setItem(popupSessionKey(),'1'); }
+  function escapePopupText(v){ return String(v||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
   async function loadSeatsDisplay(){
-    let batchStats = [];
+    const popup=document.getElementById('seats-popup');
+    if(!popup || popupAlreadyShown()) return;
     try{
-      const snap = await getDoc(doc(db, "stats", "public"));
-      if(snap.exists()) batchStats = snap.data().batchStats || [];
-    } catch(err){ batchStats = []; }
-
-    const grid = document.getElementById('batch-cards-grid');
-    if(grid){
-      if(batchStats.length === 0){
-        grid.innerHTML = '<div style="color:var(--muted);font-size:14px;">New batch details will appear here soon. Call or WhatsApp us for current admissions.</div>';
-      } else {
-        grid.innerHTML = batchStats.map(b => {
-          const hasOffer = Number(b.baseFee) > 0 && Number(b.offerPercent) > 0;
-          const launch = b.launchActive;
-          const price = Number(b.launchPrice || b.baseFee || 0);
-          return `<div class="batch-card ${launch?'batch-card-launch':''}">
-            <div class="batch-card-class">Class ${b.class}</div>
-            ${launch ? '<div class="batch-launch-pill">🚀 New launch</div>' : ''}
-            <div class="batch-card-name">${b.name}</div>
-            <p style="font-size:13.5px;color:#D7E0EE;line-height:1.65;margin:8px 0 16px;">${b.intro || 'A focused offline coaching batch with structured teaching, regular practice and personal doubt support.'}</p>
-            ${hasOffer ? `<div class="public-offer-price"><span>Launch offer</span><strong>₹${price.toLocaleString('en-IN')}</strong><s>₹${Number(b.baseFee).toLocaleString('en-IN')}</s><em>${b.offerPercent}% OFF</em></div>` : ''}
-            <div class="seats-label">🔥 Limited admissions · Enroll early</div>
-          </div>`;
-        }).join('');
+      const snap=await getDoc(doc(db,'siteSettings','popup'));
+      let p={};
+      if(snap.exists()) p=snap.data()||{};
+      // Preserve the existing strong Batch Launch popup as a fallback until a popup is configured in Admin.
+      if(!snap.exists()){
+        const batchSnap=await getDocs(collection(db,'batches'));
+        const launches=[]; batchSnap.forEach(d=>{const b=d.data()||{}; if(b.launchActive) launches.push({id:d.id,...b});});
+        const launch=launches[0];
+        if(!launch) return;
+        p={enabled:true,type:'batchLaunch',eyebrow:'🚀 NEW BATCH LAUNCH',classText:`CLASS ${launch.class||''} · ${launch.name||''}`,title:launch.launchTitle||`${launch.name||'New Batch'} — Admissions Open`,description:launch.launchSubtitle||launch.intro||'A focused Maths batch for serious students.',originalPrice:Number(launch.baseFee)||0,offerPrice:Number(launch.launchPrice||launch.baseFee)||0,discount:Number(launch.offerPercent)||0,points:['Complete syllabus','Small batch','Regular tests','Personal doubt support'],ctaText:'Reserve My Seat',whatsappCta:'Ask on WhatsApp',whatsappMessage:`Hi, I want details for the ${launch.name||'new batch'} batch (Class ${launch.class||''}).`};
       }
-    }
-
-    const launch = batchStats.find(b => b.launchActive);
-    if(launch){
-      const popup = document.getElementById('seats-popup');
-      document.getElementById('popup-batch-class').textContent = `CLASS ${launch.class} · ${launch.name}`;
-      document.getElementById('popup-batch-title').textContent = launch.launchTitle || `${launch.name} — Admissions Open`;
-      document.getElementById('popup-batch-subtitle').textContent = launch.launchSubtitle || launch.intro || 'A focused Maths batch for serious students.';
-      const priceEl = document.getElementById('popup-batch-price');
-      const offerEl = document.getElementById('popup-batch-offer');
-      if(Number(launch.launchPrice || launch.baseFee) > 0){
-        priceEl.innerHTML = `₹${Number(launch.launchPrice || launch.baseFee).toLocaleString('en-IN')} <small>launch fee</small>`;
-        offerEl.innerHTML = launch.offerPercent ? `<s>₹${Number(launch.baseFee).toLocaleString('en-IN')}</s> <strong>${launch.offerPercent}% OFF</strong> · Limited launch offer` : 'Special launch pricing';
-      } else {
-        priceEl.textContent = 'Special launch admission';
-        offerEl.textContent = 'Limited launch offer · Contact us for details';
-      }
-      const launchWa = `${waLink}${waLink.includes('?')?'&':'?'}text=${encodeURIComponent(`Hi, I want details for the ${launch.name} batch (Class ${launch.class}).`)}`;
-      document.getElementById('popup-wa').href = launchWa;
-      setTimeout(() => popup.classList.add('show'), 1400);
-    }
+      if(!p.enabled) return;
+      const now=Date.now();
+      if(p.startAt && new Date(p.startAt).getTime()>now) return;
+      if(p.endAt && new Date(p.endAt).getTime()<now) return;
+      const type=p.type||'batchLaunch';
+      const labels={festival:'🎉 FESTIVAL OFFER',announcement:'📢 ANNOUNCEMENT',batchOffer:'🎯 BATCH OFFER',batchLaunch:'🚀 NEW BATCH LAUNCH',custom:'✨ SPECIAL'};
+      document.getElementById('site-popup-badge').textContent=labels[type]||labels.custom;
+      document.getElementById('site-popup-live').textContent='● LIVE';
+      document.getElementById('popup-batch-class').textContent=p.eyebrow||p.classText||'MATHS PATHSHALA';
+      document.getElementById('popup-batch-title').textContent=p.title||'Maths Pathshala';
+      document.getElementById('popup-batch-subtitle').textContent=p.description||'';
+      const priceEl=document.getElementById('popup-batch-price');
+      const offerEl=document.getElementById('popup-batch-offer');
+      if(type==='batchOffer'||type==='batchLaunch'||p.offerPrice||p.originalPrice){
+        const price=p.offerPrice?`₹${Number(p.offerPrice).toLocaleString('en-IN')}`:'';
+        const original=p.originalPrice?`<s>₹${Number(p.originalPrice).toLocaleString('en-IN')}</s>`:'';
+        priceEl.innerHTML=price?`${price} <small>offer fee</small>`:'';
+        offerEl.innerHTML=(original || p.discount)?`${original} ${p.discount?`<strong>${escapePopupText(p.discount)}% OFF</strong>`:''}`:'';
+      }else{ priceEl.textContent=''; offerEl.textContent=p.offerText||''; }
+      const points=Array.isArray(p.points)?p.points.filter(Boolean):[];
+      document.getElementById('site-popup-points').innerHTML=(points.length?points:['✓ Small batch','✓ Regular tests','✓ Personal doubt support']).map(x=>`<span>✓ ${escapePopupText(x)}</span>`).join('');
+      const reg=document.getElementById('popup-register');
+      const cta=p.ctaText||'Know More'; reg.textContent=cta;
+      if(p.ctaLink){ reg.href=p.ctaLink; reg.target='_blank'; reg.removeAttribute('data-scroll'); }
+      else { reg.href='javascript:void(0)'; reg.setAttribute('data-scroll','register'); }
+      const wa=document.getElementById('popup-wa');
+      const waText=p.whatsappMessage||`Hi, I want details about ${p.title||'the current Maths Pathshala offer'}.`;
+      wa.href=`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(waText)}`;
+      wa.textContent=p.whatsappCta||'Ask on WhatsApp';
+      popup.classList.add('show'); markPopupShown();
+    }catch(err){ console.warn('Site popup load failed:',err); }
   }
   loadSeatsDisplay();
-
 
   let isLoggedIn = false;
   let currentStudentClass = null;
@@ -1731,11 +1709,16 @@
       monthKeys.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
     }
 
-    select.innerHTML = monthKeys.reverse().map(key => {
+    const previousKey = select.dataset.selectedMonth || select.value || sessionStorage.getItem('mp_attendance_month') || currentKey;
+    const availableKeys = monthKeys.slice().reverse();
+    const selectedKey = availableKeys.includes(previousKey) ? previousKey : currentKey;
+    select.innerHTML = availableKeys.map(key => {
       const [y,m] = key.split('-').map(Number);
       const label = new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
-      return `<option value="${key}" ${key===currentKey?'selected':''}>${label}</option>`;
+      return `<option value="${key}" ${key===selectedKey?'selected':''}>${label}</option>`;
     }).join('');
+    select.value = selectedKey;
+    select.dataset.selectedMonth = selectedKey;
 
     function renderMonth(key){
       const [year, month] = key.split('-').map(Number);
@@ -1776,7 +1759,11 @@
     }
 
     renderMonth(select.value);
-    select.onchange = () => renderMonth(select.value);
+    select.onchange = () => {
+      select.dataset.selectedMonth = select.value;
+      sessionStorage.setItem('mp_attendance_month', select.value);
+      renderMonth(select.value);
+    };
   }
 
   function calculateStreak(log){
@@ -1822,8 +1809,26 @@
     const log=Array.isArray(data.attendance?.log)?data.attendance.log:[]; const overall=typeof data.attendance?.percent==='number'?data.attendance.percent:(log.length?Math.round(log.filter(e=>e.status==='Present').length/log.length*100):0); const streak=calculateStreak(log); document.getElementById('dash-attendance-pct').textContent=overall+'%'; document.getElementById('dash-kpi-attendance').textContent=overall+'%'; document.getElementById('dash-kpi-streak').textContent=streak?`🔥 ${streak}`:'—'; document.getElementById('att-progress-fill').style.width=overall+'%'; document.getElementById('dash-streak-highlight').textContent=streak?`🔥 ${streak} consecutive present classes — keep it going!`:'🔥 Your attendance streak starts with the next class.';
     renderDailyAttendance(log);
     const months=aggregateAttendance(log); document.getElementById('dash-monthly-attendance').innerHTML=months.length?months.map(m=>`<div class="month-att-row"><strong>${m.label}</strong><span>${m.present}/${m.total} present</span><b>${m.percent}%</b></div>`).join(''):'<div class="empty-state">No attendance recorded yet.</div>';
-    const stats=data.batchStats||{}; const rank=stats.rank&&stats.size?`#${stats.rank}`:'—'; document.getElementById('dash-kpi-rank').textContent=rank; document.getElementById('dash-kpi-rank-sub').textContent=stats.size?`Out of ${stats.size} students in your batch`:'Based on recorded tests'; document.getElementById('dash-rank-big').textContent=rank; document.getElementById('dash-rank-detail').textContent=stats.size?`You are ranked ${stats.rank} of ${stats.size} in your batch.`:'Rank will appear after batch test records are updated.'; document.getElementById('dash-batch-size').textContent=stats.size||'—'; document.getElementById('dash-batch-highest').textContent=stats.highest!=null?stats.highest+'%':'—'; document.getElementById('dash-kpi-highest').textContent=stats.highest!=null?stats.highest+'%':'—';
-    const scores=Array.isArray(data.testScores)?data.testScores:[]; const avg=scores.length?Math.round(scores.reduce((a,s)=>a+scorePct(s),0)/scores.length):0; const best=scores.length?Math.max(...scores.map(scorePct)):0; document.getElementById('dash-average-score').textContent=scores.length?avg+'%':'—'; document.getElementById('dash-tests-count').textContent=scores.length; document.getElementById('dash-best-score').textContent=scores.length?best+'%':'—'; const scoresList=document.getElementById('dash-scores-list'); scoresList.innerHTML=scores.length?scores.slice().reverse().map(s=>`<li><span>${s.date||''} — ${s.name||'Test'}</span><span>${s.score}/${s.max} · ${scorePct(s)}%</span></li>`).join(''):'<li>No test scores yet</li>'; if(scores.length)renderScoreChart(scores); else if(window.scoreChartInstance)window.scoreChartInstance.destroy();
+    const stats=data.batchStats||{};
+    const recent=stats.recentTest||{};
+    const rank=recent.rank&&recent.size?`#${recent.rank}`:'—';
+    document.getElementById('dash-kpi-rank').textContent=rank;
+    document.getElementById('dash-kpi-rank-sub').textContent=recent.name?`Latest: ${recent.name}`:'Based on the latest test';
+    document.getElementById('dash-rank-big').textContent=rank;
+    document.getElementById('dash-rank-detail').textContent=recent.name?`Latest test: ${recent.name} · ${recent.rank} of ${recent.size}`:'Rank will appear after a test is recorded.';
+    document.getElementById('dash-batch-size').textContent=recent.size||'—';
+    document.getElementById('dash-batch-highest').textContent=recent.highest!=null?recent.highest+'%':'—';
+        const scores=Array.isArray(data.testScores)?data.testScores:[];
+    const latestScore=scores.slice().sort((a,b)=>(parsePortalDate(b.date)?.getTime()||0)-(parsePortalDate(a.date)?.getTime()||0))[0];
+    document.getElementById('dash-average-score').textContent=latestScore?scorePct(latestScore)+'%':'—';
+    if(document.getElementById('dash-kpi-latest-score')) document.getElementById('dash-kpi-latest-score').textContent=latestScore?scorePct(latestScore)+'%':'—';
+    if(document.getElementById('dash-rank-big-secondary')) document.getElementById('dash-rank-big-secondary').textContent=rank;
+    if(document.getElementById('dash-latest-test-name')) document.getElementById('dash-latest-test-name').textContent=recent.name||'—';
+    document.getElementById('dash-tests-count').textContent=scores.length;
+    document.getElementById('dash-best-score').textContent=recent.highest!=null?recent.highest+'%':'—';
+    const scoresList=document.getElementById('dash-scores-list');
+    scoresList.innerHTML=latestScore?`<li><span>${latestScore.date||''} — ${latestScore.name||'Latest Test'}</span><span>${latestScore.score}/${latestScore.max} · ${scorePct(latestScore)}% · Rank ${recent.rank&&recent.size?'#'+recent.rank+'/'+recent.size:'—'}</span></li>`:'<li>No test scores yet</li>';
+    if(scores.length)renderScoreChart(scores); else if(window.scoreChartInstance)window.scoreChartInstance.destroy();
     const notesList=document.getElementById('dash-notes-list'); const notes=Array.isArray(data.notes)?data.notes:[]; notesList.innerHTML=notes.length?notes.map(n=>`<li><span>${n.title}</span><span><a href="${n.url}" target="_blank">View</a> · <a href="${n.url}" download>Download</a></span></li>`).join(''):'<li>No notes assigned yet</li>';
     studentDashboard.style.display='block';
     } catch(err) {
