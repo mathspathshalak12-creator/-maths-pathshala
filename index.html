@@ -1543,11 +1543,19 @@
   });
 
   let dashboardAutoRefreshTimer = null;
+  let dashboardRefreshInProgress = false;
+
+  async function safeDashboardRefresh(email){
+    if(dashboardRefreshInProgress) return;
+    dashboardRefreshInProgress = true;
+    try{ await loadStudentDashboard(email); }
+    finally{ dashboardRefreshInProgress = false; }
+  }
 
   onAuthStateChanged(auth, async (user) => {
     if(user){
       isLoggedIn = true;
-      await loadStudentDashboard(user.email);
+      await safeDashboardRefresh(user.email);
       await loadNotices();
       studentLoginBtn.textContent = 'Logout';
       mobileLoginBtn.textContent = 'Logout';
@@ -1557,9 +1565,9 @@
       if(dashboardAutoRefreshTimer) clearInterval(dashboardAutoRefreshTimer);
       dashboardAutoRefreshTimer = setInterval(async () => {
         if(auth.currentUser && document.visibilityState !== 'hidden'){
-          await loadStudentDashboard(auth.currentUser.email);
+          await safeDashboardRefresh(auth.currentUser.email);
         }
-      }, 10000);
+      }, 30000);
 
     } else {
       if(dashboardAutoRefreshTimer){ clearInterval(dashboardAutoRefreshTimer); dashboardAutoRefreshTimer = null; }
@@ -1574,7 +1582,7 @@
     if(auth.currentUser){
       const btn = document.getElementById('dash-refresh-btn');
       btn.textContent = 'Refreshing...';
-      await loadStudentDashboard(auth.currentUser.email);
+      await safeDashboardRefresh(auth.currentUser.email);
       await loadNotices();
       btn.textContent = '↻ Refresh';
     }
@@ -1612,6 +1620,7 @@
 
   async function loadHomework(){
     const box = document.getElementById('dash-homework');
+    if(!box) return;
     try{
       const q = query(collection(db, "homework"), orderBy("createdAt", "desc"), limit(15));
       const snap = await getDocs(q);
@@ -1816,8 +1825,10 @@
     document.getElementById('dash-kpi-rank-sub').textContent=recent.name?`Latest: ${recent.name}`:'Based on the latest test';
     document.getElementById('dash-rank-big').textContent=rank;
     document.getElementById('dash-rank-detail').textContent=recent.name?`Latest test: ${recent.name} · ${recent.rank} of ${recent.size}`:'Rank will appear after a test is recorded.';
-    document.getElementById('dash-batch-size').textContent=recent.size||'—';
-    document.getElementById('dash-batch-highest').textContent=recent.highest!=null?recent.highest+'%':'—';
+    const batchSizeEl=document.getElementById('dash-batch-size');
+    if(batchSizeEl) batchSizeEl.textContent=recent.size||'—';
+    const batchHighestEl=document.getElementById('dash-batch-highest');
+    if(batchHighestEl) batchHighestEl.textContent=recent.highest!=null?recent.highest+'%':'—';
         const scores=Array.isArray(data.testScores)?data.testScores:[];
     const latestScore=scores.slice().sort((a,b)=>(parsePortalDate(b.date)?.getTime()||0)-(parsePortalDate(a.date)?.getTime()||0))[0];
     document.getElementById('dash-average-score').textContent=latestScore?scorePct(latestScore)+'%':'—';
