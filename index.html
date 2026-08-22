@@ -1202,8 +1202,8 @@
         <p>Our primary focus is offline coaching in Kalyanpur, Kanpur for Class 9–12. Home tuition is available for Class 3–8 (all subjects) and Mathematics for Class 9–12 across CBSE, ICSE and UP Board in the listed nearby areas.</p>
         <ul class="loc-list">
           <li>Kalyanpur, Kanpur, Uttar Pradesh</li>
-          <li>Home tuition (Class 3–8): Kalyanpur, Awas Vikas 1, Awas Vikas 3, Gooba Garden, Indira Nagar</li>
-          <li>Class 3–8 home tuition in nearby areas</li>
+          <li>Home tuition (Class 3–8, all subjects): Kalyanpur, Awas Vikas 1, Awas Vikas 3, Gooba Garden, Indira Nagar</li>
+          <li>Home tuition (Class 9–12, Mathematics): same nearby areas · CBSE, ICSE, UP Board</li>
           <li>Call ahead to confirm batch timings</li>
         </ul>
       </div>
@@ -1473,6 +1473,34 @@
   }
   loadSeatsDisplay();
 
+  async function loadBatchCardsGrid(){
+    const grid = document.getElementById('batch-cards-grid');
+    if(!grid) return;
+    let batchStats = [];
+    try{
+      const snap = await getDoc(doc(db, "stats", "public"));
+      if(snap.exists()) batchStats = snap.data().batchStats || [];
+    } catch(err){ batchStats = []; }
+    if(batchStats.length === 0){
+      grid.innerHTML = '<div style="color:var(--muted);font-size:14px;">New batch details will appear here soon. Call or WhatsApp us for current admissions.</div>';
+      return;
+    }
+    grid.innerHTML = batchStats.map(b => {
+      const hasOffer = Number(b.baseFee) > 0 && Number(b.offerPercent) > 0;
+      const launch = b.launchActive;
+      const price = Number(b.launchPrice || b.baseFee || 0);
+      return `<div class="batch-card ${launch?'batch-card-launch':''}">
+        <div class="batch-card-class">Class ${b.class}</div>
+        ${launch ? '<div class="batch-launch-pill">🚀 New launch</div>' : ''}
+        <div class="batch-card-name">${b.name}</div>
+        <p style="font-size:13.5px;color:#D7E0EE;line-height:1.65;margin:8px 0 16px;">${b.intro || 'A focused offline coaching batch with structured teaching, regular practice and personal doubt support.'}</p>
+        ${hasOffer ? `<div class="public-offer-price"><span>Launch offer</span><strong>₹${price.toLocaleString('en-IN')}</strong><s>₹${Number(b.baseFee).toLocaleString('en-IN')}</s><em>${b.offerPercent}% OFF</em></div>` : ''}
+        <div class="seats-label">🔥 Limited admissions · Enroll early</div>
+      </div>`;
+    }).join('');
+  }
+  loadBatchCardsGrid();
+
   let isLoggedIn = false;
   let currentStudentClass = null;
   let currentStudentBatchName = null;
@@ -1543,19 +1571,11 @@
   });
 
   let dashboardAutoRefreshTimer = null;
-  let dashboardRefreshInProgress = false;
-
-  async function safeDashboardRefresh(email){
-    if(dashboardRefreshInProgress) return;
-    dashboardRefreshInProgress = true;
-    try{ await loadStudentDashboard(email); }
-    finally{ dashboardRefreshInProgress = false; }
-  }
 
   onAuthStateChanged(auth, async (user) => {
     if(user){
       isLoggedIn = true;
-      await safeDashboardRefresh(user.email);
+      await loadStudentDashboard(user.email);
       await loadNotices();
       studentLoginBtn.textContent = 'Logout';
       mobileLoginBtn.textContent = 'Logout';
@@ -1565,9 +1585,9 @@
       if(dashboardAutoRefreshTimer) clearInterval(dashboardAutoRefreshTimer);
       dashboardAutoRefreshTimer = setInterval(async () => {
         if(auth.currentUser && document.visibilityState !== 'hidden'){
-          await safeDashboardRefresh(auth.currentUser.email);
+          await loadStudentDashboard(auth.currentUser.email);
         }
-      }, 30000);
+      }, 10000);
 
     } else {
       if(dashboardAutoRefreshTimer){ clearInterval(dashboardAutoRefreshTimer); dashboardAutoRefreshTimer = null; }
@@ -1582,7 +1602,7 @@
     if(auth.currentUser){
       const btn = document.getElementById('dash-refresh-btn');
       btn.textContent = 'Refreshing...';
-      await safeDashboardRefresh(auth.currentUser.email);
+      await loadStudentDashboard(auth.currentUser.email);
       await loadNotices();
       btn.textContent = '↻ Refresh';
     }
@@ -1825,11 +1845,7 @@
     document.getElementById('dash-kpi-rank-sub').textContent=recent.name?`Latest: ${recent.name}`:'Based on the latest test';
     document.getElementById('dash-rank-big').textContent=rank;
     document.getElementById('dash-rank-detail').textContent=recent.name?`Latest test: ${recent.name} · ${recent.rank} of ${recent.size}`:'Rank will appear after a test is recorded.';
-    const batchSizeEl=document.getElementById('dash-batch-size');
-    if(batchSizeEl) batchSizeEl.textContent=recent.size||'—';
-    const batchHighestEl=document.getElementById('dash-batch-highest');
-    if(batchHighestEl) batchHighestEl.textContent=recent.highest!=null?recent.highest+'%':'—';
-        const scores=Array.isArray(data.testScores)?data.testScores:[];
+    const scores=Array.isArray(data.testScores)?data.testScores:[];
     const latestScore=scores.slice().sort((a,b)=>(parsePortalDate(b.date)?.getTime()||0)-(parsePortalDate(a.date)?.getTime()||0))[0];
     document.getElementById('dash-average-score').textContent=latestScore?scorePct(latestScore)+'%':'—';
     if(document.getElementById('dash-kpi-latest-score')) document.getElementById('dash-kpi-latest-score').textContent=latestScore?scorePct(latestScore)+'%':'—';
