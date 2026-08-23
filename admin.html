@@ -726,6 +726,9 @@
       await loadStudentList();
       loadBulkAttendanceRows();
       loadNotices();
+      loadPopupManager();
+      loadBranding();
+      loadHomeworkAdminList();
     } else {
       loginScreen.style.display = 'block';
       adminScreen.style.display = 'none';
@@ -1954,11 +1957,9 @@
   popupEnabledInput.addEventListener('change',()=>document.getElementById('popup-manager-status').textContent=popupEnabledInput.value==='true'?'ON':'OFF');
   document.getElementById('save-popup-btn').addEventListener('click',async()=>{const d=collectPopupData();try{await setDoc(doc(db,'siteSettings','popup'),d,{merge:true});popupLoadedData=d;document.getElementById('popup-manager-status').textContent=d.enabled?'ON':'OFF';popupMsg.textContent='Popup saved successfully.';popupMsg.className='msg success';}catch(e){popupMsg.textContent='Could not save popup: '+e.message;popupMsg.className='msg error';}});
   document.getElementById('clear-popup-btn').addEventListener('click',async()=>{try{await setDoc(doc(db,'siteSettings','popup'),{enabled:false,updatedAt:serverTimestamp()},{merge:true});popupEnabledInput.value='false';document.getElementById('popup-manager-status').textContent='OFF';popupMsg.textContent='Popup turned off.';popupMsg.className='msg success';}catch(e){popupMsg.textContent='Could not turn popup off: '+e.message;popupMsg.className='msg error';}});
-  loadPopupManager();
 
   document.getElementById('upload-signature-btn').addEventListener('click',async()=>{const file=document.getElementById('teacher-signature-input').files[0];const msg=document.getElementById('signature-msg');if(!file){msg.textContent='Choose a signature image first.';msg.className='msg error';return;}try{const path=`report-assets/teacher-signature-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;const snap=await uploadBytes(storageRef(storage,path),file);const url=await getDownloadURL(snap.ref);await setDoc(doc(db,'siteSettings','branding'),{teacherSignatureUrl:url,updatedAt:serverTimestamp()},{merge:true});document.getElementById('signature-preview').innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Current signature</div><img src="${url}" alt="Teacher signature" style="max-width:240px;max-height:90px;background:#fff;padding:8px;border:1px solid #e5e9f0;border-radius:8px;">`;msg.textContent='Signature uploaded. Future report cards can reuse it automatically.';msg.className='msg success';}catch(e){msg.textContent='Signature upload failed: '+e.message;msg.className='msg error';}});
   async function loadBranding(){try{const snap=await getDoc(doc(db,'siteSettings','branding'));const u=snap.exists()?snap.data().teacherSignatureUrl:'';if(u)document.getElementById('signature-preview').innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Current signature</div><img src="${u}" alt="Teacher signature" style="max-width:240px;max-height:90px;background:#fff;padding:8px;border:1px solid #e5e9f0;border-radius:8px;">`;}catch(e){}}
-  loadBranding();
 
   const launchPreview = document.getElementById('batch-launch-preview');
   function updateLaunchPreview(){
@@ -2108,8 +2109,6 @@
       btn.disabled = false; btn.textContent = '+ Launch / Create Batch';
     }
   });
-
-  loadHomeworkAdminList();
 </script>
 </body>
 </html>
