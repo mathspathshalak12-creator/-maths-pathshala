@@ -229,7 +229,6 @@
         <a href="#fees-section">Fees</a>
         <a href="#communication-section">Student Updates</a>
         <a href="#homework-section">Homework</a>
-        <a href="#popup-manager-section">Popups</a>
         <a href="#branding-section">Branding</a>
       </nav>
       <div class="sidebar-note">Primary focus: <b>Offline coaching</b><br>Class 9–10: PCM · Class 11–12: Mathematics<br>Home tuition: Class 3–8 all subjects · Class 9–12 Mathematics</div>
@@ -286,25 +285,6 @@
         <div style="font-size:13px;font-weight:700;color:#C0392B;text-transform:uppercase;letter-spacing:.03em;margin:20px 0 10px;">Fee follow-up</div>
         <div id="fin-due-students"><div style="font-size:13px;color:var(--muted);">No pending fees.</div></div>
       </div>
-    </div>
-
-    <div class="card" id="popup-manager-section">
-      <div class="card-title-row"><div><span class="section-kicker">Website & app</span><h2>Popup Manager</h2><p>Choose one popup type. Each type has its own relevant fields. The active configuration is shared through Firebase so the website and a compatible app can use the same popup data. Select Festival, Announcement, Batch Offer, Batch Launch or Custom; each type uses its own fields.</p></div><span class="status-chip" id="popup-manager-status">OFF</span></div>
-      <div class="row2" style="margin-top:16px;">
-        <select id="popup-type-input">
-          <option value="festival">🎉 Festival Popup</option>
-          <option value="announcement">📢 Announcement Popup</option>
-          <option value="batchOffer">🎯 Batch Offer Popup</option>
-          <option value="batchLaunch">🚀 Batch Launch Popup</option>
-          <option value="custom">✨ Custom Popup</option>
-        </select>
-        <select id="popup-enabled-input"><option value="true">Enabled</option><option value="false">Disabled</option></select>
-      </div>
-      <div id="popup-fields" style="margin-top:14px;"></div>
-      <div class="row2" style="margin-top:14px;"><input type="datetime-local" id="popup-start-input"><input type="datetime-local" id="popup-end-input"></div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;"><button class="btn" id="save-popup-btn">Save Popup</button><button class="btn btn-secondary" id="clear-popup-btn">Turn Popup Off</button></div>
-      <div class="msg" id="popup-msg"></div>
-      <p style="font-size:11px;color:var(--muted);margin-top:10px;">Popup display rule: maximum once per visit/session. Leaving the site and returning later starts a new visit.</p>
     </div>
 
     <div class="card" id="branding-section">
@@ -726,7 +706,6 @@
       await loadStudentList();
       loadBulkAttendanceRows();
       loadNotices();
-      loadPopupManager();
       loadBranding();
       loadHomeworkAdminList();
     } else {
@@ -1931,32 +1910,6 @@
       btn.disabled = false; btn.textContent = 'Save All Scores';
     }
   });
-
-  const popupFields=document.getElementById('popup-fields');
-  const popupTypeInput=document.getElementById('popup-type-input');
-  const popupEnabledInput=document.getElementById('popup-enabled-input');
-  const popupMsg=document.getElementById('popup-msg');
-  let popupLoadedData={};
-  function popupField(id,label,placeholder='',type='text'){ return `<label style="display:block;font-size:12px;font-weight:700;color:#52627a;margin-bottom:6px;">${label}</label><input id="${id}" type="${type}" placeholder="${placeholder}" style="width:100%;margin-bottom:10px;">`; }
-  function renderPopupFields(data={}){
-    const type=popupTypeInput.value; let html='';
-    if(type==='festival') html=`<div class="row2">${popupField('p-festival-name','Festival name','Diwali Offer')}${popupField('p-title','Heading','Diwali Special Offer')}</div>${popupField('p-description','Description','A special festive opportunity for serious learners.')}${popupField('p-offer-text','Offer text','Limited festive admission offer')}${popupField('p-cta','CTA text','Get Offer Details')}${popupField('p-wa','WhatsApp message','Hi, I want details about the festival offer.')}`;
-    if(type==='announcement') html=`${popupField('p-title','Announcement title','Important announcement')}${popupField('p-description','Message','Write the announcement here.')}${popupField('p-cta','CTA text','Got it')}${popupField('p-link','CTA link','https://...')}`;
-    if(type==='batchOffer') html=`${popupField('p-batch','Select batch','Choose existing batch')}${popupField('p-title','Offer title','Special batch offer')}${popupField('p-description','Description','Limited offer for this batch.')}${'<div class="row2">'+popupField('p-original','Original fee','10000','number')+popupField('p-offer-price','Offer fee','7000','number')+'</div>'}${popupField('p-discount','Discount %','30','number')}${popupField('p-cta','CTA text','Reserve My Seat')}${popupField('p-wa','WhatsApp message','Hi, I want details about this batch offer.')}`;
-    if(type==='batchLaunch') html=`${popupField('p-batch','Select batch','Choose existing launch-active batch')}${popupField('p-title','Launch title','Complete Maths — Special Launch')}${popupField('p-description','Launch subtitle','A focused complete-syllabus Maths batch for serious board preparation.')}${'<div class="row2">'+popupField('p-original','Original fee','10000','number')+popupField('p-offer-price','Launch fee','7000','number')+'</div>'}${popupField('p-discount','Discount %','30','number')}${popupField('p-points','Popup points (comma separated)','Complete syllabus, Small batch, Regular tests, Personal doubt support')}${popupField('p-cta','CTA text','Reserve My Seat')}${popupField('p-wa','WhatsApp message','Hi, I want details about this new batch.')}`;
-    if(type==='custom') html=`${popupField('p-eyebrow','Small label','SPECIAL')}${popupField('p-title','Title','Your custom popup')}${popupField('p-description','Description','Your message here.')}${popupField('p-offer-text','Offer / supporting text','Optional offer text')}${popupField('p-cta','CTA text','Know More')}${popupField('p-link','CTA link','https://...')}${popupField('p-wa','WhatsApp message','Hi, I want more details.')}`;
-    popupFields.innerHTML=html;
-    if(type==='batchOffer'||type==='batchLaunch') populatePopupBatchSelect(data.batchId||'');
-    const popupFieldIdMap={festivalName:'festival-name',offerText:'offer-text',ctaText:'cta',ctaLink:'link',whatsappMessage:'wa',originalPrice:'original',offerPrice:'offer-price',batchId:'batch'};
-    Object.entries(data).forEach(([k,v])=>{const el=document.getElementById('p-'+(popupFieldIdMap[k]||k));if(el)el.value=Array.isArray(v)?v.join(', '):(v??'');});
-  }
-  async function populatePopupBatchSelect(selected=''){ const el=document.getElementById('p-batch'); if(!el)return; const snap=await getDocs(collection(db,'batches')); const arr=[]; snap.forEach(d=>arr.push({id:d.id,...d.data()})); el.outerHTML=`<select id="p-batch" style="width:100%;margin-bottom:10px;"><option value="">Select existing batch</option>${arr.map(b=>`<option value="${b.id}" ${b.id===selected?'selected':''}>Class ${b.class||''} · ${b.name||b.id}</option>`).join('')}</select>`; }
-  function collectPopupData(){ const type=popupTypeInput.value; const val=id=>document.getElementById('p-'+id)?.value?.trim()||''; const d={type,enabled:popupEnabledInput.value==='true',startAt:document.getElementById('popup-start-input').value||'',endAt:document.getElementById('popup-end-input').value||'',updatedAt:serverTimestamp()}; if(type==='festival'){Object.assign(d,{festivalName:val('festival-name'),title:val('title'),description:val('description'),offerText:val('offer-text'),ctaText:val('cta'),whatsappMessage:val('wa')});} if(type==='announcement'){Object.assign(d,{title:val('title'),description:val('description'),ctaText:val('cta'),ctaLink:val('link')});} if(type==='batchOffer'||type==='batchLaunch'){Object.assign(d,{batchId:val('batch'),title:val('title'),description:val('description'),originalPrice:Number(val('original'))||0,offerPrice:Number(val('offer-price'))||0,discount:Number(val('discount'))||0,ctaText:val('cta'),whatsappMessage:val('wa'),points:val('points').split(',').map(x=>x.trim()).filter(Boolean),eyebrow:type==='batchLaunch'?'🚀 NEW BATCH LAUNCH':'🎯 BATCH OFFER'});} if(type==='custom'){Object.assign(d,{eyebrow:val('eyebrow'),title:val('title'),description:val('description'),offerText:val('offer-text'),ctaText:val('cta'),ctaLink:val('link'),whatsappMessage:val('wa')});} return d; }
-  async function loadPopupManager(){ try{const snap=await getDoc(doc(db,'siteSettings','popup')); if(!snap.exists()){renderPopupFields({});return;} const d=snap.data()||{}; popupLoadedData=d; popupTypeInput.value=d.type||'batchLaunch'; popupEnabledInput.value=String(d.enabled!==false); document.getElementById('popup-start-input').value=d.startAt||''; document.getElementById('popup-end-input').value=d.endAt||''; renderPopupFields(d); document.getElementById('popup-manager-status').textContent=d.enabled?'ON':'OFF';}catch(e){popupMsg.textContent='Could not load popup settings: '+e.message;popupMsg.className='msg error';} }
-  popupTypeInput.addEventListener('change',()=>renderPopupFields({}));
-  popupEnabledInput.addEventListener('change',()=>document.getElementById('popup-manager-status').textContent=popupEnabledInput.value==='true'?'ON':'OFF');
-  document.getElementById('save-popup-btn').addEventListener('click',async()=>{const d=collectPopupData();try{await setDoc(doc(db,'siteSettings','popup'),d,{merge:true});popupLoadedData=d;document.getElementById('popup-manager-status').textContent=d.enabled?'ON':'OFF';popupMsg.textContent='Popup saved successfully.';popupMsg.className='msg success';}catch(e){popupMsg.textContent='Could not save popup: '+e.message;popupMsg.className='msg error';}});
-  document.getElementById('clear-popup-btn').addEventListener('click',async()=>{try{await setDoc(doc(db,'siteSettings','popup'),{enabled:false,updatedAt:serverTimestamp()},{merge:true});popupEnabledInput.value='false';document.getElementById('popup-manager-status').textContent='OFF';popupMsg.textContent='Popup turned off.';popupMsg.className='msg success';}catch(e){popupMsg.textContent='Could not turn popup off: '+e.message;popupMsg.className='msg error';}});
 
   document.getElementById('upload-signature-btn').addEventListener('click',async()=>{const file=document.getElementById('teacher-signature-input').files[0];const msg=document.getElementById('signature-msg');if(!file){msg.textContent='Choose a signature image first.';msg.className='msg error';return;}try{const path=`report-assets/teacher-signature-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;const snap=await uploadBytes(storageRef(storage,path),file);const url=await getDownloadURL(snap.ref);await setDoc(doc(db,'siteSettings','branding'),{teacherSignatureUrl:url,updatedAt:serverTimestamp()},{merge:true});document.getElementById('signature-preview').innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Current signature</div><img src="${url}" alt="Teacher signature" style="max-width:240px;max-height:90px;background:#fff;padding:8px;border:1px solid #e5e9f0;border-radius:8px;">`;msg.textContent='Signature uploaded. Future report cards can reuse it automatically.';msg.className='msg success';}catch(e){msg.textContent='Signature upload failed: '+e.message;msg.className='msg error';}});
   async function loadBranding(){try{const snap=await getDoc(doc(db,'siteSettings','branding'));const u=snap.exists()?snap.data().teacherSignatureUrl:'';if(u)document.getElementById('signature-preview').innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Current signature</div><img src="${u}" alt="Teacher signature" style="max-width:240px;max-height:90px;background:#fff;padding:8px;border:1px solid #e5e9f0;border-radius:8px;">`;}catch(e){}}
