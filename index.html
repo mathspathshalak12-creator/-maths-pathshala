@@ -1532,55 +1532,27 @@
   function popupSessionKey(){ return 'mp_popup_seen_' + new Date().toISOString().slice(0,10); }
   function popupAlreadyShown(){ return sessionStorage.getItem(popupSessionKey()) === '1'; }
   function markPopupShown(){ sessionStorage.setItem(popupSessionKey(),'1'); }
-  function escapePopupText(v){ return String(v||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
   async function loadSeatsDisplay(){
     const popup=document.getElementById('seats-popup');
     if(!popup || popupAlreadyShown()) return;
     try{
-      // An active batch launch always takes priority and shows automatically —
-      // exactly like before. Popup Manager is used for festival/announcement/custom
-      // popups, and only shown when no batch is currently in launch mode.
-      let p=null;
       const batchSnap=await getDocs(collection(db,'batches'));
       const launches=[]; batchSnap.forEach(d=>{const b=d.data()||{}; if(b.launchActive) launches.push({id:d.id,...b});});
       const launch=launches[0];
-      if(launch){
-        p={enabled:true,type:'batchLaunch',eyebrow:'🚀 NEW BATCH LAUNCH',classText:`CLASS ${launch.class||''} · ${launch.name||''}`,title:launch.launchTitle||`${launch.name||'New Batch'} — Admissions Open`,description:launch.launchSubtitle||launch.intro||'A focused Maths batch for serious students.',originalPrice:Number(launch.baseFee)||0,offerPrice:Number(launch.launchPrice||launch.baseFee)||0,discount:Number(launch.offerPercent)||0,points:['Complete syllabus','Small batch','Regular tests','Personal doubt support'],ctaText:'Reserve My Seat',whatsappCta:'Ask on WhatsApp',whatsappMessage:`Hi, I want details for the ${launch.name||'new batch'} batch (Class ${launch.class||''}).`};
-      } else {
-        const snap=await getDoc(doc(db,'siteSettings','popup'));
-        if(snap.exists()) p=snap.data()||{};
-      }
-      if(!p || !p.enabled) return;
-      const now=Date.now();
-      if(p.startAt && new Date(p.startAt).getTime()>now) return;
-      if(p.endAt && new Date(p.endAt).getTime()<now) return;
-      const type=p.type||'batchLaunch';
-      const labels={festival:'🎉 FESTIVAL OFFER',announcement:'📢 ANNOUNCEMENT',batchOffer:'🎯 BATCH OFFER',batchLaunch:'🚀 NEW BATCH LAUNCH',custom:'✨ SPECIAL'};
-      document.getElementById('site-popup-badge').textContent=labels[type]||labels.custom;
-      document.getElementById('site-popup-live').textContent='● LIVE';
-      document.getElementById('popup-batch-class').textContent=p.eyebrow||p.classText||'MATHS PATHSHALA';
-      document.getElementById('popup-batch-title').textContent=p.title||'Maths Pathshala';
-      document.getElementById('popup-batch-subtitle').textContent=p.description||'';
+      if(!launch) return;
+      document.getElementById('popup-batch-class').textContent=`CLASS ${launch.class||''} · ${launch.name||''}`;
+      document.getElementById('popup-batch-title').textContent=launch.launchTitle||`${launch.name||'New Batch'} — Admissions Open`;
+      document.getElementById('popup-batch-subtitle').textContent=launch.launchSubtitle||launch.intro||'A focused Maths batch for serious students.';
       const priceEl=document.getElementById('popup-batch-price');
       const offerEl=document.getElementById('popup-batch-offer');
-      if(type==='batchOffer'||type==='batchLaunch'||p.offerPrice||p.originalPrice){
-        const price=p.offerPrice?`₹${Number(p.offerPrice).toLocaleString('en-IN')}`:'';
-        const original=p.originalPrice?`<s>₹${Number(p.originalPrice).toLocaleString('en-IN')}</s>`:'';
-        priceEl.innerHTML=price?`${price} <small>offer fee</small>`:'';
-        offerEl.innerHTML=(original || p.discount)?`${original} ${p.discount?`<strong>${escapePopupText(p.discount)}% OFF</strong>`:''}`:'';
-      }else{ priceEl.textContent=''; offerEl.textContent=p.offerText||''; }
-      const points=Array.isArray(p.points)?p.points.filter(Boolean):[];
-      document.getElementById('site-popup-points').innerHTML=(points.length?points:['✓ Small batch','✓ Regular tests','✓ Personal doubt support']).map(x=>`<span>✓ ${escapePopupText(x)}</span>`).join('');
-      const reg=document.getElementById('popup-register');
-      const cta=p.ctaText||'Know More'; reg.textContent=cta;
-      if(p.ctaLink){ reg.href=p.ctaLink; reg.target='_blank'; reg.removeAttribute('data-scroll'); }
-      else { reg.href='javascript:void(0)'; reg.setAttribute('data-scroll','register'); }
-      const wa=document.getElementById('popup-wa');
-      const waText=p.whatsappMessage||`Hi, I want details about ${p.title||'the current Maths Pathshala offer'}.`;
-      wa.href=`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(waText)}`;
-      wa.textContent=p.whatsappCta||'Ask on WhatsApp';
-      popup.classList.add('show'); markPopupShown();
+      if(Number(launch.launchPrice||launch.baseFee)>0){
+        priceEl.innerHTML=`₹${Number(launch.launchPrice||launch.baseFee).toLocaleString('en-IN')} <small>launch fee</small>`;
+        offerEl.innerHTML=launch.offerPercent?`<s>₹${Number(launch.baseFee).toLocaleString('en-IN')}</s> <strong>${launch.offerPercent}% OFF</strong> · Limited launch offer`:'Special launch pricing';
+      }else{ priceEl.textContent='Special launch admission'; offerEl.textContent='Limited launch offer · Contact us for details'; }
+      const launchWa=`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi, I want details for the ${launch.name||'new batch'} batch (Class ${launch.class||''}).`)}`;
+      document.getElementById('popup-wa').href=launchWa;
+      setTimeout(()=>{popup.classList.add('show'); markPopupShown();}, 1400);
     }catch(err){ console.warn('Site popup load failed:',err); }
   }
   loadSeatsDisplay();
@@ -1949,6 +1921,16 @@
     document.getElementById('dash-admission-date').textContent=data.admissionDate?new Date(data.admissionDate+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'Not set yet';
     const monthlyFeeList=document.getElementById('dash-monthly-fee-list'); monthlyFeeList.innerHTML=''; const mf=Array.isArray(data.monthlyFees)?data.monthlyFees.slice().sort((a,b)=>(b.monthKey||'').localeCompare(a.monthKey||'')):[]; monthlyFeeList.innerHTML=mf.length?mf.slice(0,6).map(m=>`<li><span>${m.monthLabel||monthLabel(m.monthKey)}</span><span class="${m.status==='Paid'?'att-present':'att-absent'}">${m.status}</span></li>`).join(''):'<li style="color:#B9C2D6">No monthly records yet</li>';
     document.getElementById('dash-batch-value').textContent=data.batchTiming||'Not assigned yet'; document.getElementById('dash-next-test').textContent=data.nextTest||'None scheduled';
+    if(data.nextTest && auth.currentUser){
+      const seenKey='testSeen_'+auth.currentUser.email;
+      const lastSeen=localStorage.getItem(seenKey);
+      if(lastSeen!==data.nextTest){
+        document.getElementById('test-popup-title').textContent=data.nextTest;
+        document.getElementById('test-popup').classList.add('show');
+        document.getElementById('test-popup-ok').onclick=()=>{ localStorage.setItem(seenKey,data.nextTest); document.getElementById('test-popup').classList.remove('show'); };
+        document.getElementById('test-popup-close').onclick=()=>{ localStorage.setItem(seenKey,data.nextTest); document.getElementById('test-popup').classList.remove('show'); };
+      }
+    }
     const log=Array.isArray(data.attendance?.log)?data.attendance.log:[]; const overall=typeof data.attendance?.percent==='number'?data.attendance.percent:(log.length?Math.round(log.filter(e=>e.status==='Present').length/log.length*100):0); const streak=calculateStreak(log); document.getElementById('dash-attendance-pct').textContent=overall+'%'; document.getElementById('dash-kpi-attendance').textContent=overall+'%'; document.getElementById('dash-kpi-streak').textContent=streak?`🔥 ${streak}`:'—'; document.getElementById('att-progress-fill').style.width=overall+'%'; document.getElementById('dash-streak-highlight').textContent=streak?`🔥 ${streak} consecutive present classes — keep it going!`:'🔥 Your attendance streak starts with the next class.';
     renderDailyAttendance(log);
     const months=aggregateAttendance(log); document.getElementById('dash-monthly-attendance').innerHTML=months.length?months.map(m=>`<div class="month-att-row"><strong>${m.label}</strong><span>${m.present}/${m.total} present</span><b>${m.percent}%</b></div>`).join(''):'<div class="empty-state">No attendance recorded yet.</div>';
