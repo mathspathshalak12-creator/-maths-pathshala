@@ -183,6 +183,24 @@
   }
   .prog-card li:before{content:"—";color:var(--amber-dark);flex-shrink:0;}
 
+  /* CLASS-WISE OFFLINE DETAIL */
+  .class-detail{background:var(--paper);border:1px solid var(--line);border-radius:14px;margin-bottom:14px;overflow:hidden;}
+  .class-detail summary{list-style:none;cursor:pointer;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  .class-detail summary::-webkit-details-marker{display:none;}
+  .class-detail-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .class-detail-num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;background:var(--navy);color:#fff;padding:6px 16px;border-radius:6px;white-space:nowrap;}
+  .class-detail-name{font-size:17px;font-weight:700;}
+  .class-detail-sub{font-size:13.5px;color:var(--amber-dark);font-weight:600;}
+  .class-detail-arrow{font-size:14px;color:var(--muted);transition:transform .2s ease;flex-shrink:0;}
+  .class-detail[open] .class-detail-arrow{transform:rotate(180deg);}
+  .class-detail-body{padding:0 24px 24px;border-top:1px solid var(--line);}
+  .class-detail-body p{font-size:14.5px;color:var(--muted);line-height:1.75;margin:16px 0;}
+  .class-detail-body ul{list-style:none;margin:0;}
+  .class-detail-body li{font-size:14.5px;color:var(--muted);padding:8px 0;border-top:1px solid var(--line);display:flex;gap:10px;align-items:flex-start;}
+  .class-detail-body li:first-child{border-top:none;}
+  .class-detail-body li:before{content:"—";color:var(--amber-dark);flex-shrink:0;}
+
+
   /* WHY US GRID */
   .why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
   @media(max-width:900px){.why-grid{grid-template-columns:repeat(2,1fr);}}
@@ -965,6 +983,97 @@
         </ul>
       </div>
     </div>
+
+    <div class="section-head" style="margin-top:56px;">
+      <div class="section-tag">Class-wise details</div>
+      <h2>What we actually cover, class by class.</h2>
+      <p>Tap a class to see the subjects, focus areas and teaching approach in detail.</p>
+    </div>
+    <div>
+      <details class="class-detail">
+        <summary>
+          <div class="class-detail-head">
+            <span class="class-detail-num">Class 9</span>
+            <span class="class-detail-name">Foundation — PCM</span>
+            <span class="class-detail-sub">Mathematics · Physics · Chemistry</span>
+          </div>
+          <span class="class-detail-arrow">▾</span>
+        </summary>
+        <div class="class-detail-body">
+          <p>Class 9 is where the board-exam foundation actually gets built — algebra, geometry and number systems in Maths, and the first real introduction to numericals in Physics and Chemistry. We keep the pace steady so concepts are understood, not memorised.</p>
+          <ul>
+            <li>Mathematics: number systems, polynomials, coordinate geometry, linear equations, triangles &amp; geometry proofs, circles, mensuration, statistics</li>
+            <li>Physics: motion, force &amp; laws of motion, gravitation, work &amp; energy, sound</li>
+            <li>Chemistry: matter, atoms &amp; molecules, structure of the atom, basic chemical reactions</li>
+            <li>Weekly class tests plus chapter-end tests to catch gaps early, before Class 10 pressure builds up</li>
+            <li>CBSE, ICSE and UP Board syllabus covered</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="class-detail">
+        <summary>
+          <div class="class-detail-head">
+            <span class="class-detail-num">Class 10</span>
+            <span class="class-detail-name">Board year — PCM</span>
+            <span class="class-detail-sub">Mathematics · Physics · Chemistry</span>
+          </div>
+          <span class="class-detail-arrow">▾</span>
+        </summary>
+        <div class="class-detail-body">
+          <p>Class 10 is board-exam focused from day one. Every topic is taught with the exam pattern in mind — how it's typically asked, common mistakes, and how to structure a full-marks answer, not just the right answer.</p>
+          <ul>
+            <li>Mathematics: real numbers, polynomials, pair of linear equations, quadratic equations, arithmetic progressions, triangles, coordinate geometry, trigonometry &amp; its applications, circles, areas &amp; volumes, statistics &amp; probability</li>
+            <li>Physics: light — reflection &amp; refraction, the human eye, electricity, magnetic effects of current</li>
+            <li>Chemistry: chemical reactions &amp; equations, acids/bases/salts, metals &amp; non-metals, carbon compounds</li>
+            <li>Regular full-length mock tests in the board exam format, with detailed answer-sheet style checking</li>
+            <li>Previous-year question practice and last-minute revision sessions closer to boards</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="class-detail">
+        <summary>
+          <div class="class-detail-head">
+            <span class="class-detail-num">Class 11</span>
+            <span class="class-detail-name">Advanced foundation — Mathematics</span>
+            <span class="class-detail-sub">Mathematics</span>
+          </div>
+          <span class="class-detail-arrow">▾</span>
+        </summary>
+        <div class="class-detail-body">
+          <p>Class 11 Maths jumps in difficulty compared to Class 10, and it's the base every Class 12 chapter builds on. The focus here is on getting genuinely comfortable with each concept, since rushing this year usually shows up as struggle in Class 12.</p>
+          <ul>
+            <li>Sets, relations &amp; functions, trigonometric functions, complex numbers, linear inequalities</li>
+            <li>Permutations &amp; combinations, binomial theorem, sequences &amp; series</li>
+            <li>Straight lines, conic sections, introduction to 3D geometry</li>
+            <li>Limits &amp; derivatives (introduction to calculus), statistics &amp; probability</li>
+            <li>Doubt-clearing built into every session — no concept is left half-understood before moving ahead</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="class-detail">
+        <summary>
+          <div class="class-detail-head">
+            <span class="class-detail-num">Class 12</span>
+            <span class="class-detail-name">Board year — Mathematics</span>
+            <span class="class-detail-sub">Mathematics</span>
+          </div>
+          <span class="class-detail-arrow">▾</span>
+        </summary>
+        <div class="class-detail-body">
+          <p>Class 12 Maths is taught as direct board-exam preparation, with heavy emphasis on the chapters that carry the most weight every year, plus timed practice so students are exam-ready, not just concept-ready.</p>
+          <ul>
+            <li>Relations &amp; functions, inverse trigonometric functions, matrices &amp; determinants</li>
+            <li>Continuity &amp; differentiability, applications of derivatives, integrals &amp; their applications</li>
+            <li>Differential equations, vectors &amp; 3D geometry, linear programming, probability</li>
+            <li>Handwritten, exam-oriented notes for quick revision closer to the exam</li>
+            <li>Full board-pattern mock tests with strict time limits and detailed feedback</li>
+          </ul>
+        </div>
+      </details>
+    </div>
   </div>
 </section>
 
@@ -1429,18 +1538,20 @@
     const popup=document.getElementById('seats-popup');
     if(!popup || popupAlreadyShown()) return;
     try{
-      const snap=await getDoc(doc(db,'siteSettings','popup'));
-      let p={};
-      if(snap.exists()) p=snap.data()||{};
-      // Preserve the existing strong Batch Launch popup as a fallback until a popup is configured in Admin.
-      if(!snap.exists()){
-        const batchSnap=await getDocs(collection(db,'batches'));
-        const launches=[]; batchSnap.forEach(d=>{const b=d.data()||{}; if(b.launchActive) launches.push({id:d.id,...b});});
-        const launch=launches[0];
-        if(!launch) return;
+      // An active batch launch always takes priority and shows automatically —
+      // exactly like before. Popup Manager is used for festival/announcement/custom
+      // popups, and only shown when no batch is currently in launch mode.
+      let p=null;
+      const batchSnap=await getDocs(collection(db,'batches'));
+      const launches=[]; batchSnap.forEach(d=>{const b=d.data()||{}; if(b.launchActive) launches.push({id:d.id,...b});});
+      const launch=launches[0];
+      if(launch){
         p={enabled:true,type:'batchLaunch',eyebrow:'🚀 NEW BATCH LAUNCH',classText:`CLASS ${launch.class||''} · ${launch.name||''}`,title:launch.launchTitle||`${launch.name||'New Batch'} — Admissions Open`,description:launch.launchSubtitle||launch.intro||'A focused Maths batch for serious students.',originalPrice:Number(launch.baseFee)||0,offerPrice:Number(launch.launchPrice||launch.baseFee)||0,discount:Number(launch.offerPercent)||0,points:['Complete syllabus','Small batch','Regular tests','Personal doubt support'],ctaText:'Reserve My Seat',whatsappCta:'Ask on WhatsApp',whatsappMessage:`Hi, I want details for the ${launch.name||'new batch'} batch (Class ${launch.class||''}).`};
+      } else {
+        const snap=await getDoc(doc(db,'siteSettings','popup'));
+        if(snap.exists()) p=snap.data()||{};
       }
-      if(!p.enabled) return;
+      if(!p || !p.enabled) return;
       const now=Date.now();
       if(p.startAt && new Date(p.startAt).getTime()>now) return;
       if(p.endAt && new Date(p.endAt).getTime()<now) return;
