@@ -632,10 +632,10 @@
 </div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, writeBatch, addDoc, deleteDoc, query, orderBy, serverTimestamp, where, documentId } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, writeBatch, addDoc, deleteDoc, query, orderBy, serverTimestamp, where, documentId } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+  import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB3fzWzwiTxHJi1M3OQI3hgZJpi6lq-eww",
@@ -1999,8 +1999,9 @@
     msg.textContent='Uploading signature, please wait…'; msg.className='msg';
     try{
       const path=`report-assets/teacher-signature-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
-      const snap=await uploadBytes(storageRef(storage,path),file);
-      const url=await getDownloadURL(snap.ref);
+      const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('Upload timed out after '+(ms/1000)+'s — check your internet connection or Firebase Storage setup.')),ms))]);
+      const snap=await withTimeout(uploadBytes(storageRef(storage,path),file),20000);
+      const url=await withTimeout(getDownloadURL(snap.ref),15000);
       await setDoc(doc(db,'siteSettings','branding'),{teacherSignatureUrl:url,updatedAt:serverTimestamp()},{merge:true});
       teacherSignatureUrl=url;
       document.getElementById('signature-preview').innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Current signature</div><img src="${url}" alt="Teacher signature" style="max-width:240px;max-height:90px;background:#fff;padding:8px;border:1px solid #e5e9f0;border-radius:8px;">`;
