@@ -1550,7 +1550,7 @@
         priceEl.innerHTML=`₹${Number(launch.launchPrice||launch.baseFee).toLocaleString('en-IN')} <small>launch fee</small>`;
         offerEl.innerHTML=launch.offerPercent?`<s>₹${Number(launch.baseFee).toLocaleString('en-IN')}</s> <strong>${launch.offerPercent}% OFF</strong> · Limited launch offer`:'Special launch pricing';
       }else{ priceEl.textContent='Special launch admission'; offerEl.textContent='Limited launch offer · Contact us for details'; }
-      const launchWa=`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi, I want details for the ${launch.name||'new batch'} batch (Class ${launch.class||''}).`)}`;
+      const launchWa=`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(`Hi, I want details for the ${launch.name||'new batch'} batch (Class ${launch.class||''}).`)}`;
       document.getElementById('popup-wa').href=launchWa;
       setTimeout(()=>{popup.classList.add('show'); markPopupShown();}, 1400);
     }catch(err){ console.warn('Site popup load failed:',err); }
