@@ -1537,9 +1537,9 @@
     const popup=document.getElementById('seats-popup');
     if(!popup || popupAlreadyShown()) return;
     try{
-      const batchSnap=await getDocs(collection(db,'batches'));
-      const launches=[]; batchSnap.forEach(d=>{const b=d.data()||{}; if(b.launchActive) launches.push({id:d.id,...b});});
-      const launch=launches[0];
+      const snap=await getDoc(doc(db,'stats','public'));
+      const batchStats=snap.exists()?(snap.data().batchStats||[]):[];
+      const launch=batchStats.find(b=>b.launchActive);
       if(!launch) return;
       document.getElementById('popup-batch-class').textContent=`CLASS ${launch.class||''} · ${launch.name||''}`;
       document.getElementById('popup-batch-title').textContent=launch.launchTitle||`${launch.name||'New Batch'} — Admissions Open`;
