@@ -1709,15 +1709,30 @@
   });
 
   function normalizeNoticeValue(value){
-    return String(value ?? '').trim().toLowerCase().replace(/^class\s*/,'');
+    return String(value ?? '').trim().toLowerCase().replace(/\s+/g,' ');
+  }
+
+  function normalizeNoticeClass(value){
+    const v = normalizeNoticeValue(value);
+    if(!v) return '';
+    const m = v.match(/\b(9|10|11|12)\b/);
+    return m ? m[1] : v.replace(/^class\s*/,'').replace(/(?:st|nd|rd|th)\b/,'').trim();
   }
 
   function matchesStudentTarget(data){
-    const targetClass = normalizeNoticeValue(data.targetClass);
-    const studentClass = normalizeNoticeValue(currentStudentClass);
+    // Admin stores the selected class/batch in targetClass/targetBatch.
+    // recipientEmails is also stored, so support it as a safe fallback for
+    // older notices whose targeting fields may be blank/inconsistent.
+    const targetClass = normalizeNoticeClass(data.targetClass);
+    const studentClass = normalizeNoticeClass(currentStudentClass);
     const targetBatch = normalizeNoticeValue(data.targetBatch);
     const studentBatch = normalizeNoticeValue(currentStudentBatchName);
+    const email = normalizeNoticeValue(auth.currentUser?.email);
+    const recipients = Array.isArray(data.recipientEmails)
+      ? data.recipientEmails.map(normalizeNoticeValue).filter(Boolean)
+      : [];
 
+    if(recipients.length && email && recipients.includes(email)) return true;
     if(!targetClass) return true;
     if(!studentClass || targetClass !== studentClass) return false;
     if(!targetBatch) return true;
@@ -1728,7 +1743,7 @@
     const popup = document.getElementById('notice-popup');
     if(!popup) return;
     if(markSeen && auth.currentUser && popup.dataset.noticeId){
-      localStorage.setItem('noticeSeen_' + auth.currentUser.email.toLowerCase(), popup.dataset.noticeId);
+      localStorage.setItem('noticeSeen_v2_' + auth.currentUser.email.toLowerCase(), popup.dataset.noticeId);
     }
     popup.classList.remove('show');
     popup.setAttribute('aria-hidden','true');
@@ -1786,12 +1801,16 @@
         box.appendChild(banner);
       });
 
-      // Popup only for a new notice for this logged-in student.
+      // Always prepare the latest matching notice for the popup. A versioned
+      // seen-key prevents an old localStorage value from suppressing the
+      // first working popup after this fix. New notices naturally get a new id.
       if(matching.length && auth.currentUser){
         const latest = matching[0];
-        const seenKey = 'noticeSeen_' + auth.currentUser.email.toLowerCase();
-        if(localStorage.getItem(seenKey) !== latest.id){
-          openNoticePopup(latest.id, latest.data);
+        const seenKey = 'noticeSeen_v2_' + auth.currentUser.email.toLowerCase();
+        const lastSeen = localStorage.getItem(seenKey);
+        if(lastSeen !== latest.id){
+          // Let the dashboard finish painting first, then open the modal.
+          requestAnimationFrame(() => openNoticePopup(latest.id, latest.data));
         }
       }
     } catch(err){
