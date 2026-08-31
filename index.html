@@ -385,6 +385,12 @@
     display:flex;align-items:center;justify-content:center;z-index:100;
     padding:20px;opacity:0;pointer-events:none;transition:opacity .25s ease;
   }
+  /* Notice popup: strong dimmed backdrop so the announcement is clearly visible. */
+  #notice-popup{z-index:9999;background:rgba(4,12,27,0.82);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);}
+  #notice-popup .popup-card{max-width:520px;border:1px solid rgba(245,166,35,.28);box-shadow:0 24px 80px rgba(0,0,0,.45);}
+  #notice-popup .notice-popup-icon{font-size:42px;margin-bottom:10px;}
+  #notice-popup .notice-popup-message{white-space:pre-wrap;line-height:1.65;text-align:left;color:var(--muted);font-size:15px;}
+
   .popup-overlay.show{opacity:1;pointer-events:auto;}
   .popup-card{
     background:var(--paper);border-radius:16px;max-width:360px;width:100%;
@@ -694,6 +700,10 @@
   .daily-attendance-summary span{padding:6px 10px;border-radius:8px;background:#f7f9fc;font-size:11px;font-weight:700;color:#52627a;}
 </style>
 
+<style id="notice-popup-css-fix">
+#notice-popup{background:rgba(3,8,20,.82)!important;backdrop-filter:blur(9px)!important;-webkit-backdrop-filter:blur(9px)!important;}
+#notice-popup .popup-card{box-shadow:0 28px 90px rgba(0,0,0,.48)!important;}
+</style>
 </head>
 <body>
 
@@ -874,6 +884,17 @@
     <span class="forgot-pw-link" id="forgot-pw-link">Forgot password?</span>
     <button class="btn btn-primary" id="login-submit-btn" style="justify-content:center;">Login</button>
     <div class="login-msg" id="login-msg"></div>
+  </div>
+</div>
+
+<div class="popup-overlay" id="notice-popup" aria-hidden="true">
+  <div class="popup-card">
+    <button class="popup-close" id="notice-popup-close" aria-label="Close notice">✕</button>
+    <div class="notice-popup-icon">📢</div>
+    <div class="popup-badge">Important Notice</div>
+    <h3 id="notice-popup-title">New Notice</h3>
+    <p id="notice-popup-message" class="notice-popup-message"></p>
+    <button class="btn btn-primary" id="notice-popup-ok" style="justify-content:center;width:100%;">Got it</button>
   </div>
 </div>
 
@@ -1499,7 +1520,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB3fzWzwiTxHJi1M3OQI3hgZJpi6lq-eww",
@@ -1659,7 +1680,7 @@
   onAuthStateChanged(auth, async (user) => {
     if(user){
       isLoggedIn = true;
-      await loadStudentDashboard(user.email);
+      await loadStudentDashboard((user.email || '').trim().toLowerCase());
       await loadNotices();
       await loadHomework();
       studentLoginBtn.textContent = 'Logout';
@@ -1670,7 +1691,7 @@
       if(dashboardAutoRefreshTimer) clearInterval(dashboardAutoRefreshTimer);
       dashboardAutoRefreshTimer = setInterval(async () => {
         if(auth.currentUser && document.visibilityState !== 'hidden'){
-          await loadStudentDashboard(auth.currentUser.email);
+          await loadStudentDashboard((auth.currentUser.email || '').trim().toLowerCase());
         }
       }, 10000);
 
@@ -1687,7 +1708,7 @@
     if(auth.currentUser){
       const btn = document.getElementById('dash-refresh-btn');
       btn.textContent = 'Refreshing...';
-      await loadStudentDashboard(auth.currentUser.email);
+      await loadStudentDashboard((auth.currentUser.email || '').trim().toLowerCase());
       await loadNotices();
       await loadHomework();
       btn.textContent = '↻ Refresh';
@@ -1701,40 +1722,99 @@
     return data.targetBatch === currentStudentBatchName;
   }
 
+  function noticeMatchesCurrentStudent(data){
+    if(!auth.currentUser) return false;
+    if(!data.targetClass) return true;
+    if(String(data.targetClass) !== String(currentStudentClass)) return false;
+    if(!data.targetBatch) return true;
+    return String(data.targetBatch) === String(currentStudentBatchName);
+  }
+
+  function closeNoticePopup(markSeen=true){
+    const popup=document.getElementById('notice-popup');
+    if(markSeen && auth.currentUser && popup.dataset.noticeId){
+      localStorage.setItem('noticeSeen_'+auth.currentUser.email.toLowerCase(), popup.dataset.noticeId);
+    }
+    popup.classList.remove('show');
+    popup.setAttribute('aria-hidden','true');
+  }
+
   async function loadNotices(){
     const box = document.getElementById('dash-notices');
     try{
-      const q = query(collection(db, "notices"), orderBy("createdAt", "desc"), limit(15));
+      if(!auth.currentUser || !currentStudentClass){ box.innerHTML = ''; return; }
+      const email = auth.currentUser.email.toLowerCase();
+      const q = query(collection(db, "notices"), where("recipientEmails", "array-contains", email));
       const snap = await getDocs(q);
       if(snap.empty){ box.innerHTML = ''; return; }
       box.innerHTML = '';
       let shown = 0;
-      snap.forEach(docSnap => {
+      let latestForStudent = null;
+      const docs = snap.docs.slice().sort((a,b) => {
+        const at = a.data().createdAt?.toMillis?.() || 0;
+        const bt = b.data().createdAt?.toMillis?.() || 0;
+        return bt - at;
+      });
+      docs.forEach(docSnap => {
         if(shown >= 3) return;
         const data = docSnap.data();
-        if(!matchesStudentTarget(data)) return;
+        if(!noticeMatchesCurrentStudent(data)) return;
+        if(!latestForStudent) latestForStudent = {id:docSnap.id,data};
         shown++;
         const banner = document.createElement('div');
         banner.className = 'notice-banner';
-        banner.innerHTML = `<div class="notice-banner-title">📢 ${data.title}</div><div class="notice-banner-msg">${data.message}</div>`;
-        box.appendChild(banner);
+        const title = document.createElement('div');
+        title.className = 'notice-banner-title';
+        title.textContent = '📢 ' + (data.title || 'Notice');
+        const msg = document.createElement('div');
+        msg.className = 'notice-banner-msg';
+        msg.textContent = data.message || '';
+        banner.appendChild(title); banner.appendChild(msg); box.appendChild(banner);
       });
+
+      // Popup is ONLY evaluated after Firebase authentication succeeds, so logged-out visitors never see it.
+      if(latestForStudent && auth.currentUser){
+        const seenKey = 'noticeSeen_' + auth.currentUser.email.toLowerCase();
+        const lastSeenId = localStorage.getItem(seenKey);
+        if(lastSeenId !== latestForStudent.id){
+          const data = latestForStudent.data;
+          const popup = document.getElementById('notice-popup');
+          document.getElementById('notice-popup-title').textContent = data.title || 'New Notice';
+          document.getElementById('notice-popup-message').textContent = data.message || '';
+          popup.dataset.noticeId = latestForStudent.id;
+          popup.classList.add('show');
+          popup.setAttribute('aria-hidden','false');
+        }
+      }
     } catch(err){
       box.innerHTML = '';
     }
   }
 
+  document.getElementById('notice-popup-ok').addEventListener('click', () => closeNoticePopup(true));
+  document.getElementById('notice-popup-close').addEventListener('click', () => closeNoticePopup(true));
+  document.getElementById('notice-popup').addEventListener('click', (e) => {
+    if(e.target.id === 'notice-popup') closeNoticePopup(true);
+  });
+
+
   async function loadHomework(){
     const box = document.getElementById('dash-homework');
     if(!box) return;
     try{
-      const q = query(collection(db, "homework"), orderBy("createdAt", "desc"), limit(15));
+      const email = auth.currentUser.email.toLowerCase();
+      const q = query(collection(db, "homework"), where("recipientEmails", "array-contains", email));
       const snap = await getDocs(q);
       if(snap.empty){ box.innerHTML = ''; return; }
       box.innerHTML = '';
       let latestDoc = null;
       let shown = 0;
-      snap.forEach(docSnap => {
+      const docs = snap.docs.slice().sort((a,b) => {
+        const at = a.data().createdAt?.toMillis?.() || 0;
+        const bt = b.data().createdAt?.toMillis?.() || 0;
+        return bt - at;
+      });
+      docs.forEach(docSnap => {
         const data = docSnap.data();
         if(!matchesStudentTarget(data)) return;
         if(!latestDoc){ latestDoc = docSnap; }
