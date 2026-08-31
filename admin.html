@@ -757,16 +757,12 @@
 
 
   function parentWaLink(phone, studentName, dateLabel){
-  let digits = String(phone || '').replace(/\D/g,'');
-  if(digits.length === 10) digits = '91' + digits;
-  if(!digits) return '';
-
-  const text = encodeURIComponent(
-    `Dear Parent, this is to inform you that ${studentName || 'your child'} was marked absent from the class on ${dateLabel}. Kindly check the student dashboard for the attendance details. Regards, Maths Pathshala.`
-  );
-
-  return `https://wa.me/${digits}?text=${text}`;
-}
+    let digits = String(phone || '').replace(/\D/g,'');
+    if(digits.length === 10) digits = '91' + digits;
+    if(!digits) return '';
+    const text = encodeURIComponent(`Hello, this is Maths Pathshala. ${studentName || 'Your child'} was marked absent on ${dateLabel}. Please check the student dashboard for attendance details.`);
+    return `https://wa.me/${digits}?text=${text}`;
+  }
 
   async function loadBulkAttendanceRows(){
     const container = document.getElementById('att-rows-container');
@@ -1899,6 +1895,90 @@
       msgBox.className = 'msg error';
     } finally {
       btn.disabled = false; btn.textContent = 'Send to Batch';
+    }
+  });
+
+  // Assign one common note to every student in a selected class + batch.
+  // Uses the existing students collection and preserves each student's existing notes.
+  document.getElementById('bulk-note-class').addEventListener('change', () => {
+    const cls = document.getElementById('bulk-note-class').value;
+    const batchSelect = document.getElementById('bulk-note-batch');
+    const batchesForClass = batchesCache.filter(b => String(b.class) === String(cls));
+    batchSelect.innerHTML = batchesForClass.length
+      ? '<option value="">Select batch</option>' + batchesForClass.map(b => `<option value="${b.name}">${b.name}</option>`).join('')
+      : '<option value="">No batches for this class yet</option>';
+  });
+
+  document.getElementById('assign-bulk-note-btn').addEventListener('click', async () => {
+    const title = document.getElementById('bulk-note-title').value.trim();
+    const url = document.getElementById('bulk-note-url').value.trim();
+    const cls = document.getElementById('bulk-note-class').value;
+    const batchName = document.getElementById('bulk-note-batch').value;
+    const msgBox = document.getElementById('bulk-note-msg');
+    const btn = document.getElementById('assign-bulk-note-btn');
+
+    if(!title || !url || !cls || !batchName){
+      msgBox.textContent = 'Please enter note title, note path, class and batch.';
+      msgBox.className = 'msg error';
+      return;
+    }
+
+    const matching = allStudentsCache.filter(s =>
+      String(s.data.class || '') === String(cls) &&
+      String(s.data.batchName || '').trim() === String(batchName).trim()
+    );
+
+    if(matching.length === 0){
+      msgBox.textContent = 'No students found in this class + batch.';
+      msgBox.className = 'msg error';
+      return;
+    }
+
+    const note = { title, url };
+    btn.disabled = true;
+    btn.textContent = 'Assigning...';
+    msgBox.textContent = '';
+    msgBox.className = 'msg';
+
+    try{
+      // Firestore writeBatch supports up to 500 writes. Keep a safe margin.
+      for(let start = 0; start < matching.length; start += 450){
+        const chunk = matching.slice(start, start + 450);
+        const wb = writeBatch(db);
+
+        chunk.forEach(s => {
+          const existing = Array.isArray(s.data.notes) ? s.data.notes.slice() : [];
+          const alreadyExists = existing.some(n =>
+            String(n && n.title || '').trim() === title &&
+            String(n && n.url || '').trim() === url
+          );
+          if(!alreadyExists) existing.push(note);
+          wb.set(doc(db, 'students', s.id), { notes: existing }, { merge: true });
+        });
+
+        await wb.commit();
+      }
+
+      // Keep the in-memory cache in sync so any immediate admin-side refresh is correct.
+      matching.forEach(s => {
+        s.data.notes = Array.isArray(s.data.notes) ? s.data.notes.slice() : [];
+        if(!s.data.notes.some(n => String(n && n.title || '').trim() === title && String(n && n.url || '').trim() === url)){
+          s.data.notes.push(note);
+        }
+      });
+
+      msgBox.textContent = `Note assigned successfully to ${matching.length} student(s) in Class ${cls} · ${batchName}.`;
+      msgBox.className = 'msg success';
+      showToast(`Note assigned to ${matching.length} student(s)!`);
+      document.getElementById('bulk-note-title').value = '';
+      document.getElementById('bulk-note-url').value = '';
+      loadStudentList();
+    } catch(err){
+      msgBox.textContent = 'Error assigning note: ' + err.message;
+      msgBox.className = 'msg error';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '+ Assign Note to Batch';
     }
   });
 
