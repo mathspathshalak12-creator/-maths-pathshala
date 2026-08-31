@@ -385,6 +385,12 @@
     display:flex;align-items:center;justify-content:center;z-index:100;
     padding:20px;opacity:0;pointer-events:none;transition:opacity .25s ease;
   }
+  /* Notice popup: strong dimmed backdrop so the announcement is clearly visible. */
+  #notice-popup{z-index:9999;background:rgba(4,12,27,0.82);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);}
+  #notice-popup .popup-card{max-width:520px;border:1px solid rgba(245,166,35,.28);box-shadow:0 24px 80px rgba(0,0,0,.45);}
+  #notice-popup .notice-popup-icon{font-size:42px;margin-bottom:10px;}
+  #notice-popup .notice-popup-message{white-space:pre-wrap;line-height:1.65;text-align:left;color:var(--muted);font-size:15px;}
+
   .popup-overlay.show{opacity:1;pointer-events:auto;}
   .popup-card{
     background:var(--paper);border-radius:16px;max-width:360px;width:100%;
@@ -518,9 +524,6 @@
   }
   .notice-banner-title{font-size:13.5px;font-weight:700;color:var(--amber);}
   .notice-banner-msg{font-size:13px;color:#E4E0D6;margin-top:3px;}
-  .notice-popup-card{max-width:420px;}
-  .notice-popup-icon{font-size:42px;line-height:1;margin-bottom:12px;}
-  .notice-popup-message{white-space:pre-wrap;word-break:break-word;line-height:1.65;}
   .hw-banner{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);border-radius:12px;padding:14px 18px;margin-bottom:8px;backdrop-filter:blur(6px);}
   .hw-banner-title{font-size:13.5px;font-weight:700;color:#fff;}
   .hw-banner-msg{font-size:13px;color:#B9C2D6;margin-top:3px;}
@@ -880,6 +883,17 @@
   </div>
 </div>
 
+<div class="popup-overlay" id="notice-popup" aria-hidden="true">
+  <div class="popup-card">
+    <button class="popup-close" id="notice-popup-close" aria-label="Close notice">✕</button>
+    <div class="notice-popup-icon">📢</div>
+    <div class="popup-badge">Important Notice</div>
+    <h3 id="notice-popup-title">New Notice</h3>
+    <p id="notice-popup-message" class="notice-popup-message"></p>
+    <button class="btn btn-primary" id="notice-popup-ok" style="justify-content:center;width:100%;">Got it</button>
+  </div>
+</div>
+
 <div class="popup-overlay" id="hw-popup">
   <div class="popup-card hw-popup-card">
     <button class="popup-close" id="hw-popup-close" aria-label="Close">✕</button>
@@ -899,17 +913,6 @@
     <h3 id="test-popup-title">Upcoming test</h3>
     <p style="color:var(--muted);font-size:14.5px;margin:12px 0 20px;line-height:1.6;">Make sure you're prepared — revise the chapters covered before this test.</p>
     <button class="btn btn-primary" id="test-popup-ok" style="justify-content:center;width:100%;">Got it, I'll prepare!</button>
-  </div>
-</div>
-
-<div class="popup-overlay" id="notice-popup" aria-hidden="true">
-  <div class="popup-card notice-popup-card">
-    <button class="popup-close" id="notice-popup-close" aria-label="Close notice">✕</button>
-    <div class="notice-popup-icon">📢</div>
-    <div class="popup-badge">Important Notice</div>
-    <h3 id="notice-popup-title">New Notice</h3>
-    <p id="notice-popup-message" class="notice-popup-message"></p>
-    <button class="btn btn-primary" id="notice-popup-ok" style="justify-content:center;width:100%;">Got it</button>
   </div>
 </div>
 
@@ -1513,7 +1516,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB3fzWzwiTxHJi1M3OQI3hgZJpi6lq-eww",
@@ -1708,134 +1711,106 @@
     }
   });
 
-  function normalizeNoticeValue(value){
-    return String(value ?? '').trim().toLowerCase().replace(/\s+/g,' ');
-  }
-
-  function normalizeNoticeClass(value){
-    const v = normalizeNoticeValue(value);
-    if(!v) return '';
-    const m = v.match(/\b(9|10|11|12)\b/);
-    return m ? m[1] : v.replace(/^class\s*/,'').replace(/(?:st|nd|rd|th)\b/,'').trim();
-  }
-
   function matchesStudentTarget(data){
-    // Admin stores the selected class/batch in targetClass/targetBatch.
-    // recipientEmails is also stored, so support it as a safe fallback for
-    // older notices whose targeting fields may be blank/inconsistent.
-    const targetClass = normalizeNoticeClass(data.targetClass);
-    const studentClass = normalizeNoticeClass(currentStudentClass);
-    const targetBatch = normalizeNoticeValue(data.targetBatch);
-    const studentBatch = normalizeNoticeValue(currentStudentBatchName);
-    const email = normalizeNoticeValue(auth.currentUser?.email);
-    const recipients = Array.isArray(data.recipientEmails)
-      ? data.recipientEmails.map(normalizeNoticeValue).filter(Boolean)
-      : [];
-
-    if(recipients.length && email && recipients.includes(email)) return true;
-    if(!targetClass) return true;
-    if(!studentClass || targetClass !== studentClass) return false;
-    if(!targetBatch) return true;
-    return !!studentBatch && targetBatch === studentBatch;
+    if(!data.targetClass){ return true; }
+    if(data.targetClass !== currentStudentClass){ return false; }
+    if(!data.targetBatch){ return true; }
+    return data.targetBatch === currentStudentBatchName;
   }
 
-  function closeNoticePopup(markSeen = true){
-    const popup = document.getElementById('notice-popup');
-    if(!popup) return;
+  function noticeMatchesCurrentStudent(data){
+    if(!auth.currentUser) return false;
+    if(!data.targetClass) return true;
+    if(String(data.targetClass) !== String(currentStudentClass)) return false;
+    if(!data.targetBatch) return true;
+    return String(data.targetBatch) === String(currentStudentBatchName);
+  }
+
+  function closeNoticePopup(markSeen=true){
+    const popup=document.getElementById('notice-popup');
     if(markSeen && auth.currentUser && popup.dataset.noticeId){
-      localStorage.setItem('noticeSeen_v2_' + auth.currentUser.email.toLowerCase(), popup.dataset.noticeId);
+      localStorage.setItem('noticeSeen_v3_'+auth.currentUser.email.toLowerCase(), popup.dataset.noticeId);
     }
     popup.classList.remove('show');
     popup.setAttribute('aria-hidden','true');
   }
 
-  function openNoticePopup(noticeId, data){
-    const popup = document.getElementById('notice-popup');
-    const title = document.getElementById('notice-popup-title');
-    const message = document.getElementById('notice-popup-message');
-    if(!popup || !title || !message) return;
-    popup.dataset.noticeId = noticeId;
-    title.textContent = data.title || 'New Notice';
-    message.textContent = data.message || '';
-    popup.classList.add('show');
-    popup.setAttribute('aria-hidden','false');
-  }
-
   async function loadNotices(){
     const box = document.getElementById('dash-notices');
-    if(!box) return;
     try{
-      if(!auth.currentUser){ box.innerHTML = ''; return; }
-
-      // Read directly and sort locally so notices do not depend on a Firestore index.
-      const snap = await getDocs(collection(db, 'notices'));
+      if(!auth.currentUser || !currentStudentClass){ box.innerHTML = ''; return; }
+      const email = auth.currentUser.email.toLowerCase();
+      const q = query(collection(db, "notices"), where("recipientEmails", "array-contains", email));
+      const snap = await getDocs(q);
       if(snap.empty){ box.innerHTML = ''; return; }
-
-      const matching = snap.docs
-        .map(docSnap => ({ id: docSnap.id, data: docSnap.data() || {} }))
-        .filter(item => matchesStudentTarget(item.data))
-        .sort((a,b) => {
-          const dateValue = value => {
-            if(value?.toMillis) return value.toMillis();
-            if(value instanceof Date) return value.getTime();
-            const n = Number(value);
-            if(Number.isFinite(n) && n > 0) return n;
-            const t = Date.parse(value);
-            return Number.isFinite(t) ? t : 0;
-          };
-          return dateValue(b.data.createdAt) - dateValue(a.data.createdAt);
-        });
-
       box.innerHTML = '';
-      matching.slice(0,3).forEach(item => {
+      let shown = 0;
+      let latestForStudent = null;
+      const docs = snap.docs.slice().sort((a,b) => {
+        const at = a.data().createdAt?.toMillis?.() || 0;
+        const bt = b.data().createdAt?.toMillis?.() || 0;
+        return bt - at;
+      });
+      docs.forEach(docSnap => {
+        if(shown >= 3) return;
+        const data = docSnap.data();
+        if(!noticeMatchesCurrentStudent(data)) return;
+        if(!latestForStudent) latestForStudent = {id:docSnap.id,data};
+        shown++;
         const banner = document.createElement('div');
         banner.className = 'notice-banner';
         const title = document.createElement('div');
         title.className = 'notice-banner-title';
-        title.textContent = '📢 ' + (item.data.title || 'Notice');
+        title.textContent = '📢 ' + (data.title || 'Notice');
         const msg = document.createElement('div');
         msg.className = 'notice-banner-msg';
-        msg.textContent = item.data.message || '';
-        banner.appendChild(title);
-        banner.appendChild(msg);
-        box.appendChild(banner);
+        msg.textContent = data.message || '';
+        banner.appendChild(title); banner.appendChild(msg); box.appendChild(banner);
       });
 
-      // Always prepare the latest matching notice for the popup. A versioned
-      // seen-key prevents an old localStorage value from suppressing the
-      // first working popup after this fix. New notices naturally get a new id.
-      if(matching.length && auth.currentUser){
-        const latest = matching[0];
-        const seenKey = 'noticeSeen_v2_' + auth.currentUser.email.toLowerCase();
-        const lastSeen = localStorage.getItem(seenKey);
-        if(lastSeen !== latest.id){
-          // Let the dashboard finish painting first, then open the modal.
-          requestAnimationFrame(() => openNoticePopup(latest.id, latest.data));
+      // Popup is ONLY evaluated after Firebase authentication succeeds, so logged-out visitors never see it.
+      if(latestForStudent && auth.currentUser){
+        const seenKey = 'noticeSeen_v3_' + auth.currentUser.email.toLowerCase();
+        const lastSeenId = localStorage.getItem(seenKey);
+        if(lastSeenId !== latestForStudent.id){
+          const data = latestForStudent.data;
+          const popup = document.getElementById('notice-popup');
+          document.getElementById('notice-popup-title').textContent = data.title || 'New Notice';
+          document.getElementById('notice-popup-message').textContent = data.message || '';
+          popup.dataset.noticeId = latestForStudent.id;
+          popup.classList.add('show');
+          popup.setAttribute('aria-hidden','false');
         }
       }
     } catch(err){
-      console.error('Notice loading failed:', err);
       box.innerHTML = '';
     }
   }
 
-  document.getElementById('notice-popup-ok')?.addEventListener('click', () => closeNoticePopup(true));
-  document.getElementById('notice-popup-close')?.addEventListener('click', () => closeNoticePopup(true));
-  document.getElementById('notice-popup')?.addEventListener('click', e => {
+  document.getElementById('notice-popup-ok').addEventListener('click', () => closeNoticePopup(true));
+  document.getElementById('notice-popup-close').addEventListener('click', () => closeNoticePopup(true));
+  document.getElementById('notice-popup').addEventListener('click', (e) => {
     if(e.target.id === 'notice-popup') closeNoticePopup(true);
   });
+
 
   async function loadHomework(){
     const box = document.getElementById('dash-homework');
     if(!box) return;
     try{
-      const q = query(collection(db, "homework"), orderBy("createdAt", "desc"), limit(15));
+      const email = auth.currentUser.email.toLowerCase();
+      const q = query(collection(db, "homework"), where("recipientEmails", "array-contains", email));
       const snap = await getDocs(q);
       if(snap.empty){ box.innerHTML = ''; return; }
       box.innerHTML = '';
       let latestDoc = null;
       let shown = 0;
-      snap.forEach(docSnap => {
+      const docs = snap.docs.slice().sort((a,b) => {
+        const at = a.data().createdAt?.toMillis?.() || 0;
+        const bt = b.data().createdAt?.toMillis?.() || 0;
+        return bt - at;
+      });
+      docs.forEach(docSnap => {
         const data = docSnap.data();
         if(!matchesStudentTarget(data)) return;
         if(!latestDoc){ latestDoc = docSnap; }
