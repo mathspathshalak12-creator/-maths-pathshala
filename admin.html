@@ -760,7 +760,7 @@
     let digits = String(phone || '').replace(/\D/g,'');
     if(digits.length === 10) digits = '91' + digits;
     if(!digits) return '';
-    const text = encodeURIComponent(`Hello, this is Maths Pathshala. ${studentName || 'Your child'} was marked absent on ${dateLabel}. Please check the student dashboard for attendance details.`);
+    const text = encodeURIComponent(Dear Parent, this is to inform you that ${studentName || 'your child'} was marked absent from the class on ${dateLabel}. Kindly check the student dashboard for the attendance details. Regards, Maths Pathshala.);
     return `https://wa.me/${digits}?text=${text}`;
   }
 
