@@ -211,7 +211,7 @@
   <div id="login-screen" class="card">
     <h2>Admin Login</h2>
     <label>Email</label>
-    <input type="email" id="admin-email" placeholder="admin@example.com">
+    <input type="email" id="admin-email" value="mathspathshala.k12@gmail.com" readonly autocomplete="username">
     <label>Password</label>
     <input type="password" id="admin-password" placeholder="Password">
     <button class="btn" id="admin-login-btn">Login</button>
@@ -228,7 +228,6 @@
         <a href="#attendance-section">Attendance</a>
         <a href="#fees-section">Fees</a>
         <a href="#communication-section">Student Updates</a>
-        <a href="#homework-section">Homework</a>
         <a href="#branding-section">Branding</a>
       </nav>
       <div class="sidebar-note">Primary focus: <b>Offline coaching</b><br>Class 9–10: PCM · Class 11–12: Mathematics<br>Home tuition: Class 3–8 all subjects · Class 9–12 Mathematics</div>
@@ -402,33 +401,6 @@
       <button class="btn" id="post-notice-btn">Post Notice</button>
       <div id="notices-list" style="margin-top:18px;"></div>
     </div>
-
-    <div class="card" id="homework-section">
-      <h2>Post Homework</h2>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Post homework for everyone, or target one class / batch. It shows on the student portal and as a popup.</p>
-      <label>Send to</label>
-      <div class="row2">
-        <select id="homework-target-class">
-          <option value="">All classes</option>
-          <option value="9">Class 9</option>
-          <option value="10">Class 10</option>
-          <option value="11">Class 11</option>
-          <option value="12">Class 12</option>
-        </select>
-        <select id="homework-target-batch">
-          <option value="">All batches</option>
-        </select>
-      </div>
-      <label>Title</label>
-      <input type="text" id="homework-title" placeholder="e.g. Chapter 5 — Exercise 5.2">
-      <label>Details</label>
-      <input type="text" id="homework-details" placeholder="e.g. Solve Q1-10, submit by next class.">
-      <label>Due date (optional)</label>
-      <input type="date" id="homework-due-date">
-      <button class="btn" id="post-homework-btn">+ Post Homework</button>
-      <div class="msg" id="homework-msg"></div>
-      <div id="homework-admin-list" style="margin-top:18px;"></div>
-    </div>
 <div class="card">
       <div class="att-header">
         <h2 style="margin:0;">Attendance Management</h2>
@@ -568,6 +540,21 @@
       <button class="btn btn-secondary btn-small" id="add-note-btn">+ Add note</button>
       <div id="notes-preview"></div>
 
+      <div class="card" style="margin-top:14px;background:var(--cream);border:1px solid var(--line);">
+        <h3 style="margin:0 0 8px;color:var(--navy);">Assign one note to a whole batch</h3>
+        <p style="font-size:12px;color:var(--muted);margin:0 0 12px;">Enter the common PDF path once. Every student in the selected class/batch will receive the same note.</p>
+        <div class="row2">
+          <input type="text" id="bulk-note-title" placeholder="Chapter title, e.g. Quadratic Equations">
+          <input type="text" id="bulk-note-url" placeholder="notes/class10-maths-04-quadratic-equations.pdf">
+        </div>
+        <div class="row2" style="margin-top:10px;">
+          <select id="bulk-note-class"><option value="">Select class</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select>
+          <select id="bulk-note-batch"><option value="">Select batch</option></select>
+        </div>
+        <button class="btn btn-secondary btn-small" id="assign-bulk-note-btn" style="margin-top:10px;">+ Assign Note to Batch</button>
+        <div id="bulk-note-msg" class="msg" style="margin-top:8px;"></div>
+      </div>
+
       <label>Add a test score</label>
       <div class="row2">
         <input type="text" id="f-test-name" placeholder="e.g. Unit Test 1 - Trigonometry">
@@ -679,6 +666,13 @@
   let currentMonthlyFees = [];
   let batchesCache = [];
 
+  // SECURITY: this panel is exclusively for the single owner/admin account.
+  // Students may have Firebase accounts, but they are never allowed into this page.
+  const ADMIN_EMAIL = 'mathspathshala.k12@gmail.com';
+  function isAuthorizedAdmin(user){
+    return !!user && (user.email || '').trim().toLowerCase() === ADMIN_EMAIL;
+  }
+
   document.getElementById('admin-login-btn').addEventListener('click', () => {
     const email = document.getElementById('admin-email').value.trim();
     const password = document.getElementById('admin-password').value;
@@ -694,7 +688,16 @@
   });
 
   onAuthStateChanged(auth, async (user) => {
-    if(user){
+    if(user && !isAuthorizedAdmin(user)){
+      // Authentication alone is NOT admin authorization. Immediately revoke this session.
+      await signOut(auth);
+      loginScreen.style.display = 'block';
+      adminScreen.style.display = 'none';
+      loginMsg.textContent = 'Access denied — this account is not authorized for the Admin Panel.';
+      loginMsg.className = 'msg error';
+      return;
+    }
+    if(user && isAuthorizedAdmin(user)){
       loginScreen.style.display = 'none';
       adminScreen.style.display = 'grid';
       const todayStr = new Date().toISOString().split('T')[0];
@@ -707,7 +710,7 @@
       loadBulkAttendanceRows();
       loadNotices();
       loadBranding();
-      loadHomeworkAdminList();
+
     } else {
       loginScreen.style.display = 'block';
       adminScreen.style.display = 'none';
@@ -1691,6 +1694,11 @@
       list.innerHTML = '';
       snap.forEach(docSnap => {
         const data = docSnap.data();
+        // Backfill recipient lists for older notices once the admin opens the notice manager.
+        if(!Array.isArray(data.recipientEmails)){
+          const recipients = getTargetEmails(data.targetClass || '', data.targetBatch || '').map(e => String(e).toLowerCase());
+          setDoc(doc(db, 'notices', docSnap.id), { recipientEmails: recipients }, { merge:true }).catch(()=>{});
+        }
         const dateStr = data.createdAt ? data.createdAt.toDate().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : '';
         const targetStr = data.targetClass
           ? `Class ${data.targetClass}${data.targetBatch ? ' · ' + data.targetBatch : ' (all batches)'}`
@@ -1729,7 +1737,7 @@
     const btn = document.getElementById('post-notice-btn');
     btn.disabled = true; btn.textContent = 'Posting...';
     try{
-      await addDoc(collection(db, "notices"), { title, message, targetClass, targetBatch, createdAt: serverTimestamp() });
+      await addDoc(collection(db, "notices"), { title, message, targetClass, targetBatch, recipientEmails: getTargetEmails(targetClass, targetBatch).map(e => String(e).toLowerCase()), createdAt: serverTimestamp() });
       document.getElementById('notice-title').value = '';
       document.getElementById('notice-message').value = '';
       showToast('Notice posted!');
@@ -2108,6 +2116,7 @@
           targetClass,
           targetBatch,
           dueDate,
+          recipientEmails: getTargetEmails(targetClass, targetBatch).map(e => String(e).toLowerCase()),
           createdAt: serverTimestamp()
         });
 
