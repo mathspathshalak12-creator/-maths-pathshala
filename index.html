@@ -701,7 +701,28 @@
 </style>
 
 </head>
+
+<style id="mp-admission-slider-style">
+.mp-admission-slider{position:relative;z-index:1000;height:46px;background:linear-gradient(90deg,#071a35,#102f5b,#071a35);color:#fff;overflow:hidden;border-bottom:1px solid rgba(245,166,35,.35);}
+.mp-admission-track{height:100%;display:flex;align-items:center;justify-content:center;gap:28px;white-space:nowrap;animation:mpAdmissionPulse 2.8s ease-in-out infinite;}
+.mp-admission-slide{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:800;letter-spacing:.035em;}
+.mp-admission-slide .mp-dot{width:8px;height:8px;border-radius:50%;background:#f5a623;box-shadow:0 0 0 5px rgba(245,166,35,.12);animation:mpDot 1.3s ease-in-out infinite;}
+.mp-admission-slide .mp-highlight{color:#f5c66d;}
+.mp-admission-slide .mp-urgent{background:#f5a623;color:#071a35;padding:6px 11px;border-radius:999px;font-size:11px;letter-spacing:.06em;}
+@keyframes mpAdmissionPulse{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-2px);opacity:.92}}
+@keyframes mpDot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.7);opacity:.55}}
+@media(max-width:600px){.mp-admission-slider{height:42px}.mp-admission-track{gap:14px;animation:none}.mp-admission-slide{font-size:11px;gap:7px}.mp-admission-slide:nth-child(2){display:none}.mp-admission-slide .mp-urgent{font-size:9px;padding:5px 8px}}
+@media(prefers-reduced-motion:reduce){.mp-admission-track,.mp-admission-slide .mp-dot{animation:none}}
+</style>
+
 <body>
+<div class="mp-admission-slider" role="region" aria-label="Admission announcement">
+  <div class="mp-admission-track">
+    <div class="mp-admission-slide"><span class="mp-dot"></span><span>Admissions <span class="mp-highlight">OPEN</span></span><span>•</span><span>Class 9–10 PCM &amp; Class 11–12 Mathematics</span></div>
+    <div class="mp-admission-slide"><span class="mp-urgent">HURRY UP</span><span>Limited Seats Available</span><span>•</span><span>Enquire Now</span></div>
+  </div>
+</div>
+
 
 <div id="student-dashboard">
   <div class="wrap">
