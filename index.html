@@ -277,22 +277,41 @@
   .why-item h4{font-size:15px;font-weight:600;margin-bottom:6px;}
   .why-item p{font-size:13.5px;color:var(--muted);}
 
-  /* BATCH / SEATS SIGNATURE */
+  /* BATCH / SEATS SIGNATURE — PW-style launch cards */
+  .batch-marquee-wrap{overflow:hidden;background:var(--navy);border-radius:10px;margin-bottom:24px;}
+  .batch-marquee-track{display:flex;white-space:nowrap;padding:9px 0;animation:batchMarquee 18s linear infinite;}
+  .batch-marquee-track span{padding:0 22px;font-size:12px;font-weight:700;color:var(--amber);letter-spacing:.03em;text-transform:uppercase;}
+  @keyframes batchMarquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  @media(prefers-reduced-motion:reduce){.batch-marquee-track{animation:none;}}
+
   .batch-cards-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
   @media(max-width:700px){.batch-cards-grid{grid-template-columns:1fr;}}
   .batch-card{
-    background:var(--navy);color:#fff;border-radius:14px;padding:26px 28px;
+    background:var(--paper);color:var(--navy);border-radius:14px;border:1px solid var(--line);overflow:hidden;position:relative;
   }
-  .batch-card-class{font-size:12px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.04em;}
-  .batch-card-name{font-size:20px;font-weight:700;margin:4px 0 14px;}
-  .seats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
-  .seat{
-    width:28px;height:28px;border-radius:50%;border:2px solid var(--amber);
-    display:flex;align-items:center;justify-content:center;
-  }
-  .seat.filled{background:var(--amber);}
-  .seats-label{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--amber);letter-spacing:.02em;}
-  .seats-label.full{color:#F0938C;}
+  .batch-card-launch{border:2px solid var(--amber);}
+  .batch-card-featured-pill{position:absolute;top:12px;right:12px;background:var(--amber);color:var(--navy);font-size:10.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;padding:4px 12px;border-radius:20px;z-index:1;}
+  .batch-card-banner{background:linear-gradient(135deg,#FDF0DA,#F5D9A0);padding:14px 18px 0;}
+  .batch-card-plans{font-size:11px;font-weight:700;color:var(--amber-dark);}
+  .batch-card-photo{height:78px;margin-top:10px;border-radius:8px 8px 0 0;background:var(--navy);display:flex;align-items:center;justify-content:center;color:#9FB0CC;font-size:12px;font-weight:600;letter-spacing:.02em;}
+  .batch-card-body{padding:20px 22px 22px;}
+  .batch-card-toprow{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .batch-card-class{font-size:12px;font-weight:700;color:var(--amber-dark);text-transform:uppercase;letter-spacing:.04em;}
+  .batch-card-mode{font-size:11px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:2px 10px;}
+  .batch-card-name{font-size:18px;font-weight:700;margin:0 0 10px;}
+  .batch-card-meta{font-size:13.5px;color:var(--muted);display:flex;gap:6px;align-items:flex-start;margin-bottom:4px;}
+  .batch-card-price-row{display:flex;align-items:baseline;gap:8px;margin:14px 0 16px;flex-wrap:wrap;}
+  .batch-card-price{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;}
+  .batch-card-price-old{font-size:13.5px;color:var(--muted);text-decoration:line-through;}
+  .batch-card-off{font-size:12px;font-weight:700;color:#1E7A46;}
+  .batch-card-ctas{display:flex;gap:10px;}
+  .batch-card-cta{flex:1;background:var(--navy);color:#fff;border:none;border-radius:8px;padding:12px;font-size:13.5px;font-weight:700;cursor:pointer;text-align:center;}
+  .batch-card-launch .batch-card-cta{background:var(--amber);color:var(--navy);}
+  .batch-card-arrow{width:42px;flex-shrink:0;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--navy);cursor:pointer;font-size:16px;transition:transform .2s ease;}
+  .batch-card-arrow.open{transform:rotate(90deg);}
+  .batch-card-details{max-height:0;overflow:hidden;transition:max-height .3s ease;font-size:13.5px;color:var(--muted);line-height:1.7;}
+  .batch-card-details.open{max-height:320px;margin-top:14px;overflow-y:auto;}
+  .batch-card-seats{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--amber-dark);letter-spacing:.02em;margin-top:14px;}
 
   /* REGISTER */
   .register-box{
@@ -665,6 +684,20 @@
   .batch-card{border-radius:20px;background:linear-gradient(145deg,#081b37 0%,#17396b 100%);box-shadow:0 18px 35px rgba(11,30,61,.18);}
   .register-box{border-radius:24px;background:radial-gradient(circle at 92% 6%,rgba(245,166,35,.17),transparent 15rem),#fff;padding:56px 44px;}
   .trust-strip{background:rgba(255,255,255,.7);border-color:rgba(11,30,61,.08);}
+
+  /* LIVE STATS — scroll count-up */
+  .live-stats{padding:56px 0;}
+  .live-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media(max-width:800px){.live-stats-grid{grid-template-columns:1fr;}}
+  .stat-card{background:var(--navy);color:#fff;border-radius:16px;padding:30px 26px;text-align:center;position:relative;overflow:hidden;}
+  .stat-card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 0%,rgba(245,166,35,.16),transparent 55%);pointer-events:none;}
+  .stat-card-num{font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:700;color:var(--amber);position:relative;z-index:1;}
+  .stat-card-label{font-size:14px;color:#D7E0EE;margin-top:8px;position:relative;z-index:1;}
+
+  /* SCROLL REVEAL */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in-view{opacity:1;transform:translateY(0);}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none;}}
   footer{background:linear-gradient(145deg,#06152c,#102d57);}
   .wa-float{box-shadow:0 12px 28px rgba(0,0,0,.25);}
   @media(max-width:720px){.hero{min-height:auto;padding-top:72px;padding-bottom:62px;}.hero-meta{width:100%;}.hero-meta div{flex:1;min-width:0;padding:13px;}.hero:after{display:none;}section{padding:72px 0;}.register-box{padding:38px 22px;}}
@@ -837,7 +870,7 @@
   </div>
 </div>
 
-<div class="admission-ribbon" aria-label="Admissions announcement"><div class="admission-ribbon-track"><span>🎓 ADMISSIONS OPEN 2026–27</span><b>•</b><span>Class 9–10 PCM</span><b>•</b><span>Class 11–12 Mathematics</span><b>•</b><span>Small Batches</span><b>•</b><span>Limited Batch Size</span><b>•</b><span>Enquire Now ↓</span></div></div>
+<div class="admission-ribbon" aria-label="Admissions announcement"><div class="admission-ribbon-track"><span>🎓 ADMISSIONS OPEN 2026–27</span><b>•</b><span>Class 9–10 PCM</span><b>•</b><span>Class 11–12 Mathematics</span><b>•</b><span>Small Batches</span><b>•</b><span>Limited Batch Size</span><b>•</b><span>Enquire Now ↓</span><b>•</b><span aria-hidden="true">🎓 ADMISSIONS OPEN 2026–27</span><b aria-hidden="true">•</b><span aria-hidden="true">Class 9–10 PCM</span><b aria-hidden="true">•</b><span aria-hidden="true">Class 11–12 Mathematics</span><b aria-hidden="true">•</b><span aria-hidden="true">Small Batches</span><b aria-hidden="true">•</b><span aria-hidden="true">Limited Batch Size</span><b aria-hidden="true">•</b><span aria-hidden="true">Enquire Now ↓</span><b aria-hidden="true">•</b></div></div>
 
 <header>
   <nav>
@@ -958,6 +991,16 @@
     <span><span class="dot"></span>CBSE · ICSE · UP Board</span>
   </div>
 </div>
+
+<section class="live-stats">
+  <div class="wrap">
+    <div class="live-stats-grid">
+      <div class="stat-card reveal"><div class="stat-card-num" data-count-to="200" data-suffix="+">0</div><div class="stat-card-label">Students taught</div></div>
+      <div class="stat-card reveal"><div class="stat-card-num" data-count-to="100" data-suffix="+">0</div><div class="stat-card-label">Home tuition teachers provided across Kanpur</div></div>
+      <div class="stat-card reveal"><div class="stat-card-num" data-count-to="95" data-suffix="%+">0</div><div class="stat-card-label">Scored by multiple students in Mathematics</div></div>
+    </div>
+  </div>
+</section>
 
 <section class="home-tuition-banner">
   <div class="wrap">
@@ -1344,6 +1387,11 @@
       <h2>Small batches. Serious attention.</h2>
       <p>Every batch is intentionally kept small so students get direct attention, active doubt support and a better classroom experience. Current batch names are shown below.</p>
     </div>
+    <div class="batch-marquee-wrap" aria-hidden="true">
+      <div class="batch-marquee-track">
+        <span>🎓 ADMISSIONS OPEN 2026–27</span><span>LIMITED SEATS</span><span>HURRY UP</span><span>SMALL BATCHES ONLY</span><span>🎓 ADMISSIONS OPEN 2026–27</span><span>LIMITED SEATS</span><span>HURRY UP</span><span>SMALL BATCHES ONLY</span>
+      </div>
+    </div>
     <div class="batch-cards-grid" id="batch-cards-grid">
       <div style="color:var(--muted);font-size:14px;">Loading batches...</div>
     </div>
@@ -1633,21 +1681,95 @@
       grid.innerHTML = '<div style="color:var(--muted);font-size:14px;">New batch details will appear here soon. Call or WhatsApp us for current admissions.</div>';
       return;
     }
-    grid.innerHTML = batchStats.map(b => {
+    grid.innerHTML = batchStats.map((b, i) => {
       const hasOffer = Number(b.baseFee) > 0 && Number(b.offerPercent) > 0;
       const launch = b.launchActive;
       const price = Number(b.launchPrice || b.baseFee || 0);
+      const intro = b.intro || 'A focused offline coaching batch with structured teaching, regular practice and personal doubt support.';
+      const waMsg = encodeURIComponent(`Hi, I want to enquire about the ${b.name || 'batch'} batch (Class ${b.class || ''}).`);
       return `<div class="batch-card ${launch?'batch-card-launch':''}">
-        <div class="batch-card-class">Class ${b.class}</div>
-        ${launch ? '<div class="batch-launch-pill">🚀 New launch</div>' : ''}
-        <div class="batch-card-name">${b.name}</div>
-        <p style="font-size:13.5px;color:#D7E0EE;line-height:1.65;margin:8px 0 16px;">${b.intro || 'A focused offline coaching batch with structured teaching, regular practice and personal doubt support.'}</p>
-        ${hasOffer ? `<div class="public-offer-price"><span>Launch offer</span><strong>₹${price.toLocaleString('en-IN')}</strong><s>₹${Number(b.baseFee).toLocaleString('en-IN')}</s><em>${b.offerPercent}% OFF</em></div>` : ''}
-        <div class="seats-label">🔥 Limited admissions · Enroll early</div>
+        ${launch ? '<div class="batch-card-featured-pill">🚀 New launch</div>' : ''}
+        <div class="batch-card-banner">
+          <span class="batch-card-plans">Offline · Small batch</span>
+          <div class="batch-card-photo"${b.photoUrl ? ` style="background-image:url('${b.photoUrl}');background-size:cover;background-position:center;color:transparent;"` : ''}>${b.photoUrl ? '' : 'Maths Pathshala'}</div>
+        </div>
+        <div class="batch-card-body">
+          <div class="batch-card-toprow">
+            <span class="batch-card-class">Class ${b.class || ''}</span>
+            <span class="batch-card-mode">Offline</span>
+          </div>
+          <div class="batch-card-name">${b.name}</div>
+          ${b.timing ? `<div class="batch-card-meta"><span>—</span><span>${b.timing}</span></div>` : ''}
+          ${hasOffer ? `<div class="batch-card-price-row">
+            <span class="batch-card-price">₹${price.toLocaleString('en-IN')}</span>
+            <span class="batch-card-price-old">₹${Number(b.baseFee).toLocaleString('en-IN')}</span>
+            <span class="batch-card-off">${b.offerPercent}% off</span>
+          </div>` : '<div class="batch-card-price-row"><span class="batch-card-meta" style="margin:0;">Fee discussed personally</span></div>'}
+          <div class="batch-card-ctas">
+            <a class="batch-card-cta" href="https://wa.me/${WA_NUMBER}?text=${waMsg}" target="_blank">${launch ? 'Enroll now' : 'Enquire now'}</a>
+            <button class="batch-card-arrow" type="button" data-batch-toggle="${i}" aria-label="View details" aria-expanded="false">›</button>
+          </div>
+          <div class="batch-card-details" id="batch-detail-${i}">${
+            Array.isArray(b.details) && b.details.length
+              ? `<ul style="list-style:none;margin:0;padding:0;">${b.details.map(d => `<li style="padding:6px 0;border-top:1px solid var(--line);display:flex;gap:8px;"><span style="color:var(--amber-dark);flex-shrink:0;">—</span><span>${d}</span></li>`).join('')}</ul>`
+              : intro
+          }</div>
+          <div class="batch-card-seats">🔥 Limited admissions · Enroll early</div>
+        </div>
       </div>`;
     }).join('');
+    grid.querySelectorAll('[data-batch-toggle]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const detail = document.getElementById('batch-detail-' + btn.dataset.batchToggle);
+        const open = detail.classList.toggle('open');
+        btn.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    });
   }
   loadBatchCardsGrid();
+
+  // Scroll-reveal: fade + slide up cards/sections as they enter the viewport
+  document.querySelectorAll('.service-card, .prog-card, .why-item, .t-card, .price-card, .batch-card, .class-detail, .tutor-card').forEach(el => el.classList.add('reveal'));
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, idx) => {
+      if(entry.isIntersecting){
+        setTimeout(() => entry.target.classList.add('in-view'), (idx % 6) * 70);
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  // Re-observe batch cards after they load asynchronously from Firestore
+  const batchGridObserver = new MutationObserver(() => {
+    document.querySelectorAll('#batch-cards-grid .batch-card:not(.reveal)').forEach(el => {
+      el.classList.add('reveal');
+      revealObserver.observe(el);
+    });
+  });
+  const batchGridEl = document.getElementById('batch-cards-grid');
+  if(batchGridEl) batchGridObserver.observe(batchGridEl, { childList: true });
+
+  // Live count-up stat cards
+  const statObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = Number(el.dataset.countTo) || 0;
+      const suffix = el.dataset.suffix || '';
+      const duration = 1400;
+      const start = performance.now();
+      function tick(now){
+        const progress = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(target * eased) + suffix;
+        if(progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+      statObserver.unobserve(el);
+    });
+  }, { threshold: 0.4 });
+  document.querySelectorAll('.stat-card-num').forEach(el => statObserver.observe(el));
 
   let isLoggedIn = false;
   let currentStudentClass = null;
@@ -2202,9 +2324,9 @@
 
   /* ===== CONVERSION-FOCUSED HERO ===== */
   .admission-ribbon{position:relative;z-index:70;overflow:hidden;background:var(--navy);color:#fff;border-bottom:1px solid rgba(245,166,35,.45);white-space:nowrap;}
-  .admission-ribbon-track{display:flex;align-items:center;justify-content:center;gap:18px;min-height:38px;padding:7px 20px;font-size:11.5px;font-weight:700;letter-spacing:.045em;text-transform:uppercase;animation:ribbonFloat 22s linear infinite;}
+  .admission-ribbon-track{display:flex;align-items:center;gap:18px;min-height:38px;padding:7px 20px;font-size:11.5px;font-weight:700;letter-spacing:.045em;text-transform:uppercase;width:max-content;animation:ribbonScroll 20s linear infinite;}
   .admission-ribbon b{color:var(--amber);font-size:14px;}
-  @keyframes ribbonFloat{0%{transform:translateX(0)}50%{transform:translateX(-12px)}100%{transform:translateX(0)}}
+  @keyframes ribbonScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
   .conversion-hero{padding:72px 24px 78px;background:radial-gradient(circle at 78% 25%,rgba(245,166,35,.18),transparent 24rem),linear-gradient(135deg,#fffdf8 0%,#f7f3e9 100%);}
   .conversion-hero-inner{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(340px,.65fr);gap:58px;align-items:center;}
   .hero-copy{min-width:0;}
