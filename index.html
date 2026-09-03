@@ -878,6 +878,18 @@ input:focus,select:focus,textarea:focus{
   *,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
 </style>
+
+<style id="mp-student-premium-v10">
+.mp-student-start{position:relative;overflow:hidden;margin:16px 0 20px;padding:22px;border-radius:22px;color:#fff;background:linear-gradient(135deg,#07172f 0%,#0d2d5c 58%,#174a87 100%);border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 50px rgba(7,23,47,.22);animation:mpStartIn .7s cubic-bezier(.2,.8,.2,1) both}
+.mp-student-start:after{content:"";position:absolute;width:240px;height:240px;right:-90px;top:-120px;border-radius:50%;background:radial-gradient(circle,rgba(245,166,35,.28),transparent 68%);animation:mpOrbit 5s ease-in-out infinite}
+.mp-start-glow{position:absolute;inset:-80px auto auto -80px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(63,142,255,.18),transparent 70%);animation:mpGlow 4s ease-in-out infinite}
+.mp-start-copy{position:relative;z-index:2;max-width:760px}.mp-start-kicker{font-size:9px;letter-spacing:.16em;font-weight:900;color:#f5c66d}.mp-start-copy h3{margin:5px 0 6px;font-size:22px;line-height:1.2;color:#fff}.mp-start-copy p{margin:0;color:#c8d5e8;font-size:12px;line-height:1.65}
+.mp-start-steps{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:17px}.mp-start-step{min-height:76px;padding:13px;border:1px solid rgba(255,255,255,.11);border-radius:15px;background:rgba(255,255,255,.055);backdrop-filter:blur(8px);transition:transform .22s ease,background .22s ease;animation:mpStepIn .65s ease both}.mp-start-step:nth-child(2){animation-delay:.08s}.mp-start-step:nth-child(3){animation-delay:.16s}.mp-start-step:hover{transform:translateY(-3px);background:rgba(255,255,255,.09)}.mp-start-step b{display:block;color:#f5a623;font-size:10px;letter-spacing:.08em}.mp-start-step span{display:block;margin-top:5px;color:#fff;font-weight:800;font-size:12px}.mp-start-step em{display:block;margin-top:3px;color:#9fb1ca;font-style:normal;font-size:10px}.mp-start-footer{position:relative;z-index:2;display:flex;align-items:center;gap:8px;margin-top:15px;color:#9fb1ca;font-size:10px}.mp-pulse-dot{width:7px;height:7px;border-radius:50%;background:#53d58a;box-shadow:0 0 0 5px rgba(83,213,138,.12);animation:mpPulse 1.8s infinite}.mp-start-line{height:1px;flex:1;background:rgba(255,255,255,.09)}.mp-start-footer strong{color:#dbe6f5;font-size:10px}
+@keyframes mpStartIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}@keyframes mpStepIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes mpPulse{0%,100%{box-shadow:0 0 0 4px rgba(83,213,138,.10)}50%{box-shadow:0 0 0 8px rgba(83,213,138,.03)}}@keyframes mpOrbit{0%,100%{transform:translate(0,0)}50%{transform:translate(-22px,18px)}}@keyframes mpGlow{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.2);opacity:1}}
+.mp-student-start.mp-has-data .mp-start-kicker{color:#7ee2a9}.mp-student-start.mp-has-data .mp-start-footer .mp-pulse-dot{background:#f5a623}
+@media(max-width:760px){.mp-student-start{padding:17px;border-radius:18px}.mp-start-copy h3{font-size:19px}.mp-start-steps{grid-template-columns:1fr}.mp-start-step{min-height:auto}.mp-start-footer{flex-wrap:wrap}.mp-start-line{display:none}}
+</style>
+
 </head>
 <body>
 
@@ -945,41 +957,20 @@ input:focus,select:focus,textarea:focus{
   </div>
 </section>
 
-<!-- Animated Student Discussion / Doubt Room -->
-<section class="discussion-room" id="student-discussion-room">
-  <div class="discussion-glow discussion-glow-a"></div><div class="discussion-glow discussion-glow-b"></div>
-  <div class="discussion-head">
-    <div>
-      <span class="discussion-kicker"><span class="discussion-pulse"></span> LIVE LEARNING SPACE</span>
-      <h3>Student Discussion &amp; Doubt Room</h3>
-      <p>Ask a doubt, discuss a question and learn together with your batch.</p>
-    </div>
-    <div class="discussion-live"><span></span><b id="discussion-online-label">Discussion active</b></div>
-  </div>
-
-  <div class="discussion-layout">
-    <div class="discussion-feed-card">
-      <div class="discussion-feed-top"><strong>Recent discussions</strong><span id="discussion-count">0 posts</span></div>
-      <div id="discussion-feed" class="discussion-feed">
-        <div class="discussion-empty"><div class="discussion-orbit">∑</div><strong>Start the discussion</strong><span>Your batch discussion will appear here.</span></div>
-      </div>
-    </div>
-
-    <div class="discussion-compose-card">
-      <div class="compose-icon">💬</div>
-      <span class="discussion-mini-label">HAVE A DOUBT?</span>
-      <h4>Start a conversation</h4>
-      <p>Write your question below. Keep it clear so everyone can understand and help.</p>
-      <textarea id="discussion-input" maxlength="500" placeholder="e.g. I am stuck in this quadratic equation..." aria-label="Write your discussion"></textarea>
-      <div class="discussion-compose-bottom"><span id="discussion-chars">0/500</span><button id="discussion-post-btn" type="button"><span>Post doubt</span><i>→</i></button></div>
-      <div class="discussion-actions">
-        <button id="discussion-wa-btn" type="button">📲 Ask teacher on WhatsApp</button>
-        <small>Be respectful • No personal information</small>
-      </div>
-      <div id="discussion-status" class="discussion-status" aria-live="polite"></div>
-    </div>
-  </div>
-</section>
+        <section class="mp-student-start" id="mp-student-start" aria-label="Student starter dashboard">
+          <div class="mp-start-glow"></div>
+          <div class="mp-start-copy">
+            <span class="mp-start-kicker">YOUR JOURNEY STARTS HERE</span>
+            <h3 id="mp-start-title">Welcome to your learning space 🚀</h3>
+            <p id="mp-start-subtitle">Your dashboard will grow automatically as classes, attendance, tests and study material are added.</p>
+          </div>
+          <div class="mp-start-steps">
+            <div class="mp-start-step"><b>01</b><span>Attend classes regularly</span><em>Build your streak</em></div>
+            <div class="mp-start-step"><b>02</b><span>Practice &amp; attempt tests</span><em>Track your progress</em></div>
+            <div class="mp-start-step"><b>03</b><span>Use your study material</span><em>Strengthen concepts</em></div>
+          </div>
+          <div class="mp-start-footer"><span class="mp-pulse-dot"></span><span id="mp-start-status">Ready for your first update</span><span class="mp-start-line"></span><strong>Maths Pathshala LMS</strong></div>
+        </section>
 
         <div class="student-main-grid">
           <div class="student-panel student-panel-wide">
@@ -1782,7 +1773,7 @@ input:focus,select:focus,textarea:focus{
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, addDoc, collection, getDocs, query, orderBy, limit, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB3fzWzwiTxHJi1M3OQI3hgZJpi6lq-eww",
@@ -2284,7 +2275,7 @@ input:focus,select:focus,textarea:focus{
     document.getElementById('dash-rank-big').textContent=rank;
     document.getElementById('dash-rank-detail').textContent=recent.name?`Latest test: ${recent.name} · ${recent.rank} of ${recent.size}`:'Rank will appear after a test is recorded.';
     const scores=Array.isArray(data.testScores)?data.testScores:[];
-    const latestScore=scores.slice().sort((a,b)=>(parsePortalDate(b.date)?.getTime()||0)-(parsePortalDate(a.date)?.getTime()||0))[0];
+    const latestScore=scores.slice().sort((a,b)=>(v9ParseDate(b.date)?.getTime()||0)-(v9ParseDate(a.date)?.getTime()||0))[0];
     document.getElementById('dash-average-score').textContent=latestScore?scorePct(latestScore)+'%':'—';
     if(document.getElementById('dash-kpi-latest-score')) document.getElementById('dash-kpi-latest-score').textContent=latestScore?scorePct(latestScore)+'%':'—';
     if(document.getElementById('dash-rank-big-secondary')) document.getElementById('dash-rank-big-secondary').textContent=rank;
@@ -2296,7 +2287,6 @@ input:focus,select:focus,textarea:focus{
     if(scores.length)renderScoreChart(scores); else if(window.scoreChartInstance)window.scoreChartInstance.destroy();
     const notesList=document.getElementById('dash-notes-list'); const notes=Array.isArray(data.notes)?data.notes:[]; notesList.innerHTML=notes.length?notes.map(n=>`<li><span>${n.title}</span><span><a href="${n.url}" target="_blank">View</a> · <a href="${n.url}" download>Download</a></span></li>`).join(''):'<li>No notes assigned yet</li>';
     if(window.renderStudentV9) window.renderStudentV9(data,scores,overall,streak);
-    if(window.initStudentDiscussion) window.initStudentDiscussion({...data,email:email});
     studentDashboard.style.display='block';
     } catch(err) {
       console.error('Student dashboard load failed:', err);
@@ -2403,43 +2393,33 @@ input:focus,select:focus,textarea:focus{
 </style>
 
 
-<style id="mp-discussion-room-style">
-.discussion-room{position:relative;overflow:hidden;margin:0 0 20px;padding:24px;border-radius:24px;background:linear-gradient(135deg,#07172f 0%,#0d2853 58%,#173e78 100%);border:1px solid rgba(255,255,255,.10);box-shadow:0 18px 55px rgba(5,18,42,.24);color:#fff}
-.discussion-glow{position:absolute;border-radius:50%;filter:blur(2px);pointer-events:none}.discussion-glow-a{width:220px;height:220px;right:-70px;top:-100px;background:radial-gradient(circle,rgba(242,181,68,.28),transparent 68%);animation:discussionFloat 7s ease-in-out infinite}.discussion-glow-b{width:180px;height:180px;left:-90px;bottom:-110px;background:radial-gradient(circle,rgba(55,125,255,.22),transparent 68%);animation:discussionFloat 9s ease-in-out infinite reverse}.discussion-head{position:relative;z-index:2;display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:18px}.discussion-kicker{display:inline-flex;align-items:center;gap:7px;color:#ffd77b;font-size:9px;font-weight:900;letter-spacing:.14em}.discussion-pulse{width:7px;height:7px;border-radius:50%;background:#43e38c;box-shadow:0 0 0 0 rgba(67,227,140,.55);animation:discussionPulse 1.8s infinite}.discussion-head h3{margin:6px 0 5px;font-size:21px;letter-spacing:-.02em}.discussion-head p{margin:0;color:#b9c9df;font-size:12px}.discussion-live{display:flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);border-radius:999px;font-size:10px;color:#dce7f7;white-space:nowrap;backdrop-filter:blur(10px)}.discussion-live span{width:6px;height:6px;border-radius:50%;background:#43e38c;animation:discussionPulse 1.8s infinite}.discussion-layout{position:relative;z-index:2;display:grid;grid-template-columns:1.45fr .85fr;gap:14px}.discussion-feed-card,.discussion-compose-card{border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.075);backdrop-filter:blur(12px);border-radius:18px}.discussion-feed-card{padding:15px}.discussion-feed-top{display:flex;justify-content:space-between;align-items:center;padding:0 2px 11px;border-bottom:1px solid rgba(255,255,255,.10)}.discussion-feed-top strong{font-size:12px}.discussion-feed-top span{font-size:10px;color:#9fb1cb}.discussion-feed{height:285px;overflow:auto;padding:10px 2px 2px}.discussion-feed::-webkit-scrollbar{width:5px}.discussion-feed::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:20px}.discussion-post{display:flex;gap:10px;padding:11px 9px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.045);border-radius:14px;margin-bottom:8px;animation:discussionIn .45s cubic-bezier(.2,.8,.2,1) both}.discussion-avatar{width:32px;height:32px;flex:0 0 32px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,#f2b544,#ffe29a);color:#102a56;font-size:12px;font-weight:900;box-shadow:0 6px 15px rgba(242,181,68,.18)}.discussion-post-body{min-width:0;flex:1}.discussion-post-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}.discussion-post-meta strong{font-size:11px;color:#fff}.discussion-post-meta span{font-size:9px;color:#8fa4c1}.discussion-post-body p{margin:0;color:#d7e2f1;font-size:11px;line-height:1.55;word-break:break-word}.discussion-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#9fb1cb;gap:4px}.discussion-empty strong{color:#fff;font-size:12px}.discussion-empty span{font-size:10px}.discussion-orbit{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;color:#102a56;font-size:20px;font-weight:900;background:linear-gradient(135deg,#ffd166,#f2b544);box-shadow:0 0 0 8px rgba(242,181,68,.08);animation:discussionFloat 3.5s ease-in-out infinite}.discussion-compose-card{padding:17px}.compose-icon{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:rgba(242,181,68,.13);border:1px solid rgba(242,181,68,.22);font-size:19px;animation:discussionFloat 4s ease-in-out infinite}.discussion-mini-label{display:block;color:#ffd77b;font-size:9px;font-weight:900;letter-spacing:.13em;margin-top:12px}.discussion-compose-card h4{margin:4px 0 5px;font-size:18px}.discussion-compose-card p{margin:0 0 12px;color:#afc0d7;font-size:11px;line-height:1.5}.discussion-compose-card textarea{width:100%;min-height:94px;resize:vertical;padding:11px 12px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(4,15,33,.48);color:#fff;outline:none;font:inherit;font-size:11px;line-height:1.5}.discussion-compose-card textarea::placeholder{color:#7287a4}.discussion-compose-card textarea:focus{border-color:rgba(242,181,68,.7);box-shadow:0 0 0 3px rgba(242,181,68,.08)}.discussion-compose-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}.discussion-compose-bottom>span{font-size:9px;color:#8499b5}.discussion-compose-bottom button{border:0;border-radius:11px;padding:9px 11px;display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#ffd166,#f2b544);color:#08172f;font-weight:900;font-size:10px;cursor:pointer;box-shadow:0 8px 20px rgba(242,181,68,.18);transition:.2s ease}.discussion-compose-bottom button:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(242,181,68,.25)}.discussion-compose-bottom button i{font-style:normal;font-size:14px}.discussion-compose-bottom button:disabled{opacity:.55;cursor:not-allowed;transform:none}.discussion-actions{display:flex;flex-direction:column;gap:6px;margin-top:11px}.discussion-actions button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#fff;border-radius:10px;padding:9px 10px;text-align:left;font-weight:800;font-size:10px;cursor:pointer;transition:.2s ease}.discussion-actions button:hover{background:rgba(255,255,255,.11);border-color:rgba(242,181,68,.42)}.discussion-actions small{font-size:9px;color:#7188a6}.discussion-status{min-height:15px;margin-top:7px;font-size:9px;color:#8ff0b8}.discussion-status.error{color:#ffb0b0}.discussion-status.busy{color:#ffd77b}.discussion-new{animation:discussionIn .5s ease both}@keyframes discussionIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}@keyframes discussionFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}@keyframes discussionPulse{0%{box-shadow:0 0 0 0 rgba(67,227,140,.48)}70%{box-shadow:0 0 0 7px rgba(67,227,140,0)}100%{box-shadow:0 0 0 0 rgba(67,227,140,0)}}@media(max-width:760px){.discussion-room{padding:16px;border-radius:19px}.discussion-head{flex-direction:column}.discussion-live{align-self:flex-start}.discussion-layout{grid-template-columns:1fr}.discussion-feed{height:250px}.discussion-compose-card{padding:15px}}@media(prefers-reduced-motion:reduce){.discussion-room *{animation:none!important;transition:none!important}}
-</style>
-
-<script id="mp-discussion-room-js">
-(function(){
-  let discussionUnsub=null;
-  let discussionStudent={name:'Student',email:'',batch:'',className:''};
-  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-  function timeLabel(v){try{const d=v?.toDate?v.toDate():new Date(v);if(isNaN(d))return 'Just now';const diff=Math.max(0,Date.now()-d.getTime());if(diff<60000)return 'Just now';if(diff<3600000)return Math.floor(diff/60000)+'m ago';if(diff<86400000)return Math.floor(diff/3600000)+'h ago';return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'});}catch(e){return 'Recently';}}
-  function initials(name){const a=String(name||'Student').trim().split(/\s+/).filter(Boolean);return (a[0]?.[0]||'S')+(a[1]?.[0]||'');}
-  function renderFeed(rows){const box=document.getElementById('discussion-feed'),count=document.getElementById('discussion-count');if(!box)return; if(count)count.textContent=rows.length+' post'+(rows.length===1?'':'s'); if(!rows.length){box.innerHTML='<div class="discussion-empty"><div class="discussion-orbit">∑</div><strong>Start the discussion</strong><span>Your batch discussion will appear here.</span></div>';return;} box.innerHTML=rows.map((x,i)=>`<div class="discussion-post ${i===0?'discussion-new':''}"><div class="discussion-avatar">${esc(initials(x.studentName))}</div><div class="discussion-post-body"><div class="discussion-post-meta"><strong>${esc(x.studentName||'Student')}</strong><span>${esc(timeLabel(x.createdAt))}</span></div><p>${esc(x.text||'')}</p></div></div>`).join('');}
-  window.initStudentDiscussion=function(data){
-    discussionStudent={name:data?.name||'Student',email:(data?.email||auth.currentUser?.email||'').toLowerCase(),batch:data?.batchName||data?.batch||'',className:data?.className||data?.class||''};
-    const input=document.getElementById('discussion-input'),chars=document.getElementById('discussion-chars'),post=document.getElementById('discussion-post-btn'),wa=document.getElementById('discussion-wa-btn'),status=document.getElementById('discussion-status');
-    if(!input||!post)return;
-    input.oninput=()=>{if(chars)chars.textContent=input.value.length+'/500';};
-    post.onclick=async()=>{const text=input.value.trim();if(!text){status.textContent='Pehle apna doubt likho bhai 🙂';status.className='discussion-status error';input.focus();return;} if(!auth.currentUser){status.textContent='Please login again to post.';status.className='discussion-status error';return;} post.disabled=true;status.textContent='Posting your doubt…';status.className='discussion-status busy';
-      try{await addDoc(collection(db,'studentDiscussions'),{text,studentName:discussionStudent.name,studentEmail:discussionStudent.email,batchName:discussionStudent.batch,className:discussionStudent.className,createdAt:serverTimestamp(),status:'open'});input.value='';if(chars)chars.textContent='0/500';status.textContent='Posted — your batch can see it.';status.className='discussion-status';}
-      catch(err){console.error('Discussion post failed:',err);status.textContent='Discussion sync unavailable. Use WhatsApp to ask the teacher.';status.className='discussion-status error';}
-      finally{post.disabled=false;}
-    };
-    wa.onclick=()=>{const text=input.value.trim();const msg=text?`Hi Vipin Sir, I am ${discussionStudent.name}. My doubt is: ${text}`:`Hi Vipin Sir, I am ${discussionStudent.name}. I have a doubt. Please help me.`;window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank');};
-    if(discussionUnsub){discussionUnsub();discussionUnsub=null;}
-    const box=document.getElementById('discussion-feed');
-    try{const constraints=[where('batchName','==',discussionStudent.batch),orderBy('createdAt','desc'),limit(20)];discussionUnsub=onSnapshot(query(collection(db,'studentDiscussions'),...constraints),snap=>{const rows=snap.docs.map(d=>({id:d.id,...d.data()}));renderFeed(rows);const label=document.getElementById('discussion-online-label');if(label)label.textContent='Live discussion';},err=>{console.warn('Discussion feed unavailable:',err);renderFeed([]);const label=document.getElementById('discussion-online-label');if(label)label.textContent='Discussion ready';});}
-    catch(err){if(box)renderFeed([]);}
-  };
-})();
-</script>
-
 <script id="mp-v9-student-dashboard-js">
 (function(){
+  // Keep this classic-script renderer self-contained. ES module functions such as
+  // scorePct/parsePortalDate are not visible inside a normal <script> block.
   function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function v9ScorePct(s){ return s && Number(s.max)>0 ? Math.round(Number(s.score)/Number(s.max)*100) : 0; }
+  function v9ParseDate(value){
+    if(!value) return null;
+    if(/^\d{4}-\d{2}-\d{2}$/.test(String(value))) return new Date(String(value)+'T00:00:00');
+    const m=String(value).match(/^(\d{1,2})\s+([A-Za-z]{3})(?:\s+(\d{4}))?$/);
+    if(m){ const year=m[3]||String(new Date().getFullYear()); const d=new Date(`${m[1]} ${m[2]} ${year} 00:00:00`); if(!isNaN(d.getTime())) return d; }
+    const d=new Date(value); return isNaN(d.getTime())?null:d;
+  }
   window.renderStudentV9=function(data,scores,overall,streak){
-    const prep=Math.round((Number(overall||0)*0.45)+(scores.length?Math.max(0,Math.min(100,scores.reduce((a,x)=>a+scorePct(x),0)/scores.length))*0.55:0));
+    const prep=Math.round((Number(overall||0)*0.45)+(scores.length?Math.max(0,Math.min(100,scores.reduce((a,x)=>a+v9ScorePct(x),0)/scores.length))*0.55:0));
+    const starter=document.getElementById('mp-student-start');
+    if(starter){
+      const hasAttendance=Array.isArray(data.attendance?.log) && data.attendance.log.length>0;
+      const hasTests=scores.length>0;
+      const hasNotes=Array.isArray(data.notes) && data.notes.length>0;
+      starter.classList.toggle('mp-has-data',hasAttendance||hasTests||hasNotes);
+      const title=document.getElementById('mp-start-title'), sub=document.getElementById('mp-start-subtitle'), status=document.getElementById('mp-start-status');
+      if(title&&sub&&status){
+        if(hasAttendance||hasTests||hasNotes){ title.textContent='Your learning journey is in motion ✨'; sub.textContent='Keep showing up, practising and using your resources. Your dashboard will keep updating with every new academic record.'; status.textContent='Live academic progress enabled'; }
+        else { title.textContent='Welcome to your learning space 🚀'; sub.textContent='No academic records yet — that is completely normal for a new student. This space is ready and will fill automatically as your journey begins.'; status.textContent='Ready for your first update'; }
+      }
+    }
     const meter=document.getElementById('dash-prep-meter'); if(meter) meter.style.width=prep+'%';
     const ps=document.getElementById('dash-prep-score'); if(ps) ps.textContent=prep+'%';
     const pt=document.getElementById('dash-prep-text'); if(pt) pt.textContent=prep>=85?'Excellent consistency — keep pushing.':prep>=70?'Good progress — stay regular with tests.':'Build your routine with attendance and practice.';
@@ -2448,7 +2428,7 @@ input:focus,select:focus,textarea:focus{
     const rc=document.getElementById('dash-recent-tests-count');if(rc)rc.textContent=scores.length;
     const hist=document.getElementById('dash-v9-test-history');
     const sorted=scores.slice().sort((a,b)=>(parsePortalDate(b.date)?.getTime()||0)-(parsePortalDate(a.date)?.getTime()||0)).slice(0,5);
-    if(hist) hist.innerHTML=sorted.length?sorted.map(x=>`<div class="v9-history-row"><div><strong>${esc(x.name||'Test')}</strong><span>${esc(x.date||'Date not set')}</span></div><span class="v9-score">${scorePct(x)}%</span></div>`).join(''):'<div class="v9-empty">No tests recorded yet.</div>';
+    if(hist) hist.innerHTML=sorted.length?sorted.map(x=>`<div class="v9-history-row"><div><strong>${esc(x.name||'Test')}</strong><span>${esc(x.date||'Date not set')}</span></div><span class="v9-score">${v9ScorePct(x)}%</span></div>`).join(''):'<div class="v9-empty">No tests recorded yet.</div>';
     const res=document.getElementById('dash-v9-resources'); const notes=Array.isArray(data.notes)?data.notes.slice(0,5):[];
     if(res) res.innerHTML=notes.length?notes.map(n=>`<div class="v9-resource"><strong>${esc(n.title||'Study Material')}</strong><a href="${esc(n.url||'#')}" target="_blank" rel="noopener">Open →</a></div>`).join(''):'<div class="v9-empty">No notes assigned yet.</div>';
   };
