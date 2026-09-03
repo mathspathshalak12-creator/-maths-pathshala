@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Maths Pathshala — Offline Coaching for Class 9–12 in Kalyanpur, Kanpur</title>
 <meta name="description" content="Maths Pathshala provides small offline coaching batches in Kalyanpur, Kanpur for Class 9–10 PCM and Class 11–12 Mathematics, with home tuition for Class 3–8 all subjects and Mathematics home tuition for Class 9–12 across CBSE, ICSE and UP Board in listed nearby areas. Taught personally by Vipin Kumar.">
 <meta name="keywords" content="offline coaching Kalyanpur Kanpur, class 9 10 PCM coaching, class 11 12 Mathematics coaching, home tuition class 3 4 5 6 7 8">
@@ -426,7 +426,6 @@
 
   /* EMBEDDED STUDENT DASHBOARD */
   #student-dashboard{display:none;padding:32px 0 0;}
-  #student-dashboard.mp-dashboard-visible{display:block;}
   .dash-panel{
     position:relative;overflow:hidden;
     background:linear-gradient(155deg, #0B1E3D 0%, #0E2547 55%, #122A52 100%);
@@ -721,176 +720,6 @@
 <style id="home-tuition-banner-style">
 .home-tuition-banner{padding:22px 0 8px}.home-tuition-banner-inner{display:flex;align-items:center;justify-content:space-between;gap:28px;padding:28px 30px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(135deg,rgba(255,255,255,.98),rgba(253,248,238,.92));box-shadow:0 14px 40px rgba(15,23,42,.06)}.home-tuition-banner h2{margin:4px 0 8px;font-size:28px}.home-tuition-banner p{margin:0;color:var(--muted)}@media(max-width:720px){.home-tuition-banner-inner{flex-direction:column;align-items:flex-start;padding:24px}.home-tuition-banner .btn{width:100%;justify-content:center}}
 </style>
-<style>
-/* =========================================================
-   MATHS PATHSHALA — PREMIUM V3 VISUAL REDESIGN
-   Functionality intentionally preserved.
-   ========================================================= */
-:root{
-  --mp-bg:#f5f7fb;
-  --mp-surface:#ffffff;
-  --mp-ink:#0b1730;
-  --mp-muted:#667085;
-  --mp-line:#e7ebf2;
-  --mp-brand:#102a56;
-  --mp-brand-2:#173e78;
-  --mp-accent:#f2b544;
-  --mp-green:#16845b;
-  --mp-shadow:0 18px 55px rgba(16,42,86,.10);
-  --mp-shadow-sm:0 8px 28px rgba(16,42,86,.08);
-}
-html{scroll-behavior:smooth}
-body{
-  background:
-    radial-gradient(circle at 12% 0%,rgba(242,181,68,.10),transparent 28%),
-    radial-gradient(circle at 90% 12%,rgba(23,62,120,.10),transparent 25%),
-    var(--mp-bg)!important;
-  color:var(--mp-ink);
-}
-body:before{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
-  background-image:linear-gradient(rgba(16,42,86,.025) 1px,transparent 1px),
-                   linear-gradient(90deg,rgba(16,42,86,.025) 1px,transparent 1px);
-  background-size:42px 42px;
-  mask-image:linear-gradient(to bottom,black,transparent 78%);
-}
-.wrap{max-width:1180px!important}
-header{
-  background:rgba(255,255,255,.88)!important;
-  backdrop-filter:blur(18px);
-  border-bottom:1px solid rgba(16,42,86,.08)!important;
-  box-shadow:0 5px 25px rgba(16,42,86,.05);
-}
-header nav{max-width:1180px!important}
-.hero.conversion-hero{
-  position:relative;overflow:hidden;
-  min-height:650px;
-  border-radius:0 0 34px 34px;
-  background:
-    radial-gradient(circle at 80% 25%,rgba(242,181,68,.22),transparent 25%),
-    linear-gradient(135deg,#091a36 0%,#102f60 58%,#173e78 100%)!important;
-  box-shadow:0 22px 70px rgba(8,25,55,.22);
-}
-.hero.conversion-hero:after{
-  content:"∑   π   ∆   x²   √   f(x)";
-  position:absolute;right:-10px;bottom:25px;
-  font:700 clamp(40px,7vw,100px)/1 "JetBrains Mono",monospace;
-  letter-spacing:18px;color:rgba(255,255,255,.035);
-  transform:rotate(-8deg);white-space:nowrap;pointer-events:none;
-}
-.hero h1{font-size:clamp(42px,6vw,78px)!important;line-height:.98!important;letter-spacing:-.055em!important}
-.hero p{font-size:18px!important;line-height:1.75!important;color:rgba(255,255,255,.78)!important}
-.btn{
-  border-radius:14px!important;
-  padding:13px 18px!important;
-  box-shadow:0 7px 20px rgba(16,42,86,.10);
-  transition:transform .2s ease,box-shadow .2s ease,background .2s ease!important;
-}
-.btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(16,42,86,.16)!important}
-.btn-primary{background:linear-gradient(135deg,#f2b544,#e8a82b)!important;color:#101b2d!important;border:0!important}
-.btn-outline{background:rgba(255,255,255,.08)!important;border:1px solid rgba(255,255,255,.25)!important;color:#fff!important}
-section{padding:92px 0!important}
-.section-head{max-width:780px!important;margin-bottom:34px!important}
-.section-tag{
-  display:inline-flex!important;align-items:center;gap:7px;
-  padding:7px 11px!important;border-radius:999px!important;
-  background:rgba(242,181,68,.13)!important;color:#9a6810!important;
-  font-weight:800!important;letter-spacing:.08em!important;
-}
-.section-head h2{font-size:clamp(30px,4vw,48px)!important;letter-spacing:-.035em!important}
-.services-grid,.program-grid,.why-grid,.pricing-grid{
-  gap:20px!important;
-}
-.service-card,.price-card,.program-card,.why-card,.batch-card,.testimonial-card{
-  border:1px solid var(--mp-line)!important;
-  border-radius:22px!important;
-  background:rgba(255,255,255,.92)!important;
-  box-shadow:var(--mp-shadow-sm)!important;
-  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease!important;
-}
-.service-card:hover,.price-card:hover,.program-card:hover,.why-card:hover,.batch-card:hover,.testimonial-card:hover{
-  transform:translateY(-6px)!important;
-  box-shadow:var(--mp-shadow)!important;
-  border-color:rgba(242,181,68,.55)!important;
-}
-.service-icon{
-  width:50px!important;height:50px!important;border-radius:15px!important;
-  display:grid!important;place-items:center!important;
-  background:#fff7e4!important;
-}
-.home-tuition-banner{
-  margin:0 auto!important;max-width:1180px!important;
-  border-radius:24px!important;
-  box-shadow:var(--mp-shadow)!important;
-}
-#tutor .tutor-card,#location .location-row,#register .register-box{
-  border-radius:26px!important;
-  box-shadow:var(--mp-shadow)!important;
-  border:1px solid var(--mp-line)!important;
-}
-#pricing{background:linear-gradient(180deg,#fff,#f5f7fb)!important}
-.price-card{padding:28px!important}
-.price-card.featured{border:2px solid rgba(242,181,68,.75)!important;position:relative}
-.price-card.featured:before{
-  content:"RECOMMENDED";position:absolute;top:14px;right:14px;
-  font-size:10px;font-weight:900;letter-spacing:.08em;
-  background:#fff1cc;color:#8b5b08;padding:6px 9px;border-radius:999px;
-}
-.faq-item,.accordion,.notes-card{
-  background:#fff!important;border:1px solid var(--mp-line)!important;
-  border-radius:17px!important;box-shadow:0 7px 24px rgba(16,42,86,.05)!important;
-}
-footer{
-  background:#07172f!important;color:#cbd5e1!important;
-  border-top:1px solid rgba(255,255,255,.08)!important;
-}
-#student-dashboard{
-  background:
-    radial-gradient(circle at 90% 0%,rgba(242,181,68,.10),transparent 25%),
-    linear-gradient(135deg,#07172f,#102a56 70%,#173e78)!important;
-}
-#student-dashboard .dash-card,#student-dashboard .dashboard-card,#student-dashboard .card{
-  border-radius:20px!important;
-  border:1px solid rgba(255,255,255,.10)!important;
-  box-shadow:0 15px 45px rgba(0,0,0,.18)!important;
-}
-.popup-overlay{backdrop-filter:blur(7px)!important;background:rgba(3,12,27,.68)!important}
-.popup-box,.modal-content{
-  border-radius:24px!important;
-  box-shadow:0 28px 90px rgba(0,0,0,.30)!important;
-  border:1px solid rgba(255,255,255,.22)!important;
-}
-input,select,textarea{
-  border-radius:12px!important;
-  border:1px solid #dfe5ef!important;
-  min-height:44px;
-  transition:border-color .18s,box-shadow .18s!important;
-}
-input:focus,select:focus,textarea:focus{
-  border-color:#173e78!important;box-shadow:0 0 0 4px rgba(23,62,120,.10)!important;outline:0!important;
-}
-@media(max-width:800px){
-  section{padding:68px 0!important}
-  .hero.conversion-hero{min-height:590px;border-radius:0 0 24px 24px}
-  .hero h1{font-size:42px!important}
-  .services-grid,.program-grid,.why-grid,.pricing-grid{grid-template-columns:1fr!important}
-}
-@media(prefers-reduced-motion:reduce){
-  *,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
-}
-</style>
-
-<style id="mp-student-premium-v10">
-.mp-student-start{position:relative;overflow:hidden;margin:16px 0 20px;padding:22px;border-radius:22px;color:#fff;background:linear-gradient(135deg,#07172f 0%,#0d2d5c 58%,#174a87 100%);border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 50px rgba(7,23,47,.22);animation:mpStartIn .7s cubic-bezier(.2,.8,.2,1) both}
-.mp-student-start:after{content:"";position:absolute;width:240px;height:240px;right:-90px;top:-120px;border-radius:50%;background:radial-gradient(circle,rgba(245,166,35,.28),transparent 68%);animation:mpOrbit 5s ease-in-out infinite}
-.mp-start-glow{position:absolute;inset:-80px auto auto -80px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(63,142,255,.18),transparent 70%);animation:mpGlow 4s ease-in-out infinite}
-.mp-start-copy{position:relative;z-index:2;max-width:760px}.mp-start-kicker{font-size:9px;letter-spacing:.16em;font-weight:900;color:#f5c66d}.mp-start-copy h3{margin:5px 0 6px;font-size:22px;line-height:1.2;color:#fff}.mp-start-copy p{margin:0;color:#c8d5e8;font-size:12px;line-height:1.65}
-.mp-start-steps{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:17px}.mp-start-step{min-height:76px;padding:13px;border:1px solid rgba(255,255,255,.11);border-radius:15px;background:rgba(255,255,255,.055);backdrop-filter:blur(8px);transition:transform .22s ease,background .22s ease;animation:mpStepIn .65s ease both}.mp-start-step:nth-child(2){animation-delay:.08s}.mp-start-step:nth-child(3){animation-delay:.16s}.mp-start-step:hover{transform:translateY(-3px);background:rgba(255,255,255,.09)}.mp-start-step b{display:block;color:#f5a623;font-size:10px;letter-spacing:.08em}.mp-start-step span{display:block;margin-top:5px;color:#fff;font-weight:800;font-size:12px}.mp-start-step em{display:block;margin-top:3px;color:#9fb1ca;font-style:normal;font-size:10px}.mp-start-footer{position:relative;z-index:2;display:flex;align-items:center;gap:8px;margin-top:15px;color:#9fb1ca;font-size:10px}.mp-pulse-dot{width:7px;height:7px;border-radius:50%;background:#53d58a;box-shadow:0 0 0 5px rgba(83,213,138,.12);animation:mpPulse 1.8s infinite}.mp-start-line{height:1px;flex:1;background:rgba(255,255,255,.09)}.mp-start-footer strong{color:#dbe6f5;font-size:10px}
-@keyframes mpStartIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}@keyframes mpStepIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes mpPulse{0%,100%{box-shadow:0 0 0 4px rgba(83,213,138,.10)}50%{box-shadow:0 0 0 8px rgba(83,213,138,.03)}}@keyframes mpOrbit{0%,100%{transform:translate(0,0)}50%{transform:translate(-22px,18px)}}@keyframes mpGlow{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.2);opacity:1}}
-.mp-student-start.mp-has-data .mp-start-kicker{color:#7ee2a9}.mp-student-start.mp-has-data .mp-start-footer .mp-pulse-dot{background:#f5a623}
-@media(max-width:760px){.mp-student-start{padding:17px;border-radius:18px}.mp-start-copy h3{font-size:19px}.mp-start-steps{grid-template-columns:1fr}.mp-start-step{min-height:auto}.mp-start-footer{flex-wrap:wrap}.mp-start-line{display:none}}
-</style>
-
 </head>
 <body>
 
@@ -932,46 +761,6 @@ input:focus,select:focus,textarea:focus{
           <div class="student-kpi"><span>Recent test rank</span><strong id="dash-kpi-rank">—</strong><small id="dash-kpi-rank-sub">Based on the latest test</small></div>
           <div class="student-kpi"><span>Latest test score</span><strong id="dash-kpi-latest-score">—</strong><small>Score in the most recent test</small></div>
         </div>
-
-
-<!-- Student LMS v9: learning center + achievements -->
-<section class="student-v9-zone" id="student-learning-center">
-  <div class="student-v9-head">
-    <div><span class="panel-kicker">YOUR LEARNING CENTER</span><h3>Keep your preparation moving</h3><p>Everything you need for classes, tests and daily improvement — in one place.</p></div>
-    <div class="student-v9-status"><span class="status-dot"></span><span id="dash-live-status">Dashboard synced</span></div>
-  </div>
-  <div class="student-v9-grid">
-    <div class="student-v9-card student-v9-progress">
-      <div class="v9-card-icon">📈</div><div><span class="v9-label">PREPARATION SCORE</span><strong id="dash-prep-score">—</strong><small id="dash-prep-text">Your score will build from attendance and test performance.</small></div>
-      <div class="v9-meter"><span id="dash-prep-meter"></span></div>
-    </div>
-    <div class="student-v9-card">
-      <div class="v9-card-icon">🏆</div><div><span class="v9-label">ACHIEVEMENT</span><strong id="dash-achievement-title">Keep going</strong><small id="dash-achievement-text">Your next milestone is waiting.</small></div>
-    </div>
-    <div class="student-v9-card">
-      <div class="v9-card-icon">📝</div><div><span class="v9-label">RECENT TESTS</span><strong id="dash-recent-tests-count">0</strong><small>Tests recorded in your profile</small></div>
-    </div>
-  </div>
-  <div class="student-v9-lower">
-    <div class="student-v9-list-card"><div class="v9-list-head"><div><span class="v9-label">TEST HISTORY</span><h4>Recent results</h4></div></div><div id="dash-v9-test-history" class="v9-history"><div class="v9-empty">No tests recorded yet.</div></div></div>
-    <div class="student-v9-list-card"><div class="v9-list-head"><div><span class="v9-label">QUICK ACCESS</span><h4>Study resources</h4></div></div><div id="dash-v9-resources" class="v9-resources"><div class="v9-empty">No notes assigned yet.</div></div></div>
-  </div>
-</section>
-
-        <section class="mp-student-start" id="mp-student-start" aria-label="Student starter dashboard">
-          <div class="mp-start-glow"></div>
-          <div class="mp-start-copy">
-            <span class="mp-start-kicker">YOUR JOURNEY STARTS HERE</span>
-            <h3 id="mp-start-title">Welcome to your learning space 🚀</h3>
-            <p id="mp-start-subtitle">Your dashboard will grow automatically as classes, attendance, tests and study material are added.</p>
-          </div>
-          <div class="mp-start-steps">
-            <div class="mp-start-step"><b>01</b><span>Attend classes regularly</span><em>Build your streak</em></div>
-            <div class="mp-start-step"><b>02</b><span>Practice &amp; attempt tests</span><em>Track your progress</em></div>
-            <div class="mp-start-step"><b>03</b><span>Use your study material</span><em>Strengthen concepts</em></div>
-          </div>
-          <div class="mp-start-footer"><span class="mp-pulse-dot"></span><span id="mp-start-status">Ready for your first update</span><span class="mp-start-line"></span><strong>Maths Pathshala LMS</strong></div>
-        </section>
 
         <div class="student-main-grid">
           <div class="student-panel student-panel-wide">
@@ -1584,7 +1373,7 @@ input:focus,select:focus,textarea:focus{
       <div class="location-copy">
         <div class="section-tag">Find us</div>
         <h3>Based in Kalyanpur, easy to reach.</h3>
-        <p>Our primary focus is offline coaching in Kalyanpur, Kanpur for Class 9–12. Home tuition is available for Class 3–8 (all subjects) and Mathematics + Physics for Class 9–12 across CBSE, ICSE and UP Board in the listed nearby areas.</p>
+        <p>Our primary focus is offline coaching in Kalyanpur, Kanpur for Class 9–12. Home tuition is available for Class 3–8 (all subjects) and Mathematics for Class 9–12 across CBSE, ICSE and UP Board in the listed nearby areas.</p>
         <ul class="loc-list">
           <li>Kalyanpur, Kanpur, Uttar Pradesh</li>
           <li>Home tuition (Class 3–8, all subjects): Kalyanpur, Awas Vikas 1, Awas Vikas 3, Gooba Garden, Indira Nagar</li>
@@ -1934,10 +1723,6 @@ input:focus,select:focus,textarea:focus{
   onAuthStateChanged(auth, async (user) => {
     if(user){
       isLoggedIn = true;
-      studentDashboard.classList.add('mp-dashboard-visible');
-      studentDashboard.style.display='block';
-      const dashName=document.getElementById('dash-name');
-      if(dashName) dashName.innerHTML='<span class="spinner"></span>Preparing your learning dashboard...';
       await loadStudentDashboard(user.email);
       await loadNotices();
       await loadHomework();
@@ -1956,7 +1741,6 @@ input:focus,select:focus,textarea:focus{
     } else {
       if(dashboardAutoRefreshTimer){ clearInterval(dashboardAutoRefreshTimer); dashboardAutoRefreshTimer = null; }
       isLoggedIn = false;
-      studentDashboard.classList.remove('mp-dashboard-visible');
       studentDashboard.style.display = 'none';
       studentLoginBtn.textContent = 'Student Login';
       mobileLoginBtn.textContent = 'Student Login';
@@ -2242,30 +2026,16 @@ input:focus,select:focus,textarea:focus{
       docSnap = await getDoc(doc(db, "students", email));
     }
 
-    // A newly-created student may authenticate before the admin has created
-    // the Firestore profile. Do NOT leave the dashboard blank in that case.
-    // Start a real onboarding dashboard and seamlessly upgrade it when the
-    // admin profile/data appears later.
-    const profileExists = docSnap.exists();
-    const data = profileExists ? (docSnap.data() || {}) : {
-      name:'Student', class:'', batchName:'', batchTiming:'Not assigned yet',
-      admissionDate:'', feeStatus:'Due', monthlyFees:[], attendance:{log:[],percent:0},
-      batchStats:{}, testScores:[], notes:[]
-    };
+    if(!docSnap.exists()){
+      foundContent.style.display='none';
+      notFoundContent.style.display='block';
+      document.getElementById('dash-name').textContent='Student';
+      return;
+    }
+
+    const data=docSnap.data();
     foundContent.style.display='block';
     notFoundContent.style.display='none';
-    if(!profileExists){
-      const starter = document.getElementById('mp-student-start');
-      if(starter){
-        starter.classList.remove('mp-has-data');
-        const title=document.getElementById('mp-start-title');
-        const sub=document.getElementById('mp-start-subtitle');
-        const status=document.getElementById('mp-start-status');
-        if(title) title.textContent='Welcome to your learning space 🚀';
-        if(sub) sub.textContent='Your student profile is being prepared. Once your class is assigned, this dashboard will automatically fill with live attendance, tests and study material.';
-        if(status) status.textContent='Profile setup in progress · Learning dashboard ready';
-      }
-    }
     document.getElementById('dash-name').textContent=data.name||'Student'; document.getElementById('dash-avatar').textContent=(data.name||'S').trim().charAt(0).toUpperCase();
     currentStudentClass=data.class||null; currentStudentBatchName=data.batchName||null;
     const bh=document.getElementById('dash-batch-highlight'); bh.textContent=data.class&&data.batchName?`🎓 Class ${data.class} · ${data.batchName}`:''; bh.style.display=data.class&&data.batchName?'inline-block':'none';
@@ -2295,7 +2065,7 @@ input:focus,select:focus,textarea:focus{
     document.getElementById('dash-rank-big').textContent=rank;
     document.getElementById('dash-rank-detail').textContent=recent.name?`Latest test: ${recent.name} · ${recent.rank} of ${recent.size}`:'Rank will appear after a test is recorded.';
     const scores=Array.isArray(data.testScores)?data.testScores:[];
-    const latestScore=scores.slice().sort((a,b)=>(v9ParseDate(b.date)?.getTime()||0)-(v9ParseDate(a.date)?.getTime()||0))[0];
+    const latestScore=scores.slice().sort((a,b)=>(parsePortalDate(b.date)?.getTime()||0)-(parsePortalDate(a.date)?.getTime()||0))[0];
     document.getElementById('dash-average-score').textContent=latestScore?scorePct(latestScore)+'%':'—';
     if(document.getElementById('dash-kpi-latest-score')) document.getElementById('dash-kpi-latest-score').textContent=latestScore?scorePct(latestScore)+'%':'—';
     if(document.getElementById('dash-rank-big-secondary')) document.getElementById('dash-rank-big-secondary').textContent=rank;
@@ -2306,36 +2076,17 @@ input:focus,select:focus,textarea:focus{
     scoresList.innerHTML=latestScore?`<li><span>${latestScore.date||''} — ${latestScore.name||'Latest Test'}</span><span>${latestScore.score}/${latestScore.max} · ${scorePct(latestScore)}% · Rank ${recent.rank&&recent.size?'#'+recent.rank+'/'+recent.size:'—'}</span></li>`:'<li>No test scores yet</li>';
     if(scores.length)renderScoreChart(scores); else if(window.scoreChartInstance)window.scoreChartInstance.destroy();
     const notesList=document.getElementById('dash-notes-list'); const notes=Array.isArray(data.notes)?data.notes:[]; notesList.innerHTML=notes.length?notes.map(n=>`<li><span>${n.title}</span><span><a href="${n.url}" target="_blank">View</a> · <a href="${n.url}" download>Download</a></span></li>`).join(''):'<li>No notes assigned yet</li>';
-    if(window.renderStudentV9) window.renderStudentV9(data,scores,overall,streak);
     studentDashboard.style.display='block';
     } catch(err) {
-      // Fail-safe: even if Firestore is temporarily unavailable, authenticated
-      // students still get a useful premium dashboard instead of a blank screen.
       console.error('Student dashboard load failed:', err);
       const foundContent = document.getElementById('dash-found-content');
       const notFoundContent = document.getElementById('dash-not-found-content');
-      const fallback = {
-        name:'Student', class:'', batchName:'', batchTiming:'Not assigned yet',
-        admissionDate:'', feeStatus:'Due', monthlyFees:[],
-        attendance:{log:[],percent:0}, batchStats:{}, testScores:[], notes:[]
-      };
-      if(foundContent) foundContent.style.display='block';
-      if(notFoundContent) notFoundContent.style.display='none';
-      currentStudentClass=null; currentStudentBatchName=null;
-      document.getElementById('dash-name').textContent='Student';
-      const emailEl=document.getElementById('dash-email');
-      if(emailEl) emailEl.textContent=email||'';
-      const start=document.getElementById('mp-student-start');
-      if(start){
-        start.classList.remove('mp-has-data');
-        const title=document.getElementById('mp-start-title');
-        const sub=document.getElementById('mp-start-subtitle');
-        const status=document.getElementById('mp-start-status');
-        if(title) title.textContent='Your learning dashboard is ready 🚀';
-        if(sub) sub.textContent='We are waiting for your academic data. Your attendance, tests, notes and notices will appear automatically once they are synced.';
-        if(status) status.textContent='Live dashboard · Waiting for academic data';
+      if(foundContent) foundContent.style.display='none';
+      if(notFoundContent){
+        notFoundContent.style.display='block';
+        notFoundContent.innerHTML = '<div class="dash-not-found"><strong>We could not load your dashboard.</strong><br><span style="font-size:12px;color:#B9C2D6;">Please refresh once. If the problem continues, contact Maths Pathshala.</span></div>';
       }
-      try{ if(window.renderStudentV9) window.renderStudentV9(fallback,[],0,0); }catch(e){ console.warn('Fallback dashboard renderer:',e); }
+      document.getElementById('dash-name').textContent='Student';
     }
   }
 
@@ -2422,92 +2173,7 @@ input:focus,select:focus,textarea:focus{
 
 </script>
 
-
-<style id="mp-v9-student-dashboard">
-.student-v9-zone{margin:18px 0 20px;padding:22px;border:1px solid rgba(11,30,61,.09);border-radius:22px;background:linear-gradient(145deg,#ffffff,#f4f8ff);box-shadow:0 14px 35px rgba(11,30,61,.07)}
-.student-v9-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:16px}.student-v9-head h3{margin:4px 0 5px;color:#071b38;font-size:20px}.student-v9-head p{margin:0;color:#53647d;font-size:13px}.student-v9-status{display:flex;align-items:center;gap:7px;background:#eef7f2;border:1px solid #cce9d9;color:#176b45;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:800;white-space:nowrap}.status-dot{width:7px;height:7px;border-radius:50%;background:#1f9d62;box-shadow:0 0 0 4px rgba(31,157,98,.12)}
-.student-v9-grid{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:12px}.student-v9-card{position:relative;display:flex;gap:12px;align-items:flex-start;padding:16px;border:1px solid #dfe7f2;border-radius:17px;background:#fff;box-shadow:0 7px 18px rgba(11,30,61,.05);transition:.2s ease}.student-v9-card:hover{transform:translateY(-2px);box-shadow:0 12px 25px rgba(11,30,61,.09)}.v9-card-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:#eaf1ff;font-size:18px;flex:0 0 38px}.v9-label{display:block;font-size:9px;letter-spacing:.12em;font-weight:900;color:#6b7b93}.student-v9-card strong{display:block;color:#071b38;font-size:22px;margin:2px 0}.student-v9-card small{display:block;color:#60718a;font-size:11px;line-height:1.45}.v9-meter{position:absolute;left:16px;right:16px;bottom:8px;height:4px;border-radius:99px;background:#e7edf5;overflow:hidden}.v9-meter span{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#173f7a,#f3ae28);transition:width .7s ease}.student-v9-lower{display:grid;grid-template-columns:1.2fr 1fr;gap:12px;margin-top:12px}.student-v9-list-card{border:1px solid #dfe7f2;border-radius:17px;background:#fff;padding:16px}.v9-list-head h4{margin:3px 0 12px;color:#071b38;font-size:15px}.v9-history{display:grid;gap:8px}.v9-history-row{display:flex;justify-content:space-between;gap:10px;padding:10px 11px;border:1px solid #e7edf4;border-radius:11px;background:#fbfcfe}.v9-history-row strong{font-size:12px;color:#102746}.v9-history-row span{font-size:11px;color:#5f7089}.v9-score{font-weight:900!important;color:#123f78!important}.v9-resources{display:grid;gap:8px}.v9-resource{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 11px;border:1px solid #e7edf4;border-radius:11px}.v9-resource strong{font-size:12px;color:#102746}.v9-resource a{font-size:11px;font-weight:900;color:#124a8a;text-decoration:none;background:#eaf2ff;padding:6px 9px;border-radius:8px}.v9-empty{font-size:12px;color:#8190a4;padding:12px 0}.dash-notices{position:relative;z-index:2}
-@media(max-width:760px){.student-v9-head{flex-direction:column}.student-v9-grid,.student-v9-lower{grid-template-columns:1fr}.student-v9-zone{padding:15px;border-radius:18px}.student-v9-status{align-self:flex-start}.student-v9-card{padding:14px}.student-v9-card strong{font-size:20px}.v9-history-row,.v9-resource{flex-direction:column;align-items:flex-start}.v9-resource a{width:100%;text-align:center}}
-</style>
-
-
-<script id="mp-v9-student-dashboard-js">
-(function(){
-  // Keep this classic-script renderer self-contained. ES module functions such as
-  // scorePct/parsePortalDate are not visible inside a normal <script> block.
-  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-  function v9ScorePct(s){ return s && Number(s.max)>0 ? Math.round(Number(s.score)/Number(s.max)*100) : 0; }
-  function v9ParseDate(value){
-    if(!value) return null;
-    if(/^\d{4}-\d{2}-\d{2}$/.test(String(value))) return new Date(String(value)+'T00:00:00');
-    const m=String(value).match(/^(\d{1,2})\s+([A-Za-z]{3})(?:\s+(\d{4}))?$/);
-    if(m){ const year=m[3]||String(new Date().getFullYear()); const d=new Date(`${m[1]} ${m[2]} ${year} 00:00:00`); if(!isNaN(d.getTime())) return d; }
-    const d=new Date(value); return isNaN(d.getTime())?null:d;
-  }
-  window.renderStudentV9=function(data,scores,overall,streak){
-    const prep=Math.round((Number(overall||0)*0.45)+(scores.length?Math.max(0,Math.min(100,scores.reduce((a,x)=>a+v9ScorePct(x),0)/scores.length))*0.55:0));
-    const starter=document.getElementById('mp-student-start');
-    if(starter){
-      const hasAttendance=Array.isArray(data.attendance?.log) && data.attendance.log.length>0;
-      const hasTests=scores.length>0;
-      const hasNotes=Array.isArray(data.notes) && data.notes.length>0;
-      starter.classList.toggle('mp-has-data',hasAttendance||hasTests||hasNotes);
-      const title=document.getElementById('mp-start-title'), sub=document.getElementById('mp-start-subtitle'), status=document.getElementById('mp-start-status');
-      if(title&&sub&&status){
-        if(hasAttendance||hasTests||hasNotes){ title.textContent='Your learning journey is in motion ✨'; sub.textContent='Keep showing up, practising and using your resources. Your dashboard will keep updating with every new academic record.'; status.textContent='Live academic progress enabled'; }
-        else { title.textContent='Welcome to your learning space 🚀'; sub.textContent='No academic records yet — that is completely normal for a new student. This space is ready and will fill automatically as your journey begins.'; status.textContent='Ready for your first update'; }
-      }
-    }
-    const meter=document.getElementById('dash-prep-meter'); if(meter) meter.style.width=prep+'%';
-    const ps=document.getElementById('dash-prep-score'); if(ps) ps.textContent=prep+'%';
-    const pt=document.getElementById('dash-prep-text'); if(pt) pt.textContent=prep>=85?'Excellent consistency — keep pushing.':prep>=70?'Good progress — stay regular with tests.':'Build your routine with attendance and practice.';
-    const at=document.getElementById('dash-achievement-title'), ax=document.getElementById('dash-achievement-text');
-    if(at&&ax){ if(streak>=7){at.textContent='🔥 7+ Class Streak';ax.textContent='Excellent attendance consistency.'} else if(overall>=90){at.textContent='⭐ Attendance Star';ax.textContent='90%+ overall attendance.'} else if(scores.length>=5){at.textContent='🎯 Test Regular';ax.textContent='5 or more tests recorded.'} else {at.textContent='🚀 Keep building';ax.textContent='Every class and test moves you forward.'} }
-    const rc=document.getElementById('dash-recent-tests-count');if(rc)rc.textContent=scores.length;
-    const hist=document.getElementById('dash-v9-test-history');
-    const sorted=scores.slice().sort((a,b)=>(parsePortalDate(b.date)?.getTime()||0)-(parsePortalDate(a.date)?.getTime()||0)).slice(0,5);
-    if(hist) hist.innerHTML=sorted.length?sorted.map(x=>`<div class="v9-history-row"><div><strong>${esc(x.name||'Test')}</strong><span>${esc(x.date||'Date not set')}</span></div><span class="v9-score">${v9ScorePct(x)}%</span></div>`).join(''):'<div class="v9-empty">No tests recorded yet.</div>';
-    const res=document.getElementById('dash-v9-resources'); const notes=Array.isArray(data.notes)?data.notes.slice(0,5):[];
-    if(res) res.innerHTML=notes.length?notes.map(n=>`<div class="v9-resource"><strong>${esc(n.title||'Study Material')}</strong><a href="${esc(n.url||'#')}" target="_blank" rel="noopener">Open →</a></div>`).join(''):'<div class="v9-empty">No notes assigned yet.</div>';
-  };
-})();
-</script>
-
 </body>
-
-<style id="mp-final-hero-buttons">
-/* Final premium readability + CTA polish */
-.conversion-hero{
-  background:
-    radial-gradient(circle at 82% 18%,rgba(242,181,68,.20),transparent 28%),
-    radial-gradient(circle at 18% 80%,rgba(37,99,235,.10),transparent 30%),
-    linear-gradient(135deg,#07162f 0%,#0d2853 52%,#123b73 100%) !important;
-  color:#fff !important;
-}
-.conversion-hero:before{background:radial-gradient(circle,rgba(242,181,68,.24),transparent 68%) !important;}
-.conversion-hero .hero-copy{position:relative;z-index:4;}
-.conversion-hero .hero-copy h1,
-.conversion-hero .hero-copy h1 *{color:#fff !important;text-shadow:0 3px 18px rgba(0,0,0,.32);}
-.conversion-hero .hero-copy .sub{color:#dce7f7 !important;text-shadow:0 2px 10px rgba(0,0,0,.20);}
-.conversion-hero .hero-copy .section-tag,
-.conversion-hero .hero-copy .badge{background:rgba(255,255,255,.12) !important;color:#ffe19a !important;border:1px solid rgba(255,255,255,.18);}
-.conversion-hero .conversion-proof{background:rgba(255,255,255,.08) !important;border-color:rgba(255,255,255,.16) !important;backdrop-filter:blur(12px);box-shadow:0 16px 35px rgba(0,0,0,.18);}
-.conversion-hero .conversion-proof div{border-color:rgba(255,255,255,.12) !important;}
-.conversion-hero .conversion-proof strong{color:#fff !important;}
-.conversion-hero .conversion-proof span{color:#b9c9df !important;}
-.conversion-hero .hero-ctas .btn-primary{background:linear-gradient(135deg,#ffd166 0%,#f2b544 55%,#e5a52d 100%) !important;color:#07162f !important;border:1px solid rgba(255,255,255,.28) !important;box-shadow:0 12px 30px rgba(242,181,68,.28),inset 0 1px 0 rgba(255,255,255,.45) !important;}
-.conversion-hero .hero-ctas .btn-outline{background:rgba(255,255,255,.10) !important;color:#fff !important;border:1px solid rgba(255,255,255,.42) !important;box-shadow:0 10px 26px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.10) !important;}
-.conversion-hero .hero-ctas .btn-outline:hover{background:#fff !important;color:#102a56 !important;border-color:#fff !important;}
-.hero-ctas .btn{min-height:50px;font-weight:800;letter-spacing:.01em;}
-.hero-ctas .btn span{transition:transform .2s ease;display:inline-block;}
-.hero-ctas .btn:hover span{transform:translateX(4px);}
-/* Fix light/white outline buttons on lower sections */
-main .btn-outline{background:linear-gradient(135deg,#102a56,#173e78) !important;color:#fff !important;border:1px solid #102a56 !important;box-shadow:0 8px 20px rgba(16,42,86,.14) !important;}
-main .btn-outline:hover{background:linear-gradient(135deg,#173e78,#0d2853) !important;color:#fff !important;border-color:#f2b544 !important;box-shadow:0 12px 28px rgba(16,42,86,.20) !important;}
-main .btn-primary{box-shadow:0 9px 24px rgba(242,181,68,.22),inset 0 1px 0 rgba(255,255,255,.35) !important;}
-@media(max-width:600px){.conversion-hero .hero-copy h1{font-size:clamp(39px,12vw,58px)!important;}.hero-ctas .btn{min-height:52px;}}
-</style>
-
 </html>
 
 <style>
@@ -2568,247 +2234,4 @@ main .btn-primary{box-shadow:0 9px 24px rgba(242,181,68,.22),inset 0 1px 0 rgba(
   @media(max-width:900px){.conversion-hero-inner{grid-template-columns:1fr;gap:34px;}.hero-enquiry-card{max-width:620px;width:100%;}.conversion-proof{width:100%;}.conversion-proof div{flex:1;min-width:110px;}}
   @media(max-width:600px){.admission-ribbon-track{justify-content:flex-start;overflow:hidden;font-size:10px;gap:12px;}.conversion-hero{padding:55px 20px 58px;}.conversion-hero .hero-ctas{gap:10px;}.conversion-hero .hero-ctas .btn{width:100%;justify-content:center;}.conversion-proof div{min-width:33.33%;padding:12px 10px;}.conversion-proof strong{font-size:12px;}.conversion-proof span{font-size:9.5px;}.hero-enquiry-card{padding:22px;border-radius:20px;}.hero-enquiry-card h2{font-size:24px;}.hero-card-options{grid-template-columns:1fr;}}
   @media(prefers-reduced-motion:reduce){.admission-ribbon-track{animation:none;}}
-</style>
-
-<style id="mp-v4-batch-register">
-/* Premium batch cards + admission CTA */
-.batch-card{
-  background:linear-gradient(145deg,#ffffff 0%,#f8fbff 100%) !important;
-  color:#071b38 !important;
-  border:1px solid rgba(11,30,61,.10) !important;
-  border-radius:22px !important;
-  box-shadow:0 18px 42px rgba(11,30,61,.10) !important;
-  position:relative;overflow:hidden;
-  transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;
-}
-.batch-card:before{content:"";position:absolute;inset:0 auto auto 0;width:100%;height:4px;background:linear-gradient(90deg,#f2b544,#ffd978,#21477f);}
-.batch-card:after{content:"";position:absolute;width:150px;height:150px;right:-70px;top:-75px;border-radius:50%;background:rgba(242,181,68,.10);pointer-events:none;}
-.batch-card:hover{transform:translateY(-6px);box-shadow:0 24px 52px rgba(11,30,61,.15) !important;border-color:rgba(242,181,68,.55) !important;}
-.batch-card-class{color:#a66b00 !important;font-weight:800 !important;}
-.batch-card-name{color:#071b38 !important;}
-.batch-card .seats-label{color:#21477f !important;font-weight:700;}
-.batch-card .seat{border-color:#f2b544 !important;background:#fff !important;color:#071b38;}
-.batch-card .seat.filled{background:#f2b544 !important;color:#071b38;}
-.batch-card .batch-launch-pill{background:#071b38 !important;color:#fff !important;border:1px solid rgba(242,181,68,.45);}
-
-.register-ctas{gap:18px !important;margin-top:6px;}
-.register-ctas .btn{
-  min-height:54px;padding:15px 25px !important;border-radius:14px !important;
-  font-weight:800 !important;letter-spacing:.01em;
-  justify-content:center;position:relative;overflow:hidden;
-  box-shadow:0 10px 24px rgba(11,30,61,.12);
-  transition:transform .2s ease,box-shadow .2s ease,filter .2s ease !important;
-}
-.register-ctas .btn:hover{transform:translateY(-3px);box-shadow:0 16px 30px rgba(11,30,61,.18);filter:saturate(1.08);}
-.register-ctas #form-btn{
-  background:linear-gradient(135deg,#f2b544 0%,#d99318 100%) !important;
-  color:#071b38 !important;border:1px solid #e2a32d !important;
-  text-shadow:none !important;
-}
-.register-ctas #form-btn:after{content:"↗";margin-left:8px;font-size:16px;}
-.register-ctas #register-wa{
-  background:linear-gradient(135deg,#0b7d4f 0%,#159b63 100%) !important;
-  color:#ffffff !important;border:1px solid #087047 !important;
-  text-shadow:0 1px 2px rgba(0,0,0,.18);
-}
-.register-ctas #register-wa:before{content:"💬";margin-right:8px;}
-.register-ctas #register-wa:after{content:"→";margin-left:8px;}
-@media(max-width:600px){
- .register-ctas{display:grid !important;grid-template-columns:1fr;gap:12px !important;}
- .register-ctas .btn{width:100%;min-height:56px;}
- .batch-card{padding:24px 21px !important;}
-}
-</style>
-
-<style id="mp-v5-batch-contrast">
-/* Final readability fix for dynamic batch cards */
-.batch-card{isolation:isolate;}
-.batch-card > *{position:relative;z-index:2;}
-.batch-card .batch-card-class{
-  display:inline-flex !important; align-items:center;
-  padding:7px 12px !important; margin-bottom:8px !important;
-  border-radius:999px !important;
-  background:#071b38 !important; color:#ffd166 !important;
-  font-size:12px !important; font-weight:900 !important;
-  letter-spacing:.06em !important; line-height:1 !important;
-  text-transform:uppercase !important;
-  box-shadow:0 6px 14px rgba(7,27,56,.14) !important;
-}
-.batch-card .batch-card-name{
-  display:block !important; color:#071b38 !important;
-  font-size:21px !important; line-height:1.25 !important;
-  margin:7px 0 10px !important; font-weight:850 !important;
-}
-.batch-card p{
-  color:#34445d !important; opacity:1 !important;
-}
-.batch-card .seats-label{
-  display:inline-flex !important; align-items:center;
-  background:#eef4fb !important; color:#173b6d !important;
-  border:1px solid #d8e4f2 !important;
-  padding:8px 11px !important; border-radius:10px !important;
-}
-.batch-card .batch-launch-pill{position:relative !important;z-index:3 !important;}
-</style>
-
-<style id="mp-v6-feedback-buttons">
-/* Real Feedback section — final button readability/premium fix */
-#real-feedback .btn,
-section#real-feedback .btn,
-.real-feedback .btn,
-main .service-card .btn{
-  display:inline-flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  gap:8px !important;
-  min-height:50px !important;
-  padding:13px 20px !important;
-  border-radius:14px !important;
-  font-weight:850 !important;
-  font-size:14px !important;
-  line-height:1.2 !important;
-  text-decoration:none !important;
-  opacity:1 !important;
-  visibility:visible !important;
-  text-shadow:none !important;
-  position:relative !important;
-  z-index:5 !important;
-}
-#real-feedback .btn-outline,
-section#real-feedback .btn-outline,
-.real-feedback .btn-outline,
-main .service-card .btn-outline{
-  background:linear-gradient(135deg,#102a56 0%,#1b4b86 100%) !important;
-  color:#ffffff !important;
-  -webkit-text-fill-color:#ffffff !important;
-  border:1px solid rgba(242,181,68,.65) !important;
-  box-shadow:0 10px 24px rgba(16,42,86,.18),inset 0 1px 0 rgba(255,255,255,.16) !important;
-}
-#real-feedback .btn-outline:hover,
-section#real-feedback .btn-outline:hover,
-.real-feedback .btn-outline:hover,
-main .service-card .btn-outline:hover{
-  background:linear-gradient(135deg,#173e78 0%,#0b2349 100%) !important;
-  color:#ffd166 !important;
-  -webkit-text-fill-color:#ffd166 !important;
-  border-color:#ffd166 !important;
-  transform:translateY(-3px) !important;
-  box-shadow:0 16px 30px rgba(16,42,86,.25),inset 0 1px 0 rgba(255,255,255,.18) !important;
-}
-#real-feedback .service-card,
-.real-feedback .service-card{overflow:visible !important;}
-@media(max-width:600px){
-  #real-feedback .btn,.real-feedback .btn,main .service-card .btn{width:100% !important;}
-}
-</style>
-<style id="mp-v7-testimonial-blue-buttons">
-/* REAL FEEDBACK / REVIEWS — force premium blue buttons */
-#testimonials .services-grid .service-card > a.btn,
-#testimonials .service-card a.btn.btn-outline,
-#testimonials .service-card .btn{
-  background:linear-gradient(135deg,#0b2a5b 0%,#1769aa 52%,#0d4f86 100%) !important;
-  color:#fff !important;
-  -webkit-text-fill-color:#fff !important;
-  border:1px solid rgba(255,209,102,.72) !important;
-  box-shadow:0 10px 24px rgba(7,35,75,.28), inset 0 1px 0 rgba(255,255,255,.18) !important;
-  font-weight:800 !important;
-  opacity:1 !important;
-  visibility:visible !important;
-  text-shadow:0 1px 2px rgba(0,0,0,.25) !important;
-  transition:transform .22s ease,box-shadow .22s ease,background .22s ease,border-color .22s ease !important;
-}
-#testimonials .services-grid .service-card > a.btn:hover,
-#testimonials .service-card a.btn.btn-outline:hover,
-#testimonials .service-card .btn:hover{
-  background:linear-gradient(135deg,#123d7a 0%,#0d5f9f 55%,#092c5c 100%) !important;
-  color:#ffd166 !important;
-  -webkit-text-fill-color:#ffd166 !important;
-  border-color:#ffd166 !important;
-  transform:translateY(-3px) !important;
-  box-shadow:0 16px 32px rgba(7,35,75,.36),inset 0 1px 0 rgba(255,255,255,.2) !important;
-}
-#testimonials .services-grid .service-card > a.btn:focus-visible{
-  outline:3px solid rgba(255,209,102,.45) !important;
-  outline-offset:3px !important;
-}
-@media(max-width:800px){
-  #testimonials .services-grid{grid-template-columns:1fr !important;}
-  #testimonials .services-grid .service-card > a.btn{width:100% !important;}
-}
-</style>
-
-
-<style id="mp-v8-responsive-app-frame">
-/* V8 — responsive framing for Android APK/WebView + mobile + desktop */
-html{width:100%;max-width:100%;overflow-x:hidden;scroll-behavior:smooth;}
-body{width:100%;max-width:100%;overflow-x:hidden;margin:0;padding:0;}
-*,*::before,*::after{box-sizing:border-box;}
-img,video,canvas,svg,iframe{max-width:100%;}
-
-/* Keep the top announcement/header inside the viewport on every device */
-.admission-ribbon{width:100%;max-width:100vw;overflow:hidden;padding-top:env(safe-area-inset-top,0px);}
-.admission-ribbon-track{width:max-content;min-width:100%;white-space:nowrap;}
-header{width:100%;max-width:100vw;overflow:visible;}
-header nav{width:100%;max-width:1280px;margin:0 auto;min-width:0;}
-
-/* Prevent long labels/URLs from pushing cards wider than the screen */
-.hero-copy,.hero-enquiry-card,.batch-card,.service-card,.tutor-card,.student-panel,.section-inner,.container{min-width:0;}
-h1,h2,h3,p,a,span,strong,small,button{overflow-wrap:anywhere;}
-
-/* Desktop: keep the main frame comfortably centered */
-@media(min-width:901px){
-  .conversion-hero-inner{width:min(1180px,100%);margin:0 auto;}
-  main section>.section-inner,main section>.container{width:min(1180px,100%);margin-left:auto;margin-right:auto;}
-}
-
-/* Tablet */
-@media(max-width:900px){
-  header nav{padding-left:18px;padding-right:18px;}
-  .conversion-hero-inner{width:100%;}
-  .hero-enquiry-card{margin-left:auto;margin-right:auto;}
-}
-
-/* Phone/WebView */
-@media(max-width:600px){
-  body{font-size:15px;}
-  .admission-ribbon{position:relative;}
-  .admission-ribbon-track{min-height:36px;padding:8px 16px;gap:12px;}
-  header nav{min-height:62px;padding:10px 14px;gap:8px;}
-  .logo{max-width:calc(100% - 52px);font-size:20px;white-space:nowrap;}
-  .hamburger-btn{flex:0 0 42px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;}
-  .mobile-menu{max-width:calc(100vw - 20px);right:10px;left:10px;width:auto;}
-  .conversion-hero{width:100%;padding-left:16px;padding-right:16px;overflow:hidden;}
-  .conversion-hero-inner{gap:24px;}
-  .hero-copy h1{max-width:100%;font-size:clamp(34px,10.5vw,48px)!important;line-height:1.06!important;}
-  .hero-copy .sub{max-width:100%;font-size:14px;line-height:1.65;}
-  .hero-ctas{width:100%;}
-  .hero-ctas .btn{width:100%!important;min-width:0;}
-  .conversion-proof{width:100%;display:grid!important;grid-template-columns:repeat(3,1fr);}
-  .conversion-proof div{min-width:0!important;width:100%;padding:12px 7px!important;text-align:center;align-items:center;}
-  .conversion-proof strong,.conversion-proof span{overflow-wrap:normal;word-break:normal;}
-  .conversion-proof strong{font-size:11px!important;}
-  .conversion-proof span{font-size:9px!important;line-height:1.25;}
-  .hero-enquiry-card{width:100%;max-width:100%;padding:20px!important;}
-  .hero-card-top{gap:8px;}
-  .hero-card-options{width:100%;}
-  .hero-card-btn{width:100%!important;}
-  .batch-card{width:100%;max-width:100%;}
-  .register-ctas .btn{width:100%!important;min-width:0;}
-}
-
-/* Very narrow phones */
-@media(max-width:380px){
-  .admission-ribbon-track{font-size:9px;}
-  header nav{padding-left:10px;padding-right:10px;}
-  .logo{font-size:18px;}
-  .conversion-hero{padding-left:12px;padding-right:12px;}
-  .conversion-proof div{padding-left:4px!important;padding-right:4px!important;}
-  .conversion-proof strong{font-size:10px!important;}
-  .conversion-proof span{font-size:8.5px!important;}
-}
-
-/* Android WebView / touch devices: remove accidental hover-state sticking */
-@media(hover:none){
-  .btn:hover,.batch-card:hover{transform:none!important;}
-}
 </style>
