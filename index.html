@@ -290,10 +290,16 @@
     background:var(--paper);color:var(--navy);border-radius:14px;border:1px solid var(--line);overflow:hidden;position:relative;
   }
   .batch-card-launch{border:2px solid var(--amber);}
-  .batch-card-featured-pill{position:absolute;top:12px;right:12px;background:var(--amber);color:var(--navy);font-size:10.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;padding:4px 12px;border-radius:20px;z-index:1;}
-  .batch-card-banner{background:linear-gradient(135deg,#FDF0DA,#F5D9A0);padding:14px 18px 0;}
+  .batch-card-featured-pill{position:absolute;top:12px;right:12px;background:var(--amber);color:var(--navy);font-size:10.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;padding:4px 12px;border-radius:20px;z-index:1;animation:pillPulse 1.8s ease-in-out infinite;}
+  @keyframes pillPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,166,35,.55);}50%{box-shadow:0 0 0 8px rgba(245,166,35,0);}}
+  .batch-card-banner{background:linear-gradient(135deg,#FDF0DA,#F5D9A0);padding:14px 18px 0;overflow:hidden;}
   .batch-card-plans{font-size:11px;font-weight:700;color:var(--amber-dark);}
-  .batch-card-photo{height:78px;margin-top:10px;border-radius:8px 8px 0 0;background:var(--navy);display:flex;align-items:center;justify-content:center;color:#9FB0CC;font-size:12px;font-weight:600;letter-spacing:.02em;}
+  .batch-card-photo{height:78px;margin-top:10px;border-radius:8px 8px 0 0;background:var(--navy);display:flex;align-items:center;justify-content:center;color:#9FB0CC;font-size:12px;font-weight:600;letter-spacing:.02em;transition:transform .4s ease;}
+  .batch-card:hover .batch-card-photo{transform:scale(1.06);}
+  .batch-card-seatbar-wrap{margin-top:14px;}
+  .batch-card-seatbar-label{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-bottom:5px;}
+  .batch-card-seatbar-track{height:6px;background:var(--cream);border-radius:99px;overflow:hidden;}
+  .batch-card-seatbar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--amber-dark),var(--amber));border-radius:99px;transition:width 1s cubic-bezier(.2,.8,.2,1);}
   .batch-card-body{padding:20px 22px 22px;}
   .batch-card-toprow{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
   .batch-card-class{font-size:12px;font-weight:700;color:var(--amber-dark);text-transform:uppercase;letter-spacing:.04em;}
@@ -681,7 +687,8 @@
   .why-item:hover{background:#fffcf5;}
   .price-card.featured{background:linear-gradient(160deg,#fffdf8,#fff4dd);box-shadow:0 18px 38px rgba(181,118,15,.14);}
   .price-card.featured:before{box-shadow:0 6px 14px rgba(181,118,15,.22);}
-  .batch-card{border-radius:20px;background:linear-gradient(145deg,#081b37 0%,#17396b 100%);box-shadow:0 18px 35px rgba(11,30,61,.18);}
+  .batch-card{border-radius:20px;box-shadow:0 12px 28px rgba(11,30,61,.08);transition:transform .3s ease, box-shadow .3s ease;}
+  .batch-card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(11,30,61,.14);}
   .register-box{border-radius:24px;background:radial-gradient(circle at 92% 6%,rgba(245,166,35,.17),transparent 15rem),#fff;padding:56px 44px;}
   .trust-strip{background:rgba(255,255,255,.7);border-color:rgba(11,30,61,.08);}
 
@@ -1714,6 +1721,16 @@
               ? `<ul style="list-style:none;margin:0;padding:0;">${b.details.map(d => `<li style="padding:6px 0;border-top:1px solid var(--line);display:flex;gap:8px;"><span style="color:var(--amber-dark);flex-shrink:0;">—</span><span>${d}</span></li>`).join('')}</ul>`
               : intro
           }</div>
+          ${(() => {
+            const capacity = Number(b.capacity) || 7;
+            const filled = Math.min(Number(b.filled) || 0, capacity);
+            const pct = Math.round((filled / capacity) * 100);
+            const seatsLeft = capacity - filled;
+            return `<div class="batch-card-seatbar-wrap">
+              <div class="batch-card-seatbar-label"><span>${filled}/${capacity} seats filled</span><span>${seatsLeft > 0 ? seatsLeft + ' left' : 'Full'}</span></div>
+              <div class="batch-card-seatbar-track"><div class="batch-card-seatbar-fill" data-target-width="${pct}"></div></div>
+            </div>`;
+          })()}
           <div class="batch-card-seats">🔥 Limited admissions · Enroll early</div>
         </div>
       </div>`;
@@ -1746,7 +1763,19 @@
       el.classList.add('reveal');
       revealObserver.observe(el);
     });
+    document.querySelectorAll('.batch-card-seatbar-fill:not([data-observed])').forEach(el => {
+      el.setAttribute('data-observed', '1');
+      seatbarObserver.observe(el);
+    });
   });
+  const seatbarObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(!entry.isIntersecting) return;
+      const el = entry.target;
+      requestAnimationFrame(() => { el.style.width = (el.dataset.targetWidth || 0) + '%'; });
+      seatbarObserver.unobserve(el);
+    });
+  }, { threshold: 0.3 });
   const batchGridEl = document.getElementById('batch-cards-grid');
   if(batchGridEl) batchGridObserver.observe(batchGridEl, { childList: true });
 
