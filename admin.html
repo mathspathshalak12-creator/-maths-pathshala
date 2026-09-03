@@ -309,6 +309,10 @@
         <input type="text" id="batch-name-input" placeholder="Batch name, e.g. Rankers">
       </div>
       <div style="margin-top:14px;"><input type="text" id="batch-intro-input" placeholder="Short batch intro, e.g. Complete Maths syllabus + weekly tests + doubt support"></div>
+      <div style="margin-top:14px;">
+        <label style="display:block;font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px;">Deep intro points (one per line — shown when card is expanded)</label>
+        <textarea id="batch-details-input" rows="4" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13.5px;resize:vertical;" placeholder="For Class 12th CBSE Science students&#10;Starts on 27 Jul 2026, ends 1 Apr 2027&#10;Complete syllabus with weekly tests&#10;Small batch, personal doubt support"></textarea>
+      </div>
       <div class="row2" style="margin-top:14px;">
         <input type="text" id="batch-timing-input" placeholder="Timing, e.g. Mon/Wed/Fri · 5 PM">
         <input type="number" id="batch-base-fee-input" min="0" step="100" placeholder="Original fee (optional), e.g. 10000">
@@ -323,6 +327,11 @@
           <option value="yes">Launch popup: ON</option>
           <option value="no">Launch popup: OFF</option>
         </select>
+      </div>
+      <div style="margin-top:14px;">
+        <label style="display:block;font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px;">Batch poster / photo (shown on the card banner)</label>
+        <input type="file" id="batch-photo-input" accept="image/png,image/jpeg,image/webp">
+        <div id="batch-photo-preview" style="margin-top:8px;"></div>
       </div>
       <div class="launch-preview" id="batch-launch-preview">Set an original fee and offer to preview the launch price.</div>
       <div class="row2" style="margin-top:14px;"><button class="btn" id="add-batch-btn" style="margin-top:0;">+ Launch / Create Batch</button></div>
@@ -1145,6 +1154,8 @@
       return {
         class: b.class, name: b.name,
         intro: b.intro || "Focused offline coaching with regular practice, testing and doubt support.",
+        details: b.details || [],
+        timing: b.timing || '', photoUrl: b.photoUrl || '',
         capacity: b.capacity || 7, filled,
         baseFee: b.baseFee || 0, offerPercent: b.offerPercent || 0, launchPrice: b.launchPrice || 0,
         launchTitle: b.launchTitle || `${b.name} — Admissions Open`,
@@ -2150,6 +2161,14 @@
     }
   });
 
+  document.getElementById('batch-photo-input').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    const preview = document.getElementById('batch-photo-preview');
+    if(!file){ preview.innerHTML = ''; return; }
+    const url = URL.createObjectURL(file);
+    preview.innerHTML = `<img src="${url}" alt="Batch poster preview" style="max-width:220px;max-height:110px;border-radius:8px;border:1px solid #e5e9f0;">`;
+  });
+
   document.getElementById('upload-signature-btn').addEventListener('click',async()=>{
     const btn=document.getElementById('upload-signature-btn');
     const file=document.getElementById('teacher-signature-input').files[0];
@@ -2297,6 +2316,7 @@
     const capacity = 7;
     const timing = document.getElementById('batch-timing-input').value.trim() || 'Timing to be confirmed';
     const intro = document.getElementById('batch-intro-input').value.trim() || 'Focused offline coaching with regular practice, testing and doubt support.';
+    const details = document.getElementById('batch-details-input').value.split('\n').map(s => s.trim()).filter(Boolean);
     const baseFee = parseFloat(document.getElementById('batch-base-fee-input').value) || 0;
     const offerPercent = Math.min(100, Math.max(0, parseFloat(document.getElementById('batch-offer-input').value) || 0));
     const launchTitle = document.getElementById('batch-launch-title-input').value.trim() || `${name} — Admissions Open`;
@@ -2310,13 +2330,25 @@
     const btn = document.getElementById('add-batch-btn');
     btn.disabled = true; btn.textContent = 'Launching...';
     try{
+      let photoUrl = '';
+      const photoFile = document.getElementById('batch-photo-input').files[0];
+      if(photoFile){
+        btn.textContent = 'Uploading poster...';
+        const path = `batch-photos/${Date.now()}-${photoFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+        const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('Upload timed out after '+(ms/1000)+'s — check your internet connection or Firebase Storage setup.')),ms))]);
+        const snap = await withTimeout(uploadBytes(storageRef(storage, path), photoFile), 20000);
+        photoUrl = await withTimeout(getDownloadURL(snap.ref), 15000);
+      }
+      btn.textContent = 'Launching...';
       await addDoc(collection(db, "batches"), {
-        class: cls, name, capacity, timing, intro,
+        class: cls, name, capacity, timing, intro, details, photoUrl,
         baseFee, offerPercent, launchPrice,
         launchTitle, launchSubtitle, launchActive,
         createdAt: serverTimestamp()
       });
-      ['batch-name-input','batch-intro-input','batch-timing-input','batch-base-fee-input','batch-launch-title-input','batch-launch-subtitle-input'].forEach(id => document.getElementById(id).value = '');
+      ['batch-name-input','batch-intro-input','batch-timing-input','batch-base-fee-input','batch-launch-title-input','batch-launch-subtitle-input','batch-details-input'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('batch-photo-input').value = '';
+      document.getElementById('batch-photo-preview').innerHTML = '';
       document.getElementById('batch-offer-input').value = '0';
       document.getElementById('batch-launch-active-input').value = 'yes';
       updateLaunchPreview();
