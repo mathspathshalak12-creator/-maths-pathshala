@@ -426,6 +426,7 @@
 
   /* EMBEDDED STUDENT DASHBOARD */
   #student-dashboard{display:none;padding:32px 0 0;}
+  #student-dashboard.mp-dashboard-visible{display:block;}
   .dash-panel{
     position:relative;overflow:hidden;
     background:linear-gradient(155deg, #0B1E3D 0%, #0E2547 55%, #122A52 100%);
@@ -1933,6 +1934,10 @@ input:focus,select:focus,textarea:focus{
   onAuthStateChanged(auth, async (user) => {
     if(user){
       isLoggedIn = true;
+      studentDashboard.classList.add('mp-dashboard-visible');
+      studentDashboard.style.display='block';
+      const dashName=document.getElementById('dash-name');
+      if(dashName) dashName.innerHTML='<span class="spinner"></span>Preparing your learning dashboard...';
       await loadStudentDashboard(user.email);
       await loadNotices();
       await loadHomework();
@@ -1951,6 +1956,7 @@ input:focus,select:focus,textarea:focus{
     } else {
       if(dashboardAutoRefreshTimer){ clearInterval(dashboardAutoRefreshTimer); dashboardAutoRefreshTimer = null; }
       isLoggedIn = false;
+      studentDashboard.classList.remove('mp-dashboard-visible');
       studentDashboard.style.display = 'none';
       studentLoginBtn.textContent = 'Student Login';
       mobileLoginBtn.textContent = 'Student Login';
@@ -2236,16 +2242,30 @@ input:focus,select:focus,textarea:focus{
       docSnap = await getDoc(doc(db, "students", email));
     }
 
-    if(!docSnap.exists()){
-      foundContent.style.display='none';
-      notFoundContent.style.display='block';
-      document.getElementById('dash-name').textContent='Student';
-      return;
-    }
-
-    const data=docSnap.data();
+    // A newly-created student may authenticate before the admin has created
+    // the Firestore profile. Do NOT leave the dashboard blank in that case.
+    // Start a real onboarding dashboard and seamlessly upgrade it when the
+    // admin profile/data appears later.
+    const profileExists = docSnap.exists();
+    const data = profileExists ? (docSnap.data() || {}) : {
+      name:'Student', class:'', batchName:'', batchTiming:'Not assigned yet',
+      admissionDate:'', feeStatus:'Due', monthlyFees:[], attendance:{log:[],percent:0},
+      batchStats:{}, testScores:[], notes:[]
+    };
     foundContent.style.display='block';
     notFoundContent.style.display='none';
+    if(!profileExists){
+      const starter = document.getElementById('mp-student-start');
+      if(starter){
+        starter.classList.remove('mp-has-data');
+        const title=document.getElementById('mp-start-title');
+        const sub=document.getElementById('mp-start-subtitle');
+        const status=document.getElementById('mp-start-status');
+        if(title) title.textContent='Welcome to your learning space 🚀';
+        if(sub) sub.textContent='Your student profile is being prepared. Once your class is assigned, this dashboard will automatically fill with live attendance, tests and study material.';
+        if(status) status.textContent='Profile setup in progress · Learning dashboard ready';
+      }
+    }
     document.getElementById('dash-name').textContent=data.name||'Student'; document.getElementById('dash-avatar').textContent=(data.name||'S').trim().charAt(0).toUpperCase();
     currentStudentClass=data.class||null; currentStudentBatchName=data.batchName||null;
     const bh=document.getElementById('dash-batch-highlight'); bh.textContent=data.class&&data.batchName?`🎓 Class ${data.class} · ${data.batchName}`:''; bh.style.display=data.class&&data.batchName?'inline-block':'none';
@@ -2289,15 +2309,33 @@ input:focus,select:focus,textarea:focus{
     if(window.renderStudentV9) window.renderStudentV9(data,scores,overall,streak);
     studentDashboard.style.display='block';
     } catch(err) {
+      // Fail-safe: even if Firestore is temporarily unavailable, authenticated
+      // students still get a useful premium dashboard instead of a blank screen.
       console.error('Student dashboard load failed:', err);
       const foundContent = document.getElementById('dash-found-content');
       const notFoundContent = document.getElementById('dash-not-found-content');
-      if(foundContent) foundContent.style.display='none';
-      if(notFoundContent){
-        notFoundContent.style.display='block';
-        notFoundContent.innerHTML = '<div class="dash-not-found"><strong>We could not load your dashboard.</strong><br><span style="font-size:12px;color:#B9C2D6;">Please refresh once. If the problem continues, contact Maths Pathshala.</span></div>';
-      }
+      const fallback = {
+        name:'Student', class:'', batchName:'', batchTiming:'Not assigned yet',
+        admissionDate:'', feeStatus:'Due', monthlyFees:[],
+        attendance:{log:[],percent:0}, batchStats:{}, testScores:[], notes:[]
+      };
+      if(foundContent) foundContent.style.display='block';
+      if(notFoundContent) notFoundContent.style.display='none';
+      currentStudentClass=null; currentStudentBatchName=null;
       document.getElementById('dash-name').textContent='Student';
+      const emailEl=document.getElementById('dash-email');
+      if(emailEl) emailEl.textContent=email||'';
+      const start=document.getElementById('mp-student-start');
+      if(start){
+        start.classList.remove('mp-has-data');
+        const title=document.getElementById('mp-start-title');
+        const sub=document.getElementById('mp-start-subtitle');
+        const status=document.getElementById('mp-start-status');
+        if(title) title.textContent='Your learning dashboard is ready 🚀';
+        if(sub) sub.textContent='We are waiting for your academic data. Your attendance, tests, notes and notices will appear automatically once they are synced.';
+        if(status) status.textContent='Live dashboard · Waiting for academic data';
+      }
+      try{ if(window.renderStudentV9) window.renderStudentV9(fallback,[],0,0); }catch(e){ console.warn('Fallback dashboard renderer:',e); }
     }
   }
 
