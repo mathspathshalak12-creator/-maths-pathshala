@@ -232,14 +232,48 @@
 
 <div class="wrap">
 
-  <div id="login-screen" class="card">
-    <h2>Admin Login</h2>
-    <label>Email</label>
-    <input type="email" id="admin-email" value="mathspathshala.k12@gmail.com" autocomplete="username">
-    <label>Password</label>
-    <input type="password" id="admin-password" placeholder="Password">
-    <button class="btn" id="admin-login-btn">Login</button>
-    <div class="msg" id="login-msg"></div>
+  <div id="login-screen" class="card" style="max-width:440px;margin:8vh auto;padding:32px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+      <span style="display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--navy);color:var(--amber);font-size:22px;font-weight:700;">∑</span>
+      <div>
+        <h2 style="margin:0;font-size:22px;color:var(--navy);font-family:'Space Grotesk',sans-serif;">Admin Login</h2>
+        <p style="font-size:12px;color:var(--muted);margin-top:2px;">Academic Command Center</p>
+      </div>
+    </div>
+
+    <label for="admin-email" style="display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:6px;">Admin Email</label>
+    <input type="email" id="admin-email" value="mathspathshala.k12@gmail.com" autocomplete="username" placeholder="mathspathshala.k12@gmail.com" style="width:100%;padding:11px 14px;border-radius:10px;font-size:14px;margin-bottom:14px;">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <label for="admin-password" style="font-size:12.5px;font-weight:700;color:var(--navy);margin:0;">Password</label>
+      <button type="button" id="toggle-password-btn" style="background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:0;font-weight:600;">👁️ Show</button>
+    </div>
+    <div style="position:relative;margin-bottom:14px;">
+      <input type="password" id="admin-password" placeholder="Enter password" autocomplete="current-password" style="width:100%;padding:11px 14px;border-radius:10px;font-size:14px;">
+    </div>
+
+    <button class="btn" id="admin-login-btn" style="width:100%;padding:12px;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <span>Login to Admin Panel</span>
+    </button>
+
+    <div style="display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--muted);font-size:12px;">
+      <div style="flex:1;height:1px;background:var(--line);"></div>
+      <span>OR</span>
+      <div style="flex:1;height:1px;background:var(--line);"></div>
+    </div>
+
+    <button type="button" class="btn btn-secondary" id="google-login-btn" style="width:100%;margin-top:0;padding:11px;font-size:13.5px;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:var(--navy);border:1.5px solid var(--line);box-shadow:none;">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+      <span>Sign in with Google</span>
+    </button>
+
+    <div style="margin-top:16px;text-align:center;">
+      <button type="button" id="admin-forgot-pw-btn" style="background:none;border:none;color:var(--amber-dark);font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:underline;">
+        🔑 Forgot password? Send Reset Link to Email
+      </button>
+    </div>
+
+    <div class="msg" id="login-msg" style="display:none;margin-top:16px;padding:10px 12px;border-radius:8px;font-size:12.5px;line-height:1.5;"></div>
   </div>
 
   <div id="admin-screen" class="admin-layout">
@@ -683,7 +717,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+  import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, writeBatch, addDoc, deleteDoc, query, orderBy, serverTimestamp, where, documentId } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
   import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
@@ -737,43 +771,168 @@
     return !!user && (user.email || '').trim().toLowerCase() === ADMIN_EMAIL;
   }
 
-  document.getElementById('admin-login-btn').addEventListener('click', () => {
+  function showLoginMessage(text, type = 'error'){
+    if(!loginMsg) return;
+    loginMsg.style.display = 'block';
+    loginMsg.textContent = text;
+    loginMsg.className = 'msg ' + type;
+    if(type === 'error'){
+      loginMsg.style.background = '#FDF3F2';
+      loginMsg.style.color = '#C0392B';
+      loginMsg.style.border = '1px solid #F8D7DA';
+    } else {
+      loginMsg.style.background = '#F3FBF6';
+      loginMsg.style.color = '#1E7A46';
+      loginMsg.style.border = '1px solid #D4EDDA';
+    }
+  }
+
+  function getFriendlyAuthError(err){
+    const code = err?.code || '';
+    if(code === 'auth/invalid-credential' || code === 'auth/wrong-password'){
+      return 'Password galat hai! Kripya sahi password dalein ya neeche "🔑 Forgot password? Send Reset Link" par tap karein.';
+    }
+    if(code === 'auth/user-not-found'){
+      return 'Firebase me is email ka user account nahi mila. Agar aapne Google se login banaya tha toh "Sign in with Google" try karein, ya neeche se password reset link bhejein.';
+    }
+    if(code === 'auth/too-many-requests'){
+      return 'Bahut saari galat attempts ho gayi hain. Security ke kaaran access temporary block hua hai. Kripya 5 minute wait karein ya Reset Link mangwayein.';
+    }
+    if(code === 'auth/network-request-failed'){
+      return 'Network problem! Kripya apna internet connection check karein aur dobara try karein.';
+    }
+    if(code === 'auth/popup-closed-by-user'){
+      return 'Google Sign-In window close kar di gayi thi. Kripya dobara try karein.';
+    }
+    if(code === 'auth/popup-blocked'){
+      return 'Browser popup blocker ne Google window block kar di. Kripya popups allow karein.';
+    }
+    return `Login failed: ${err.message || 'Check email and password'}`;
+  }
+
+  // Toggle show/hide password
+  const togglePwBtn = document.getElementById('toggle-password-btn');
+  const adminPwInput = document.getElementById('admin-password');
+  if(togglePwBtn && adminPwInput){
+    togglePwBtn.addEventListener('click', () => {
+      if(adminPwInput.type === 'password'){
+        adminPwInput.type = 'text';
+        togglePwBtn.textContent = '🙈 Hide';
+      } else {
+        adminPwInput.type = 'password';
+        togglePwBtn.textContent = '👁️ Show';
+      }
+    });
+  }
+
+  // Handle password login
+  async function handleAdminLogin(){
     const email = document.getElementById('admin-email').value.trim();
     const password = document.getElementById('admin-password').value;
-    signInWithEmailAndPassword(auth, email, password)
-      .catch(() => {
-        loginMsg.textContent = 'Login failed — check email and password.';
-        loginMsg.className = 'msg error';
-      });
+    if(!email || !password){
+      showLoginMessage('Kripya email aur password dono enter karein.', 'error');
+      return;
+    }
+    const btn = document.getElementById('admin-login-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px;margin-right:6px;"></span> Logging in...';
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      // onAuthStateChanged will handle panel display
+    } catch(err){
+      showLoginMessage(getFriendlyAuthError(err), 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<span>Login to Admin Panel</span>';
+    }
+  }
+
+  document.getElementById('admin-login-btn')?.addEventListener('click', handleAdminLogin);
+
+  adminPwInput?.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') handleAdminLogin();
   });
 
-  document.getElementById('admin-logout').addEventListener('click', () => {
+  // Handle Google Sign-In
+  const googleBtn = document.getElementById('google-login-btn');
+  if(googleBtn){
+    googleBtn.addEventListener('click', async () => {
+      googleBtn.disabled = true;
+      googleBtn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px;margin-right:6px;"></span> Signing in with Google...';
+      try {
+        const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+        await signInWithPopup(auth, provider);
+      } catch(err){
+        showLoginMessage(getFriendlyAuthError(err), 'error');
+      } finally {
+        googleBtn.disabled = false;
+        googleBtn.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+          <span>Sign in with Google</span>
+        `;
+      }
+    });
+  }
+
+  // Handle Forgot Password
+  const forgotPwBtn = document.getElementById('admin-forgot-pw-btn');
+  if(forgotPwBtn){
+    forgotPwBtn.addEventListener('click', async () => {
+      const email = document.getElementById('admin-email').value.trim();
+      if(!email){
+        showLoginMessage('Pehle upar Admin Email dalein, fir Reset Link mangwayein.', 'error');
+        return;
+      }
+      forgotPwBtn.disabled = true;
+      forgotPwBtn.textContent = 'Sending reset link...';
+      try {
+        await sendPasswordResetEmail(auth, email);
+        showLoginMessage(`✅ Password reset link "${email}" par bhej diya gaya hai! Apne Gmail inbox (aur Spam folder) me check karein aur naya password banakar login karein.`, 'success');
+      } catch(err){
+        showLoginMessage(getFriendlyAuthError(err), 'error');
+      } finally {
+        forgotPwBtn.disabled = false;
+        forgotPwBtn.textContent = '🔑 Forgot password? Send Reset Link to Email';
+      }
+    });
+  }
+
+  document.getElementById('admin-logout')?.addEventListener('click', () => {
     signOut(auth);
   });
 
   onAuthStateChanged(auth, async (user) => {
     if(user && !isAuthorizedAdmin(user)){
+      const unauthorizedEmail = user.email || 'Unknown';
       // Authentication alone is NOT admin authorization. Immediately revoke this session.
       await signOut(auth);
       loginScreen.style.display = 'block';
       adminScreen.style.display = 'none';
-      loginMsg.textContent = 'Access denied — this account is not authorized for the Admin Panel.';
-      loginMsg.className = 'msg error';
+      showLoginMessage(`Access denied — "${unauthorizedEmail}" is not authorized for Admin Panel. Sirf "${ADMIN_EMAIL}" ko Admin access hai. Kripya authorized account se login karein.`, 'error');
       return;
     }
     if(user && isAuthorizedAdmin(user)){
       loginScreen.style.display = 'none';
       adminScreen.style.display = 'grid';
       const todayStr = new Date().toISOString().split('T')[0];
-      document.getElementById('f-att-date').value = todayStr;
-      document.getElementById('f-test-date').value = todayStr;
-      document.getElementById('f-payment-date').value = todayStr;
-      document.getElementById('bulk-att-date').value = todayStr;
+      const attDate = document.getElementById('f-att-date');
+      const testDate = document.getElementById('f-test-date');
+      const paymentDate = document.getElementById('f-payment-date');
+      const bulkAttDate = document.getElementById('bulk-att-date');
+      if(attDate) attDate.value = todayStr;
+      if(testDate) testDate.value = todayStr;
+      if(paymentDate) paymentDate.value = todayStr;
+      if(bulkAttDate) bulkAttDate.value = todayStr;
+
       await loadBatches();
       await loadStudentList();
       loadBulkAttendanceRows();
       loadNotices();
       loadBranding();
+      if(typeof loadHomeworkAdminList === 'function'){
+        loadHomeworkAdminList();
+      }
 
     } else {
       loginScreen.style.display = 'block';
