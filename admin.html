@@ -232,48 +232,14 @@
 
 <div class="wrap">
 
-  <div id="login-screen" class="card" style="max-width:440px;margin:8vh auto;padding:32px;">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
-      <span style="display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--navy);color:var(--amber);font-size:22px;font-weight:700;">∑</span>
-      <div>
-        <h2 style="margin:0;font-size:22px;color:var(--navy);font-family:'Space Grotesk',sans-serif;">Admin Login</h2>
-        <p style="font-size:12px;color:var(--muted);margin-top:2px;">Academic Command Center</p>
-      </div>
-    </div>
-
-    <label for="admin-email" style="display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:6px;">Admin Email</label>
-    <input type="email" id="admin-email" value="mathspathshala.k12@gmail.com" autocomplete="username" placeholder="mathspathshala.k12@gmail.com" style="width:100%;padding:11px 14px;border-radius:10px;font-size:14px;margin-bottom:14px;">
-
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-      <label for="admin-password" style="font-size:12.5px;font-weight:700;color:var(--navy);margin:0;">Password</label>
-      <button type="button" id="toggle-password-btn" style="background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:0;font-weight:600;">👁️ Show</button>
-    </div>
-    <div style="position:relative;margin-bottom:14px;">
-      <input type="password" id="admin-password" placeholder="Enter password" autocomplete="current-password" style="width:100%;padding:11px 14px;border-radius:10px;font-size:14px;">
-    </div>
-
-    <button class="btn" id="admin-login-btn" style="width:100%;padding:12px;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;">
-      <span>Login to Admin Panel</span>
-    </button>
-
-    <div style="display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--muted);font-size:12px;">
-      <div style="flex:1;height:1px;background:var(--line);"></div>
-      <span>OR</span>
-      <div style="flex:1;height:1px;background:var(--line);"></div>
-    </div>
-
-    <button type="button" class="btn btn-secondary" id="google-login-btn" style="width:100%;margin-top:0;padding:11px;font-size:13.5px;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:var(--navy);border:1.5px solid var(--line);box-shadow:none;">
-      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
-      <span>Sign in with Google</span>
-    </button>
-
-    <div style="margin-top:16px;text-align:center;">
-      <button type="button" id="admin-forgot-pw-btn" style="background:none;border:none;color:var(--amber-dark);font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:underline;">
-        🔑 Forgot password? Send Reset Link to Email
-      </button>
-    </div>
-
-    <div class="msg" id="login-msg" style="display:none;margin-top:16px;padding:10px 12px;border-radius:8px;font-size:12.5px;line-height:1.5;"></div>
+  <div id="login-screen" class="card">
+    <h2>Admin Login</h2>
+    <label>Email</label>
+    <input type="email" id="admin-email" value="mathspathshala.k12@gmail.com" autocomplete="username">
+    <label>Password</label>
+    <input type="password" id="admin-password" placeholder="Password">
+    <button class="btn" id="admin-login-btn">Login</button>
+    <div class="msg" id="login-msg"></div>
   </div>
 
   <div id="admin-screen" class="admin-layout">
@@ -284,9 +250,7 @@
         <a href="#batches-section">Batches</a>
         <a href="#students-section">Students</a>
         <a href="#attendance-section">Attendance</a>
-        <a href="#homework-section">Homework &amp; DPP</a>
         <a href="#fees-section">Fees</a>
-        <a href="#notes-management-section">Notes</a>
         <a href="#communication-section">Student Updates</a>
         <a href="#branding-section">Branding</a>
       </nav>
@@ -392,37 +356,10 @@
           <option value="no">Launch popup: OFF</option>
         </select>
       </div>
-      <div style="margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:10px;background:#fcfdfd;">
-        <label style="display:block;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;">
-          🖼️ Batch Poster / Banner (Card &amp; Launch Popup Banner)
-        </label>
-        <p style="font-size:12px;color:var(--muted);margin:0 0 10px;">
-          Choose a photo from your device (auto-compressed &amp; instant), enter an image URL, or pick a ready-made academic banner.
-        </p>
-        
-        <div class="row2">
-          <div>
-            <label style="display:block;font-size:11.5px;font-weight:600;color:var(--navy);margin-bottom:4px;">📁 Upload File (Auto-Optimized)</label>
-            <input type="file" id="batch-photo-input" accept="image/png,image/jpeg,image/webp" style="width:100%;">
-          </div>
-          <div>
-            <label style="display:block;font-size:11.5px;font-weight:600;color:var(--navy);margin-bottom:4px;">🔗 Or Direct Image URL</label>
-            <input type="url" id="batch-photo-url-input" placeholder="https://example.com/banner.jpg" style="padding:9px 12px;font-size:13px;width:100%;border-radius:8px;border:1px solid var(--line);">
-          </div>
-        </div>
-
-        <div style="margin-top:10px;">
-          <span style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:6px;">Quick Ready-Made Academic Banners:</span>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;" id="preset-banners-list">
-            <button type="button" class="preset-banner-btn" data-url="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=900&q=80" style="background:#fff;border:1px solid var(--line);border-radius:6px;padding:5px 9px;font-size:11.5px;cursor:pointer;">📐 Maths &amp; Geometry</button>
-            <button type="button" class="preset-banner-btn" data-url="https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=900&q=80" style="background:#fff;border:1px solid var(--line);border-radius:6px;padding:5px 9px;font-size:11.5px;cursor:pointer;">🎯 Board Booster</button>
-            <button type="button" class="preset-banner-btn" data-url="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=900&q=80" style="background:#fff;border:1px solid var(--line);border-radius:6px;padding:5px 9px;font-size:11.5px;cursor:pointer;">📚 Complete PCM</button>
-            <button type="button" class="preset-banner-btn" data-url="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80" style="background:#fff;border:1px solid var(--line);border-radius:6px;padding:5px 9px;font-size:11.5px;cursor:pointer;">⚡ Fast-Track Batch</button>
-            <button type="button" id="clear-batch-photo-btn" style="background:#fee2e2;color:#991b1b;border:1px solid #fecaca;border-radius:6px;padding:5px 9px;font-size:11.5px;cursor:pointer;">✕ Remove Poster</button>
-          </div>
-        </div>
-
-        <div id="batch-photo-preview" style="margin-top:10px;"></div>
+      <div style="margin-top:14px;">
+        <label style="display:block;font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px;">Batch poster / photo (shown on the card banner)</label>
+        <input type="file" id="batch-photo-input" accept="image/png,image/jpeg,image/webp">
+        <div id="batch-photo-preview" style="margin-top:8px;"></div>
       </div>
       <div class="launch-preview" id="batch-launch-preview">Set an original fee and offer to preview the launch price.</div>
       <div class="row2" style="margin-top:14px;"><button class="btn" id="add-batch-btn" style="margin-top:0;">+ Launch / Create Batch</button></div>
@@ -539,70 +476,6 @@
         <h3 style="margin:0 0 6px;color:var(--navy);">Assigned Notes</h3>
         <p style="font-size:12px;color:var(--muted);margin:0 0 10px;">See which notes are currently assigned and remove any note from all students in one click.</p>
         <div id="assigned-notes-list"><div style="font-size:13px;color:var(--muted);padding:10px 0;">Loading assigned notes…</div></div>
-      </div>
-    </div>
-
-    <!-- HOMEWORK & DPP TRACKER SECTION -->
-    <div class="card" id="homework-section">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px;">
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span style="display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:#EFF6FF;color:#1D4ED8;font-size:18px;">📝</span>
-            <h2 style="margin:0;">Homework &amp; DPP Tracker</h2>
-          </div>
-          <p style="font-size:13px;color:var(--muted);margin-top:4px;margin-bottom:0;">
-            Post Daily Practice Problems (DPP), homework worksheets, and assignment deadlines for a class or specific batch. Students receive instant notification in their portal.
-          </p>
-        </div>
-        <button type="button" class="btn btn-secondary btn-small" id="refresh-homework-btn" style="white-space:nowrap;margin:0;">↻ Refresh List</button>
-      </div>
-
-      <div class="row2" style="margin-top:14px;">
-        <div>
-          <label style="display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:6px;">Target Class</label>
-          <select id="homework-target-class" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;">
-            <option value="">All Classes (9, 10, 11, 12)</option>
-            <option value="9">Class 9</option>
-            <option value="10">Class 10</option>
-            <option value="11">Class 11</option>
-            <option value="12">Class 12</option>
-          </select>
-        </div>
-        <div>
-          <label style="display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:6px;">Target Batch</label>
-          <select id="homework-target-batch" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;">
-            <option value="">All Batches</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="row2" style="margin-top:14px;">
-        <div>
-          <label style="display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:6px;">Assignment / DPP Title</label>
-          <input type="text" id="homework-title" placeholder="e.g. DPP 04 — Trigonometry Identities &amp; Heights" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;">
-        </div>
-        <div>
-          <label style="display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:6px;">Due Date / Deadline</label>
-          <input type="date" id="homework-due-date" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;">
-        </div>
-      </div>
-
-      <div style="margin-top:14px;">
-        <label style="display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:6px;">Worksheet Details / Problem Numbers / Questions</label>
-        <textarea id="homework-details" rows="4" placeholder="e.g. Solve NCERT Exercise 8.4 Q5 (all 10 sub-parts) in your homework notebook. Also solve DPP Worksheet #3 shared in class. Submit by Wednesday." style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13.5px;resize:vertical;"></textarea>
-      </div>
-
-      <div style="margin-top:14px;display:flex;align-items:center;gap:12px;">
-        <button class="btn" id="post-homework-btn" style="margin:0;">+ Post Homework / DPP</button>
-        <span id="homework-msg" class="msg" style="display:none;margin:0;padding:8px 14px;border-radius:8px;font-size:13px;"></span>
-      </div>
-
-      <div style="margin-top:24px;padding-top:18px;border-top:1px solid var(--line);">
-        <h3 style="margin:0 0 6px;font-size:15px;color:var(--navy);">Active Assignments &amp; DPPs</h3>
-        <p style="font-size:12px;color:var(--muted);margin:0 0 12px;">Currently assigned tasks for students. Tap Delete to remove any completed or outdated assignment.</p>
-        <div id="homework-admin-list">
-          <div style="font-size:13px;color:var(--muted);padding:10px 0;">Loading assignments…</div>
-        </div>
       </div>
     </div>
 
@@ -810,7 +683,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, writeBatch, addDoc, deleteDoc, query, orderBy, serverTimestamp, where, documentId } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
   import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
@@ -864,168 +737,43 @@
     return !!user && (user.email || '').trim().toLowerCase() === ADMIN_EMAIL;
   }
 
-  function showLoginMessage(text, type = 'error'){
-    if(!loginMsg) return;
-    loginMsg.style.display = 'block';
-    loginMsg.textContent = text;
-    loginMsg.className = 'msg ' + type;
-    if(type === 'error'){
-      loginMsg.style.background = '#FDF3F2';
-      loginMsg.style.color = '#C0392B';
-      loginMsg.style.border = '1px solid #F8D7DA';
-    } else {
-      loginMsg.style.background = '#F3FBF6';
-      loginMsg.style.color = '#1E7A46';
-      loginMsg.style.border = '1px solid #D4EDDA';
-    }
-  }
-
-  function getFriendlyAuthError(err){
-    const code = err?.code || '';
-    if(code === 'auth/invalid-credential' || code === 'auth/wrong-password'){
-      return 'Password galat hai! Kripya sahi password dalein ya neeche "🔑 Forgot password? Send Reset Link" par tap karein.';
-    }
-    if(code === 'auth/user-not-found'){
-      return 'Firebase me is email ka user account nahi mila. Agar aapne Google se login banaya tha toh "Sign in with Google" try karein, ya neeche se password reset link bhejein.';
-    }
-    if(code === 'auth/too-many-requests'){
-      return 'Bahut saari galat attempts ho gayi hain. Security ke kaaran access temporary block hua hai. Kripya 5 minute wait karein ya Reset Link mangwayein.';
-    }
-    if(code === 'auth/network-request-failed'){
-      return 'Network problem! Kripya apna internet connection check karein aur dobara try karein.';
-    }
-    if(code === 'auth/popup-closed-by-user'){
-      return 'Google Sign-In window close kar di gayi thi. Kripya dobara try karein.';
-    }
-    if(code === 'auth/popup-blocked'){
-      return 'Browser popup blocker ne Google window block kar di. Kripya popups allow karein.';
-    }
-    return `Login failed: ${err.message || 'Check email and password'}`;
-  }
-
-  // Toggle show/hide password
-  const togglePwBtn = document.getElementById('toggle-password-btn');
-  const adminPwInput = document.getElementById('admin-password');
-  if(togglePwBtn && adminPwInput){
-    togglePwBtn.addEventListener('click', () => {
-      if(adminPwInput.type === 'password'){
-        adminPwInput.type = 'text';
-        togglePwBtn.textContent = '🙈 Hide';
-      } else {
-        adminPwInput.type = 'password';
-        togglePwBtn.textContent = '👁️ Show';
-      }
-    });
-  }
-
-  // Handle password login
-  async function handleAdminLogin(){
+  document.getElementById('admin-login-btn').addEventListener('click', () => {
     const email = document.getElementById('admin-email').value.trim();
     const password = document.getElementById('admin-password').value;
-    if(!email || !password){
-      showLoginMessage('Kripya email aur password dono enter karein.', 'error');
-      return;
-    }
-    const btn = document.getElementById('admin-login-btn');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px;margin-right:6px;"></span> Logging in...';
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // onAuthStateChanged will handle panel display
-    } catch(err){
-      showLoginMessage(getFriendlyAuthError(err), 'error');
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = '<span>Login to Admin Panel</span>';
-    }
-  }
-
-  document.getElementById('admin-login-btn')?.addEventListener('click', handleAdminLogin);
-
-  adminPwInput?.addEventListener('keydown', (e) => {
-    if(e.key === 'Enter') handleAdminLogin();
+    signInWithEmailAndPassword(auth, email, password)
+      .catch(() => {
+        loginMsg.textContent = 'Login failed — check email and password.';
+        loginMsg.className = 'msg error';
+      });
   });
 
-  // Handle Google Sign-In
-  const googleBtn = document.getElementById('google-login-btn');
-  if(googleBtn){
-    googleBtn.addEventListener('click', async () => {
-      googleBtn.disabled = true;
-      googleBtn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px;margin-right:6px;"></span> Signing in with Google...';
-      try {
-        const provider = new GoogleAuthProvider();
-        provider.setCustomParameters({ prompt: 'select_account' });
-        await signInWithPopup(auth, provider);
-      } catch(err){
-        showLoginMessage(getFriendlyAuthError(err), 'error');
-      } finally {
-        googleBtn.disabled = false;
-        googleBtn.innerHTML = `
-          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
-          <span>Sign in with Google</span>
-        `;
-      }
-    });
-  }
-
-  // Handle Forgot Password
-  const forgotPwBtn = document.getElementById('admin-forgot-pw-btn');
-  if(forgotPwBtn){
-    forgotPwBtn.addEventListener('click', async () => {
-      const email = document.getElementById('admin-email').value.trim();
-      if(!email){
-        showLoginMessage('Pehle upar Admin Email dalein, fir Reset Link mangwayein.', 'error');
-        return;
-      }
-      forgotPwBtn.disabled = true;
-      forgotPwBtn.textContent = 'Sending reset link...';
-      try {
-        await sendPasswordResetEmail(auth, email);
-        showLoginMessage(`✅ Password reset link "${email}" par bhej diya gaya hai! Apne Gmail inbox (aur Spam folder) me check karein aur naya password banakar login karein.`, 'success');
-      } catch(err){
-        showLoginMessage(getFriendlyAuthError(err), 'error');
-      } finally {
-        forgotPwBtn.disabled = false;
-        forgotPwBtn.textContent = '🔑 Forgot password? Send Reset Link to Email';
-      }
-    });
-  }
-
-  document.getElementById('admin-logout')?.addEventListener('click', () => {
+  document.getElementById('admin-logout').addEventListener('click', () => {
     signOut(auth);
   });
 
   onAuthStateChanged(auth, async (user) => {
     if(user && !isAuthorizedAdmin(user)){
-      const unauthorizedEmail = user.email || 'Unknown';
       // Authentication alone is NOT admin authorization. Immediately revoke this session.
       await signOut(auth);
       loginScreen.style.display = 'block';
       adminScreen.style.display = 'none';
-      showLoginMessage(`Access denied — "${unauthorizedEmail}" is not authorized for Admin Panel. Sirf "${ADMIN_EMAIL}" ko Admin access hai. Kripya authorized account se login karein.`, 'error');
+      loginMsg.textContent = 'Access denied — this account is not authorized for the Admin Panel.';
+      loginMsg.className = 'msg error';
       return;
     }
     if(user && isAuthorizedAdmin(user)){
       loginScreen.style.display = 'none';
       adminScreen.style.display = 'grid';
       const todayStr = new Date().toISOString().split('T')[0];
-      const attDate = document.getElementById('f-att-date');
-      const testDate = document.getElementById('f-test-date');
-      const paymentDate = document.getElementById('f-payment-date');
-      const bulkAttDate = document.getElementById('bulk-att-date');
-      if(attDate) attDate.value = todayStr;
-      if(testDate) testDate.value = todayStr;
-      if(paymentDate) paymentDate.value = todayStr;
-      if(bulkAttDate) bulkAttDate.value = todayStr;
-
+      document.getElementById('f-att-date').value = todayStr;
+      document.getElementById('f-test-date').value = todayStr;
+      document.getElementById('f-payment-date').value = todayStr;
+      document.getElementById('bulk-att-date').value = todayStr;
       await loadBatches();
       await loadStudentList();
       loadBulkAttendanceRows();
       loadNotices();
       loadBranding();
-      if(typeof loadHomeworkAdminList === 'function'){
-        loadHomeworkAdminList();
-      }
 
     } else {
       loginScreen.style.display = 'block';
@@ -2116,7 +1864,6 @@
 
       updateBatchDropdown();
       updateBroadcastBatchDropdown();
-      refreshHomeworkBatchDropdown();
     } catch(err){
       list.innerHTML = '<div style="font-size:13px;color:#C0392B;">Error loading batches: ' + err.message + '</div>';
     }
@@ -2450,159 +2197,37 @@
     }
   });
 
-  let photoRemoved = false;
-
-  async function compressImageToDataUrl(file, maxWidth = 960, maxHeight = 540, quality = 0.8) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          let w = img.width;
-          let h = img.height;
-          if (w > maxWidth || h > maxHeight) {
-            const ratio = Math.min(maxWidth / w, maxHeight / h);
-            w = Math.round(w * ratio);
-            h = Math.round(h * ratio);
-          }
-          const canvas = document.createElement('canvas');
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
-          let dataUrl = '';
-          try {
-            dataUrl = canvas.toDataURL('image/webp', quality);
-          } catch(err){}
-          if (!dataUrl || !dataUrl.startsWith('data:image/webp')) {
-            dataUrl = canvas.toDataURL('image/jpeg', quality);
-          }
-          resolve(dataUrl);
-        };
-        img.onerror = () => reject(new Error('Selected image could not be loaded'));
-        img.src = e.target.result;
-      };
-      reader.onerror = (err) => reject(err);
-      reader.readAsDataURL(file);
-    });
-  }
-
-  async function uploadOrFallbackImage(file, storagePath, maxWidth = 960, maxHeight = 540) {
-    // 1. Try Firebase Storage if initialized, with polite 5s timeout
-    try {
-      if (typeof storage !== 'undefined' && storage) {
-        const snap = await Promise.race([
-          uploadBytes(storageRef(storage, storagePath), file),
-          new Promise((_, rej) => setTimeout(() => rej(new Error('Storage timeout')), 5000))
-        ]);
-        const url = await Promise.race([
-          getDownloadURL(snap.ref),
-          new Promise((_, rej) => setTimeout(() => rej(new Error('URL fetch timeout')), 4000))
-        ]);
-        if (url) return url;
-      }
-    } catch(storageErr) {
-      console.warn('Firebase Storage upload failed or restricted (CORS/quota/rules); falling back to direct compressed image:', storageErr.message || storageErr);
-    }
-
-    // 2. Guaranteed fallback: HTML5 Canvas compression (~30-60KB data URL saved directly in Firestore)
-    return await compressImageToDataUrl(file, maxWidth, maxHeight, 0.78);
-  }
-
-  const batchPhotoInput = document.getElementById('batch-photo-input');
-  const batchPhotoUrlInput = document.getElementById('batch-photo-url-input');
-  const batchPhotoPreview = document.getElementById('batch-photo-preview');
-  const clearBatchPhotoBtn = document.getElementById('clear-batch-photo-btn');
-
-  if(batchPhotoInput){
-    batchPhotoInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if(!file){ return; }
-      photoRemoved = false;
-      if(batchPhotoUrlInput) batchPhotoUrlInput.value = '';
-      try {
-        const previewUrl = URL.createObjectURL(file);
-        const sizeKb = Math.round(file.size / 1024);
-        batchPhotoPreview.innerHTML = `
-          <div style="display:flex;align-items:center;gap:12px;background:#f8fafc;padding:8px 12px;border-radius:8px;border:1px solid var(--line);">
-            <img src="${previewUrl}" alt="Batch poster preview" style="width:110px;height:62px;object-fit:cover;border-radius:6px;border:1px solid #e5e9f0;">
-            <div>
-              <strong style="font-size:12px;color:var(--navy);display:block;">${escapeHtml(file.name)} (${sizeKb} KB)</strong>
-              <span style="font-size:11px;color:#10B981;">✓ Ready to save (auto-optimizes for 100% reliability)</span>
-            </div>
-          </div>`;
-      } catch(err){
-        batchPhotoPreview.innerHTML = `<span style="font-size:12px;color:#C0392B;">Preview error: ${err.message}</span>`;
-      }
-    });
-  }
-
-  if(batchPhotoUrlInput){
-    batchPhotoUrlInput.addEventListener('input', (e) => {
-      const val = e.target.value.trim();
-      if(!val){
-        if(!batchPhotoInput?.files?.length) batchPhotoPreview.innerHTML = '';
-        return;
-      }
-      photoRemoved = false;
-      if(batchPhotoInput) batchPhotoInput.value = '';
-      batchPhotoPreview.innerHTML = `
-        <div style="display:flex;align-items:center;gap:12px;background:#f8fafc;padding:8px 12px;border-radius:8px;border:1px solid var(--line);">
-          <img src="${escapeHtml(val)}" alt="Batch poster preview" onerror="this.src='https://via.placeholder.com/160x90?text=Invalid+Image+URL'" style="width:110px;height:62px;object-fit:cover;border-radius:6px;border:1px solid #e5e9f0;">
-          <div>
-            <strong style="font-size:12px;color:var(--navy);display:block;">Direct Image URL linked</strong>
-            <span style="font-size:11px;color:#10B981;">✓ Image loaded from web link</span>
-          </div>
-        </div>`;
-    });
-  }
-
-  document.querySelectorAll('.preset-banner-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const url = btn.dataset.url;
-      if(!url) return;
-      photoRemoved = false;
-      if(batchPhotoUrlInput) batchPhotoUrlInput.value = url;
-      if(batchPhotoInput) batchPhotoInput.value = '';
-      const name = btn.textContent.trim();
-      batchPhotoPreview.innerHTML = `
-        <div style="display:flex;align-items:center;gap:12px;background:#f0fdf4;padding:8px 12px;border-radius:8px;border:1px solid #bbf7d0;">
-          <img src="${url}" alt="${escapeHtml(name)}" style="width:110px;height:62px;object-fit:cover;border-radius:6px;border:1px solid #e5e9f0;">
-          <div>
-            <strong style="font-size:12px;color:#166534;display:block;">Preset: ${escapeHtml(name)}</strong>
-            <span style="font-size:11px;color:#166534;">✓ High-resolution academic poster applied</span>
-          </div>
-        </div>`;
-    });
+  document.getElementById('batch-photo-input').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    const preview = document.getElementById('batch-photo-preview');
+    if(!file){ preview.innerHTML = ''; return; }
+    const url = URL.createObjectURL(file);
+    preview.innerHTML = `<img src="${url}" alt="Batch poster preview" style="max-width:220px;max-height:110px;border-radius:8px;border:1px solid #e5e9f0;">`;
   });
-
-  if(clearBatchPhotoBtn){
-    clearBatchPhotoBtn.addEventListener('click', () => {
-      photoRemoved = true;
-      if(batchPhotoInput) batchPhotoInput.value = '';
-      if(batchPhotoUrlInput) batchPhotoUrlInput.value = '';
-      batchPhotoPreview.innerHTML = '<span style="font-size:11px;color:var(--muted);">No poster will be shown for this batch.</span>';
-    });
-  }
 
   document.getElementById('upload-signature-btn').addEventListener('click',async()=>{
     const btn=document.getElementById('upload-signature-btn');
     const file=document.getElementById('teacher-signature-input').files[0];
     const msg=document.getElementById('signature-msg');
     if(!file){msg.textContent='Choose a signature image first.';msg.className='msg error';return;}
-    btn.disabled=true; const origText=btn.textContent; btn.textContent='Processing…';
-    msg.textContent='Saving signature, please wait…'; msg.className='msg';
+    btn.disabled=true; const origText=btn.textContent; btn.textContent='Uploading…';
+    msg.textContent='Uploading signature, please wait…'; msg.className='msg';
     try{
       const path=`report-assets/teacher-signature-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
-      const url = await uploadOrFallbackImage(file, path, 600, 250);
+      const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('Upload timed out after '+(ms/1000)+'s — check your internet connection or Firebase Storage setup.')),ms))]);
+      const snap=await withTimeout(uploadBytes(storageRef(storage,path),file),20000);
+      const url=await withTimeout(getDownloadURL(snap.ref),15000);
       await setDoc(doc(db,'siteSettings','branding'),{teacherSignatureUrl:url,updatedAt:serverTimestamp()},{merge:true});
       teacherSignatureUrl=url;
       document.getElementById('signature-preview').innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Current signature</div><img src="${url}" alt="Teacher signature" style="max-width:240px;max-height:90px;background:#fff;padding:8px;border:1px solid #e5e9f0;border-radius:8px;">`;
-      msg.textContent='Signature saved successfully! Future report cards will use it automatically.';
+      msg.textContent='Signature uploaded. Future report cards can reuse it automatically.';
       msg.className='msg success';
     }catch(e){
       console.error('Signature upload error:',e);
-      msg.textContent='Signature processing failed: '+(e.message||'Unknown error');
+      let hint='';
+      if(e.code==='storage/unauthorized') hint=' (Storage rules are blocking this upload — check Firebase Console → Storage → Rules.)';
+      else if(e.code==='storage/unknown'||/CORS/i.test(e.message)) hint=' (Possible CORS or Storage-not-enabled issue — check Firebase Console → Storage is set up.)';
+      msg.textContent='Signature upload failed: '+(e.code||e.message)+hint;
       msg.className='msg error';
     } finally {
       btn.disabled=false; btn.textContent=origText;
@@ -2630,7 +2255,6 @@
     const b = batchesCache.find(x => x.id === id);
     if(!b) return;
     editingBatchId = id;
-    photoRemoved = false;
     document.getElementById('batch-class-input').value = b.class || '9';
     document.getElementById('batch-name-input').value = b.name || '';
     document.getElementById('batch-intro-input').value = b.intro || '';
@@ -2641,18 +2265,11 @@
     document.getElementById('batch-launch-title-input').value = b.launchTitle || '';
     document.getElementById('batch-launch-subtitle-input').value = b.launchSubtitle || '';
     document.getElementById('batch-launch-active-input').value = b.launchActive ? 'yes' : 'no';
-    if(batchPhotoInput) batchPhotoInput.value = '';
-    if(batchPhotoUrlInput) batchPhotoUrlInput.value = (b.photoUrl && b.photoUrl.startsWith('http')) ? b.photoUrl : '';
+    document.getElementById('batch-photo-input').value = '';
     const preview = document.getElementById('batch-photo-preview');
     preview.innerHTML = b.photoUrl
-      ? `<div style="display:flex;align-items:center;gap:12px;background:#f8fafc;padding:8px 12px;border-radius:8px;border:1px solid var(--line);">
-          <img src="${b.photoUrl}" style="width:110px;height:62px;object-fit:cover;border-radius:6px;border:1px solid #e5e9f0;">
-          <div>
-            <strong style="font-size:12px;color:var(--navy);display:block;">Current batch poster</strong>
-            <span style="font-size:11px;color:var(--muted);">Upload a new file, change URL, or click "Remove Poster" to clear.</span>
-          </div>
-        </div>`
-      : '<span style="font-size:11px;color:var(--muted);">No poster assigned to this batch yet.</span>';
+      ? `<img src="${b.photoUrl}" style="max-width:160px;border-radius:8px;display:block;"><div style="font-size:11px;color:var(--muted);margin-top:4px;">Current photo — choose a new file only to replace it.</div>`
+      : '';
     updateLaunchPreview();
     const banner = document.getElementById('batch-edit-banner');
     banner.style.display = 'flex';
@@ -2663,12 +2280,10 @@
 
   function cancelBatchEdit(){
     editingBatchId = null;
-    photoRemoved = false;
     document.getElementById('batch-edit-banner').style.display = 'none';
     document.getElementById('add-batch-btn').textContent = '+ Launch / Create Batch';
     ['batch-name-input','batch-intro-input','batch-timing-input','batch-base-fee-input','batch-launch-title-input','batch-launch-subtitle-input','batch-details-input'].forEach(id => document.getElementById(id).value = '');
-    if(batchPhotoInput) batchPhotoInput.value = '';
-    if(batchPhotoUrlInput) batchPhotoUrlInput.value = '';
+    document.getElementById('batch-photo-input').value = '';
     document.getElementById('batch-photo-preview').innerHTML = '';
     document.getElementById('batch-offer-input').value = '0';
     document.getElementById('batch-launch-active-input').value = 'yes';
@@ -2676,55 +2291,32 @@
   }
   document.getElementById('cancel-batch-edit-btn').addEventListener('click', cancelBatchEdit);
 
+
   async function loadHomeworkAdminList(){
     const box = document.getElementById('homework-admin-list');
     if(!box) return;
     try{
       const snap = await getDocs(query(collection(db, "homework"), orderBy("createdAt", "desc")));
       if(snap.empty){
-        box.innerHTML = '<div style="font-size:13px;color:var(--muted);padding:12px 0;">No homework or DPP posted yet. Use the form above to assign problems.</div>';
+        box.innerHTML = '<div style="font-size:13px;color:var(--muted);">No homework posted yet.</div>';
         return;
       }
       box.innerHTML = '';
+      let count = 0;
       snap.forEach(docSnap => {
+        if(count >= 8) return;
         const h = docSnap.data();
-        const id = docSnap.id;
         const target = h.targetClass
-          ? `Class ${h.targetClass}${h.targetBatch ? ' · ' + h.targetBatch : ' (All batches)'}`
-          : 'All Classes';
-        const due = h.dueDate ? `Due: ${dateInputToLabel(h.dueDate)}` : '';
-        const dateStr = h.createdAt?.toDate ? h.createdAt.toDate().toLocaleDateString('en-GB', {day:'2-digit', month:'short'}) : '';
-        
+          ? `Class ${h.targetClass}${h.targetBatch ? ' · ' + h.targetBatch : ''}`
+          : 'All classes';
+        const due = h.dueDate ? ` · Due ${dateInputToLabel(h.dueDate)}` : '';
         const item = document.createElement('div');
-        item.style.cssText = 'display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:#fffdfa;';
-        item.innerHTML = `
-          <div style="flex:1;min-width:0;">
-            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;">
-              <strong style="color:var(--navy);font-size:14px;">📝 ${escapeHtml(h.title || 'Homework / DPP')}</strong>
-              <span style="background:#EFF6FF;color:#1D4ED8;font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;">${escapeHtml(target)}</span>
-              ${due ? `<span style="background:#FEF3C7;color:#92400E;font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;">${escapeHtml(due)}</span>` : ''}
-            </div>
-            <div style="font-size:13px;color:#334155;margin-top:6px;line-height:1.5;white-space:pre-wrap;word-break:break-word;">${escapeHtml(h.details || '')}</div>
-            ${dateStr ? `<div style="font-size:11px;color:var(--muted);margin-top:6px;">📅 Posted on ${dateStr}</div>` : ''}
-          </div>
-          <button type="button" class="btn btn-secondary btn-small delete-hw-btn" data-id="${id}" style="color:#DC2626;border-color:#FCA5A5;background:#FEF2F2;white-space:nowrap;padding:6px 12px;font-size:12px;margin:0;">🗑 Delete</button>
-        `;
+        item.style.cssText = 'padding:12px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:#fffdf9;';
+        item.innerHTML = `<strong>📝 ${h.title || 'Homework'}</strong>
+          <div style="font-size:11.5px;color:var(--muted);margin-top:4px;">${target}${due}</div>
+          <div style="font-size:12.5px;color:var(--muted);margin-top:4px;">${h.details || ''}</div>`;
         box.appendChild(item);
-      });
-
-      // Hook up delete buttons
-      box.querySelectorAll('.delete-hw-btn').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-          const docId = e.currentTarget.dataset.id;
-          if(!confirm('Are you sure you want to delete this homework assignment?')) return;
-          try {
-            await deleteDoc(doc(db, "homework", docId));
-            showToast('Homework deleted.');
-            await loadHomeworkAdminList();
-          } catch(err) {
-            alert('Could not delete homework: ' + err.message);
-          }
-        });
+        count++;
       });
     } catch(err){
       box.innerHTML = '<div class="msg error">Could not load homework: ' + err.message + '</div>';
@@ -2756,55 +2348,43 @@
       const msg = document.getElementById('homework-msg');
 
       if(!title || !details){
-        msg.textContent = 'Please enter homework title and details/questions.';
+        msg.textContent = 'Please enter homework title and details.';
         msg.className = 'msg error';
-        msg.style.display = 'inline-block';
         return;
       }
 
       postHomeworkBtn.disabled = true;
       postHomeworkBtn.textContent = 'Posting...';
-      msg.style.display = 'none';
 
       try{
-        let recipientEmails = getTargetEmails(targetClass, targetBatch).map(e => String(e).toLowerCase());
-        if(!targetClass || recipientEmails.length === 0){
-          recipientEmails = allStudentsCache.map(s => String(s.data?.email || s.id).toLowerCase()).filter(Boolean);
-        }
-        if(!recipientEmails.includes(ADMIN_EMAIL)) recipientEmails.push(ADMIN_EMAIL);
-        if(!recipientEmails.includes('all')) recipientEmails.push('all');
-
         await addDoc(collection(db, "homework"), {
           title,
           details,
           targetClass,
           targetBatch,
           dueDate,
-          recipientEmails,
+          recipientEmails: getTargetEmails(targetClass, targetBatch).map(e => String(e).toLowerCase()),
           createdAt: serverTimestamp()
         });
 
         document.getElementById('homework-title').value = '';
         document.getElementById('homework-details').value = '';
         document.getElementById('homework-due-date').value = '';
-        msg.textContent = 'Homework / DPP posted successfully!';
+        msg.textContent = 'Homework posted successfully.';
         msg.className = 'msg success';
-        msg.style.display = 'inline-block';
         await loadHomeworkAdminList();
-        showToast('Homework / DPP posted.');
+        showToast('Homework posted.');
       }catch(err){
         msg.textContent = 'Error posting homework: ' + err.message;
         msg.className = 'msg error';
-        msg.style.display = 'inline-block';
       }finally{
         postHomeworkBtn.disabled = false;
-        postHomeworkBtn.textContent = '+ Post Homework / DPP';
+        postHomeworkBtn.textContent = '+ Post Homework';
       }
     });
   }
 
   document.getElementById('homework-target-class')?.addEventListener('change', refreshHomeworkBatchDropdown);
-  document.getElementById('refresh-homework-btn')?.addEventListener('click', loadHomeworkAdminList);
 
   document.getElementById('add-batch-btn').addEventListener('click', async () => {
     const cls = document.getElementById('batch-class-input').value;
@@ -2828,20 +2408,14 @@
     btn.disabled = true; btn.textContent = isEditing ? 'Updating...' : 'Launching...';
     try{
       let photoUrl = isEditing ? (batchesCache.find(x => x.id === editingBatchId)?.photoUrl || '') : '';
-      if(photoRemoved){
-        photoUrl = '';
-      }
-      const directUrl = document.getElementById('batch-photo-url-input')?.value.trim();
-      const photoFile = document.getElementById('batch-photo-input')?.files[0];
-
-      if(directUrl){
-        photoUrl = directUrl;
-      } else if(photoFile){
-        btn.textContent = 'Saving poster...';
+      const photoFile = document.getElementById('batch-photo-input').files[0];
+      if(photoFile){
+        btn.textContent = 'Uploading poster...';
         const path = `batch-photos/${Date.now()}-${photoFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
-        photoUrl = await uploadOrFallbackImage(photoFile, path, 960, 540);
+        const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('Upload timed out after '+(ms/1000)+'s — check your internet connection or Firebase Storage setup.')),ms))]);
+        const snap = await withTimeout(uploadBytes(storageRef(storage, path), photoFile), 20000);
+        photoUrl = await withTimeout(getDownloadURL(snap.ref), 15000);
       }
-
       if(isEditing){
         btn.textContent = 'Updating...';
         await updateDoc(doc(db, "batches", editingBatchId), {
@@ -2861,18 +2435,15 @@
           createdAt: serverTimestamp()
         });
         ['batch-name-input','batch-intro-input','batch-timing-input','batch-base-fee-input','batch-launch-title-input','batch-launch-subtitle-input','batch-details-input'].forEach(id => document.getElementById(id).value = '');
-        if(batchPhotoInput) batchPhotoInput.value = '';
-        if(batchPhotoUrlInput) batchPhotoUrlInput.value = '';
+        document.getElementById('batch-photo-input').value = '';
         document.getElementById('batch-photo-preview').innerHTML = '';
         document.getElementById('batch-offer-input').value = '0';
         document.getElementById('batch-launch-active-input').value = 'yes';
-        photoRemoved = false;
         updateLaunchPreview();
         showToast(launchActive ? 'Batch launched with promotion!' : 'Batch created!');
       }
       await loadBatches();
       loadStudentList();
-      refreshHomeworkBatchDropdown();
     } catch(err){
       showToast('Error: ' + err.message);
     } finally {
