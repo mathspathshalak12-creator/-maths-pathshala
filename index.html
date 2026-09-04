@@ -541,52 +541,17 @@
   .att-progress-track{background:rgba(255,255,255,0.12);border-radius:20px;height:9px;overflow:hidden;margin:8px 0 12px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.2);}
   .att-progress-fill{height:100%;border-radius:20px;background:linear-gradient(90deg, var(--amber-dark), var(--amber));transition:width .8s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 10px rgba(245,166,35,0.5);}
 
-  /* HIGH-CONTRAST NOTICE & HOMEWORK GRID */
-  .student-updates-board{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;padding:0 22px 18px;}
-  @media(max-width:768px){.student-updates-board{grid-template-columns:1fr;padding:0 14px 14px;}}
-  .updates-col{background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:18px;box-shadow:0 4px 16px rgba(11,30,61,0.04);display:flex;flex-direction:column;}
-  .updates-col-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #f1f5f9;}
-  .updates-title-lockup{display:flex;align-items:center;gap:10px;}
-  .updates-icon{font-size:20px;width:34px;height:34px;border-radius:10px;background:#fef3c7;display:flex;align-items:center;justify-content:center;}
-  .updates-title-lockup h4{margin:0;font-size:14.5px;font-weight:700;color:#0b1e3d;}
-  .updates-title-lockup small{display:block;font-size:11px;color:#64748b;margin-top:1px;}
-  .updates-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:4px 9px;border-radius:20px;}
-  .updates-badge.notice-badge{background:#fef3c7;color:#92400e;border:1px solid #fde68a;}
-  .updates-badge.hw-badge{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;}
-  .dash-notices-container, .dash-homework-container{display:flex;flex-direction:column;gap:10px;flex:1;}
-  .notice-item-card{background:#fffdf5;border:1px solid #fde68a;border-left:4px solid #d97706;border-radius:12px;padding:12px 14px;box-shadow:0 2px 6px rgba(217,119,6,0.06);transition:transform .15s ease;}
-  .notice-item-card:hover{transform:translateX(2px);}
-  .notice-item-title{font-size:13.5px;font-weight:700;color:#0b1e3d;display:flex;align-items:center;gap:6px;}
-  .notice-item-msg{font-size:12.5px;color:#334155;margin-top:5px;line-height:1.55;}
-  .hw-item-card{background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #2563eb;border-radius:12px;padding:12px 14px;box-shadow:0 2px 6px rgba(37,99,235,0.06);transition:transform .15s ease;}
-  .hw-item-card:hover{transform:translateX(2px);}
-  .hw-item-title{font-size:13.5px;font-weight:700;color:#0b1e3d;display:flex;align-items:center;justify-content:space-between;gap:8px;}
-  .hw-item-status{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:12px;background:#dbeafe;color:#1d4ed8;white-space:nowrap;}
-  .hw-item-msg{font-size:12.5px;color:#334155;margin-top:5px;line-height:1.55;}
-  .update-empty-box{background:#f8fafc;border:1px dashed #cbd5e1;border-radius:12px;padding:20px 16px;text-align:center;color:#64748b;font-size:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;flex:1;min-height:90px;}
-  .update-empty-box strong{color:#334155;font-size:13px;font-weight:700;}
-
-  /* QUICK JUMP STRIP */
-  .student-quick-nav{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:0 22px 14px;scrollbar-width:none;}
-  .student-quick-nav::-webkit-scrollbar{display:none;}
-  @media(max-width:768px){.student-quick-nav{padding:0 14px 12px;}}
-  .quick-nav-pill{white-space:nowrap;font-size:12px;font-weight:700;padding:7px 14px;border-radius:999px;background:#ffffff;border:1px solid #e2e8f0;color:#334155;text-decoration:none;transition:all .15s ease;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
-  .quick-nav-pill:hover{background:#f8fafc;border-color:#cbd5e1;color:var(--navy);transform:translateY(-1px);}
-  .quick-nav-pill.highlight{background:linear-gradient(135deg,#0b1e3d,#1a3b6b);color:#ffffff;border-color:transparent;}
-  .quick-nav-pill.highlight:hover{background:linear-gradient(135deg,#132f5d,#224b86);color:#ffffff;}
-
-  /* TOPBAR USER & LOGOUT BADGES */
-  .nav-student-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:rgba(11,30,61,0.06);border:1px solid rgba(11,30,61,0.12);text-decoration:none;transition:background .15s ease;}
-  .nav-student-badge:hover{background:rgba(11,30,61,0.1);}
-  .nav-avatar-mini{width:24px;height:24px;border-radius:50%;background:var(--amber);color:#07182f;display:grid;place-items:center;font-size:12px;font-weight:800;}
-  .nav-student-name{font-size:13px;font-weight:700;color:var(--navy);}
-  .nav-logout-btn{background:#dc2626;color:#ffffff;border:none;padding:7px 16px;border-radius:999px;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .15s ease;box-shadow:0 3px 8px rgba(220,38,38,0.25);}
-  .nav-logout-btn:hover{background:#b91c1c;transform:translateY(-1px);box-shadow:0 5px 12px rgba(220,38,38,0.35);}
-  .dash-logout-action{background:#dc2626 !important;border-color:#b91c1c !important;color:#fff !important;font-weight:700 !important;}
-  .dash-logout-action:hover{background:#b91c1c !important;}
-
-  /* 3D HERO CANVAS */
-  .hero-3d-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:auto;z-index:0;opacity:0.92;touch-action:pan-y;}
+  /* NOTICES BANNER */
+  .dash-notices{position:relative;z-index:1;margin-bottom:16px;}
+  .notice-banner{
+    background:rgba(245,166,35,0.14);border:1px solid rgba(245,166,35,0.4);
+    border-radius:12px;padding:14px 18px;margin-bottom:8px;backdrop-filter:blur(6px);
+  }
+  .notice-banner-title{font-size:13.5px;font-weight:700;color:var(--amber);}
+  .notice-banner-msg{font-size:13px;color:#E4E0D6;margin-top:3px;}
+  .hw-banner{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);border-radius:12px;padding:14px 18px;margin-bottom:8px;backdrop-filter:blur(6px);}
+  .hw-banner-title{font-size:13.5px;font-weight:700;color:#fff;}
+  .hw-banner-msg{font-size:13px;color:#B9C2D6;margin-top:3px;}
 
   .payment-history-list{list-style:none;font-size:13px;max-height:120px;overflow-y:auto;margin-top:8px;}
   .payment-history-list li{display:flex;justify-content:space-between;padding:5px 0;color:#E4E0D6;}
@@ -772,20 +737,12 @@
   .daily-attendance-table td{padding:10px 12px;border-top:1px solid #edf0f5;color:#253550;}
   .daily-attendance-table tr.att-present-row td{background:#f3fbf6;}
   .daily-attendance-table tr.att-absent-row td{background:#fdf3f2;}
-  .daily-attendance-status{display:inline-flex;min-width:78px;justify-content:center;padding:5px 10px;border-radius:999px;font-size:11.5px;font-weight:700;}
-  .daily-attendance-status.present{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0;}
-  .daily-attendance-status.absent{background:#fee2e2;color:#b91c1c;border:1px solid #fecaca;}
-  .daily-attendance-status.unmarked{background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;} 
-  .daily-attendance-status.future{background:#f8fafc;color:#94a3b8;border:1px dashed #cbd5e1;}
-  .daily-attendance-summary{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px;}
-  .att-stat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:9px;font-size:11.5px;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,0.03);}
-  .att-stat-pill.present{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0;}
-  .att-stat-pill.absent{background:#fee2e2;color:#b91c1c;border:1px solid #fecaca;}
-  .att-stat-pill.rate{background:#fef3c7;color:#92400e;border:1px solid #fde68a;}
-  .att-stat-pill.total{background:#f1f5f9;color:#334155;border:1px solid #e2e8f0;}
-  .att-month-selector-wrap{display:flex;align-items:center;gap:8px;}
-  .att-month-dropdown{padding:8px 12px;border:1.5px solid #cbd5e1;border-radius:10px;font-size:12.5px;font-weight:700;color:var(--navy);background:#ffffff;cursor:pointer;outline:none;transition:border-color .15s ease;}
-  .att-month-dropdown:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(245,166,35,0.2);}
+  .daily-attendance-status{display:inline-flex;min-width:72px;justify-content:center;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:800;}
+  .daily-attendance-status.present{background:#dff4e7;color:#1e7a46;}
+  .daily-attendance-status.absent{background:#fbe2e1;color:#c0392b;}
+  .daily-attendance-status.unmarked{background:#eef1f5;color:#6b778c;} .daily-attendance-status.future{background:#f3f5f8;color:#8792a3;}
+  .daily-attendance-summary{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 12px;}
+  .daily-attendance-summary span{padding:6px 10px;border-radius:8px;background:#f7f9fc;font-size:11px;font-weight:700;color:#52627a;}
 </style>
 
 <style id="premium-conversion-v3">
@@ -883,17 +840,8 @@
       <a href="javascript:void(0)" data-scroll="testimonials">Reviews</a>
       <a href="javascript:void(0)" data-scroll="register">Register</a>
     </div>
-    <div id="nav-auth-logged-out" style="display:inline-flex;align-items:center;">
-      <a href="javascript:void(0)" data-scroll="register" class="nav-cta">Register now</a>
-      <a href="javascript:void(0)" id="student-login-btn" class="nav-cta" style="background:var(--navy);margin-left:10px;">Student Login</a>
-    </div>
-    <div id="nav-auth-logged-in" style="display:none;align-items:center;gap:10px;margin-left:10px;">
-      <a href="javascript:void(0)" id="nav-dash-jump" class="nav-student-badge" title="Go to Student Portal">
-        <span class="nav-avatar-mini" id="nav-avatar-mini">S</span>
-        <span class="nav-student-name" id="nav-student-name">Student</span>
-      </a>
-      <button id="nav-logout-btn" class="nav-logout-btn" type="button">Logout</button>
-    </div>
+    <a href="javascript:void(0)" data-scroll="register" class="nav-cta">Register now</a>
+    <a href="javascript:void(0)" id="student-login-btn" class="nav-cta" style="background:var(--navy);margin-left:10px;">Student Login</a>
     <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle menu">☰</button>
     <div class="mobile-menu" id="mobile-menu">
       <a href="javascript:void(0)" data-scroll="services">Services</a>
@@ -905,18 +853,8 @@
       <a href="javascript:void(0)" data-scroll="testimonials">Reviews</a>
       <a href="javascript:void(0)" data-scroll="register">Register</a>
       <a href="https://github.com/mathspathshalak12-creator/-maths-pathshala/releases/download/v1.0/Maths-Pathshala.apk">📲 Download App</a>
-      <div id="mobile-auth-logged-out">
-        <a href="javascript:void(0)" data-scroll="register" class="nav-cta">Register now</a>
-        <a href="javascript:void(0)" id="mobile-login-btn" class="nav-cta" style="background:var(--navy);margin-top:8px;">Student Login</a>
-      </div>
-      <div id="mobile-auth-logged-in" style="display:none;padding:12px 14px;background:#f8fafc;border-radius:14px;margin:12px 0 6px;border:1px solid #cbd5e1;">
-        <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em;">Logged-In Student</div>
-        <div style="font-size:15px;font-weight:800;color:var(--navy);margin:4px 0 10px;" id="mobile-student-name">Student</div>
-        <div style="display:flex;gap:8px;">
-          <a href="javascript:void(0)" id="mobile-dash-jump" class="btn btn-primary" style="flex:1;padding:8px 10px;font-size:12px;text-align:center;">My Portal</a>
-          <button id="mobile-logout-btn" class="btn" type="button" style="background:#dc2626;color:#fff;padding:8px 14px;font-size:12px;border:none;border-radius:999px;cursor:pointer;font-weight:700;">Logout</button>
-        </div>
-      </div>
+      <a href="javascript:void(0)" data-scroll="register" class="nav-cta">Register now</a>
+      <a href="javascript:void(0)" id="mobile-login-btn" class="nav-cta" style="background:var(--navy);">Student Login</a>
     </div>
   </nav>
 </header>
@@ -928,10 +866,7 @@
           <div class="student-brand-mark">∑</div>
           <div><strong>Maths Pathshala</strong><span>Student Learning Portal</span></div>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <button class="dash-logout" id="dash-refresh-btn" type="button">↻ Refresh</button>
-          <button class="dash-logout dash-logout-action" id="dash-logout-btn" type="button">🚪 Logout</button>
-        </div>
+        <button class="dash-logout" id="dash-refresh-btn">↻ Refresh</button>
       </div>
 
       <div class="student-hero-card">
@@ -951,48 +886,8 @@
         </div>
       </div>
 
-      <!-- Quick Navigation Bar for Student Portal -->
-      <div class="student-quick-nav">
-        <a href="#updates-board" class="quick-nav-pill">📢 Notices &amp; Homework</a>
-        <a href="#panel-schedule" class="quick-nav-pill">⏰ Schedule</a>
-        <a href="#panel-performance" class="quick-nav-pill">📊 Test Performance</a>
-        <a href="#panel-position" class="quick-nav-pill">🏆 Batch Rank</a>
-        <a href="#panel-daily" class="quick-nav-pill">📅 Attendance Log</a>
-        <a href="#panel-fees" class="quick-nav-pill">💳 Fees</a>
-        <a href="#panel-notes" class="quick-nav-pill">📚 Notes</a>
-        <a href="#main-site" class="quick-nav-pill highlight">🌐 View Full Website &amp; Services ↓</a>
-      </div>
-
-      <!-- High-Contrast Notice & Homework Board -->
-      <div class="student-updates-board" id="updates-board">
-        <div class="updates-col">
-          <div class="updates-col-header">
-            <div class="updates-title-lockup">
-              <span class="updates-icon">📢</span>
-              <div>
-                <h4>Institute Notices &amp; Circulars</h4>
-                <small>Official announcements from Vipin Sir</small>
-              </div>
-            </div>
-            <span class="updates-badge notice-badge">Live Notice</span>
-          </div>
-          <div class="dash-notices-container" id="dash-notices"></div>
-        </div>
-
-        <div class="updates-col">
-          <div class="updates-col-header">
-            <div class="updates-title-lockup">
-              <span class="updates-icon">📝</span>
-              <div>
-                <h4>Daily Homework &amp; DPP</h4>
-                <small>Assigned practice &amp; revision tasks</small>
-              </div>
-            </div>
-            <span class="updates-badge hw-badge">Task Tracker</span>
-          </div>
-          <div class="dash-homework-container" id="dash-homework"></div>
-        </div>
-      </div>
+      <div class="dash-notices" id="dash-notices"></div>
+      <div id="dash-homework"></div>
 
       <div id="dash-found-content">
         <div class="student-kpi-grid">
@@ -1039,21 +934,16 @@
 
           <div class="student-panel student-panel-wide" id="panel-daily">
             <div class="student-panel-head">
-              <div>
-                <span class="panel-kicker">ATTENDANCE CALENDAR</span>
-                <h3>Daily Attendance Log</h3>
-                <p>Inspect complete day-wise present/absent records for any academic month.</p>
-              </div>
-              <div class="att-month-selector-wrap">
-                <span style="font-size:12px;font-weight:700;color:var(--navy);">📅 Month:</span>
-                <select id="attendance-month-select" class="att-month-dropdown" aria-label="Select attendance month"></select>
+              <div><span class="panel-kicker">ATTENDANCE CALENDAR</span><h3>Daily Attendance</h3></div>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <select id="attendance-month-select" style="padding:7px 9px;border:1px solid #dfe5ee;border-radius:8px;font-size:12px;color:#253550;"></select>
               </div>
             </div>
             <div class="daily-attendance-summary" id="daily-attendance-summary"></div>
             <div class="daily-attendance-table-wrap">
               <table class="daily-attendance-table">
                 <thead>
-                  <tr><th>Date</th><th>Day</th><th>Class Status</th></tr>
+                  <tr><th>Date</th><th>Day</th><th>Status</th></tr>
                 </thead>
                 <tbody id="daily-attendance-table"></tbody>
               </table>
@@ -1084,11 +974,10 @@
 
 
 <div id="main-site">
-<section class="hero conversion-hero" id="hero-section">
-  <canvas id="hero-3d-bg-canvas" class="hero-3d-canvas" aria-label="Interactive 3D mathematical space"></canvas>
+<section class="hero conversion-hero">
   <div class="hero-inner conversion-hero-inner">
     <div class="hero-copy">
-      <span class="eyebrow" style="margin-bottom:16px;">📍 Kalyanpur, Kanpur · Admissions Open 2026–27</span>
+      <span class="eyebrow">📍 Kalyanpur, Kanpur · Admissions Open 2026–27</span>
       <h1>Strong concepts. <span class="accent">Personal attention.</span> Confident results.</h1>
       <p class="sub">Focused offline coaching for Class 9–10 PCM and Class 11–12 Mathematics — taught personally by Vipin Kumar in small, focused batches.</p>
       <div class="hero-ctas">
@@ -1097,7 +986,7 @@
       </div>
       <div class="conversion-proof">
         <div><strong>Small</strong><span>focused batches</span></div>
-        <div><strong>Weekly</strong><span>tests &amp; practice</span></div>
+        <div><strong>Weekly</strong><span>tests & practice</span></div>
       </div>
     </div>
     <div class="hero-enquiry-card">
@@ -1967,51 +1856,21 @@
   const mobileLoginBtn = document.getElementById('mobile-login-btn');
   const mobileMenu = document.getElementById('mobile-menu');
 
-  const performSignOut = () => {
-    signOut(auth);
-    window.scrollTo({top: 0, behavior: 'smooth'});
-  };
-
-  const navLogoutBtn = document.getElementById('nav-logout-btn');
-  if(navLogoutBtn) navLogoutBtn.addEventListener('click', performSignOut);
-
-  const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
-  if(mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', () => {
-    mobileMenu.classList.remove('show');
-    performSignOut();
-  });
-
-  const dashLogoutBtn = document.getElementById('dash-logout-btn');
-  if(dashLogoutBtn) dashLogoutBtn.addEventListener('click', performSignOut);
-
-  const navDashJump = document.getElementById('nav-dash-jump');
-  if(navDashJump) navDashJump.addEventListener('click', () => {
-    studentDashboard.scrollIntoView({behavior: 'smooth'});
-  });
-
-  const mobileDashJump = document.getElementById('mobile-dash-jump');
-  if(mobileDashJump) mobileDashJump.addEventListener('click', () => {
-    mobileMenu.classList.remove('show');
-    studentDashboard.scrollIntoView({behavior: 'smooth'});
-  });
-
   studentLoginBtn.addEventListener('click', () => {
     if(isLoggedIn){
-      performSignOut();
+      signOut(auth);
     } else {
       loginModal.classList.add('show');
     }
   });
-
   mobileLoginBtn.addEventListener('click', () => {
     mobileMenu.classList.remove('show');
     if(isLoggedIn){
-      performSignOut();
+      signOut(auth);
     } else {
       loginModal.classList.add('show');
     }
   });
-
   document.getElementById('hamburger-btn').addEventListener('click', () => {
     mobileMenu.classList.toggle('show');
   });
@@ -2063,30 +1922,18 @@
   let dashboardAutoRefreshTimer = null;
 
   onAuthStateChanged(auth, async (user) => {
-    const navLoggedOut = document.getElementById('nav-auth-logged-out');
-    const navLoggedIn = document.getElementById('nav-auth-logged-in');
-    const mobLoggedOut = document.getElementById('mobile-auth-logged-out');
-    const mobLoggedIn = document.getElementById('mobile-auth-logged-in');
-
     if(user){
       isLoggedIn = true;
-      // Keep entire site and services visible underneath the student dashboard!
-      mainSite.style.display = 'block';
-      studentDashboard.style.display = 'block';
-
-      if(navLoggedOut) navLoggedOut.style.display = 'none';
-      if(navLoggedIn) navLoggedIn.style.display = 'inline-flex';
-      if(mobLoggedOut) mobLoggedOut.style.display = 'none';
-      if(mobLoggedIn) mobLoggedIn.style.display = 'block';
-
+      mainSite.style.display = 'none';
       await loadStudentDashboard(user.email);
       await loadNotices();
       await loadHomework();
+      studentLoginBtn.textContent = 'Logout';
+      mobileLoginBtn.textContent = 'Logout';
+      window.scrollTo({top: 0, behavior: 'instant'});
 
-      // Smooth scroll to learning portal
-      studentDashboard.scrollIntoView({behavior: 'smooth', block: 'start'});
-
-      // Keep dashboard in sync with admin updates
+      // Keep the dashboard in sync with admin mark entries. Firebase data can change
+      // while the student page is already open, so refresh the student document automatically.
       if(dashboardAutoRefreshTimer) clearInterval(dashboardAutoRefreshTimer);
       dashboardAutoRefreshTimer = setInterval(async () => {
         if(auth.currentUser && document.visibilityState !== 'hidden'){
@@ -2099,14 +1946,8 @@
       isLoggedIn = false;
       studentDashboard.style.display = 'none';
       mainSite.style.display = 'block';
-
-      if(navLoggedOut) navLoggedOut.style.display = 'inline-flex';
-      if(navLoggedIn) navLoggedIn.style.display = 'none';
-      if(mobLoggedOut) mobLoggedOut.style.display = 'block';
-      if(mobLoggedIn) mobLoggedIn.style.display = 'none';
-
-      currentStudentClass = null;
-      currentStudentBatchName = null;
+      studentLoginBtn.textContent = 'Student Login';
+      mobileLoginBtn.textContent = 'Student Login';
     }
   });
 
@@ -2147,73 +1988,36 @@
 
   async function loadNotices(){
     const box = document.getElementById('dash-notices');
-    if(!box) return;
     try{
-      if(!auth.currentUser || !currentStudentClass){
-        box.innerHTML = `
-          <div class="update-empty-box">
-            <span>📢</span>
-            <strong>No notices published yet</strong>
-            <span>Official circulars and announcements will appear here.</span>
-          </div>`;
-        return;
-      }
+      if(!auth.currentUser || !currentStudentClass){ box.innerHTML = ''; return; }
       const email = auth.currentUser.email.toLowerCase();
-      const docMap = new Map();
-      try {
-        const q = query(collection(db, "notices"), where("recipientEmails", "array-contains", email));
-        const snap = await getDocs(q);
-        snap.docs.forEach(d => docMap.set(d.id, d));
-      } catch(e) {}
-      try {
-        const qAll = query(collection(db, "notices"), where("recipientEmails", "array-contains", "all"));
-        const snapAll = await getDocs(qAll);
-        snapAll.docs.forEach(d => docMap.set(d.id, d));
-      } catch(e) {}
-
-      if(docMap.size === 0){
-        box.innerHTML = `
-          <div class="update-empty-box">
-            <span>📢</span>
-            <strong>No active circulars right now</strong>
-            <span>All upcoming batch timings, test circulars, and holidays will show here.</span>
-          </div>`;
-        return;
-      }
+      const q = query(collection(db, "notices"), where("recipientEmails", "array-contains", email));
+      const snap = await getDocs(q);
+      if(snap.empty){ box.innerHTML = ''; return; }
       box.innerHTML = '';
       let shown = 0;
       let latestForStudent = null;
-      const docs = Array.from(docMap.values()).sort((a,b) => {
+      const docs = snap.docs.slice().sort((a,b) => {
         const at = a.data().createdAt?.toMillis?.() || 0;
         const bt = b.data().createdAt?.toMillis?.() || 0;
         return bt - at;
       });
       docs.forEach(docSnap => {
-        if(shown >= 4) return;
+        if(shown >= 3) return;
         const data = docSnap.data();
         if(!noticeMatchesCurrentStudent(data)) return;
         if(!latestForStudent) latestForStudent = {id:docSnap.id,data};
         shown++;
         const banner = document.createElement('div');
-        banner.className = 'notice-item-card';
-        banner.innerHTML = `
-          <div class="notice-item-title">
-            <span>📌</span>
-            <span>${data.title || 'Institute Notice'}</span>
-          </div>
-          <div class="notice-item-msg">${data.message || ''}</div>
-        `;
-        box.appendChild(banner);
+        banner.className = 'notice-banner';
+        const title = document.createElement('div');
+        title.className = 'notice-banner-title';
+        title.textContent = '📢 ' + (data.title || 'Notice');
+        const msg = document.createElement('div');
+        msg.className = 'notice-banner-msg';
+        msg.textContent = data.message || '';
+        banner.appendChild(title); banner.appendChild(msg); box.appendChild(banner);
       });
-
-      if(shown === 0){
-        box.innerHTML = `
-          <div class="update-empty-box">
-            <span>📢</span>
-            <strong>No circulars for your batch currently</strong>
-            <span>You are all caught up with recent announcements!</span>
-          </div>`;
-      }
 
       // Popup is ONLY evaluated after Firebase authentication succeeds, so logged-out visitors never see it.
       if(latestForStudent && auth.currentUser){
@@ -2230,12 +2034,7 @@
         }
       }
     } catch(err){
-      box.innerHTML = `
-        <div class="update-empty-box">
-          <span>📢</span>
-          <strong>Notice board ready</strong>
-          <span>Connected to student announcements stream.</span>
-        </div>`;
+      box.innerHTML = '';
     }
   }
 
@@ -2250,41 +2049,14 @@
     const box = document.getElementById('dash-homework');
     if(!box) return;
     try{
-      const email = auth.currentUser ? auth.currentUser.email.toLowerCase() : '';
-      if(!email){
-        box.innerHTML = `
-          <div class="update-empty-box">
-            <span>📝</span>
-            <strong>No active assignments</strong>
-            <span>Log in to track your assigned practice worksheets.</span>
-          </div>`;
-        return;
-      }
-      const docMap = new Map();
-      try{
-        const q = query(collection(db, "homework"), where("recipientEmails", "array-contains", email));
-        const snap = await getDocs(q);
-        snap.docs.forEach(d => docMap.set(d.id, d));
-      } catch(e){}
-      try{
-        const qAll = query(collection(db, "homework"), where("recipientEmails", "array-contains", "all"));
-        const snapAll = await getDocs(qAll);
-        snapAll.docs.forEach(d => docMap.set(d.id, d));
-      } catch(e){}
-
-      if(docMap.size === 0){
-        box.innerHTML = `
-          <div class="update-empty-box">
-            <span>📝</span>
-            <strong>No active homework right now</strong>
-            <span>Daily problems and batch worksheets will be posted here by Vipin Sir.</span>
-          </div>`;
-        return;
-      }
+      const email = auth.currentUser.email.toLowerCase();
+      const q = query(collection(db, "homework"), where("recipientEmails", "array-contains", email));
+      const snap = await getDocs(q);
+      if(snap.empty){ box.innerHTML = ''; return; }
       box.innerHTML = '';
       let latestDoc = null;
       let shown = 0;
-      const docs = Array.from(docMap.values()).sort((a,b) => {
+      const docs = snap.docs.slice().sort((a,b) => {
         const at = a.data().createdAt?.toMillis?.() || 0;
         const bt = b.data().createdAt?.toMillis?.() || 0;
         return bt - at;
@@ -2293,29 +2065,13 @@
         const data = docSnap.data();
         if(!matchesStudentTarget(data)) return;
         if(!latestDoc){ latestDoc = docSnap; }
-        if(shown >= 4) return;
+        if(shown >= 3) return;
         shown++;
         const banner = document.createElement('div');
-        banner.className = 'hw-item-card';
-        const dueBadge = data.dueDate ? `Due: ${data.dueDate}` : 'Active DPP';
-        banner.innerHTML = `
-          <div class="hw-item-title">
-            <span>📋 ${data.title || 'Assigned Work'}</span>
-            <span class="hw-item-status">${dueBadge}</span>
-          </div>
-          <div class="hw-item-msg">${data.details || ''}</div>
-        `;
+        banner.className = 'hw-banner';
+        banner.innerHTML = `<div class="hw-banner-title">📝 ${data.title}</div><div class="hw-banner-msg">${data.details}</div>`;
         box.appendChild(banner);
       });
-
-      if(shown === 0){
-        box.innerHTML = `
-          <div class="update-empty-box">
-            <span>📝</span>
-            <strong>No pending homework for your batch</strong>
-            <span>Keep revising your class formulas and notes.</span>
-          </div>`;
-      }
 
       if(latestDoc && auth.currentUser){
         const seenKey = 'hwSeen_' + auth.currentUser.email;
@@ -2437,13 +2193,11 @@
       }
 
       table.innerHTML = html;
-      const validDays = present + absent;
-      const ratePct = validDays > 0 ? Math.round((present / validDays) * 100) : 0;
       summary.innerHTML =
-        `<div class="att-stat-pill present">✓ <strong>${present}</strong> Present</div>` +
-        `<div class="att-stat-pill absent">✕ <strong>${absent}</strong> Absent</div>` +
-        `<div class="att-stat-pill rate">📊 <strong>${ratePct}%</strong> Attended</div>` +
-        `<div class="att-stat-pill total">📅 <strong>${days}</strong> Days in Month</div>`;
+        `<span>✓ Present: ${present}</span>` +
+        `<span>✕ Absent: ${absent}</span>` +
+        `<span>— Not recorded: ${unmarked}</span>` +
+        `<span>Total calendar days: ${days}</span>`;
     }
 
     renderMonth(select.value);
@@ -2493,25 +2247,13 @@
       foundContent.style.display='none';
       notFoundContent.style.display='block';
       document.getElementById('dash-name').textContent='Student';
-      const navStudentName = document.getElementById('nav-student-name');
-      if(navStudentName) navStudentName.textContent = 'Student';
-      const mobileStudentName = document.getElementById('mobile-student-name');
-      if(mobileStudentName) mobileStudentName.textContent = 'Student';
       return;
     }
 
     const data=docSnap.data();
     foundContent.style.display='block';
     notFoundContent.style.display='none';
-    const studentName = data.name || 'Student';
-    document.getElementById('dash-name').textContent=studentName; 
-    document.getElementById('dash-avatar').textContent=studentName.trim().charAt(0).toUpperCase();
-    const navStudentName = document.getElementById('nav-student-name');
-    if(navStudentName) navStudentName.textContent = studentName;
-    const navAvatarMini = document.getElementById('nav-avatar-mini');
-    if(navAvatarMini) navAvatarMini.textContent = studentName.trim().charAt(0).toUpperCase();
-    const mobileStudentName = document.getElementById('mobile-student-name');
-    if(mobileStudentName) mobileStudentName.textContent = studentName;
+    document.getElementById('dash-name').textContent=data.name||'Student'; document.getElementById('dash-avatar').textContent=(data.name||'S').trim().charAt(0).toUpperCase();
     currentStudentClass=data.class||null; currentStudentBatchName=data.batchName||null;
     const bh=document.getElementById('dash-batch-highlight'); bh.textContent=data.class&&data.batchName?`🎓 Class ${data.class} · ${data.batchName}`:''; bh.style.display=data.class&&data.batchName?'inline-block':'none';
     document.getElementById('dash-class-batch').textContent=data.class&&data.batchName?`Class ${data.class} · ${data.batchName}`:'—';
@@ -2655,278 +2397,6 @@
         `<li><span>${s.date || ''} — ${s.name || 'Test'}</span><strong>${s.score}/${s.max} · ${scorePct(s)}%</strong></li>`
       ).join('');
     }
-  }
-
-  // -------------------------------------------------------------
-  // INTERACTIVE 3D MATHEMATICAL HERO CANVAS (Mobile & APK Optimized)
-  // -------------------------------------------------------------
-  function initHero3DCanvas(){
-    const canvas = document.getElementById('hero-3d-bg-canvas');
-    if(!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if(!ctx) return;
-
-    let width = 0, height = 0, dpr = window.devicePixelRatio || 1;
-    let isVisible = true;
-    let animId = null;
-
-    // Mathematical 3D Icosahedron Geometry (Golden Ratio phi = (1 + sqrt(5))/2)
-    const phi = (1 + Math.sqrt(5)) / 2;
-    const rawVertices = [
-      [-1,  phi, 0], [ 1,  phi, 0], [-1, -phi, 0], [ 1, -phi, 0],
-      [ 0, -1,  phi], [ 0,  1,  phi], [ 0, -1, -phi], [ 0,  1, -phi],
-      [ phi, 0, -1], [ phi, 0,  1], [-phi, 0, -1], [-phi, 0,  1]
-    ];
-    // Normalize vertices to unit sphere radius
-    const icoScale = 145;
-    const vertices = rawVertices.map(v => {
-      const len = Math.hypot(v[0], v[1], v[2]);
-      return [ (v[0] / len) * icoScale, (v[1] / len) * icoScale, (v[2] / len) * icoScale ];
-    });
-
-    // Edges connecting vertices of icosahedron
-    const edges = [];
-    for(let i = 0; i < vertices.length; i++){
-      for(let j = i + 1; j < vertices.length; j++){
-        const distSq = Math.pow(vertices[i][0] - vertices[j][0], 2) +
-                       Math.pow(vertices[i][1] - vertices[j][1], 2) +
-                       Math.pow(vertices[i][2] - vertices[j][2], 2);
-        // Normalized vertex distance for adjacent icosahedron edges is ~1.05 * 2 * icoScale
-        if(distSq < Math.pow(icoScale * 1.12, 2)){
-          edges.push([i, j]);
-        }
-      }
-    }
-
-    // Floating Mathematical Symbols
-    const mathSymbols = ['π', '∑', '∫', '√x', 'θ', 'Δ', '∞', 'dy/dx', 'sin θ', 'lim'];
-    const particles = [];
-    const particleCount = 24;
-    for(let p = 0; p < particleCount; p++){
-      particles.push({
-        x: (Math.random() - 0.5) * 600,
-        y: (Math.random() - 0.5) * 450,
-        z: (Math.random() - 0.5) * 400,
-        vx: (Math.random() - 0.5) * 0.35,
-        vy: (Math.random() - 0.5) * 0.35,
-        vz: (Math.random() - 0.5) * 0.25,
-        symbol: mathSymbols[p % mathSymbols.length],
-        alpha: 0.25 + Math.random() * 0.45
-      });
-    }
-
-    // Rotation state
-    let rotX = 0.25, rotY = 0.35;
-    let targetRotX = 0.25, targetRotY = 0.35;
-    let isDragging = false;
-    let lastMouseX = 0, lastMouseY = 0;
-
-    function resize(){
-      const rect = canvas.getBoundingClientRect();
-      width = rect.width;
-      height = rect.height;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-
-    resize();
-    window.addEventListener('resize', resize, { passive: true });
-
-    // Touch & Pointer interaction for 3D rotation
-    const onDown = (clientX, clientY) => {
-      isDragging = true;
-      lastMouseX = clientX;
-      lastMouseY = clientY;
-    };
-    const onMove = (clientX, clientY) => {
-      if(!isDragging) return;
-      const dx = clientX - lastMouseX;
-      const dy = clientY - lastMouseY;
-      lastMouseX = clientX;
-      lastMouseY = clientY;
-      targetRotY += dx * 0.007;
-      targetRotX += dy * 0.007;
-    };
-    const onUp = () => { isDragging = false; };
-
-    canvas.addEventListener('mousedown', (e) => onDown(e.clientX, e.clientY));
-    window.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY), { passive: true });
-    window.addEventListener('mouseup', onUp);
-
-    canvas.addEventListener('touchstart', (e) => {
-      if(e.touches.length === 1){
-        onDown(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    }, { passive: true });
-    window.addEventListener('touchmove', (e) => {
-      if(e.touches.length === 1){
-        onMove(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    }, { passive: true });
-    window.addEventListener('touchend', onUp);
-
-    // Pause animation when scrolled out of view to preserve battery & CPU on mobile/APK
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        isVisible = entry.isIntersecting;
-        if(isVisible && !animId){
-          lastTime = performance.now();
-          animId = requestAnimationFrame(loop);
-        }
-      });
-    }, { threshold: 0.05 });
-    observer.observe(canvas);
-
-    let lastTime = performance.now();
-
-    function loop(now){
-      if(!isVisible){
-        animId = null;
-        return;
-      }
-      animId = requestAnimationFrame(loop);
-
-      const dt = Math.min((now - lastTime) / 1000, 0.1);
-      lastTime = now;
-
-      // Smooth rotation with constant gentle spin
-      if(!isDragging){
-        targetRotY += 0.38 * dt;
-        targetRotX += 0.18 * dt;
-      }
-      rotX += (targetRotX - rotX) * 0.08;
-      rotY += (targetRotY - rotY) * 0.08;
-
-      ctx.clearRect(0, 0, width, height);
-
-      const fov = 500;
-      // Position 3D geometry toward the right in desktop, centered in mobile
-      const cx = width > 768 ? width * 0.72 : width * 0.5;
-      const cy = height * 0.48;
-
-      // Trigonometric cache
-      const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
-      const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
-
-      function project(x, y, z){
-        // Rotate around Y
-        const x1 = x * cosY + z * sinY;
-        const z1 = -x * sinY + z * cosY;
-        // Rotate around X
-        const y2 = y * cosX - z1 * sinX;
-        const z2 = y * sinX + z1 * cosX;
-
-        const distance = 420;
-        const scale = fov / (fov + z2 + distance);
-        return {
-          px: cx + x1 * scale,
-          py: cy + y2 * scale,
-          scale,
-          z: z2
-        };
-      }
-
-      // 1. Draw 3D Floating Calculus Waves
-      ctx.lineWidth = 1;
-      const wavePoints = 18;
-      const waveCols = 5;
-      for(let w = 0; w < waveCols; w++){
-        const wz = (w - Math.floor(waveCols / 2)) * 55;
-        ctx.beginPath();
-        let first = true;
-        for(let i = 0; i <= wavePoints; i++){
-          const wx = (i / wavePoints - 0.5) * 440;
-          const wavePhase = (wx * 0.02) + (now * 0.002) + (w * 0.8);
-          const wy = Math.sin(wavePhase) * 32 + Math.cos(wavePhase * 0.5) * 14;
-          const p = project(wx, wy + 90, wz);
-          if(first){ ctx.moveTo(p.px, p.py); first = false; }
-          else { ctx.lineTo(p.px, p.py); }
-        }
-        ctx.strokeStyle = `rgba(245, 166, 35, ${0.12 + (w * 0.04)})`;
-        ctx.stroke();
-      }
-
-      // 2. Draw Floating Math Particles
-      ctx.font = 'bold 13px Inter, system-ui, sans-serif';
-      particles.forEach(p => {
-        p.x += p.vx; p.y += p.vy; p.z += p.vz;
-        if(p.x > 300) p.x = -300; if(p.x < -300) p.x = 300;
-        if(p.y > 220) p.y = -220; if(p.y < -220) p.y = 220;
-        if(p.z > 200) p.z = -200; if(p.z < -200) p.z = 200;
-
-        const proj = project(p.x, p.y, p.z);
-        ctx.fillStyle = `rgba(11, 30, 61, ${p.alpha * 0.45})`;
-        ctx.fillText(p.symbol, proj.px, proj.py);
-      });
-
-      // 3. Project 3D Icosahedron Vertices
-      const projected = vertices.map(v => project(v[0], v[1], v[2]));
-
-      // 4. Draw Icosahedron Edges with depth-based opacity
-      edges.forEach(([i1, i2]) => {
-        const p1 = projected[i1];
-        const p2 = projected[i2];
-        const avgZ = (p1.z + p2.z) / 2;
-        // Depth-based alpha gradient
-        const alpha = Math.max(0.12, Math.min(0.65, (avgZ + 180) / 360));
-        ctx.beginPath();
-        ctx.moveTo(p1.px, p1.py);
-        ctx.lineTo(p2.px, p2.py);
-        ctx.strokeStyle = `rgba(245, 166, 35, ${alpha})`;
-        ctx.lineWidth = 1.3;
-        ctx.stroke();
-      });
-
-      // 5. Draw Vertices (Mathematical Nodes)
-      projected.forEach(p => {
-        const radius = Math.max(2, 3.8 * p.scale);
-        const nodeAlpha = Math.max(0.25, Math.min(0.85, (p.z + 180) / 360));
-
-        // Outer glow
-        ctx.beginPath();
-        ctx.arc(p.px, p.py, radius * 1.8, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(245, 166, 35, ${nodeAlpha * 0.25})`;
-        ctx.fill();
-
-        // Core dot
-        ctx.beginPath();
-        ctx.arc(p.px, p.py, radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(11, 30, 61, ${nodeAlpha * 0.9})`;
-        ctx.fill();
-        ctx.strokeStyle = `rgba(245, 166, 35, ${nodeAlpha})`;
-        ctx.lineWidth = 1.2;
-        ctx.stroke();
-      });
-
-      // 6. Draw subtle Cartesian 3D Axis Vectors at center of polyhedron
-      const origin = project(0, 0, 0);
-      const axisLen = 65;
-      const xAxis = project(axisLen, 0, 0);
-      const yAxis = project(0, -axisLen, 0);
-      const zAxis = project(0, 0, axisLen);
-
-      ctx.lineWidth = 1.5;
-      // X Axis (Red)
-      ctx.beginPath(); ctx.moveTo(origin.px, origin.py); ctx.lineTo(xAxis.px, xAxis.py);
-      ctx.strokeStyle = 'rgba(239, 68, 68, 0.45)'; ctx.stroke();
-      // Y Axis (Green)
-      ctx.beginPath(); ctx.moveTo(origin.px, origin.py); ctx.lineTo(yAxis.px, yAxis.py);
-      ctx.strokeStyle = 'rgba(34, 197, 94, 0.45)'; ctx.stroke();
-      // Z Axis (Blue)
-      ctx.beginPath(); ctx.moveTo(origin.px, origin.py); ctx.lineTo(zAxis.px, zAxis.py);
-      ctx.strokeStyle = 'rgba(59, 130, 246, 0.45)'; ctx.stroke();
-    }
-
-    animId = requestAnimationFrame(loop);
-  }
-
-  // Initialize interactive 3D hero once DOM is ready
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', initHero3DCanvas);
-  } else {
-    initHero3DCanvas();
   }
 
 </script>
