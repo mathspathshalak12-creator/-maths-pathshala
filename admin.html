@@ -284,7 +284,9 @@
         <a href="#batches-section">Batches</a>
         <a href="#students-section">Students</a>
         <a href="#attendance-section">Attendance</a>
+        <a href="#homework-section">Homework &amp; DPP</a>
         <a href="#fees-section">Fees</a>
+        <a href="#notes-management-section">Notes</a>
         <a href="#communication-section">Student Updates</a>
         <a href="#branding-section">Branding</a>
       </nav>
@@ -390,10 +392,37 @@
           <option value="no">Launch popup: OFF</option>
         </select>
       </div>
-      <div style="margin-top:14px;">
-        <label style="display:block;font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px;">Batch poster / photo (shown on the card banner)</label>
-        <input type="file" id="batch-photo-input" accept="image/png,image/jpeg,image/webp">
-        <div id="batch-photo-preview" style="margin-top:8px;"></div>
+      <div style="margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:10px;background:#fcfdfd;">
+        <label style="display:block;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;">
+          🖼️ Batch Poster / Banner (Card &amp; Launch Popup Banner)
+        </label>
+        <p style="font-size:12px;color:var(--muted);margin:0 0 10px;">
+          Choose a photo from your device (auto-compressed &amp; instant), enter an image URL, or pick a ready-made academic banner.
+        </p>
+        
+        <div class="row2">
+          <div>
+            <label style="display:block;font-size:11.5px;font-weight:600;color:var(--navy);margin-bottom:4px;">📁 Upload File (Auto-Optimized)</label>
+            <input type="file" id="batch-photo-input" accept="image/png,image/jpeg,image/webp" style="width:100%;">
+          </div>
+          <div>
+            <label style="display:block;font-size:11.5px;font-weight:600;color:var(--navy);margin-bottom:4px;">🔗 Or Direct Image URL</label>
+            <input type="url" id="batch-photo-url-input" placeholder="https://example.com/banner.jpg" style="padding:9px 12px;font-size:13px;width:100%;border-radius:8px;border:1px solid var(--line);">
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <span style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:6px;">Quick Ready-Made Academic Banners:</span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;" id="preset-banners-list">
+            <button type="button" class="preset-banner-btn" data-url="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=900&q=80" style="background:#fff;border:1px solid var(--line);border-radius:6px;padding:5px 9px;font-size:11.5px;cursor:pointer;">📐 Maths &amp; Geometry</button>
+            <button type="button" class="preset-banner-btn" data-url="https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=900&q=80" style="background:#fff;border:1px solid var(--line);border-radius:6px;padding:5px 9px;font-size:11.5px;cursor:pointer;">🎯 Board Booster</button>
+            <button type="button" class="preset-banner-btn" data-url="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=900&q=80" style="background:#fff;border:1px solid var(--line);border-radius:6px;padding:5px 9px;font-size:11.5px;cursor:pointer;">📚 Complete PCM</button>
+            <button type="button" class="preset-banner-btn" data-url="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80" style="background:#fff;border:1px solid var(--line);border-radius:6px;padding:5px 9px;font-size:11.5px;cursor:pointer;">⚡ Fast-Track Batch</button>
+            <button type="button" id="clear-batch-photo-btn" style="background:#fee2e2;color:#991b1b;border:1px solid #fecaca;border-radius:6px;padding:5px 9px;font-size:11.5px;cursor:pointer;">✕ Remove Poster</button>
+          </div>
+        </div>
+
+        <div id="batch-photo-preview" style="margin-top:10px;"></div>
       </div>
       <div class="launch-preview" id="batch-launch-preview">Set an original fee and offer to preview the launch price.</div>
       <div class="row2" style="margin-top:14px;"><button class="btn" id="add-batch-btn" style="margin-top:0;">+ Launch / Create Batch</button></div>
@@ -510,6 +539,70 @@
         <h3 style="margin:0 0 6px;color:var(--navy);">Assigned Notes</h3>
         <p style="font-size:12px;color:var(--muted);margin:0 0 10px;">See which notes are currently assigned and remove any note from all students in one click.</p>
         <div id="assigned-notes-list"><div style="font-size:13px;color:var(--muted);padding:10px 0;">Loading assigned notes…</div></div>
+      </div>
+    </div>
+
+    <!-- HOMEWORK & DPP TRACKER SECTION -->
+    <div class="card" id="homework-section">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px;">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:#EFF6FF;color:#1D4ED8;font-size:18px;">📝</span>
+            <h2 style="margin:0;">Homework &amp; DPP Tracker</h2>
+          </div>
+          <p style="font-size:13px;color:var(--muted);margin-top:4px;margin-bottom:0;">
+            Post Daily Practice Problems (DPP), homework worksheets, and assignment deadlines for a class or specific batch. Students receive instant notification in their portal.
+          </p>
+        </div>
+        <button type="button" class="btn btn-secondary btn-small" id="refresh-homework-btn" style="white-space:nowrap;margin:0;">↻ Refresh List</button>
+      </div>
+
+      <div class="row2" style="margin-top:14px;">
+        <div>
+          <label style="display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:6px;">Target Class</label>
+          <select id="homework-target-class" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;">
+            <option value="">All Classes (9, 10, 11, 12)</option>
+            <option value="9">Class 9</option>
+            <option value="10">Class 10</option>
+            <option value="11">Class 11</option>
+            <option value="12">Class 12</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:6px;">Target Batch</label>
+          <select id="homework-target-batch" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;">
+            <option value="">All Batches</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row2" style="margin-top:14px;">
+        <div>
+          <label style="display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:6px;">Assignment / DPP Title</label>
+          <input type="text" id="homework-title" placeholder="e.g. DPP 04 — Trigonometry Identities &amp; Heights" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;">
+        </div>
+        <div>
+          <label style="display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:6px;">Due Date / Deadline</label>
+          <input type="date" id="homework-due-date" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;">
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <label style="display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:6px;">Worksheet Details / Problem Numbers / Questions</label>
+        <textarea id="homework-details" rows="4" placeholder="e.g. Solve NCERT Exercise 8.4 Q5 (all 10 sub-parts) in your homework notebook. Also solve DPP Worksheet #3 shared in class. Submit by Wednesday." style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13.5px;resize:vertical;"></textarea>
+      </div>
+
+      <div style="margin-top:14px;display:flex;align-items:center;gap:12px;">
+        <button class="btn" id="post-homework-btn" style="margin:0;">+ Post Homework / DPP</button>
+        <span id="homework-msg" class="msg" style="display:none;margin:0;padding:8px 14px;border-radius:8px;font-size:13px;"></span>
+      </div>
+
+      <div style="margin-top:24px;padding-top:18px;border-top:1px solid var(--line);">
+        <h3 style="margin:0 0 6px;font-size:15px;color:var(--navy);">Active Assignments &amp; DPPs</h3>
+        <p style="font-size:12px;color:var(--muted);margin:0 0 12px;">Currently assigned tasks for students. Tap Delete to remove any completed or outdated assignment.</p>
+        <div id="homework-admin-list">
+          <div style="font-size:13px;color:var(--muted);padding:10px 0;">Loading assignments…</div>
+        </div>
       </div>
     </div>
 
@@ -2023,6 +2116,7 @@
 
       updateBatchDropdown();
       updateBroadcastBatchDropdown();
+      refreshHomeworkBatchDropdown();
     } catch(err){
       list.innerHTML = '<div style="font-size:13px;color:#C0392B;">Error loading batches: ' + err.message + '</div>';
     }
@@ -2356,37 +2450,159 @@
     }
   });
 
-  document.getElementById('batch-photo-input').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    const preview = document.getElementById('batch-photo-preview');
-    if(!file){ preview.innerHTML = ''; return; }
-    const url = URL.createObjectURL(file);
-    preview.innerHTML = `<img src="${url}" alt="Batch poster preview" style="max-width:220px;max-height:110px;border-radius:8px;border:1px solid #e5e9f0;">`;
+  let photoRemoved = false;
+
+  async function compressImageToDataUrl(file, maxWidth = 960, maxHeight = 540, quality = 0.8) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let w = img.width;
+          let h = img.height;
+          if (w > maxWidth || h > maxHeight) {
+            const ratio = Math.min(maxWidth / w, maxHeight / h);
+            w = Math.round(w * ratio);
+            h = Math.round(h * ratio);
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          let dataUrl = '';
+          try {
+            dataUrl = canvas.toDataURL('image/webp', quality);
+          } catch(err){}
+          if (!dataUrl || !dataUrl.startsWith('data:image/webp')) {
+            dataUrl = canvas.toDataURL('image/jpeg', quality);
+          }
+          resolve(dataUrl);
+        };
+        img.onerror = () => reject(new Error('Selected image could not be loaded'));
+        img.src = e.target.result;
+      };
+      reader.onerror = (err) => reject(err);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function uploadOrFallbackImage(file, storagePath, maxWidth = 960, maxHeight = 540) {
+    // 1. Try Firebase Storage if initialized, with polite 5s timeout
+    try {
+      if (typeof storage !== 'undefined' && storage) {
+        const snap = await Promise.race([
+          uploadBytes(storageRef(storage, storagePath), file),
+          new Promise((_, rej) => setTimeout(() => rej(new Error('Storage timeout')), 5000))
+        ]);
+        const url = await Promise.race([
+          getDownloadURL(snap.ref),
+          new Promise((_, rej) => setTimeout(() => rej(new Error('URL fetch timeout')), 4000))
+        ]);
+        if (url) return url;
+      }
+    } catch(storageErr) {
+      console.warn('Firebase Storage upload failed or restricted (CORS/quota/rules); falling back to direct compressed image:', storageErr.message || storageErr);
+    }
+
+    // 2. Guaranteed fallback: HTML5 Canvas compression (~30-60KB data URL saved directly in Firestore)
+    return await compressImageToDataUrl(file, maxWidth, maxHeight, 0.78);
+  }
+
+  const batchPhotoInput = document.getElementById('batch-photo-input');
+  const batchPhotoUrlInput = document.getElementById('batch-photo-url-input');
+  const batchPhotoPreview = document.getElementById('batch-photo-preview');
+  const clearBatchPhotoBtn = document.getElementById('clear-batch-photo-btn');
+
+  if(batchPhotoInput){
+    batchPhotoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if(!file){ return; }
+      photoRemoved = false;
+      if(batchPhotoUrlInput) batchPhotoUrlInput.value = '';
+      try {
+        const previewUrl = URL.createObjectURL(file);
+        const sizeKb = Math.round(file.size / 1024);
+        batchPhotoPreview.innerHTML = `
+          <div style="display:flex;align-items:center;gap:12px;background:#f8fafc;padding:8px 12px;border-radius:8px;border:1px solid var(--line);">
+            <img src="${previewUrl}" alt="Batch poster preview" style="width:110px;height:62px;object-fit:cover;border-radius:6px;border:1px solid #e5e9f0;">
+            <div>
+              <strong style="font-size:12px;color:var(--navy);display:block;">${escapeHtml(file.name)} (${sizeKb} KB)</strong>
+              <span style="font-size:11px;color:#10B981;">✓ Ready to save (auto-optimizes for 100% reliability)</span>
+            </div>
+          </div>`;
+      } catch(err){
+        batchPhotoPreview.innerHTML = `<span style="font-size:12px;color:#C0392B;">Preview error: ${err.message}</span>`;
+      }
+    });
+  }
+
+  if(batchPhotoUrlInput){
+    batchPhotoUrlInput.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      if(!val){
+        if(!batchPhotoInput?.files?.length) batchPhotoPreview.innerHTML = '';
+        return;
+      }
+      photoRemoved = false;
+      if(batchPhotoInput) batchPhotoInput.value = '';
+      batchPhotoPreview.innerHTML = `
+        <div style="display:flex;align-items:center;gap:12px;background:#f8fafc;padding:8px 12px;border-radius:8px;border:1px solid var(--line);">
+          <img src="${escapeHtml(val)}" alt="Batch poster preview" onerror="this.src='https://via.placeholder.com/160x90?text=Invalid+Image+URL'" style="width:110px;height:62px;object-fit:cover;border-radius:6px;border:1px solid #e5e9f0;">
+          <div>
+            <strong style="font-size:12px;color:var(--navy);display:block;">Direct Image URL linked</strong>
+            <span style="font-size:11px;color:#10B981;">✓ Image loaded from web link</span>
+          </div>
+        </div>`;
+    });
+  }
+
+  document.querySelectorAll('.preset-banner-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const url = btn.dataset.url;
+      if(!url) return;
+      photoRemoved = false;
+      if(batchPhotoUrlInput) batchPhotoUrlInput.value = url;
+      if(batchPhotoInput) batchPhotoInput.value = '';
+      const name = btn.textContent.trim();
+      batchPhotoPreview.innerHTML = `
+        <div style="display:flex;align-items:center;gap:12px;background:#f0fdf4;padding:8px 12px;border-radius:8px;border:1px solid #bbf7d0;">
+          <img src="${url}" alt="${escapeHtml(name)}" style="width:110px;height:62px;object-fit:cover;border-radius:6px;border:1px solid #e5e9f0;">
+          <div>
+            <strong style="font-size:12px;color:#166534;display:block;">Preset: ${escapeHtml(name)}</strong>
+            <span style="font-size:11px;color:#166534;">✓ High-resolution academic poster applied</span>
+          </div>
+        </div>`;
+    });
   });
+
+  if(clearBatchPhotoBtn){
+    clearBatchPhotoBtn.addEventListener('click', () => {
+      photoRemoved = true;
+      if(batchPhotoInput) batchPhotoInput.value = '';
+      if(batchPhotoUrlInput) batchPhotoUrlInput.value = '';
+      batchPhotoPreview.innerHTML = '<span style="font-size:11px;color:var(--muted);">No poster will be shown for this batch.</span>';
+    });
+  }
 
   document.getElementById('upload-signature-btn').addEventListener('click',async()=>{
     const btn=document.getElementById('upload-signature-btn');
     const file=document.getElementById('teacher-signature-input').files[0];
     const msg=document.getElementById('signature-msg');
     if(!file){msg.textContent='Choose a signature image first.';msg.className='msg error';return;}
-    btn.disabled=true; const origText=btn.textContent; btn.textContent='Uploading…';
-    msg.textContent='Uploading signature, please wait…'; msg.className='msg';
+    btn.disabled=true; const origText=btn.textContent; btn.textContent='Processing…';
+    msg.textContent='Saving signature, please wait…'; msg.className='msg';
     try{
       const path=`report-assets/teacher-signature-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
-      const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('Upload timed out after '+(ms/1000)+'s — check your internet connection or Firebase Storage setup.')),ms))]);
-      const snap=await withTimeout(uploadBytes(storageRef(storage,path),file),20000);
-      const url=await withTimeout(getDownloadURL(snap.ref),15000);
+      const url = await uploadOrFallbackImage(file, path, 600, 250);
       await setDoc(doc(db,'siteSettings','branding'),{teacherSignatureUrl:url,updatedAt:serverTimestamp()},{merge:true});
       teacherSignatureUrl=url;
       document.getElementById('signature-preview').innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Current signature</div><img src="${url}" alt="Teacher signature" style="max-width:240px;max-height:90px;background:#fff;padding:8px;border:1px solid #e5e9f0;border-radius:8px;">`;
-      msg.textContent='Signature uploaded. Future report cards can reuse it automatically.';
+      msg.textContent='Signature saved successfully! Future report cards will use it automatically.';
       msg.className='msg success';
     }catch(e){
       console.error('Signature upload error:',e);
-      let hint='';
-      if(e.code==='storage/unauthorized') hint=' (Storage rules are blocking this upload — check Firebase Console → Storage → Rules.)';
-      else if(e.code==='storage/unknown'||/CORS/i.test(e.message)) hint=' (Possible CORS or Storage-not-enabled issue — check Firebase Console → Storage is set up.)';
-      msg.textContent='Signature upload failed: '+(e.code||e.message)+hint;
+      msg.textContent='Signature processing failed: '+(e.message||'Unknown error');
       msg.className='msg error';
     } finally {
       btn.disabled=false; btn.textContent=origText;
@@ -2414,6 +2630,7 @@
     const b = batchesCache.find(x => x.id === id);
     if(!b) return;
     editingBatchId = id;
+    photoRemoved = false;
     document.getElementById('batch-class-input').value = b.class || '9';
     document.getElementById('batch-name-input').value = b.name || '';
     document.getElementById('batch-intro-input').value = b.intro || '';
@@ -2424,11 +2641,18 @@
     document.getElementById('batch-launch-title-input').value = b.launchTitle || '';
     document.getElementById('batch-launch-subtitle-input').value = b.launchSubtitle || '';
     document.getElementById('batch-launch-active-input').value = b.launchActive ? 'yes' : 'no';
-    document.getElementById('batch-photo-input').value = '';
+    if(batchPhotoInput) batchPhotoInput.value = '';
+    if(batchPhotoUrlInput) batchPhotoUrlInput.value = (b.photoUrl && b.photoUrl.startsWith('http')) ? b.photoUrl : '';
     const preview = document.getElementById('batch-photo-preview');
     preview.innerHTML = b.photoUrl
-      ? `<img src="${b.photoUrl}" style="max-width:160px;border-radius:8px;display:block;"><div style="font-size:11px;color:var(--muted);margin-top:4px;">Current photo — choose a new file only to replace it.</div>`
-      : '';
+      ? `<div style="display:flex;align-items:center;gap:12px;background:#f8fafc;padding:8px 12px;border-radius:8px;border:1px solid var(--line);">
+          <img src="${b.photoUrl}" style="width:110px;height:62px;object-fit:cover;border-radius:6px;border:1px solid #e5e9f0;">
+          <div>
+            <strong style="font-size:12px;color:var(--navy);display:block;">Current batch poster</strong>
+            <span style="font-size:11px;color:var(--muted);">Upload a new file, change URL, or click "Remove Poster" to clear.</span>
+          </div>
+        </div>`
+      : '<span style="font-size:11px;color:var(--muted);">No poster assigned to this batch yet.</span>';
     updateLaunchPreview();
     const banner = document.getElementById('batch-edit-banner');
     banner.style.display = 'flex';
@@ -2439,10 +2663,12 @@
 
   function cancelBatchEdit(){
     editingBatchId = null;
+    photoRemoved = false;
     document.getElementById('batch-edit-banner').style.display = 'none';
     document.getElementById('add-batch-btn').textContent = '+ Launch / Create Batch';
     ['batch-name-input','batch-intro-input','batch-timing-input','batch-base-fee-input','batch-launch-title-input','batch-launch-subtitle-input','batch-details-input'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('batch-photo-input').value = '';
+    if(batchPhotoInput) batchPhotoInput.value = '';
+    if(batchPhotoUrlInput) batchPhotoUrlInput.value = '';
     document.getElementById('batch-photo-preview').innerHTML = '';
     document.getElementById('batch-offer-input').value = '0';
     document.getElementById('batch-launch-active-input').value = 'yes';
@@ -2450,32 +2676,55 @@
   }
   document.getElementById('cancel-batch-edit-btn').addEventListener('click', cancelBatchEdit);
 
-
   async function loadHomeworkAdminList(){
     const box = document.getElementById('homework-admin-list');
     if(!box) return;
     try{
       const snap = await getDocs(query(collection(db, "homework"), orderBy("createdAt", "desc")));
       if(snap.empty){
-        box.innerHTML = '<div style="font-size:13px;color:var(--muted);">No homework posted yet.</div>';
+        box.innerHTML = '<div style="font-size:13px;color:var(--muted);padding:12px 0;">No homework or DPP posted yet. Use the form above to assign problems.</div>';
         return;
       }
       box.innerHTML = '';
-      let count = 0;
       snap.forEach(docSnap => {
-        if(count >= 8) return;
         const h = docSnap.data();
+        const id = docSnap.id;
         const target = h.targetClass
-          ? `Class ${h.targetClass}${h.targetBatch ? ' · ' + h.targetBatch : ''}`
-          : 'All classes';
-        const due = h.dueDate ? ` · Due ${dateInputToLabel(h.dueDate)}` : '';
+          ? `Class ${h.targetClass}${h.targetBatch ? ' · ' + h.targetBatch : ' (All batches)'}`
+          : 'All Classes';
+        const due = h.dueDate ? `Due: ${dateInputToLabel(h.dueDate)}` : '';
+        const dateStr = h.createdAt?.toDate ? h.createdAt.toDate().toLocaleDateString('en-GB', {day:'2-digit', month:'short'}) : '';
+        
         const item = document.createElement('div');
-        item.style.cssText = 'padding:12px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:#fffdf9;';
-        item.innerHTML = `<strong>📝 ${h.title || 'Homework'}</strong>
-          <div style="font-size:11.5px;color:var(--muted);margin-top:4px;">${target}${due}</div>
-          <div style="font-size:12.5px;color:var(--muted);margin-top:4px;">${h.details || ''}</div>`;
+        item.style.cssText = 'display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:#fffdfa;';
+        item.innerHTML = `
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;">
+              <strong style="color:var(--navy);font-size:14px;">📝 ${escapeHtml(h.title || 'Homework / DPP')}</strong>
+              <span style="background:#EFF6FF;color:#1D4ED8;font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;">${escapeHtml(target)}</span>
+              ${due ? `<span style="background:#FEF3C7;color:#92400E;font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;">${escapeHtml(due)}</span>` : ''}
+            </div>
+            <div style="font-size:13px;color:#334155;margin-top:6px;line-height:1.5;white-space:pre-wrap;word-break:break-word;">${escapeHtml(h.details || '')}</div>
+            ${dateStr ? `<div style="font-size:11px;color:var(--muted);margin-top:6px;">📅 Posted on ${dateStr}</div>` : ''}
+          </div>
+          <button type="button" class="btn btn-secondary btn-small delete-hw-btn" data-id="${id}" style="color:#DC2626;border-color:#FCA5A5;background:#FEF2F2;white-space:nowrap;padding:6px 12px;font-size:12px;margin:0;">🗑 Delete</button>
+        `;
         box.appendChild(item);
-        count++;
+      });
+
+      // Hook up delete buttons
+      box.querySelectorAll('.delete-hw-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const docId = e.currentTarget.dataset.id;
+          if(!confirm('Are you sure you want to delete this homework assignment?')) return;
+          try {
+            await deleteDoc(doc(db, "homework", docId));
+            showToast('Homework deleted.');
+            await loadHomeworkAdminList();
+          } catch(err) {
+            alert('Could not delete homework: ' + err.message);
+          }
+        });
       });
     } catch(err){
       box.innerHTML = '<div class="msg error">Could not load homework: ' + err.message + '</div>';
@@ -2507,43 +2756,55 @@
       const msg = document.getElementById('homework-msg');
 
       if(!title || !details){
-        msg.textContent = 'Please enter homework title and details.';
+        msg.textContent = 'Please enter homework title and details/questions.';
         msg.className = 'msg error';
+        msg.style.display = 'inline-block';
         return;
       }
 
       postHomeworkBtn.disabled = true;
       postHomeworkBtn.textContent = 'Posting...';
+      msg.style.display = 'none';
 
       try{
+        let recipientEmails = getTargetEmails(targetClass, targetBatch).map(e => String(e).toLowerCase());
+        if(!targetClass || recipientEmails.length === 0){
+          recipientEmails = allStudentsCache.map(s => String(s.data?.email || s.id).toLowerCase()).filter(Boolean);
+        }
+        if(!recipientEmails.includes(ADMIN_EMAIL)) recipientEmails.push(ADMIN_EMAIL);
+        if(!recipientEmails.includes('all')) recipientEmails.push('all');
+
         await addDoc(collection(db, "homework"), {
           title,
           details,
           targetClass,
           targetBatch,
           dueDate,
-          recipientEmails: getTargetEmails(targetClass, targetBatch).map(e => String(e).toLowerCase()),
+          recipientEmails,
           createdAt: serverTimestamp()
         });
 
         document.getElementById('homework-title').value = '';
         document.getElementById('homework-details').value = '';
         document.getElementById('homework-due-date').value = '';
-        msg.textContent = 'Homework posted successfully.';
+        msg.textContent = 'Homework / DPP posted successfully!';
         msg.className = 'msg success';
+        msg.style.display = 'inline-block';
         await loadHomeworkAdminList();
-        showToast('Homework posted.');
+        showToast('Homework / DPP posted.');
       }catch(err){
         msg.textContent = 'Error posting homework: ' + err.message;
         msg.className = 'msg error';
+        msg.style.display = 'inline-block';
       }finally{
         postHomeworkBtn.disabled = false;
-        postHomeworkBtn.textContent = '+ Post Homework';
+        postHomeworkBtn.textContent = '+ Post Homework / DPP';
       }
     });
   }
 
   document.getElementById('homework-target-class')?.addEventListener('change', refreshHomeworkBatchDropdown);
+  document.getElementById('refresh-homework-btn')?.addEventListener('click', loadHomeworkAdminList);
 
   document.getElementById('add-batch-btn').addEventListener('click', async () => {
     const cls = document.getElementById('batch-class-input').value;
@@ -2567,14 +2828,20 @@
     btn.disabled = true; btn.textContent = isEditing ? 'Updating...' : 'Launching...';
     try{
       let photoUrl = isEditing ? (batchesCache.find(x => x.id === editingBatchId)?.photoUrl || '') : '';
-      const photoFile = document.getElementById('batch-photo-input').files[0];
-      if(photoFile){
-        btn.textContent = 'Uploading poster...';
-        const path = `batch-photos/${Date.now()}-${photoFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
-        const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('Upload timed out after '+(ms/1000)+'s — check your internet connection or Firebase Storage setup.')),ms))]);
-        const snap = await withTimeout(uploadBytes(storageRef(storage, path), photoFile), 20000);
-        photoUrl = await withTimeout(getDownloadURL(snap.ref), 15000);
+      if(photoRemoved){
+        photoUrl = '';
       }
+      const directUrl = document.getElementById('batch-photo-url-input')?.value.trim();
+      const photoFile = document.getElementById('batch-photo-input')?.files[0];
+
+      if(directUrl){
+        photoUrl = directUrl;
+      } else if(photoFile){
+        btn.textContent = 'Saving poster...';
+        const path = `batch-photos/${Date.now()}-${photoFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+        photoUrl = await uploadOrFallbackImage(photoFile, path, 960, 540);
+      }
+
       if(isEditing){
         btn.textContent = 'Updating...';
         await updateDoc(doc(db, "batches", editingBatchId), {
@@ -2594,15 +2861,18 @@
           createdAt: serverTimestamp()
         });
         ['batch-name-input','batch-intro-input','batch-timing-input','batch-base-fee-input','batch-launch-title-input','batch-launch-subtitle-input','batch-details-input'].forEach(id => document.getElementById(id).value = '');
-        document.getElementById('batch-photo-input').value = '';
+        if(batchPhotoInput) batchPhotoInput.value = '';
+        if(batchPhotoUrlInput) batchPhotoUrlInput.value = '';
         document.getElementById('batch-photo-preview').innerHTML = '';
         document.getElementById('batch-offer-input').value = '0';
         document.getElementById('batch-launch-active-input').value = 'yes';
+        photoRemoved = false;
         updateLaunchPreview();
         showToast(launchActive ? 'Batch launched with promotion!' : 'Batch created!');
       }
       await loadBatches();
       loadStudentList();
+      refreshHomeworkBatchDropdown();
     } catch(err){
       showToast('Error: ' + err.message);
     } finally {
