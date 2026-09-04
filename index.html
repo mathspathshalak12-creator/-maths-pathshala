@@ -714,7 +714,12 @@
 .student-lms-topbar{height:68px;background:#071b38;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 26px}
 .student-brand-lockup{display:flex;align-items:center;gap:11px}.student-brand-lockup strong{display:block;font-size:15px}.student-brand-lockup span{display:block;color:#aebbd0;font-size:10px;letter-spacing:.09em;text-transform:uppercase;margin-top:2px}.student-brand-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(145deg,#f5a623,#ffd37b);color:#071b38;display:grid;place-items:center;font-weight:900;font-size:18px}
 .student-hero-card{padding:28px;display:flex;align-items:center;justify-content:space-between;gap:25px;background:linear-gradient(135deg,#0b2348,#153e73);color:#fff}.student-identity{display:flex;align-items:center;gap:15px}.student-hero-copy{max-width:340px;text-align:right}.student-hero-copy span,.panel-kicker{font-size:10px;font-weight:800;letter-spacing:.12em;color:#f5a623}.student-hero-copy strong{display:block;font-size:18px;margin:5px 0}.student-hero-copy small{color:#b8c6da;line-height:1.5}.student-hero-card .dash-welcome{color:#fff}.student-hero-card .dash-email{color:#b8c6da}.student-hero-card .dash-avatar{background:linear-gradient(145deg,#f5a623,#d98b12);color:#071b38;box-shadow:none}
-.student-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:18px 22px}.student-kpi{background:#fff;border:1px solid #e4e9f1;border-radius:15px;padding:17px}.student-kpi span{display:block;color:#738096;font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}.student-kpi strong{display:block;color:#0b1e3d;font-size:26px;margin:7px 0 2px}.student-kpi small{color:#8c97a8;font-size:11px}
+.student-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:18px 22px}.student-kpi{background:#fff;border:1px solid #e4e9f1;border-radius:15px;padding:17px;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}.student-kpi span{display:block;color:#738096;font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}.student-kpi strong{display:block;color:#0b1e3d;font-size:26px;margin:7px 0 2px}.student-kpi small{color:#8c97a8;font-size:11px}.kpi-clickable{cursor:pointer}.kpi-clickable:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(15,23,42,.09);border-color:rgba(245,166,35,.4)}
+.att-progress-fill{transition:width 1s cubic-bezier(.22,1,.36,1)}
+.dash-fee-badge.dash-fee-due{animation:feePulse 2.2s ease-in-out infinite}
+@keyframes feePulse{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,.35)}50%{box-shadow:0 0 0 6px rgba(192,57,43,0)}}
+.streak-highlight{transition:background-color .3s ease}
+@media(prefers-reduced-motion:reduce){.dash-fee-badge.dash-fee-due{animation:none}.att-progress-fill{transition:none}}
 .student-main-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:0 22px 22px}.student-panel{background:#fff;border:1px solid #e2e7ef;border-radius:17px;padding:21px;min-width:0}.student-panel-wide{grid-column:span 2}.student-panel-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:17px}.student-panel-head h3{margin:4px 0 0;font-size:18px;color:#0b1e3d}.student-panel-head p{font-size:12px;color:#77849a;margin:5px 0 0}.panel-pill{font-size:10px;background:#eef3fb;color:#36527a;border-radius:20px;padding:6px 10px;font-weight:700}.performance-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.performance-summary>div{background:#f7f9fc;border-radius:12px;padding:12px}.performance-summary span,.rank-stats span,.detail-list span{display:block;font-size:10px;color:#8792a4;text-transform:uppercase;letter-spacing:.04em}.performance-summary strong{display:block;color:#0b1e3d;font-size:20px;margin-top:4px}.student-score-chart{height:190px;margin:10px 0 4px}.student-score-list{max-height:160px;overflow:auto}.student-score-list li{padding:8px 0;border-bottom:1px solid #edf0f5}
 .rank-card{display:flex;gap:14px;align-items:center;padding:18px;border-radius:14px;background:linear-gradient(135deg,#081c3a,#173e70);color:#fff}.rank-medal{width:48px;height:48px;border-radius:14px;background:#f5a623;color:#071b38;display:grid;place-items:center;font-weight:900;font-size:21px}.rank-card strong{display:block;font-size:27px}.rank-card span{display:block;color:#bdc9da;font-size:11px;margin-top:3px;line-height:1.4}.rank-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:11px}.rank-stats>div{padding:12px;background:#f7f9fc;border-radius:11px}.rank-stats strong{display:block;font-size:16px;color:#0b1e3d;margin-top:4px}
 .attendance-hero{display:flex;align-items:baseline;gap:8px}.attendance-hero strong{font-size:29px;color:#0b1e3d}.attendance-hero span{font-size:11px;color:#8792a4}.streak-highlight{margin:12px 0;padding:9px 11px;border-radius:10px;background:#fff6df;color:#8a5c09;font-size:11px;font-weight:700}.monthly-attendance-list{display:grid;gap:7px;max-height:190px;overflow:auto}.month-att-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #edf0f5}.month-att-row strong{font-size:12px;color:#253550}.month-att-row span{font-size:10px;color:#7d8898}.month-att-row b{font-size:12px;color:#0b1e3d}
@@ -760,9 +765,99 @@
 <style id="home-tuition-banner-style">
 .home-tuition-banner{padding:22px 0 8px}.home-tuition-banner-inner{display:flex;align-items:center;justify-content:space-between;gap:28px;padding:28px 30px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(135deg,rgba(255,255,255,.98),rgba(253,248,238,.92));box-shadow:0 14px 40px rgba(15,23,42,.06)}.home-tuition-banner h2{margin:4px 0 8px;font-size:28px}.home-tuition-banner p{margin:0;color:var(--muted)}@media(max-width:720px){.home-tuition-banner-inner{flex-direction:column;align-items:flex-start;padding:24px}.home-tuition-banner .btn{width:100%;justify-content:center}}
 </style>
+<style>
+/* Maths Pathshala premium cleanup */
+.mp-brand-ribbon{background:linear-gradient(90deg,#071a35,#102f5b);color:#fff;padding:10px 18px;text-align:center;font-size:11px;letter-spacing:.08em}
+.mp-brand-ribbon strong{display:block;margin-top:3px;font-size:13px;letter-spacing:.02em}
+#dash-next-class,#next-class,.next-class-card{display:none!important}
+@media print{.mp-brand-ribbon{display:none}}
+</style>
+
+<style>
+.batch-card-launch{border-color:rgba(245,166,35,.55)!important;position:relative;overflow:hidden}
+.batch-card-launch:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 90% 0%,rgba(245,166,35,.16),transparent 35%);pointer-events:none}
+.public-offer-price{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:12px 0 15px}
+.public-offer-price span{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#f5c66d;font-weight:800;width:100%}
+.public-offer-price strong{font-size:26px;color:#fff}.public-offer-price s{color:#9aa9be;font-size:13px}.public-offer-price em{font-style:normal;background:#f5a623;color:#071a35;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:900}
+.batch-launch-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;margin-bottom:10px;border-radius:999px;background:#f5a623;color:#071a35;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
+.launch-popup-card{max-width:510px!important;padding:30px!important}
+.launch-popup-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.launch-live-dot{font-size:10px;color:#62c98a;font-weight:900;letter-spacing:.08em}.launch-live-dot:first-letter{color:#62c98a}
+.launch-popup-class{font-size:11px;color:var(--amber);font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.launch-popup-card h3{font-size:28px!important;line-height:1.12!important;margin:8px 0 10px!important}.launch-popup-card>p{font-size:14px!important;line-height:1.7!important}
+.launch-price{font-size:34px;font-weight:900;color:var(--navy);margin-top:18px}.launch-price small{font-size:11px;color:var(--muted);font-weight:600}.launch-offer{margin-top:3px;color:var(--muted);font-size:12px}.launch-offer strong{color:#198754}
+.launch-popup-points{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:18px 0;font-size:12px;color:#42536c}
+.launch-popup-points span{padding:9px 10px;background:#f7f9fc;border-radius:9px}
+@media(max-width:600px){.launch-popup-points{grid-template-columns:1fr}.launch-popup-card h3{font-size:24px!important}}
+
+  /* ===== CONVERSION-FOCUSED HERO ===== */
+  .admission-ribbon{position:relative;z-index:70;overflow:hidden;background:var(--navy);color:#fff;border-bottom:1px solid rgba(245,166,35,.45);white-space:nowrap;}
+  .admission-ribbon-track{display:flex;align-items:center;gap:18px;min-height:38px;padding:7px 20px;font-size:11.5px;font-weight:700;letter-spacing:.045em;text-transform:uppercase;width:max-content;animation:ribbonScroll 20s linear infinite;}
+  .admission-ribbon b{color:var(--amber);font-size:14px;}
+  @keyframes ribbonScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  .conversion-hero{padding:72px 24px 78px;background:radial-gradient(circle at 78% 25%,rgba(245,166,35,.18),transparent 24rem),linear-gradient(135deg,#fffdf8 0%,#f7f3e9 100%);}
+  .conversion-hero-inner{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(340px,.65fr);gap:58px;align-items:center;}
+  .hero-copy{min-width:0;}
+  .hero-copy h1{max-width:720px;}
+  .hero-copy .sub{max-width:650px;}
+  .conversion-proof{display:flex;flex-wrap:wrap;margin-top:34px;border:1px solid rgba(11,30,61,.10);background:rgba(255,255,255,.7);border-radius:16px;overflow:hidden;width:max-content;max-width:100%;box-shadow:0 14px 35px rgba(11,30,61,.06);}
+  .conversion-proof div{padding:14px 19px;border-left:1px solid var(--line);display:flex;flex-direction:column;min-width:125px;}
+  .conversion-proof div:first-child{border-left:0;}
+  .conversion-proof strong{font:700 14px 'Space Grotesk',sans-serif;color:var(--navy);}
+  .conversion-proof span{font-size:11px;color:var(--muted);margin-top:2px;}
+  .hero-enquiry-card{background:linear-gradient(155deg,#0a1d3a,#173b6d);color:#fff;border:1px solid rgba(245,166,35,.32);border-radius:24px;padding:28px;box-shadow:0 28px 65px rgba(11,30,61,.24);position:relative;overflow:hidden;}
+  .hero-enquiry-card:after{content:'';position:absolute;width:190px;height:190px;border-radius:50%;right:-80px;top:-80px;background:radial-gradient(circle,rgba(245,166,35,.30),transparent 68%);pointer-events:none;}
+  .hero-card-top{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+  .hero-card-badge{background:var(--amber);color:var(--navy);padding:6px 10px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.05em;}
+  .hero-card-live{font:700 10px 'JetBrains Mono',monospace;color:#d7e1ef;}
+  .hero-card-live:first-letter{color:#7fd6a0;}
+  .hero-enquiry-card h2{position:relative;z-index:1;font-size:27px;line-height:1.15;margin-bottom:9px;color:#fff;}
+  .hero-enquiry-card p{position:relative;z-index:1;color:#bfcbe0;font-size:13.5px;line-height:1.65;}
+  .hero-card-options{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0;}
+  .hero-card-options>div{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.06);border-radius:13px;padding:13px;}
+  .hero-card-options span{display:block;color:var(--amber);font:700 11px 'JetBrains Mono',monospace;}
+  .hero-card-options strong{display:block;font-size:13px;margin-top:4px;}
+  .hero-card-options small{display:block;color:#9fb0cc;font-size:10px;margin-top:3px;}
+  .hero-card-btn{position:relative;z-index:1;width:100%;justify-content:center;box-shadow:0 12px 24px rgba(0,0,0,.18);}
+  .hero-card-note{position:relative;z-index:1;text-align:center;color:#94a4bd;font-size:10.5px;margin-top:13px;}
+  .conversion-hero .hero-ctas{margin-top:30px;}
+  @media(max-width:900px){.conversion-hero-inner{grid-template-columns:1fr;gap:34px;}.hero-enquiry-card{max-width:620px;width:100%;}.conversion-proof{width:100%;}.conversion-proof div{flex:1;min-width:110px;}}
+  @media(max-width:600px){.admission-ribbon-track{justify-content:flex-start;overflow:hidden;font-size:10px;gap:12px;}.conversion-hero{padding:55px 20px 58px;}.conversion-hero .hero-ctas{gap:10px;}.conversion-hero .hero-ctas .btn{width:100%;justify-content:center;}.conversion-proof div{min-width:33.33%;padding:12px 10px;}.conversion-proof strong{font-size:12px;}.conversion-proof span{font-size:9.5px;}.hero-enquiry-card{padding:22px;border-radius:20px;}.hero-enquiry-card h2{font-size:24px;}.hero-card-options{grid-template-columns:1fr;}}
+  @media(prefers-reduced-motion:reduce){.admission-ribbon-track{animation:none;}}
+</style>
 </head>
 <body>
 
+<header>
+  <nav>
+    <div class="logo">Maths <span>Pathshala</span></div>
+    <div class="navlinks">
+      <a href="javascript:void(0)" data-scroll="services">Services</a>
+      <a href="javascript:void(0)" data-scroll="programs">Batch classes</a>
+      <a href="javascript:void(0)" data-scroll="hometuition">Home Tuition</a>
+      <a href="javascript:void(0)" data-scroll="notes">Notes</a>
+      <a href="javascript:void(0)" data-scroll="pricing">Admission</a>
+      <a href="javascript:void(0)" data-scroll="why">Why us</a>
+      <a href="javascript:void(0)" data-scroll="testimonials">Reviews</a>
+      <a href="javascript:void(0)" data-scroll="register">Register</a>
+    </div>
+    <a href="javascript:void(0)" data-scroll="register" class="nav-cta">Register now</a>
+    <a href="javascript:void(0)" id="student-login-btn" class="nav-cta" style="background:var(--navy);margin-left:10px;">Student Login</a>
+    <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle menu">☰</button>
+    <div class="mobile-menu" id="mobile-menu">
+      <a href="javascript:void(0)" data-scroll="services">Services</a>
+      <a href="javascript:void(0)" data-scroll="programs">Batch classes</a>
+      <a href="javascript:void(0)" data-scroll="hometuition">Home Tuition</a>
+      <a href="javascript:void(0)" data-scroll="notes">Notes</a>
+      <a href="javascript:void(0)" data-scroll="pricing">Admission</a>
+      <a href="javascript:void(0)" data-scroll="why">Why us</a>
+      <a href="javascript:void(0)" data-scroll="testimonials">Reviews</a>
+      <a href="javascript:void(0)" data-scroll="register">Register</a>
+      <a href="https://github.com/mathspathshalak12-creator/-maths-pathshala/releases/download/v1.0/Maths-Pathshala.apk">📲 Download App</a>
+      <a href="javascript:void(0)" data-scroll="register" class="nav-cta">Register now</a>
+      <a href="javascript:void(0)" id="mobile-login-btn" class="nav-cta" style="background:var(--navy);">Student Login</a>
+    </div>
+  </nav>
+</header>
 <div id="student-dashboard">
   <div class="wrap">
     <div class="student-lms-shell">
@@ -796,40 +891,48 @@
 
       <div id="dash-found-content">
         <div class="student-kpi-grid">
-          <div class="student-kpi"><span>Attendance</span><strong id="dash-kpi-attendance">—</strong><small id="dash-kpi-attendance-sub">Monthly view available below</small></div>
-          <div class="student-kpi"><span>Current streak</span><strong id="dash-kpi-streak">—</strong><small>Consecutive present classes</small></div>
-          <div class="student-kpi"><span>Recent test rank</span><strong id="dash-kpi-rank">—</strong><small id="dash-kpi-rank-sub">Based on the latest test</small></div>
-          <div class="student-kpi"><span>Latest test score</span><strong id="dash-kpi-latest-score">—</strong><small>Score in the most recent test</small></div>
+          <div class="student-kpi kpi-clickable" data-scroll-target="panel-attendance"><span>This month's attendance</span><strong id="dash-kpi-attendance">—</strong><small id="dash-kpi-attendance-sub">Monthly view below</small></div>
+          <div class="student-kpi kpi-clickable" data-scroll-target="panel-attendance"><span>Current streak</span><strong id="dash-kpi-streak">—</strong><small>Consecutive present classes</small></div>
+          <div class="student-kpi kpi-clickable" data-scroll-target="panel-position"><span>Recent test rank</span><strong id="dash-kpi-rank">—</strong><small id="dash-kpi-rank-sub">Based on the latest test</small></div>
+          <div class="student-kpi kpi-clickable" data-scroll-target="panel-performance"><span>Latest test score</span><strong id="dash-kpi-latest-score">—</strong><small>Score in the most recent test</small></div>
         </div>
 
         <div class="student-main-grid">
-          <div class="student-panel student-panel-wide">
+          <div class="student-panel student-panel-wide" id="panel-schedule">
+            <div class="student-panel-head"><div><span class="panel-kicker">CLASS DETAILS</span><h3>Your Schedule</h3></div></div>
+            <div class="detail-list">
+              <div><span>Class &amp; batch</span><strong id="dash-class-batch">—</strong></div>
+              <div><span>Batch timing</span><strong id="dash-batch-value">—</strong></div>
+              <div><span>Next test</span><strong id="dash-next-test">—</strong></div>
+              <div><span>Joined on</span><strong id="dash-admission-date">—</strong></div>
+            </div>
+          </div>
+
+          <div class="student-panel student-panel-wide" id="panel-performance">
             <div class="student-panel-head"><div><span class="panel-kicker">ACADEMIC PERFORMANCE</span><h3>Test Performance</h3></div><span class="panel-pill">Live records</span></div>
-            <div class="performance-summary">
-              <div><span>Latest test score</span><strong id="dash-average-score">—</strong></div>
+            <div class="performance-summary" style="grid-template-columns:repeat(2,1fr);">
               <div><span>Tests attempted</span><strong id="dash-tests-count">0</strong></div>
-              <div><span>Latest test highest</span><strong id="dash-best-score">—</strong></div>
+              <div><span>Latest test highest (batch)</span><strong id="dash-best-score">—</strong></div>
             </div>
             <div class="score-chart-wrap student-score-chart"><canvas id="score-chart"></canvas></div>
             <ul class="score-list student-score-list" id="dash-scores-list"><li>No test scores yet</li></ul>
           </div>
 
-          <div class="student-panel">
+          <div class="student-panel" id="panel-position">
             <div class="student-panel-head"><div><span class="panel-kicker">BATCH</span><h3>Your Position</h3></div></div>
             <div class="rank-card"><div class="rank-medal">#</div><div><strong id="dash-rank-big">—</strong><span id="dash-rank-detail">Batch rank will appear after tests are recorded.</span></div></div>
-            <div class="rank-stats"><div><span>Latest test rank</span><strong id="dash-rank-big-secondary">—</strong></div><div><span>Latest test</span><strong id="dash-latest-test-name">—</strong></div></div>
+            <div class="rank-stats"><div><span>Latest test</span><strong id="dash-latest-test-name">—</strong></div></div>
           </div>
 
-          <div class="student-panel">
+          <div class="student-panel" id="panel-attendance">
             <div class="student-panel-head"><div><span class="panel-kicker">ATTENDANCE</span><h3>Monthly Attendance</h3></div></div>
-            <div class="attendance-hero"><strong id="dash-attendance-pct">—</strong><span>overall attendance</span></div>
+            <div style="font-size:11px;color:#8792a4;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;" id="dash-attendance-month-label">This month</div>
             <div class="att-progress-track"><div class="att-progress-fill" id="att-progress-fill" style="width:0%;"></div></div>
             <div class="streak-highlight" id="dash-streak-highlight">🔥 Keep your attendance streak going</div>
             <div class="monthly-attendance-list" id="dash-monthly-attendance"><div class="empty-state">No attendance recorded yet.</div></div>
           </div>
 
-
-          <div class="student-panel student-panel-wide">
+          <div class="student-panel student-panel-wide" id="panel-daily">
             <div class="student-panel-head">
               <div><span class="panel-kicker">ATTENDANCE CALENDAR</span><h3>Daily Attendance</h3></div>
               <div style="display:flex;gap:8px;align-items:center;">
@@ -847,23 +950,13 @@
             </div>
           </div>
 
-          <div class="student-panel">
-            <div class="student-panel-head"><div><span class="panel-kicker">CLASS DETAILS</span><h3>Your Schedule</h3></div></div>
-            <div class="detail-list">
-              <div><span>Class &amp; batch</span><strong id="dash-class-batch">—</strong></div>
-              <div><span>Batch timing</span><strong id="dash-batch-value">—</strong></div>
-              <div><span>Next test</span><strong id="dash-next-test">—</strong></div>
-              <div><span>Joined on</span><strong id="dash-admission-date">—</strong></div>
-            </div>
-          </div>
-
-          <div class="student-panel">
+          <div class="student-panel" id="panel-fees">
             <div class="student-panel-head"><div><span class="panel-kicker">FEES</span><h3>Fee Status</h3></div></div>
             <span class="dash-fee-badge" id="dash-fee-badge">—</span>
             <ul class="payment-history-list" id="dash-monthly-fee-list"></ul>
           </div>
 
-          <div class="student-panel student-panel-wide">
+          <div class="student-panel student-panel-wide" id="panel-notes">
             <div class="student-panel-head"><div><span class="panel-kicker">LEARNING MATERIAL</span><h3>Your Notes</h3></div></div>
             <ul class="dash-notes-list student-notes-list" id="dash-notes-list"><li>No notes assigned yet</li></ul>
           </div>
@@ -879,38 +972,8 @@
 
 <div class="admission-ribbon" aria-label="Admissions announcement"><div class="admission-ribbon-track"><span>🎓 ADMISSIONS OPEN 2026–27</span><b>•</b><span>Class 9–10 PCM</span><b>•</b><span>Class 11–12 Mathematics</span><b>•</b><span>Small Batches</span><b>•</b><span>Limited Batch Size</span><b>•</b><span>Enquire Now ↓</span><b>•</b><span aria-hidden="true">🎓 ADMISSIONS OPEN 2026–27</span><b aria-hidden="true">•</b><span aria-hidden="true">Class 9–10 PCM</span><b aria-hidden="true">•</b><span aria-hidden="true">Class 11–12 Mathematics</span><b aria-hidden="true">•</b><span aria-hidden="true">Small Batches</span><b aria-hidden="true">•</b><span aria-hidden="true">Limited Batch Size</span><b aria-hidden="true">•</b><span aria-hidden="true">Enquire Now ↓</span><b aria-hidden="true">•</b></div></div>
 
-<header>
-  <nav>
-    <div class="logo">Maths <span>Pathshala</span></div>
-    <div class="navlinks">
-      <a href="javascript:void(0)" data-scroll="services">Services</a>
-      <a href="javascript:void(0)" data-scroll="programs">Batch classes</a>
-      <a href="javascript:void(0)" data-scroll="hometuition">Home Tuition</a>
-      <a href="javascript:void(0)" data-scroll="notes">Notes</a>
-      <a href="javascript:void(0)" data-scroll="pricing">Admission</a>
-      <a href="javascript:void(0)" data-scroll="why">Why us</a>
-      <a href="javascript:void(0)" data-scroll="testimonials">Reviews</a>
-      <a href="javascript:void(0)" data-scroll="register">Register</a>
-    </div>
-    <a href="javascript:void(0)" data-scroll="register" class="nav-cta">Register now</a>
-    <a href="javascript:void(0)" id="student-login-btn" class="nav-cta" style="background:var(--navy);margin-left:10px;">Student Login</a>
-    <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle menu">☰</button>
-    <div class="mobile-menu" id="mobile-menu">
-      <a href="javascript:void(0)" data-scroll="services">Services</a>
-      <a href="javascript:void(0)" data-scroll="programs">Batch classes</a>
-      <a href="javascript:void(0)" data-scroll="hometuition">Home Tuition</a>
-      <a href="javascript:void(0)" data-scroll="notes">Notes</a>
-      <a href="javascript:void(0)" data-scroll="pricing">Admission</a>
-      <a href="javascript:void(0)" data-scroll="why">Why us</a>
-      <a href="javascript:void(0)" data-scroll="testimonials">Reviews</a>
-      <a href="javascript:void(0)" data-scroll="register">Register</a>
-      <a href="https://github.com/mathspathshalak12-creator/-maths-pathshala/releases/download/v1.0/Maths-Pathshala.apk">📲 Download App</a>
-      <a href="javascript:void(0)" data-scroll="register" class="nav-cta">Register now</a>
-      <a href="javascript:void(0)" id="mobile-login-btn" class="nav-cta" style="background:var(--navy);">Student Login</a>
-    </div>
-  </nav>
-</header>
 
+<div id="main-site">
 <section class="hero conversion-hero">
   <div class="hero-inner conversion-hero-inner">
     <div class="hero-copy">
@@ -924,7 +987,6 @@
       <div class="conversion-proof">
         <div><strong>Small</strong><span>focused batches</span></div>
         <div><strong>Weekly</strong><span>tests & practice</span></div>
-        <div><strong>CBSE · ICSE</strong><span>UP Board</span></div>
       </div>
     </div>
     <div class="hero-enquiry-card">
@@ -937,7 +999,7 @@
         <div class="hero-card-option-wide"><span>03–12</span><strong>Home Tuition</strong><small>3–8: All subjects · 9–12: Mathematics</small></div>
       </div>
       <a href="javascript:void(0)" data-scroll="register" class="btn btn-primary hero-card-btn">Start Admission Enquiry <span>→</span></a>
-      <div class="hero-card-note">No fee displayed online · Discuss personally</div>
+      <div class="hero-card-note">Fees discussed personally, not published online</div>
     </div>
   </div>
 </section>
@@ -1009,19 +1071,6 @@
   </div>
 </section>
 
-<section class="home-tuition-banner">
-  <div class="wrap">
-    <div class="home-tuition-banner-inner">
-      <div>
-        <div class="section-tag">Home Tuition · Class 3–12</div>
-        <h2>Personalised teaching at your doorstep.</h2>
-        <p><strong>Class 3–8:</strong> All subjects &nbsp;·&nbsp; <strong>Class 9–12:</strong> Mathematics</p>
-        <div class="tutor-tags" style="margin-top:14px"><span class="tag">CBSE</span><span class="tag">ICSE</span><span class="tag">UP Board</span><span class="tag">One-to-one attention</span></div>
-      </div>
-      <a href="javascript:void(0)" data-scroll="hometuition" class="btn btn-primary">Check Home Tuition Availability <span>→</span></a>
-    </div>
-  </div>
-</section>
 <section id="services">
   <div class="wrap">
     <div class="section-head">
@@ -1030,9 +1079,9 @@
       <p>Maths Pathshala is built around one clear goal: strong offline academic support for school students, especially Class 10 and Class 12 board preparation.</p>
     </div>
     <div class="services-grid">
-      <div class="service-card service-card-featured"><div class="service-icon">🏫</div><div class="service-number">01</div><h3>Offline Coaching — Class 9 &amp; 10</h3><p>Complete <strong>PCM coaching</strong> with Mathematics, Physics and Chemistry. Concepts are taught from the foundation, followed by problem practice, doubt solving and regular tests.</p><ul class="service-points"><li>Mathematics + Physics + Chemistry</li><li>Board-focused preparation</li><li>Concept building + question practice</li><li>Small-batch personal attention</li></ul><span class="service-tag">Class 9–10 · PCM · Offline</span></div>
-      <div class="service-card service-card-featured"><div class="service-icon">🎓</div><div class="service-number">02</div><h3>Offline Coaching — Class 11 &amp; 12</h3><p>Focused <strong>Mathematics-only coaching</strong> for students preparing for school exams and board examinations, with emphasis on concepts, written practice and exam strategy.</p><ul class="service-points"><li>Mathematics only</li><li>Board-oriented chapter planning</li><li>Regular tests and analysis</li><li>Dedicated doubt support</li></ul><span class="service-tag">Class 11–12 · Mathematics · Offline</span></div>
-      <div class="service-card"><div class="service-icon">🏠</div><div class="service-number">03</div><h3>Home Tuition — Classes 3 to 12</h3><p>Personalised home tuition is available across <strong>Class 3–12</strong>: <strong>all subjects for Class 3–8</strong> and <strong>Mathematics for Class 9–12</strong>. Available for CBSE, ICSE and UP Board students in the listed nearby areas.</p><ul class="service-points"><li>Class 3–8: All subjects</li><li>Class 9–12: Mathematics</li><li>CBSE · ICSE · UP Board</li><li>Personalised one-to-one attention</li></ul><span class="service-tag">Class 3–12 · Home Tuition</span></div>
+      <div class="service-card service-card-featured"><div class="service-icon">🏫</div><div class="service-number">01</div><h3>Offline Coaching — Class 9 &amp; 10</h3><p>Complete <strong>PCM coaching</strong> — Mathematics, Physics and Chemistry.</p><a href="javascript:void(0)" data-scroll="programs" style="font-size:13px;font-weight:700;color:var(--amber-dark);text-decoration:none;">See full curriculum →</a><span class="service-tag">Class 9–10 · PCM · Offline</span></div>
+      <div class="service-card service-card-featured"><div class="service-icon">🎓</div><div class="service-number">02</div><h3>Offline Coaching — Class 11 &amp; 12</h3><p>Focused <strong>Mathematics-only coaching</strong> for board exam preparation.</p><a href="javascript:void(0)" data-scroll="programs" style="font-size:13px;font-weight:700;color:var(--amber-dark);text-decoration:none;">See full curriculum →</a><span class="service-tag">Class 11–12 · Mathematics · Offline</span></div>
+      <div class="service-card"><div class="service-icon">🏠</div><div class="service-number">03</div><h3>Home Tuition — Classes 3 to 12</h3><p>Personalised one-to-one home tuition at your doorstep for Class 3–12.</p><a href="javascript:void(0)" data-scroll="hometuition" style="font-size:13px;font-weight:700;color:var(--amber-dark);text-decoration:none;">View Home Tuition details →</a><span class="service-tag">Class 3–12 · Home Tuition</span></div>
       <div class="service-card"><div class="service-icon">📝</div><div class="service-number">04</div><h3>Testing, Doubts &amp; Progress Support</h3><p>Students are not just taught chapters — their preparation is checked through regular tests, doubt support, attendance tracking and progress records.</p><ul class="service-points"><li>Regular chapter &amp; test practice</li><li>Doubt clearing</li><li>Progress tracking for enrolled students</li><li>Exam-oriented preparation</li></ul><span class="service-tag">Built into the learning system</span></div>
     </div>
   </div>
@@ -1064,7 +1113,7 @@
 <section id="hometuition">
   <div class="wrap">
     <div class="section-head"><div class="section-tag">Home tuition</div><h2>Personalised home tuition, where it makes sense.</h2><p>Home tuition is available for all subjects in Class 3–8, and Mathematics for Class 9–12 students of CBSE, ICSE and UP Board in the listed nearby areas.</p></div>
-    <div class="tutor-card"><div class="tutor-initials mono">1:1</div><div class="tutor-info"><h3>Home tuition — Class 3 to 12</h3><div class="role">Class 3–8: All subjects · Class 9–12: Mathematics · Nearby areas</div><div class="tutor-tags"><span class="tag">Class 3–8 · All subjects</span><span class="tag">Class 9–12 · Mathematics</span><span class="tag">One-to-one attention</span><span class="tag">CBSE · ICSE · UP Board</span></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);"><div style="font-size:13px;font-weight:700;color:var(--amber-dark);text-transform:uppercase;letter-spacing:.03em;margin-bottom:10px;">Areas covered</div><div class="tutor-tags"><span class="tag">Kalyanpur</span><span class="tag">Awas Vikas 1</span><span class="tag">Awas Vikas 3</span><span class="tag">Gooba Garden</span><span class="tag">Indira Nagar</span></div></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);font-size:14px;color:var(--muted);"><strong style="color:var(--navy);">Fee:</strong> Discussed personally based on class, location and requirement. Please call or WhatsApp for availability.</div></div></div>
+    <div class="tutor-card"><div class="tutor-initials mono">1:1</div><div class="tutor-info"><h3>Home tuition — Class 3 to 12</h3><div class="role">Class 3–8: All subjects · Class 9–12: Mathematics · Nearby areas</div><div class="tutor-tags"><span class="tag">Class 3–8 · All subjects</span><span class="tag">Class 9–12 · Mathematics</span><span class="tag">One-to-one attention</span><span class="tag">CBSE · ICSE · UP Board</span></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);"><div style="font-size:13px;font-weight:700;color:var(--amber-dark);text-transform:uppercase;letter-spacing:.03em;margin-bottom:10px;">Areas covered</div><div class="tutor-tags"><span class="tag">Kalyanpur</span><span class="tag">Awas Vikas 1</span><span class="tag">Awas Vikas 3</span><span class="tag">Gooba Garden</span><span class="tag">Indira Nagar</span></div></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);font-size:14px;color:var(--muted);"><strong style="color:var(--navy);">Fee:</strong> Discussed personally based on your requirement.</div></div></div>
   </div>
 </section>
 
@@ -1405,7 +1454,7 @@
   </div>
 </section>
 
-<section id="pricing"><div class="wrap"><div class="section-head"><div class="section-tag">Admission &amp; fees</div><h2>Let’s discuss the right plan for your child.</h2><p>We keep the fee structure reasonable and transparent, but final fees are discussed personally based on the class, subjects, batch and academic requirement.</p></div><div class="pricing-grid"><div class="price-card featured"><div class="price-card-class">Class 9 &amp; 10</div><div class="price-card-amount" style="font-size:25px;">PCM Coaching</div><div class="price-card-desc">Mathematics · Physics · Chemistry · Offline</div></div><div class="price-card"><div class="price-card-class">Class 11 &amp; 12</div><div class="price-card-amount" style="font-size:25px;">Mathematics</div><div class="price-card-desc">Focused offline board preparation</div></div><div class="price-card"><div class="price-card-class">Class 3–8</div><div class="price-card-amount" style="font-size:25px;">Home Tuition</div><div class="price-card-desc">All subjects · Personalised support</div></div></div><div class="price-note"><strong>Fee details are not published online.</strong> Call or WhatsApp us to discuss availability, batch timing and the fee for your child's requirement. Monthly fees are charged in advance at the beginning of each month.</div></div></section>
+<section id="pricing"><div class="wrap"><div class="section-head"><div class="section-tag">Admission &amp; fees</div><h2>Let’s discuss the right plan for your child.</h2><p>Here's an overview of our current programs for Class 3 to 12.</p></div><div class="pricing-grid"><div class="price-card featured"><div class="price-card-class">Class 9 &amp; 10</div><div class="price-card-amount" style="font-size:25px;">PCM Coaching</div><div class="price-card-desc">Mathematics · Physics · Chemistry · Offline</div></div><div class="price-card"><div class="price-card-class">Class 11 &amp; 12</div><div class="price-card-amount" style="font-size:25px;">Mathematics</div><div class="price-card-desc">Focused offline board preparation</div></div><div class="price-card"><div class="price-card-class">Class 3–8</div><div class="price-card-amount" style="font-size:25px;">Home Tuition</div><div class="price-card-desc">All subjects · Personalised support</div></div></div><div class="price-note"><strong>Fees are discussed personally based on your requirement.</strong> Call or WhatsApp us to discuss availability and batch timing. Monthly fees are charged in advance at the beginning of each month.</div></div></section>
 
 <section id="testimonials">
   <div class="wrap">
@@ -1428,11 +1477,10 @@
       <div class="location-copy">
         <div class="section-tag">Find us</div>
         <h3>Based in Kalyanpur, easy to reach.</h3>
-        <p>Our primary focus is offline coaching in Kalyanpur, Kanpur for Class 9–12. Home tuition is available for Class 3–8 (all subjects) and Mathematics for Class 9–12 across CBSE, ICSE and UP Board in the listed nearby areas.</p>
+        <p>Our primary focus is offline coaching in Kalyanpur, Kanpur for Class 9–12.</p>
         <ul class="loc-list">
           <li>Kalyanpur, Kanpur, Uttar Pradesh</li>
-          <li>Home tuition (Class 3–8, all subjects): Kalyanpur, Awas Vikas 1, Awas Vikas 3, Gooba Garden, Indira Nagar</li>
-          <li>Home tuition (Class 9–12, Mathematics): same nearby areas · CBSE, ICSE, UP Board</li>
+          <li>Home tuition area list: <a href="javascript:void(0)" data-scroll="hometuition" style="color:var(--amber-dark);font-weight:700;text-decoration:none;">see Home Tuition section ↑</a></li>
           <li>Call ahead to confirm batch timings</li>
         </ul>
       </div>
@@ -1478,17 +1526,10 @@
       </div>
       <div class="faq-item">
         <div class="faq-question">
-          <span>Which boards do you teach — CBSE, ICSE, or UP Board?</span>
+          <span>Which boards, classes and subjects do you cover?</span>
           <span class="faq-icon">+</span>
         </div>
-        <div class="faq-answer"><div class="faq-answer-inner">All three — CBSE, ICSE and UP Board. Offline batches are available for Class 9–12, and home tuition is available for Class 3–8 (all subjects) plus Mathematics for Class 9–12 in the listed nearby areas.</div></div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question">
-          <span>Which classes and subjects are available for home tuition?</span>
-          <span class="faq-icon">+</span>
-        </div>
-        <div class="faq-answer"><div class="faq-answer-inner">Home tuition is available for Class 3–8 in all subjects. Mathematics home tuition is also available for Class 9–12 students following CBSE, ICSE or UP Board in the listed nearby areas.</div></div>
+        <div class="faq-answer"><div class="faq-answer-inner">CBSE, ICSE and UP Board. Offline batches cover Class 9–12, and home tuition covers Class 3–8 (all subjects) plus Mathematics for Class 9–12, in the listed nearby areas.</div></div>
       </div>
     </div>
   </div>
@@ -1535,6 +1576,7 @@
     <div class="footer-bottom">Maths Pathshala · Kalyanpur, Kanpur · CBSE · ICSE · UP Board<br>Samjho concept, karo best, bano successful!</div>
   </div>
 </footer>
+</div>
 
 <div class="popup-overlay" id="seats-popup">
   <div class="popup-card launch-popup-card universal-site-popup">
@@ -1637,6 +1679,7 @@
 
   const loginModal = document.getElementById('login-modal');
   const studentDashboard = document.getElementById('student-dashboard');
+  const mainSite = document.getElementById('main-site');
   const loginMsg = document.getElementById('login-msg');
   const studentLoginBtn = document.getElementById('student-login-btn');
 
@@ -1747,7 +1790,7 @@
   loadBatchCardsGrid();
 
   // Scroll-reveal: fade + slide up cards/sections as they enter the viewport
-  document.querySelectorAll('.service-card, .prog-card, .why-item, .t-card, .price-card, .batch-card, .class-detail, .tutor-card').forEach(el => el.classList.add('reveal'));
+  document.querySelectorAll('.service-card, .prog-card, .why-item, .t-card, .price-card, .batch-card, .class-detail, .tutor-card, .student-panel, .student-kpi').forEach(el => el.classList.add('reveal'));
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry, idx) => {
       if(entry.isIntersecting){
@@ -1799,6 +1842,13 @@
     });
   }, { threshold: 0.4 });
   document.querySelectorAll('.stat-card-num').forEach(el => statObserver.observe(el));
+
+  document.querySelectorAll('.kpi-clickable').forEach(el => {
+    el.addEventListener('click', () => {
+      const target = document.getElementById(el.dataset.scrollTarget);
+      if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
 
   let isLoggedIn = false;
   let currentStudentClass = null;
@@ -1874,11 +1924,13 @@
   onAuthStateChanged(auth, async (user) => {
     if(user){
       isLoggedIn = true;
+      mainSite.style.display = 'none';
       await loadStudentDashboard(user.email);
       await loadNotices();
       await loadHomework();
       studentLoginBtn.textContent = 'Logout';
       mobileLoginBtn.textContent = 'Logout';
+      window.scrollTo({top: 0, behavior: 'instant'});
 
       // Keep the dashboard in sync with admin mark entries. Firebase data can change
       // while the student page is already open, so refresh the student document automatically.
@@ -1893,6 +1945,7 @@
       if(dashboardAutoRefreshTimer){ clearInterval(dashboardAutoRefreshTimer); dashboardAutoRefreshTimer = null; }
       isLoggedIn = false;
       studentDashboard.style.display = 'none';
+      mainSite.style.display = 'block';
       studentLoginBtn.textContent = 'Student Login';
       mobileLoginBtn.textContent = 'Student Login';
     }
@@ -2159,6 +2212,19 @@
     const ordered=(Array.isArray(log)?log:[]).map(e=>({d:parsePortalDate(e.date),status:e.status})).filter(x=>x.d).sort((a,b)=>b.d-a.d);
     let streak=0; for(const x of ordered){ if(x.status==='Present') streak++; else break; } return streak;
   }
+  function animateNumberTo(el, target, suffix, showDash){
+    if(!el) return;
+    if(showDash){ el.textContent='—'; return; }
+    const duration=900;
+    const start=performance.now();
+    function tick(now){
+      const progress=Math.min(1,(now-start)/duration);
+      const eased=1-Math.pow(1-progress,3);
+      el.textContent=Math.round(target*eased)+suffix;
+      if(progress<1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
   function scoresForMonth(scores,key){ return (Array.isArray(scores)?scores:[]).filter(s=>monthKeyForDate(s.date)===key); }
   function scorePct(s){ return s && Number(s.max)>0 ? Math.round(Number(s.score)/Number(s.max)*100) : 0; }
 
@@ -2205,9 +2271,21 @@
         document.getElementById('test-popup-close').onclick=()=>{ localStorage.setItem(seenKey,data.nextTest); document.getElementById('test-popup').classList.remove('show'); };
       }
     }
-    const log=Array.isArray(data.attendance?.log)?data.attendance.log:[]; const overall=typeof data.attendance?.percent==='number'?data.attendance.percent:(log.length?Math.round(log.filter(e=>e.status==='Present').length/log.length*100):0); const streak=calculateStreak(log); document.getElementById('dash-attendance-pct').textContent=overall+'%'; document.getElementById('dash-kpi-attendance').textContent=overall+'%'; document.getElementById('dash-kpi-streak').textContent=streak?`🔥 ${streak}`:'—'; document.getElementById('att-progress-fill').style.width=overall+'%'; document.getElementById('dash-streak-highlight').textContent=streak?`🔥 ${streak} consecutive present classes — keep it going!`:'🔥 Your attendance streak starts with the next class.';
+    const log=Array.isArray(data.attendance?.log)?data.attendance.log:[];
+    const todayForMonth=new Date();
+    const currentMonthKey=`${todayForMonth.getFullYear()}-${String(todayForMonth.getMonth()+1).padStart(2,'0')}`;
+    const currentMonthLog=log.filter(e=>monthKeyForDate(e.date)===currentMonthKey);
+    const currentMonthPresent=currentMonthLog.filter(e=>e.status==='Present').length;
+    const currentMonthPct=currentMonthLog.length?Math.round(currentMonthPresent/currentMonthLog.length*100):0;
+    const streak=calculateStreak(currentMonthLog);
+    animateNumberTo(document.getElementById('dash-kpi-attendance'), currentMonthLog.length?currentMonthPct:0, currentMonthLog.length?'%':'—', !currentMonthLog.length);
+    document.getElementById('dash-kpi-attendance-sub').textContent=currentMonthLog.length?monthLabel(currentMonthKey):'No classes yet this month';
+    document.getElementById('dash-attendance-month-label').textContent=monthLabel(currentMonthKey)+' so far';
+    document.getElementById('dash-kpi-streak').textContent=streak?`🔥 ${streak}`:'—';
+    requestAnimationFrame(()=>{ document.getElementById('att-progress-fill').style.width=currentMonthPct+'%'; });
+    document.getElementById('dash-streak-highlight').textContent=streak?`🔥 ${streak} consecutive present classes this month — keep it going!`:'🔥 Your streak starts with your next class this month.';
     renderDailyAttendance(log);
-    const months=aggregateAttendance(log); document.getElementById('dash-monthly-attendance').innerHTML=months.length?months.map(m=>`<div class="month-att-row"><strong>${m.label}</strong><span>${m.present}/${m.total} present</span><b>${m.percent}%</b></div>`).join(''):'<div class="empty-state">No attendance recorded yet.</div>';
+    const months=aggregateAttendance(log); document.getElementById('dash-monthly-attendance').innerHTML=months.length?months.map(m=>`<div class="month-att-row"><strong>${m.label}${m.key===currentMonthKey?' <span style="color:var(--amber-dark);font-weight:800;">· current</span>':''}</strong><span>${m.present}/${m.total} present</span><b>${m.percent}%</b></div>`).join(''):'<div class="empty-state">No attendance recorded yet.</div>';
     const stats=data.batchStats||{};
     const recent=stats.recentTest||{};
     const rank=recent.rank&&recent.size?`#${recent.rank}`:'—';
@@ -2217,7 +2295,6 @@
     document.getElementById('dash-rank-detail').textContent=recent.name?`Latest test: ${recent.name} · ${recent.rank} of ${recent.size}`:'Rank will appear after a test is recorded.';
     const scores=Array.isArray(data.testScores)?data.testScores:[];
     const latestScore=scores.slice().sort((a,b)=>(parsePortalDate(b.date)?.getTime()||0)-(parsePortalDate(a.date)?.getTime()||0))[0];
-    document.getElementById('dash-average-score').textContent=latestScore?scorePct(latestScore)+'%':'—';
     if(document.getElementById('dash-kpi-latest-score')) document.getElementById('dash-kpi-latest-score').textContent=latestScore?scorePct(latestScore)+'%':'—';
     if(document.getElementById('dash-rank-big-secondary')) document.getElementById('dash-rank-big-secondary').textContent=rank;
     if(document.getElementById('dash-latest-test-name')) document.getElementById('dash-latest-test-name').textContent=recent.name||'—';
@@ -2326,63 +2403,3 @@
 
 </body>
 </html>
-
-<style>
-/* Maths Pathshala premium cleanup */
-.mp-brand-ribbon{background:linear-gradient(90deg,#071a35,#102f5b);color:#fff;padding:10px 18px;text-align:center;font-size:11px;letter-spacing:.08em}
-.mp-brand-ribbon strong{display:block;margin-top:3px;font-size:13px;letter-spacing:.02em}
-#dash-next-class,#next-class,.next-class-card{display:none!important}
-@media print{.mp-brand-ribbon{display:none}}
-</style>
-
-<style>
-.batch-card-launch{border-color:rgba(245,166,35,.55)!important;position:relative;overflow:hidden}
-.batch-card-launch:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 90% 0%,rgba(245,166,35,.16),transparent 35%);pointer-events:none}
-.public-offer-price{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:12px 0 15px}
-.public-offer-price span{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#f5c66d;font-weight:800;width:100%}
-.public-offer-price strong{font-size:26px;color:#fff}.public-offer-price s{color:#9aa9be;font-size:13px}.public-offer-price em{font-style:normal;background:#f5a623;color:#071a35;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:900}
-.batch-launch-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;margin-bottom:10px;border-radius:999px;background:#f5a623;color:#071a35;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
-.launch-popup-card{max-width:510px!important;padding:30px!important}
-.launch-popup-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.launch-live-dot{font-size:10px;color:#62c98a;font-weight:900;letter-spacing:.08em}.launch-live-dot:first-letter{color:#62c98a}
-.launch-popup-class{font-size:11px;color:var(--amber);font-weight:900;letter-spacing:.12em;text-transform:uppercase}
-.launch-popup-card h3{font-size:28px!important;line-height:1.12!important;margin:8px 0 10px!important}.launch-popup-card>p{font-size:14px!important;line-height:1.7!important}
-.launch-price{font-size:34px;font-weight:900;color:var(--navy);margin-top:18px}.launch-price small{font-size:11px;color:var(--muted);font-weight:600}.launch-offer{margin-top:3px;color:var(--muted);font-size:12px}.launch-offer strong{color:#198754}
-.launch-popup-points{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:18px 0;font-size:12px;color:#42536c}
-.launch-popup-points span{padding:9px 10px;background:#f7f9fc;border-radius:9px}
-@media(max-width:600px){.launch-popup-points{grid-template-columns:1fr}.launch-popup-card h3{font-size:24px!important}}
-
-  /* ===== CONVERSION-FOCUSED HERO ===== */
-  .admission-ribbon{position:relative;z-index:70;overflow:hidden;background:var(--navy);color:#fff;border-bottom:1px solid rgba(245,166,35,.45);white-space:nowrap;}
-  .admission-ribbon-track{display:flex;align-items:center;gap:18px;min-height:38px;padding:7px 20px;font-size:11.5px;font-weight:700;letter-spacing:.045em;text-transform:uppercase;width:max-content;animation:ribbonScroll 20s linear infinite;}
-  .admission-ribbon b{color:var(--amber);font-size:14px;}
-  @keyframes ribbonScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-  .conversion-hero{padding:72px 24px 78px;background:radial-gradient(circle at 78% 25%,rgba(245,166,35,.18),transparent 24rem),linear-gradient(135deg,#fffdf8 0%,#f7f3e9 100%);}
-  .conversion-hero-inner{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(340px,.65fr);gap:58px;align-items:center;}
-  .hero-copy{min-width:0;}
-  .hero-copy h1{max-width:720px;}
-  .hero-copy .sub{max-width:650px;}
-  .conversion-proof{display:flex;flex-wrap:wrap;margin-top:34px;border:1px solid rgba(11,30,61,.10);background:rgba(255,255,255,.7);border-radius:16px;overflow:hidden;width:max-content;max-width:100%;box-shadow:0 14px 35px rgba(11,30,61,.06);}
-  .conversion-proof div{padding:14px 19px;border-left:1px solid var(--line);display:flex;flex-direction:column;min-width:125px;}
-  .conversion-proof div:first-child{border-left:0;}
-  .conversion-proof strong{font:700 14px 'Space Grotesk',sans-serif;color:var(--navy);}
-  .conversion-proof span{font-size:11px;color:var(--muted);margin-top:2px;}
-  .hero-enquiry-card{background:linear-gradient(155deg,#0a1d3a,#173b6d);color:#fff;border:1px solid rgba(245,166,35,.32);border-radius:24px;padding:28px;box-shadow:0 28px 65px rgba(11,30,61,.24);position:relative;overflow:hidden;}
-  .hero-enquiry-card:after{content:'';position:absolute;width:190px;height:190px;border-radius:50%;right:-80px;top:-80px;background:radial-gradient(circle,rgba(245,166,35,.30),transparent 68%);pointer-events:none;}
-  .hero-card-top{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
-  .hero-card-badge{background:var(--amber);color:var(--navy);padding:6px 10px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.05em;}
-  .hero-card-live{font:700 10px 'JetBrains Mono',monospace;color:#d7e1ef;}
-  .hero-card-live:first-letter{color:#7fd6a0;}
-  .hero-enquiry-card h2{position:relative;z-index:1;font-size:27px;line-height:1.15;margin-bottom:9px;color:#fff;}
-  .hero-enquiry-card p{position:relative;z-index:1;color:#bfcbe0;font-size:13.5px;line-height:1.65;}
-  .hero-card-options{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0;}
-  .hero-card-options>div{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.06);border-radius:13px;padding:13px;}
-  .hero-card-options span{display:block;color:var(--amber);font:700 11px 'JetBrains Mono',monospace;}
-  .hero-card-options strong{display:block;font-size:13px;margin-top:4px;}
-  .hero-card-options small{display:block;color:#9fb0cc;font-size:10px;margin-top:3px;}
-  .hero-card-btn{position:relative;z-index:1;width:100%;justify-content:center;box-shadow:0 12px 24px rgba(0,0,0,.18);}
-  .hero-card-note{position:relative;z-index:1;text-align:center;color:#94a4bd;font-size:10.5px;margin-top:13px;}
-  .conversion-hero .hero-ctas{margin-top:30px;}
-  @media(max-width:900px){.conversion-hero-inner{grid-template-columns:1fr;gap:34px;}.hero-enquiry-card{max-width:620px;width:100%;}.conversion-proof{width:100%;}.conversion-proof div{flex:1;min-width:110px;}}
-  @media(max-width:600px){.admission-ribbon-track{justify-content:flex-start;overflow:hidden;font-size:10px;gap:12px;}.conversion-hero{padding:55px 20px 58px;}.conversion-hero .hero-ctas{gap:10px;}.conversion-hero .hero-ctas .btn{width:100%;justify-content:center;}.conversion-proof div{min-width:33.33%;padding:12px 10px;}.conversion-proof strong{font-size:12px;}.conversion-proof span{font-size:9.5px;}.hero-enquiry-card{padding:22px;border-radius:20px;}.hero-enquiry-card h2{font-size:24px;}.hero-card-options{grid-template-columns:1fr;}}
-  @media(prefers-reduced-motion:reduce){.admission-ribbon-track{animation:none;}}
-</style>
