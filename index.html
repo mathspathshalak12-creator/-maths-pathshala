@@ -2159,9 +2159,19 @@
         return;
       }
       const email = auth.currentUser.email.toLowerCase();
-      const q = query(collection(db, "notices"), where("recipientEmails", "array-contains", email));
-      const snap = await getDocs(q);
-      if(snap.empty){
+      const docMap = new Map();
+      try {
+        const q = query(collection(db, "notices"), where("recipientEmails", "array-contains", email));
+        const snap = await getDocs(q);
+        snap.docs.forEach(d => docMap.set(d.id, d));
+      } catch(e) {}
+      try {
+        const qAll = query(collection(db, "notices"), where("recipientEmails", "array-contains", "all"));
+        const snapAll = await getDocs(qAll);
+        snapAll.docs.forEach(d => docMap.set(d.id, d));
+      } catch(e) {}
+
+      if(docMap.size === 0){
         box.innerHTML = `
           <div class="update-empty-box">
             <span>📢</span>
@@ -2173,7 +2183,7 @@
       box.innerHTML = '';
       let shown = 0;
       let latestForStudent = null;
-      const docs = snap.docs.slice().sort((a,b) => {
+      const docs = Array.from(docMap.values()).sort((a,b) => {
         const at = a.data().createdAt?.toMillis?.() || 0;
         const bt = b.data().createdAt?.toMillis?.() || 0;
         return bt - at;
@@ -2250,9 +2260,19 @@
           </div>`;
         return;
       }
-      const q = query(collection(db, "homework"), where("recipientEmails", "array-contains", email));
-      const snap = await getDocs(q);
-      if(snap.empty){
+      const docMap = new Map();
+      try{
+        const q = query(collection(db, "homework"), where("recipientEmails", "array-contains", email));
+        const snap = await getDocs(q);
+        snap.docs.forEach(d => docMap.set(d.id, d));
+      } catch(e){}
+      try{
+        const qAll = query(collection(db, "homework"), where("recipientEmails", "array-contains", "all"));
+        const snapAll = await getDocs(qAll);
+        snapAll.docs.forEach(d => docMap.set(d.id, d));
+      } catch(e){}
+
+      if(docMap.size === 0){
         box.innerHTML = `
           <div class="update-empty-box">
             <span>📝</span>
@@ -2264,7 +2284,7 @@
       box.innerHTML = '';
       let latestDoc = null;
       let shown = 0;
-      const docs = snap.docs.slice().sort((a,b) => {
+      const docs = Array.from(docMap.values()).sort((a,b) => {
         const at = a.data().createdAt?.toMillis?.() || 0;
         const bt = b.data().createdAt?.toMillis?.() || 0;
         return bt - at;
@@ -2277,10 +2297,11 @@
         shown++;
         const banner = document.createElement('div');
         banner.className = 'hw-item-card';
+        const dueBadge = data.dueDate ? `Due: ${data.dueDate}` : 'Active DPP';
         banner.innerHTML = `
           <div class="hw-item-title">
             <span>📋 ${data.title || 'Assigned Work'}</span>
-            <span class="hw-item-status">Active DPP</span>
+            <span class="hw-item-status">${dueBadge}</span>
           </div>
           <div class="hw-item-msg">${data.details || ''}</div>
         `;
