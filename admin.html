@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>Admin Panel — Maths Pathshala</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -199,6 +200,29 @@
 /* ===== PREMIUM ACADEMIC COMMAND CENTER ===== */
 .admin-layout{background:#f4f6fa!important}.admin-sidebar{background:linear-gradient(180deg,#06162f,#0c2850)!important;color:#fff!important}.admin-brand{padding:22px 18px!important}.admin-nav a{border-radius:10px!important;margin:3px 8px!important}.admin-nav a:hover{background:rgba(255,255,255,.08)!important}.admin-main{background:#f4f6fa!important}.top-bar{background:#fff!important;border:1px solid #e2e7ef!important;border-radius:16px!important;box-shadow:0 8px 25px rgba(11,30,61,.05)!important}.card{border:1px solid #e2e7ef!important;border-radius:18px!important;box-shadow:0 8px 25px rgba(11,30,61,.045)!important}.card h2{color:#0b1e3d!important}.section-kicker{color:#b5760f!important;font-weight:800!important;letter-spacing:.1em!important}.stat-card{border:1px solid #e2e7ef!important;border-radius:15px!important;background:#fff!important}.stat-num{color:#0b1e3d!important}.btn{border-radius:10px!important}.student-insight-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0}.student-insight-strip>div{background:#f7f9fc;border:1px solid #e4e9f1;border-radius:12px;padding:11px}.student-insight-strip span{display:block;font-size:9px;text-transform:uppercase;color:#8490a2;letter-spacing:.06em;font-weight:700}.student-insight-strip strong{display:block;font-size:17px;color:#0b1e3d;margin-top:4px}.monthly-report-tools{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-top:12px}.monthly-report-tools .btn{margin:0}.report-help{font-size:11px;color:#78859a;margin-top:7px}@media(max-width:800px){.student-insight-strip{grid-template-columns:1fr 1fr}.monthly-report-tools{grid-template-columns:1fr}}
 </style>
+<style>
+/* Maths Pathshala Academic Command Center — premium cleanup */
+.admin-brand-line{font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+#next-class,#f-next-class,.next-class-card{display:none!important}
+</style>
+
+<style>
+.mp-admin-brandline{padding:12px 22px;background:linear-gradient(90deg,#071a35,#102f5b);color:#fff;display:flex;justify-content:space-between;gap:15px;align-items:center;font-size:12px}
+.mp-admin-brandline strong{letter-spacing:.04em}
+.mp-admin-brandline span{opacity:.75}
+@media(max-width:700px){.mp-admin-brandline{display:block}.mp-admin-brandline span{display:block;margin-top:3px}}
+</style>
+
+<style>
+.launch-preview{margin-top:12px;padding:14px 16px;border:1px solid #ead9b6;background:linear-gradient(135deg,#fffaf0,#fff);border-radius:14px;color:#66748a;font-size:13px}
+.launch-preview strong{color:#0b1e3d;margin:0 5px}.launch-preview em{font-style:normal;background:#e7f6ed;color:#217a48;padding:4px 8px;border-radius:999px;font-weight:800}
+.batch-launch-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;background:#fff3d9;color:#9b6512;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+</style>
+
+<style>
+/* Final data-safety polish */
+#dash-download-report,.student-report-download{display:none!important}
+</style>
 </head>
 <body>
 <div class="mp-admin-brandline">
@@ -299,6 +323,10 @@
     <div class="card" id="batches-section">
       <h2>Manage Batches</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Create named batches per class (e.g. "Rankers" for Class 9). Students get enrolled into these.</p>
+      <div id="batch-edit-banner" style="display:none;align-items:center;justify-content:space-between;gap:10px;background:#FDF0DA;color:#9b6512;padding:10px 14px;border-radius:8px;margin-bottom:14px;font-size:13px;font-weight:600;">
+        <span>Editing batch: <span id="batch-edit-name"></span></span>
+        <button type="button" id="cancel-batch-edit-btn" class="btn btn-secondary btn-small">Cancel edit</button>
+      </div>
       <div class="row2">
         <select id="batch-class-input">
           <option value="9">Class 9</option>
@@ -656,7 +684,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, writeBatch, addDoc, deleteDoc, query, orderBy, serverTimestamp, where, documentId } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, writeBatch, addDoc, deleteDoc, query, orderBy, serverTimestamp, where, documentId } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
   import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
   const firebaseConfig = {
@@ -700,6 +728,7 @@
   let currentPayments = [];
   let currentMonthlyFees = [];
   let batchesCache = [];
+  let editingBatchId = null;
 
   // SECURITY: this panel is exclusively for the single owner/admin account.
   // Students may have Firebase accounts, but they are never allowed into this page.
@@ -1811,13 +1840,20 @@
                   <div class="batch-item-name">${b.name}</div>
                   <div class="batch-item-meta">${b.timing || 'Timing to be set'}${b.launchActive ? ' · 🚀 Launch LIVE' : ''}${b.offerPercent ? ` · ${b.offerPercent}% OFF` : ''}</div>
                 </div>
-                <button class="notice-delete" data-id="${b.id}">Delete</button>
+                <div style="display:flex;gap:14px;align-items:center;flex-shrink:0;">
+                  <button class="edit-batch-btn" data-id="${b.id}" style="color:var(--navy);font-size:12px;cursor:pointer;font-weight:600;background:none;border:none;">Edit</button>
+                  <button class="notice-delete" data-id="${b.id}">Delete</button>
+                </div>
               </div>`;
           });
         });
         list.innerHTML = html;
+        list.querySelectorAll('.edit-batch-btn').forEach(btn => {
+          btn.addEventListener('click', () => startEditBatch(btn.dataset.id));
+        });
         list.querySelectorAll('.notice-delete').forEach(btn => {
           btn.addEventListener('click', async () => {
+            if(editingBatchId === btn.dataset.id) cancelBatchEdit();
             await deleteDoc(doc(db, "batches", btn.dataset.id));
             showToast('Batch deleted.');
             await loadBatches();
@@ -2215,6 +2251,46 @@
   document.getElementById('batch-base-fee-input').addEventListener('input', updateLaunchPreview);
   document.getElementById('batch-offer-input').addEventListener('input', updateLaunchPreview);
 
+  function startEditBatch(id){
+    const b = batchesCache.find(x => x.id === id);
+    if(!b) return;
+    editingBatchId = id;
+    document.getElementById('batch-class-input').value = b.class || '9';
+    document.getElementById('batch-name-input').value = b.name || '';
+    document.getElementById('batch-intro-input').value = b.intro || '';
+    document.getElementById('batch-details-input').value = Array.isArray(b.details) ? b.details.join('\n') : '';
+    document.getElementById('batch-timing-input').value = b.timing || '';
+    document.getElementById('batch-base-fee-input').value = b.baseFee || '';
+    document.getElementById('batch-offer-input').value = b.offerPercent || 0;
+    document.getElementById('batch-launch-title-input').value = b.launchTitle || '';
+    document.getElementById('batch-launch-subtitle-input').value = b.launchSubtitle || '';
+    document.getElementById('batch-launch-active-input').value = b.launchActive ? 'yes' : 'no';
+    document.getElementById('batch-photo-input').value = '';
+    const preview = document.getElementById('batch-photo-preview');
+    preview.innerHTML = b.photoUrl
+      ? `<img src="${b.photoUrl}" style="max-width:160px;border-radius:8px;display:block;"><div style="font-size:11px;color:var(--muted);margin-top:4px;">Current photo — choose a new file only to replace it.</div>`
+      : '';
+    updateLaunchPreview();
+    const banner = document.getElementById('batch-edit-banner');
+    banner.style.display = 'flex';
+    document.getElementById('batch-edit-name').textContent = b.name;
+    document.getElementById('add-batch-btn').textContent = 'Update Batch';
+    document.getElementById('batches-section').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function cancelBatchEdit(){
+    editingBatchId = null;
+    document.getElementById('batch-edit-banner').style.display = 'none';
+    document.getElementById('add-batch-btn').textContent = '+ Launch / Create Batch';
+    ['batch-name-input','batch-intro-input','batch-timing-input','batch-base-fee-input','batch-launch-title-input','batch-launch-subtitle-input','batch-details-input'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('batch-photo-input').value = '';
+    document.getElementById('batch-photo-preview').innerHTML = '';
+    document.getElementById('batch-offer-input').value = '0';
+    document.getElementById('batch-launch-active-input').value = 'yes';
+    updateLaunchPreview();
+  }
+  document.getElementById('cancel-batch-edit-btn').addEventListener('click', cancelBatchEdit);
+
 
   async function loadHomeworkAdminList(){
     const box = document.getElementById('homework-admin-list');
@@ -2328,9 +2404,10 @@
       return;
     }
     const btn = document.getElementById('add-batch-btn');
-    btn.disabled = true; btn.textContent = 'Launching...';
+    const isEditing = !!editingBatchId;
+    btn.disabled = true; btn.textContent = isEditing ? 'Updating...' : 'Launching...';
     try{
-      let photoUrl = '';
+      let photoUrl = isEditing ? (batchesCache.find(x => x.id === editingBatchId)?.photoUrl || '') : '';
       const photoFile = document.getElementById('batch-photo-input').files[0];
       if(photoFile){
         btn.textContent = 'Uploading poster...';
@@ -2339,52 +2416,40 @@
         const snap = await withTimeout(uploadBytes(storageRef(storage, path), photoFile), 20000);
         photoUrl = await withTimeout(getDownloadURL(snap.ref), 15000);
       }
-      btn.textContent = 'Launching...';
-      await addDoc(collection(db, "batches"), {
-        class: cls, name, capacity, timing, intro, details, photoUrl,
-        baseFee, offerPercent, launchPrice,
-        launchTitle, launchSubtitle, launchActive,
-        createdAt: serverTimestamp()
-      });
-      ['batch-name-input','batch-intro-input','batch-timing-input','batch-base-fee-input','batch-launch-title-input','batch-launch-subtitle-input','batch-details-input'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('batch-photo-input').value = '';
-      document.getElementById('batch-photo-preview').innerHTML = '';
-      document.getElementById('batch-offer-input').value = '0';
-      document.getElementById('batch-launch-active-input').value = 'yes';
-      updateLaunchPreview();
-      showToast(launchActive ? 'Batch launched with promotion!' : 'Batch created!');
+      if(isEditing){
+        btn.textContent = 'Updating...';
+        await updateDoc(doc(db, "batches", editingBatchId), {
+          class: cls, name, capacity, timing, intro, details, photoUrl,
+          baseFee, offerPercent, launchPrice,
+          launchTitle, launchSubtitle, launchActive,
+          updatedAt: serverTimestamp()
+        });
+        showToast('Batch updated.');
+        cancelBatchEdit();
+      } else {
+        btn.textContent = 'Launching...';
+        await addDoc(collection(db, "batches"), {
+          class: cls, name, capacity, timing, intro, details, photoUrl,
+          baseFee, offerPercent, launchPrice,
+          launchTitle, launchSubtitle, launchActive,
+          createdAt: serverTimestamp()
+        });
+        ['batch-name-input','batch-intro-input','batch-timing-input','batch-base-fee-input','batch-launch-title-input','batch-launch-subtitle-input','batch-details-input'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('batch-photo-input').value = '';
+        document.getElementById('batch-photo-preview').innerHTML = '';
+        document.getElementById('batch-offer-input').value = '0';
+        document.getElementById('batch-launch-active-input').value = 'yes';
+        updateLaunchPreview();
+        showToast(launchActive ? 'Batch launched with promotion!' : 'Batch created!');
+      }
       await loadBatches();
       loadStudentList();
     } catch(err){
       showToast('Error: ' + err.message);
     } finally {
-      btn.disabled = false; btn.textContent = '+ Launch / Create Batch';
+      btn.disabled = false; btn.textContent = editingBatchId ? 'Update Batch' : '+ Launch / Create Batch';
     }
   });
 </script>
 </body>
 </html>
-
-<style>
-/* Maths Pathshala Academic Command Center — premium cleanup */
-.admin-brand-line{font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
-#next-class,#f-next-class,.next-class-card{display:none!important}
-</style>
-
-<style>
-.mp-admin-brandline{padding:12px 22px;background:linear-gradient(90deg,#071a35,#102f5b);color:#fff;display:flex;justify-content:space-between;gap:15px;align-items:center;font-size:12px}
-.mp-admin-brandline strong{letter-spacing:.04em}
-.mp-admin-brandline span{opacity:.75}
-@media(max-width:700px){.mp-admin-brandline{display:block}.mp-admin-brandline span{display:block;margin-top:3px}}
-</style>
-
-<style>
-.launch-preview{margin-top:12px;padding:14px 16px;border:1px solid #ead9b6;background:linear-gradient(135deg,#fffaf0,#fff);border-radius:14px;color:#66748a;font-size:13px}
-.launch-preview strong{color:#0b1e3d;margin:0 5px}.launch-preview em{font-style:normal;background:#e7f6ed;color:#217a48;padding:4px 8px;border-radius:999px;font-weight:800}
-.batch-launch-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;background:#fff3d9;color:#9b6512;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
-</style>
-
-<style>
-/* Final data-safety polish */
-#dash-download-report,.student-report-download{display:none!important}
-</style>
