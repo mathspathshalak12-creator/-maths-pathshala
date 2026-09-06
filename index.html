@@ -1952,7 +1952,7 @@
     if(!grid) return;
     try{
       const snap=await Promise.race([
-        getDoc(doc(db,'siteContent','youtube')),
+        getDoc(doc(db,'siteSettings','youtube')),
         new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),7000))
       ]);
       const data=snap.exists()?snap.data():{};
