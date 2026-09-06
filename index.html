@@ -899,6 +899,21 @@
   body.student-logged-in #main-site { display:block !important; visibility:visible !important; opacity:1 !important; }
   body.student-logged-in #student-dashboard { display:block !important; visibility:visible !important; opacity:1 !important; }
 </style>
+
+<style id="youtube-latest-two-style">
+  .yt-section{background:linear-gradient(180deg,#f8f6ef 0%,#fff 100%);}
+  .yt-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin-top:24px;}
+  .yt-card{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 12px 35px rgba(11,30,61,.08);}
+  .yt-frame{position:relative;width:100%;aspect-ratio:16/9;background:#0b1e3d;}
+  .yt-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .yt-body{padding:16px 18px 18px;}
+  .yt-label{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--amber-dark);margin-bottom:6px;}
+  .yt-title{font-size:18px;font-weight:800;color:var(--navy);margin:0 0 6px;}
+  .yt-desc{font-size:13px;line-height:1.6;color:var(--muted);margin:0;}
+  .yt-empty{grid-column:1/-1;text-align:center;padding:28px;border:1px dashed var(--line);border-radius:16px;color:var(--muted);background:#fff;}
+  @media(max-width:700px){.yt-grid{grid-template-columns:1fr;gap:16px;}.yt-title{font-size:16px;}}
+</style>
+
 </head>
 <body>
 
@@ -1601,7 +1616,18 @@
       </div>
     </div>
     <div class="batch-cards-grid" id="batch-cards-grid">
-      <div style="color:var(--muted);font-size:14px;">Loading batches...</div>
+      <div class="batch-card">
+        <div class="batch-card-body">
+          <div class="batch-card-name">Class 9–10 · PCM Coaching</div>
+          <div class="batch-card-meta">Offline · Small batch · Enquire for details</div>
+        </div>
+      </div>
+      <div class="batch-card">
+        <div class="batch-card-body">
+          <div class="batch-card-name">Class 11–12 · Mathematics</div>
+          <div class="batch-card-meta">Offline · Board focused · Enquire for details</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1684,6 +1710,14 @@
         <div class="faq-answer"><div class="faq-answer-inner">CBSE, ICSE and UP Board. Offline batches cover Class 9–12, and home tuition covers Class 3–8 (all subjects) plus Mathematics for Class 9–12, in the listed nearby areas.</div></div>
       </div>
     </div>
+  </div>
+</section>
+
+
+<section id="youtube-videos" class="yt-section">
+  <div class="wrap">
+    <div class="section-head"><div class="section-tag">Latest from Maths Pathshala</div><h2>Watch our latest videos.</h2><p>New teaching videos and updates will appear here automatically.</p></div>
+    <div id="youtube-latest-grid" class="yt-grid"><div class="yt-empty">Loading latest videos…</div></div>
   </div>
 </section>
 
@@ -1872,12 +1906,6 @@
     loginMsg.className = 'login-msg ' + (type || '');
   }
 
-  function escapeHtml(str){
-    return String(str==null?'':str).replace(/[&<>"']/g, ch => ({
-      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-    }[ch]));
-  }
-
   function popupSessionKey(){ return 'mp_popup_seen_' + new Date().toISOString().slice(0,10); }
   function popupAlreadyShown(){ return sessionStorage.getItem(popupSessionKey()) === '1'; }
   function markPopupShown(){ sessionStorage.setItem(popupSessionKey(),'1'); }
@@ -1904,19 +1932,138 @@
       setTimeout(()=>{popup.classList.add('show'); markPopupShown();}, 1400);
     }catch(err){ console.warn('Site popup load failed:',err); }
   }
-  loadSeatsDisplay();
+  function extractYouTubeId(value){
+    const raw=(value||'').trim();
+    if(!raw) return '';
+    if(/^[A-Za-z0-9_-]{11}$/.test(raw)) return raw;
+    try{
+      const u=new URL(raw);
+      if(u.hostname.includes('youtu.be')) return (u.pathname.split('/').filter(Boolean)[0]||'').slice(0,11);
+      if(u.searchParams.get('v')) return u.searchParams.get('v').slice(0,11);
+      const parts=u.pathname.split('/').filter(Boolean);
+      const idx=parts.findIndex(x=>x==='embed'||x==='shorts'||x==='live');
+      if(idx>=0 && parts[idx+1]) return parts[idx+1].slice(0,11);
+    }catch(e){}
+    return '';
+  }
+
+  async function loadLatestYouTubeVideos(){
+    const grid=document.getElementById('youtube-latest-grid');
+    if(!grid) return;
+    try{
+      const snap=await Promise.race([
+        getDoc(doc(db,'siteContent','youtube')),
+        new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),7000))
+      ]);
+      const data=snap.exists()?snap.data():{};
+      const videos=Array.isArray(data.videos)?data.videos.slice(0,2):[];
+      if(!videos.length){
+        grid.innerHTML='<div class="yt-empty">Latest videos will appear here soon.</div>';
+        return;
+      }
+      grid.innerHTML=videos.map((v,n)=>{
+        const id=extractYouTubeId(v.videoId||v.url||'');
+        if(!id) return '';
+        const title=(v.title||`Maths Pathshala Video ${n+1}`).replace(/</g,'&lt;');
+        const desc=(v.description||'').replace(/</g,'&lt;');
+        return `<article class="yt-card"><div class="yt-frame"><iframe src="https://www.youtube.com/embed/${id}" title="${title}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="yt-body"><div class="yt-label">${n===0?'Latest video':'Previous video'}</div><h3 class="yt-title">${title}</h3>${desc?`<p class="yt-desc">${desc}</p>`:''}</div></article>`;
+      }).join('') || '<div class="yt-empty">Latest videos will appear here soon.</div>';
+    }catch(err){
+      grid.innerHTML='<div class="yt-empty">Latest videos will appear here soon.</div>';
+    }
+  }
+  loadLatestYouTubeVideos();
 
   async function loadBatchCardsGrid(){
     const grid = document.getElementById('batch-cards-grid');
     if(!grid) return;
+
+    // Render useful cards immediately. This prevents preview/GitHub Pages
+    // from ever showing a blank "Loading batches..." state while Firebase loads.
+    grid.innerHTML = `
+      <div class="batch-card">
+        <div class="batch-card-banner">
+          <span class="batch-card-plans">Offline · Small batch</span>
+          <div class="batch-card-photo">Maths Pathshala</div>
+        </div>
+        <div class="batch-card-body">
+          <div class="batch-card-toprow">
+            <span class="batch-card-class">Class 9–10</span>
+            <span class="batch-card-mode">Offline</span>
+          </div>
+          <div class="batch-card-name">PCM Coaching</div>
+          <div class="batch-card-price-row"><span class="batch-card-meta" style="margin:0;">Fee discussed personally</span></div>
+          <div class="batch-card-ctas">
+            <a class="batch-card-cta" href="https://wa.me/${WA_NUMBER}?text=${encodeURIComponent('Hi, I want to enquire about Class 9–10 PCM Coaching at Maths Pathshala.')}" target="_blank">Enquire now</a>
+          </div>
+          <div class="batch-card-details open">
+            <ul style="list-style:none;margin:0;padding:0;">
+              <li style="padding:6px 0;border-top:1px solid var(--line);display:flex;gap:8px;"><span style="color:var(--amber-dark);">—</span><span>Mathematics · Physics · Chemistry</span></li>
+              <li style="padding:6px 0;border-top:1px solid var(--line);display:flex;gap:8px;"><span style="color:var(--amber-dark);">—</span><span>Small offline batch</span></li>
+              <li style="padding:6px 0;border-top:1px solid var(--line);display:flex;gap:8px;"><span style="color:var(--amber-dark);">—</span><span>Weekly tests & doubt support</span></li>
+            </ul>
+          </div>
+          <div class="batch-card-seats">🔥 Limited admissions · Enroll early</div>
+        </div>
+      </div>
+      <div class="batch-card">
+        <div class="batch-card-banner">
+          <span class="batch-card-plans">Offline · Board focused</span>
+          <div class="batch-card-photo">Maths Pathshala</div>
+        </div>
+        <div class="batch-card-body">
+          <div class="batch-card-toprow">
+            <span class="batch-card-class">Class 11–12</span>
+            <span class="batch-card-mode">Offline</span>
+          </div>
+          <div class="batch-card-name">Mathematics</div>
+          <div class="batch-card-price-row"><span class="batch-card-meta" style="margin:0;">Fee discussed personally</span></div>
+          <div class="batch-card-ctas">
+            <a class="batch-card-cta" href="https://wa.me/${WA_NUMBER}?text=${encodeURIComponent('Hi, I want to enquire about Class 11–12 Mathematics at Maths Pathshala.')}" target="_blank">Enquire now</a>
+          </div>
+          <div class="batch-card-details open">
+            <ul style="list-style:none;margin:0;padding:0;">
+              <li style="padding:6px 0;border-top:1px solid var(--line);display:flex;gap:8px;"><span style="color:var(--amber-dark);">—</span><span>Mathematics only</span></li>
+              <li style="padding:6px 0;border-top:1px solid var(--line);display:flex;gap:8px;"><span style="color:var(--amber-dark);">—</span><span>Small offline batch</span></li>
+              <li style="padding:6px 0;border-top:1px solid var(--line);display:flex;gap:8px;"><span style="color:var(--amber-dark);">—</span><span>Board-focused preparation</span></li>
+            </ul>
+          </div>
+          <div class="batch-card-seats">🔥 Limited admissions · Enroll early</div>
+        </div>
+      </div>`;
+
+    // Never leave the public page stuck on "Loading batches...".
+    // Firestore can occasionally remain pending because of network/rules issues.
     let batchStats = [];
     try{
-      const snap = await getDoc(doc(db, "stats", "public"));
-      if(snap.exists()) batchStats = snap.data().batchStats || [];
-    } catch(err){ batchStats = []; }
+      const snap = await Promise.race([
+        getDoc(doc(db, "stats", "public")),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Batch data request timed out')), 7000)
+        )
+      ]);
+      if(snap && snap.exists()) batchStats = snap.data().batchStats || [];
+    } catch(err){
+      console.warn('Public batch data unavailable:', err);
+      batchStats = [];
+    }
+
+    // Fallback cards keep the section useful even if Firestore is temporarily unavailable.
     if(batchStats.length === 0){
-      grid.innerHTML = '<div style="color:var(--muted);font-size:14px;">New batch details will appear here soon. Call or WhatsApp us for current admissions.</div>';
-      return;
+      batchStats = [
+        {
+          class:'9–10',
+          name:'PCM Coaching',
+          intro:'Mathematics, Physics & Chemistry with regular tests, practice and doubt support.',
+          details:['Class 9–10','Mathematics · Physics · Chemistry','Offline · Small batch','Weekly tests and doubt support']
+        },
+        {
+          class:'11–12',
+          name:'Mathematics',
+          intro:'Focused Mathematics coaching for board preparation with structured practice and doubt support.',
+          details:['Class 11–12','Mathematics only','Offline · Board focused','Regular tests and exam-oriented preparation']
+        }
+      ];
     }
     grid.innerHTML = batchStats.map((b, i) => {
       const hasOffer = Number(b.baseFee) > 0 && Number(b.offerPercent) > 0;
