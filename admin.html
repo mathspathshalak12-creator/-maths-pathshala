@@ -223,6 +223,48 @@
 /* Final data-safety polish */
 #dash-download-report,.student-report-download{display:none!important}
 </style>
+
+<style>
+/* ===== FINAL ADMIN UX PASS ===== */
+.admin-main{padding-bottom:40px}
+.admin-sidebar{overflow:hidden}
+.admin-nav a{display:block;min-height:42px;line-height:22px}
+.top-bar{position:relative;overflow:hidden}
+.top-bar:after{content:"";position:absolute;inset:auto -80px -90px auto;width:220px;height:220px;border-radius:50%;background:rgba(245,166,35,.07);pointer-events:none}
+.stat-card{transition:transform .2s ease,box-shadow .2s ease}
+.stat-card:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(11,30,61,.09)!important}
+.card{scroll-margin-top:20px}
+.form-grid input,.form-grid select,.form-grid textarea,.enrolment-form-grid input,.enrolment-form-grid select{min-height:42px}
+@media(max-width:960px){
+  .admin-layout{gap:14px}
+  .admin-sidebar{min-height:auto;padding:14px;border-radius:16px}
+  .admin-brand{padding:8px 10px 14px!important}
+  .admin-nav{margin-top:10px!important;padding-bottom:2px}
+  .admin-nav a{margin:0 3px!important;padding:9px 11px!important;background:rgba(255,255,255,.035)}
+}
+@media(max-width:600px){
+  body{padding:10px!important}
+  .admin-layout{gap:10px}
+  .admin-main{width:100%;overflow:hidden}
+  .top-bar{border-radius:14px!important;padding:14px!important}
+  .card{padding:17px 14px!important;border-radius:15px!important}
+  .card-title-row h2{font-size:19px}
+  .card-title-row p{font-size:12px}
+  .stats-grid{grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .stat-card{padding:15px 12px!important}
+  .stat-num{font-size:25px!important}
+  .stat-label{font-size:10px!important}
+  .student-list li,.att-row,.score-row,.notice-item,.batch-item{padding:12px!important}
+  .save-attendance-bar{position:sticky;bottom:8px;z-index:20;margin-left:-4px;margin-right:-4px}
+  .student-insight-strip{gap:8px!important}
+  .student-insight-strip>div{padding:10px!important}
+  .student-insight-strip strong{font-size:15px!important}
+  .monthly-report-tools{gap:8px!important}
+  .mp-admin-brandline{margin:-10px -10px 10px!important;border-radius:0 0 12px 12px;padding:10px 13px!important}
+}
+@media(prefers-reduced-motion:reduce){.stat-card{transition:none}}
+</style>
+
 </head>
 <body>
 <div class="mp-admin-brandline">
@@ -730,11 +772,24 @@
   let batchesCache = [];
   let editingBatchId = null;
 
-  // SECURITY: this panel is exclusively for the single owner/admin account.
-  // Students may have Firebase accounts, but they are never allowed into this page.
-  const ADMIN_EMAIL = 'mathspathshala.k12@gmail.com';
-  function isAuthorizedAdmin(user){
-    return !!user && (user.email || '').trim().toLowerCase() === ADMIN_EMAIL;
+  // SECURITY: admin status is NOT determined by the frontend anymore.
+  // It comes from a Firebase Auth custom claim (`admin: true`) which can
+  // only be set server-side (see /api/set-admin-claim.js + Firebase Admin
+  // SDK). A student can sign in with a valid Firebase account, but their
+  // ID token will never carry this claim, so isAuthorizedAdmin() below
+  // will correctly return false no matter what email/localStorage says.
+  // This function ALSO force-refreshes the token (forceRefresh=true) so a
+  // claim change takes effect without waiting up to an hour for the
+  // cached token to expire.
+  async function isAuthorizedAdmin(user){
+    if(!user) return false;
+    try {
+      const tokenResult = await user.getIdTokenResult(true);
+      return tokenResult.claims && tokenResult.claims.admin === true;
+    } catch(err){
+      console.error('Failed to verify admin claim:', err);
+      return false;
+    }
   }
 
   document.getElementById('admin-login-btn').addEventListener('click', () => {
@@ -752,8 +807,13 @@
   });
 
   onAuthStateChanged(auth, async (user) => {
-    if(user && !isAuthorizedAdmin(user)){
+    const authorized = await isAuthorizedAdmin(user);
+    if(user && !authorized){
       // Authentication alone is NOT admin authorization. Immediately revoke this session.
+      // Note: real enforcement lives in Firestore/Storage Security Rules — this
+      // client-side check only controls what the UI shows, it is not the security
+      // boundary itself. A non-admin token gets `permission-denied` from Firestore
+      // even if this check were somehow bypassed.
       await signOut(auth);
       loginScreen.style.display = 'block';
       adminScreen.style.display = 'none';
@@ -761,7 +821,7 @@
       loginMsg.className = 'msg error';
       return;
     }
-    if(user && isAuthorizedAdmin(user)){
+    if(user && authorized){
       loginScreen.style.display = 'none';
       adminScreen.style.display = 'grid';
       const todayStr = new Date().toISOString().split('T')[0];
@@ -2201,8 +2261,20 @@
     const file = e.target.files[0];
     const preview = document.getElementById('batch-photo-preview');
     if(!file){ preview.innerHTML = ''; return; }
+    const allowed = ['image/jpeg','image/png','image/webp'];
+    if(!allowed.includes(file.type)){
+      e.target.value = '';
+      preview.innerHTML = '<div class="msg error">Choose a JPG, PNG or WebP image.</div>';
+      return;
+    }
+    if(file.size > 5 * 1024 * 1024){
+      e.target.value = '';
+      preview.innerHTML = '<div class="msg error">Image must be smaller than 5 MB.</div>';
+      return;
+    }
     const url = URL.createObjectURL(file);
-    preview.innerHTML = `<img src="${url}" alt="Batch poster preview" style="max-width:220px;max-height:110px;border-radius:8px;border:1px solid #e5e9f0;">`;
+    preview.innerHTML = `<img src="${url}" alt="Batch poster preview" style="max-width:220px;max-height:130px;object-fit:cover;border-radius:10px;border:1px solid #e5e9f0;box-shadow:0 8px 18px rgba(11,30,61,.08);">`;
+    preview.querySelector('img')?.addEventListener('load', () => URL.revokeObjectURL(url), {once:true});
   });
 
   document.getElementById('upload-signature-btn').addEventListener('click',async()=>{
@@ -2210,12 +2282,14 @@
     const file=document.getElementById('teacher-signature-input').files[0];
     const msg=document.getElementById('signature-msg');
     if(!file){msg.textContent='Choose a signature image first.';msg.className='msg error';return;}
+    if(!['image/jpeg','image/png','image/webp'].includes(file.type)){msg.textContent='Signature must be JPG, PNG or WebP.';msg.className='msg error';return;}
+    if(file.size > 5 * 1024 * 1024){msg.textContent='Signature image must be smaller than 5 MB.';msg.className='msg error';return;}
     btn.disabled=true; const origText=btn.textContent; btn.textContent='Uploading…';
     msg.textContent='Uploading signature, please wait…'; msg.className='msg';
     try{
       const path=`report-assets/teacher-signature-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
       const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('Upload timed out after '+(ms/1000)+'s — check your internet connection or Firebase Storage setup.')),ms))]);
-      const snap=await withTimeout(uploadBytes(storageRef(storage,path),file),20000);
+      const snap=await withTimeout(uploadBytes(storageRef(storage,path),file,{contentType:file.type,cacheControl:'private,max-age=3600'}),20000);
       const url=await withTimeout(getDownloadURL(snap.ref),15000);
       await setDoc(doc(db,'siteSettings','branding'),{teacherSignatureUrl:url,updatedAt:serverTimestamp()},{merge:true});
       teacherSignatureUrl=url;
@@ -2410,10 +2484,15 @@
       let photoUrl = isEditing ? (batchesCache.find(x => x.id === editingBatchId)?.photoUrl || '') : '';
       const photoFile = document.getElementById('batch-photo-input').files[0];
       if(photoFile){
+        const allowed = ['image/jpeg','image/png','image/webp'];
+        if(!allowed.includes(photoFile.type)) throw new Error('Batch poster must be JPG, PNG or WebP.');
+        if(photoFile.size > 5 * 1024 * 1024) throw new Error('Batch poster must be smaller than 5 MB.');
         btn.textContent = 'Uploading poster...';
-        const path = `batch-photos/${Date.now()}-${photoFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+        const safeName = photoFile.name.replace(/[^a-zA-Z0-9._-]/g,'_').slice(-100);
+        const path = `batch-photos/${Date.now()}-${safeName}`;
+        const metadata = { contentType: photoFile.type, cacheControl: 'public,max-age=31536000,immutable' };
         const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('Upload timed out after '+(ms/1000)+'s — check your internet connection or Firebase Storage setup.')),ms))]);
-        const snap = await withTimeout(uploadBytes(storageRef(storage, path), photoFile), 20000);
+        const snap = await withTimeout(uploadBytes(storageRef(storage, path), photoFile, metadata), 30000);
         photoUrl = await withTimeout(getDownloadURL(snap.ref), 15000);
       }
       if(isEditing){
