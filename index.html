@@ -1615,7 +1615,7 @@
         <span>🎓 ADMISSIONS OPEN 2026–27</span><span>LIMITED SEATS</span><span>HURRY UP</span><span>SMALL BATCHES ONLY</span><span>🎓 ADMISSIONS OPEN 2026–27</span><span>LIMITED SEATS</span><span>HURRY UP</span><span>SMALL BATCHES ONLY</span>
       </div>
     </div>
-    <div class="batch-cards-grid" id="batch-cards-grid"><div class="batch-empty-state">Loading current batches…</div></div>    </div>
+    <div class="batch-cards-grid" id="batch-cards-grid"></div>    </div>
   </div>
 </section>
 
@@ -1971,8 +1971,6 @@
 
     // IMPORTANT: never show hard-coded/default batches. The public site must
     // display only batches that exist in the admin panel / Firestore.
-    grid.innerHTML = '<div class="batch-empty-state">Loading current batches…</div>';
-
     // Never leave the public page stuck on "Loading batches...".
     // Firestore can occasionally remain pending because of network/rules issues.
     let batchStats = [];
