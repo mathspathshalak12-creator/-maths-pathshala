@@ -2469,7 +2469,7 @@
     const list=document.getElementById('yt-admin-list');
     if(!list) return;
     try{
-      const snap=await getDoc(doc(db,'siteContent','youtube'));
+      const snap=await getDoc(doc(db,'siteSettings','youtube'));
       const videos=snap.exists() && Array.isArray(snap.data().videos)?snap.data().videos.slice(0,2):[];
       list.innerHTML=videos.length?videos.map((v,i)=>{
         const id=extractYouTubeId(v.videoId||v.url||'');
@@ -2489,10 +2489,10 @@
     if(!id){ msg.textContent='Please enter a valid YouTube video link or 11-character video ID.'; msg.className='msg error'; return; }
     btn.disabled=true; btn.textContent='Saving...'; msg.textContent='';
     try{
-      const snap=await getDoc(doc(db,'siteContent','youtube'));
+      const snap=await getDoc(doc(db,'siteSettings','youtube'));
       const oldVideos=snap.exists() && Array.isArray(snap.data().videos)?snap.data().videos:[];
       const newVideo={videoId:id,title:document.getElementById('yt-title-input').value.trim()||'Latest Maths Pathshala Video',description:document.getElementById('yt-desc-input').value.trim()};
-      await setDoc(doc(db,'siteContent','youtube'),{videos:[newVideo,...oldVideos].slice(0,2),updatedAt:serverTimestamp()},{merge:true});
+      await setDoc(doc(db,'siteSettings','youtube'),{videos:[newVideo,...oldVideos].slice(0,2),updatedAt:serverTimestamp()},{merge:true});
       document.getElementById('yt-url-input').value='';
       document.getElementById('yt-title-input').value='';
       document.getElementById('yt-desc-input').value='';
