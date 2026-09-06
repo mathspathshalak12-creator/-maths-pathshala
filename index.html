@@ -41,10 +41,6 @@
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;}
-  a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,[tabindex]:focus-visible{
-    outline:2px solid var(--amber-dark);outline-offset:2px;
-  }
-  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}}
   body{
     font-family:'Inter',sans-serif;
     color:var(--navy);
@@ -719,18 +715,6 @@
 .student-brand-lockup{display:flex;align-items:center;gap:11px}.student-brand-lockup strong{display:block;font-size:15px}.student-brand-lockup span{display:block;color:#aebbd0;font-size:10px;letter-spacing:.09em;text-transform:uppercase;margin-top:2px}.student-brand-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(145deg,#f5a623,#ffd37b);color:#071b38;display:grid;place-items:center;font-weight:900;font-size:18px}
 .student-hero-card{padding:28px;display:flex;align-items:center;justify-content:space-between;gap:25px;background:linear-gradient(135deg,#0b2348,#153e73);color:#fff}.student-identity{display:flex;align-items:center;gap:15px}.student-hero-copy{max-width:340px;text-align:right}.student-hero-copy span,.panel-kicker{font-size:10px;font-weight:800;letter-spacing:.12em;color:#f5a623}.student-hero-copy strong{display:block;font-size:18px;margin:5px 0}.student-hero-copy small{color:#b8c6da;line-height:1.5}.student-hero-card .dash-welcome{color:#fff}.student-hero-card .dash-email{color:#b8c6da}.student-hero-card .dash-avatar{background:linear-gradient(145deg,#f5a623,#d98b12);color:#071b38;box-shadow:none}
 .student-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:18px 22px}.student-kpi{background:#fff;border:1px solid #e4e9f1;border-radius:15px;padding:17px;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}.student-kpi span{display:block;color:#738096;font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}.student-kpi strong{display:block;color:#0b1e3d;font-size:26px;margin:7px 0 2px}.student-kpi small{color:#8c97a8;font-size:11px}.kpi-clickable{cursor:pointer}.kpi-clickable:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(15,23,42,.09);border-color:rgba(245,166,35,.4)}
-/* Student dashboard tab navigation — replaces "everything visible at once"
-   with focused sections, so mobile never has to scroll past six panels to
-   find fee status. */
-.dash-tabs{display:flex;gap:6px;padding:0 22px 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
-.dash-tabs::-webkit-scrollbar{display:none;}
-.dash-tab{flex:0 0 auto;background:#fff;border:1px solid #e4e9f1;color:#5a6577;font-weight:700;font-size:13px;padding:10px 16px;border-radius:999px;cursor:pointer;white-space:nowrap;transition:background .15s ease,color .15s ease,border-color .15s ease;}
-.dash-tab:hover{border-color:rgba(245,166,35,.5);}
-.dash-tab.active{background:var(--navy);border-color:var(--navy);color:#fff;}
-.dash-tab:focus-visible{outline:2px solid var(--amber-dark);outline-offset:2px;}
-.student-main-grid .student-panel[data-tab]{display:none;}
-.student-main-grid .student-panel[data-tab].tab-active{display:block;}
-@media(max-width:560px){.dash-tabs{padding:0 12px 12px;}.dash-tab{padding:9px 14px;font-size:12.5px;}}
 .att-progress-fill{transition:width 1s cubic-bezier(.22,1,.36,1)}
 .dash-fee-badge.dash-fee-due{animation:feePulse 2.2s ease-in-out infinite}
 @keyframes feePulse{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,.35)}50%{box-shadow:0 0 0 6px rgba(192,57,43,0)}}
@@ -901,53 +885,19 @@
   .how-card p{color:var(--muted);font-size:14px;line-height:1.6;}
   @media(max-width:900px){.how-grid{grid-template-columns:1fr;gap:34px;}}
 </style>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "EducationalOrganization",
-  "name": "Maths Pathshala",
-  "description": "Home tuition for Class 3–12 (all subjects for Class 3–8; Mathematics, Physics and Chemistry for Class 9–10; Mathematics for Class 11–12) across CBSE, ICSE and UP Board, plus offline coaching for Class 9–10 PCM and Class 11–12 Mathematics in Kalyanpur, Kanpur.",
-  "founder": { "@type": "Person", "name": "Vipin Kumar" },
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Kalyanpur, Kanpur",
-    "addressRegion": "Uttar Pradesh",
-    "addressCountry": "IN"
-  },
-  "areaServed": "Kanpur, Uttar Pradesh",
-  "url": "https://mathspathshalak12-creator.github.io/-maths-pathshala/"
-}
-</script>
+
+<style id="final-public-cleanup">
+  /* Public site: never expose numeric seat counts. */
+  .batch-card-seatbar-wrap,.batch-card-seats{display:none!important;}
+  .batch-card-photo{height:118px!important;padding:0!important;background:var(--navy)!important;}
+  .batch-card-photo img{display:block;width:100%;height:100%;object-fit:cover;}
+  @media(max-width:600px){.batch-card-photo{height:132px!important;}}
+</style>
 </head>
 <body>
 
-<header>
-  <nav>
-    <div class="logo">Maths <span>Pathshala</span></div>
-    <div class="navlinks">
-      <a href="javascript:void(0)" data-scroll="hometuition">Home Tuition</a>
-      <a href="javascript:void(0)" data-scroll="services">Offline Coaching</a>
-      <a href="javascript:void(0)" data-scroll="notes">Free Notes</a>
-      <a href="javascript:void(0)" data-scroll="why">Why Us</a>
-      <a href="javascript:void(0)" data-scroll="testimonials">Reviews</a>
-      <a href="javascript:void(0)" data-scroll="faq">FAQ</a>
-    </div>
-    <a href="javascript:void(0)" data-scroll="register" class="nav-cta">Find a Home Tutor</a>
-    <a href="javascript:void(0)" id="student-login-btn" class="nav-cta" style="background:var(--navy);margin-left:10px;">Student Login</a>
-    <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle menu">☰</button>
-    <div class="mobile-menu" id="mobile-menu">
-      <a href="javascript:void(0)" data-scroll="hometuition">Home Tuition</a>
-      <a href="javascript:void(0)" data-scroll="services">Offline Coaching</a>
-      <a href="javascript:void(0)" data-scroll="notes">Free Notes</a>
-      <a href="javascript:void(0)" data-scroll="why">Why Us</a>
-      <a href="javascript:void(0)" data-scroll="testimonials">Reviews</a>
-      <a href="javascript:void(0)" data-scroll="faq">FAQ</a>
-      <a href="https://github.com/mathspathshalak12-creator/-maths-pathshala/releases/download/v1.0/Maths-Pathshala.apk">📲 Download App</a>
-      <a href="javascript:void(0)" data-scroll="register" class="nav-cta">Find a Home Tutor</a>
-      <a href="javascript:void(0)" id="mobile-login-btn" class="nav-cta" style="background:var(--navy);">Student Login</a>
-    </div>
-  </nav>
-</header>
+<!-- Student dashboard: shown at the TOP after student login; public website remains visible underneath. -->
+
 <div id="student-dashboard">
   <div class="wrap">
     <div class="student-lms-shell">
@@ -987,16 +937,8 @@
           <div class="student-kpi kpi-clickable" data-scroll-target="panel-performance"><span>Latest test score</span><strong id="dash-kpi-latest-score">—</strong><small>Score in the most recent test</small></div>
         </div>
 
-        <div class="dash-tabs" role="tablist" aria-label="Dashboard sections">
-          <button class="dash-tab active" data-tab="overview" role="tab" aria-selected="true">Overview</button>
-          <button class="dash-tab" data-tab="attendance" role="tab" aria-selected="false">Attendance</button>
-          <button class="dash-tab" data-tab="tests" role="tab" aria-selected="false">Tests &amp; Results</button>
-          <button class="dash-tab" data-tab="notes" role="tab" aria-selected="false">Notes</button>
-          <button class="dash-tab" data-tab="fees" role="tab" aria-selected="false">Fees</button>
-        </div>
-
         <div class="student-main-grid">
-          <div class="student-panel student-panel-wide" id="panel-schedule" data-tab="overview">
+          <div class="student-panel student-panel-wide" id="panel-schedule">
             <div class="student-panel-head"><div><span class="panel-kicker">CLASS DETAILS</span><h3>Your Schedule</h3></div></div>
             <div class="detail-list">
               <div><span>Class &amp; batch</span><strong id="dash-class-batch">—</strong></div>
@@ -1006,7 +948,7 @@
             </div>
           </div>
 
-          <div class="student-panel student-panel-wide" id="panel-performance" data-tab="tests">
+          <div class="student-panel student-panel-wide" id="panel-performance">
             <div class="student-panel-head"><div><span class="panel-kicker">ACADEMIC PERFORMANCE</span><h3>Test Performance</h3></div><span class="panel-pill">Live records</span></div>
             <div class="performance-summary" style="grid-template-columns:repeat(2,1fr);">
               <div><span>Tests attempted</span><strong id="dash-tests-count">0</strong></div>
@@ -1016,13 +958,13 @@
             <ul class="score-list student-score-list" id="dash-scores-list"><li>No test scores yet</li></ul>
           </div>
 
-          <div class="student-panel" id="panel-position" data-tab="tests">
+          <div class="student-panel" id="panel-position">
             <div class="student-panel-head"><div><span class="panel-kicker">BATCH</span><h3>Your Position</h3></div></div>
             <div class="rank-card"><div class="rank-medal">#</div><div><strong id="dash-rank-big">—</strong><span id="dash-rank-detail">Batch rank will appear after tests are recorded.</span></div></div>
             <div class="rank-stats"><div><span>Latest test</span><strong id="dash-latest-test-name">—</strong></div></div>
           </div>
 
-          <div class="student-panel" id="panel-attendance" data-tab="attendance">
+          <div class="student-panel" id="panel-attendance">
             <div class="student-panel-head"><div><span class="panel-kicker">ATTENDANCE</span><h3>Monthly Attendance</h3></div></div>
             <div style="font-size:11px;color:#8792a4;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;" id="dash-attendance-month-label">This month</div>
             <div class="att-progress-track"><div class="att-progress-fill" id="att-progress-fill" style="width:0%;"></div></div>
@@ -1030,7 +972,7 @@
             <div class="monthly-attendance-list" id="dash-monthly-attendance"><div class="empty-state">No attendance recorded yet.</div></div>
           </div>
 
-          <div class="student-panel student-panel-wide" id="panel-daily" data-tab="attendance">
+          <div class="student-panel student-panel-wide" id="panel-daily">
             <div class="student-panel-head">
               <div><span class="panel-kicker">ATTENDANCE CALENDAR</span><h3>Daily Attendance</h3></div>
               <div style="display:flex;gap:8px;align-items:center;">
@@ -1048,13 +990,13 @@
             </div>
           </div>
 
-          <div class="student-panel" id="panel-fees" data-tab="fees">
+          <div class="student-panel" id="panel-fees">
             <div class="student-panel-head"><div><span class="panel-kicker">FEES</span><h3>Fee Status</h3></div></div>
             <span class="dash-fee-badge" id="dash-fee-badge">—</span>
             <ul class="payment-history-list" id="dash-monthly-fee-list"></ul>
           </div>
 
-          <div class="student-panel student-panel-wide" id="panel-notes" data-tab="notes">
+          <div class="student-panel student-panel-wide" id="panel-notes">
             <div class="student-panel-head"><div><span class="panel-kicker">LEARNING MATERIAL</span><h3>Your Notes</h3></div></div>
             <ul class="dash-notes-list student-notes-list" id="dash-notes-list"><li>No notes assigned yet</li></ul>
           </div>
@@ -1067,6 +1009,36 @@
     </div>
   </div>
 </div>
+
+
+<header>
+  <nav>
+    <div class="logo">Maths <span>Pathshala</span></div>
+    <div class="navlinks">
+      <a href="javascript:void(0)" data-scroll="hometuition">Home Tuition</a>
+      <a href="javascript:void(0)" data-scroll="services">Offline Coaching</a>
+      <a href="javascript:void(0)" data-scroll="notes">Free Notes</a>
+      <a href="javascript:void(0)" data-scroll="why">Why Us</a>
+      <a href="javascript:void(0)" data-scroll="testimonials">Reviews</a>
+      <a href="javascript:void(0)" data-scroll="faq">FAQ</a>
+    </div>
+    <a href="javascript:void(0)" data-scroll="register" class="nav-cta">Find a Home Tutor</a>
+    <a href="javascript:void(0)" id="student-login-btn" class="nav-cta" style="background:var(--navy);margin-left:10px;">Student Login</a>
+    <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle menu">☰</button>
+    <div class="mobile-menu" id="mobile-menu">
+      <a href="javascript:void(0)" data-scroll="hometuition">Home Tuition</a>
+      <a href="javascript:void(0)" data-scroll="services">Offline Coaching</a>
+      <a href="javascript:void(0)" data-scroll="notes">Free Notes</a>
+      <a href="javascript:void(0)" data-scroll="why">Why Us</a>
+      <a href="javascript:void(0)" data-scroll="testimonials">Reviews</a>
+      <a href="javascript:void(0)" data-scroll="faq">FAQ</a>
+      <a href="https://github.com/mathspathshalak12-creator/-maths-pathshala/releases/download/v1.0/Maths-Pathshala.apk">📲 Download App</a>
+      <a href="javascript:void(0)" data-scroll="register" class="nav-cta">Find a Home Tutor</a>
+      <a href="javascript:void(0)" id="mobile-login-btn" class="nav-cta" style="background:var(--navy);">Student Login</a>
+    </div>
+  </nav>
+</header>
+
 
 <div class="admission-ribbon" aria-label="Admissions announcement"><div class="admission-ribbon-track"><span>🎓 ADMISSIONS OPEN 2026–27</span><b>•</b><span>Class 9–10 PCM</span><b>•</b><span>Class 11–12 Mathematics</span><b>•</b><span>Small Batches</span><b>•</b><span>Limited Batch Size</span><b>•</b><span>Enquire Now ↓</span><b>•</b><span aria-hidden="true">🎓 ADMISSIONS OPEN 2026–27</span><b aria-hidden="true">•</b><span aria-hidden="true">Class 9–10 PCM</span><b aria-hidden="true">•</b><span aria-hidden="true">Class 11–12 Mathematics</span><b aria-hidden="true">•</b><span aria-hidden="true">Small Batches</span><b aria-hidden="true">•</b><span aria-hidden="true">Limited Batch Size</span><b aria-hidden="true">•</b><span aria-hidden="true">Enquire Now ↓</span><b aria-hidden="true">•</b></div></div>
 
@@ -1734,6 +1706,7 @@
   </div>
 </section>
 
+
 <footer>
   <div class="wrap">
     <div class="footer-top">
@@ -1862,7 +1835,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB3fzWzwiTxHJi1M3OQI3hgZJpi6lq-eww",
@@ -1943,15 +1916,15 @@
         ${launch ? '<div class="batch-card-featured-pill">🚀 New launch</div>' : ''}
         <div class="batch-card-banner">
           <span class="batch-card-plans">Offline · Small batch</span>
-          <div class="batch-card-photo"${b.photoUrl ? ` style="background-image:url('${b.photoUrl}');background-size:cover;background-position:center;color:transparent;"` : ''}>${b.photoUrl ? '' : 'Maths Pathshala'}</div>
+          <div class="batch-card-photo">${b.photoUrl ? `<img src="${escapeHtml(b.photoUrl)}" alt="${escapeHtml(b.name || 'Batch poster')}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;border-radius:8px 8px 0 0;">` : 'Maths Pathshala'}</div>
         </div>
         <div class="batch-card-body">
           <div class="batch-card-toprow">
             <span class="batch-card-class">Class ${b.class || ''}</span>
             <span class="batch-card-mode">Offline</span>
           </div>
-          <div class="batch-card-name">${b.name}</div>
-          ${b.timing ? `<div class="batch-card-meta"><span>—</span><span>${b.timing}</span></div>` : ''}
+          <div class="batch-card-name">${escapeHtml(b.name || 'New batch')}</div>
+          ${b.timing ? `<div class="batch-card-meta"><span>—</span><span>${escapeHtml(b.timing)}</span></div>` : ''}
           ${hasOffer ? `<div class="batch-card-price-row">
             <span class="batch-card-price">₹${price.toLocaleString('en-IN')}</span>
             <span class="batch-card-price-old">₹${Number(b.baseFee).toLocaleString('en-IN')}</span>
@@ -1963,19 +1936,9 @@
           </div>
           <div class="batch-card-details" id="batch-detail-${i}">${
             Array.isArray(b.details) && b.details.length
-              ? `<ul style="list-style:none;margin:0;padding:0;">${b.details.map(d => `<li style="padding:6px 0;border-top:1px solid var(--line);display:flex;gap:8px;"><span style="color:var(--amber-dark);flex-shrink:0;">—</span><span>${d}</span></li>`).join('')}</ul>`
-              : intro
+              ? `<ul style="list-style:none;margin:0;padding:0;">${b.details.map(d => `<li style="padding:6px 0;border-top:1px solid var(--line);display:flex;gap:8px;"><span style="color:var(--amber-dark);flex-shrink:0;">—</span><span>${escapeHtml(d)}</span></li>`).join('')}</ul>`
+              : escapeHtml(intro)
           }</div>
-          ${(() => {
-            const capacity = Number(b.capacity) || 7;
-            const filled = Math.min(Number(b.filled) || 0, capacity);
-            const pct = Math.round((filled / capacity) * 100);
-            const seatsLeft = capacity - filled;
-            return `<div class="batch-card-seatbar-wrap">
-              <div class="batch-card-seatbar-label"><span>${filled}/${capacity} seats filled</span><span>${seatsLeft > 0 ? seatsLeft + ' left' : 'Full'}</span></div>
-              <div class="batch-card-seatbar-track"><div class="batch-card-seatbar-fill" data-target-width="${pct}"></div></div>
-            </div>`;
-          })()}
           <div class="batch-card-seats">🔥 Limited admissions · Enroll early</div>
         </div>
       </div>`;
@@ -2008,19 +1971,7 @@
       el.classList.add('reveal');
       revealObserver.observe(el);
     });
-    document.querySelectorAll('.batch-card-seatbar-fill:not([data-observed])').forEach(el => {
-      el.setAttribute('data-observed', '1');
-      seatbarObserver.observe(el);
     });
-  });
-  const seatbarObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if(!entry.isIntersecting) return;
-      const el = entry.target;
-      requestAnimationFrame(() => { el.style.width = (el.dataset.targetWidth || 0) + '%'; });
-      seatbarObserver.unobserve(el);
-    });
-  }, { threshold: 0.3 });
   const batchGridEl = document.getElementById('batch-cards-grid');
   if(batchGridEl) batchGridObserver.observe(batchGridEl, { childList: true });
 
@@ -2045,32 +1996,10 @@
   }, { threshold: 0.4 });
   document.querySelectorAll('.stat-card-num').forEach(el => statObserver.observe(el));
 
-  // Student dashboard tabs: show only the panels for the active tab.
-  // Panels keep their original IDs, so all existing render functions
-  // (loadStudentDashboard, attendance calendar, etc.) work unchanged —
-  // this only controls which already-populated panel is visible.
-  function showDashTab(tabName){
-    document.querySelectorAll('.dash-tab').forEach(btn => {
-      const isActive = btn.dataset.tab === tabName;
-      btn.classList.toggle('active', isActive);
-      btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
-    });
-    document.querySelectorAll('.student-panel[data-tab]').forEach(panel => {
-      panel.classList.toggle('tab-active', panel.dataset.tab === tabName);
-    });
-  }
-  document.querySelectorAll('.dash-tab').forEach(btn => {
-    btn.addEventListener('click', () => showDashTab(btn.dataset.tab));
-  });
-  showDashTab('overview'); // default tab on first render
-
   document.querySelectorAll('.kpi-clickable').forEach(el => {
     el.addEventListener('click', () => {
       const target = document.getElementById(el.dataset.scrollTarget);
-      if(!target) return;
-      const tabName = target.dataset.tab;
-      if(tabName) showDashTab(tabName);
-      target.scrollIntoView({behavior:'smooth', block:'start'});
+      if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
     });
   });
 
@@ -2143,7 +2072,7 @@
       });
   });
 
-  let dashboardUnsubscribe = null;
+  let dashboardAutoRefreshTimer = null;
 
   onAuthStateChanged(auth, async (user) => {
     if(user){
@@ -2157,23 +2086,16 @@
       window.scrollTo({top: 0, behavior: 'instant'});
 
       // Keep the dashboard in sync with admin mark entries. Firebase data can change
-      // while the student page is already open. Previously this polled every 10s
-      // (one read per poll, whether or not anything changed). Using onSnapshot
-      // instead pushes updates only when the admin actually saves a change, and
-      // uses a single realtime listener rather than a repeated getDoc().
-      if(dashboardUnsubscribe) dashboardUnsubscribe();
-      let firstSnapshot = true;
-      dashboardUnsubscribe = onSnapshot(doc(db, "students", user.email.toLowerCase()), (snap) => {
-        if(firstSnapshot){ firstSnapshot = false; return; } // initial load already handled above
-        if(document.visibilityState !== 'hidden'){
-          loadStudentDashboard(user.email);
+      // while the student page is already open, so refresh the student document automatically.
+      if(dashboardAutoRefreshTimer) clearInterval(dashboardAutoRefreshTimer);
+      dashboardAutoRefreshTimer = setInterval(async () => {
+        if(auth.currentUser && document.visibilityState !== 'hidden'){
+          await loadStudentDashboard(auth.currentUser.email);
         }
-      }, (err) => {
-        console.error('Student dashboard live-sync error:', err);
-      });
+      }, 10000);
 
     } else {
-      if(dashboardUnsubscribe){ dashboardUnsubscribe(); dashboardUnsubscribe = null; }
+      if(dashboardAutoRefreshTimer){ clearInterval(dashboardAutoRefreshTimer); dashboardAutoRefreshTimer = null; }
       isLoggedIn = false;
       studentDashboard.style.display = 'none';
       mainSite.style.display = 'block';
