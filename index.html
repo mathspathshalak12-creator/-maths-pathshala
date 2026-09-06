@@ -1893,6 +1893,10 @@
     loginMsg.className = 'login-msg ' + (type || '');
   }
 
+  function escapeHtml(value){
+    return String(value ?? '').replace(/[&<>\"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[ch]));
+  }
+
   function popupSessionKey(launch){
     const sig = [launch?.class||'', launch?.name||'', launch?.launchTitle||'', launch?.launchPrice||launch?.baseFee||''].join('|');
     return 'mp_popup_seen_launch_' + encodeURIComponent(sig);
@@ -2039,6 +2043,7 @@
     });
   }
   loadBatchCardsGrid();
+  loadSeatsDisplay();
 
   // Scroll-reveal: fade + slide up cards/sections as they enter the viewport
   document.querySelectorAll('.service-card, .prog-card, .why-item, .t-card, .price-card, .batch-card, .class-detail, .tutor-card, .student-panel, .student-kpi').forEach(el => el.classList.add('reveal'));
