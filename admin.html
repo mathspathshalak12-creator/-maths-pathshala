@@ -223,6 +223,15 @@
 /* Final data-safety polish */
 #dash-download-report,.student-report-download{display:none!important}
 </style>
+
+<style id="youtube-admin-manager-style">
+  .yt-admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .yt-admin-preview{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .yt-admin-preview-card{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--cream);}
+  .yt-admin-preview-card iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:9px;background:#0b1e3d;}
+  @media(max-width:700px){.yt-admin-grid,.yt-admin-preview{grid-template-columns:1fr;}}
+</style>
+
 </head>
 <body>
 <div class="mp-admin-brandline">
@@ -253,6 +262,7 @@
         <a href="#fees-section">Fees</a>
         <a href="#communication-section">Student Updates</a>
         <a href="#branding-section">Branding</a>
+        <a href="#youtube-section">YouTube Videos</a>
       </nav>
       <div class="sidebar-note">Primary focus: <b>Offline coaching</b><br>Class 9–10: PCM · Class 11–12: Mathematics<br>Home tuition: Class 3–8 all subjects · Class 9–12 Mathematics</div>
     </aside>
@@ -318,6 +328,19 @@
       <div class="card-title-row"><div><span class="section-kicker">Brand assets</span><h2>Report Card Signature</h2><p>Upload your teacher signature once. Generated monthly reports will reuse it automatically.</p></div></div>
       <div class="row2" style="margin-top:14px;"><input type="file" id="teacher-signature-input" accept="image/png,image/jpeg,image/webp"><button class="btn" id="upload-signature-btn">Upload Signature</button></div>
       <div id="signature-preview" style="margin-top:12px;"></div><div class="msg" id="signature-msg"></div>
+    </div>
+
+
+    <div class="card" id="youtube-section">
+      <div class="card-title-row"><div><span class="section-kicker">Content automation</span><h2>YouTube Video Manager</h2><p>Add a new YouTube video here. The newest video becomes Video 1, the previous one becomes Video 2, and anything older is automatically removed from the public site.</p></div></div>
+      <div class="yt-admin-grid" style="margin-top:14px;">
+        <input type="text" id="yt-url-input" placeholder="YouTube video link or video ID">
+        <input type="text" id="yt-title-input" placeholder="Video title (optional)">
+      </div>
+      <div style="margin-top:14px;"><textarea id="yt-desc-input" rows="3" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13.5px;resize:vertical;" placeholder="Short description (optional)"></textarea></div>
+      <div class="row2" style="margin-top:14px;"><button class="btn" id="yt-save-btn" style="margin-top:0;">+ Add / Replace Latest Video</button><button class="btn btn-secondary" id="yt-refresh-btn" style="margin-top:0;">Refresh</button></div>
+      <div class="msg" id="yt-msg"></div>
+      <div id="yt-admin-list" class="yt-admin-preview"></div>
     </div>
 
     <div class="card" id="batches-section">
@@ -995,6 +1018,8 @@
       document.getElementById('stat-total').textContent = 0;
       document.getElementById('stat-due').textContent = 0;
       if(document.getElementById('stat-present-today')) document.getElementById('stat-present-today').textContent = 0; if(document.getElementById('stat-absent-today')) document.getElementById('stat-absent-today').textContent = 0;
+      // No students is still a valid state: public batches must remain visible.
+      await updatePublicStats();
       return;
     }
     snap.forEach(docSnap => {
@@ -1884,6 +1909,11 @@
 
       updateBatchDropdown();
       updateBroadcastBatchDropdown();
+
+      // Keep the public Live Batches section in sync immediately whenever the
+      // batch list is loaded/created/updated/deleted. This must not depend on
+      // whether any students exist in the database.
+      await updatePublicStats();
     } catch(err){
       list.innerHTML = '<div style="font-size:13px;color:#C0392B;">Error loading batches: ' + err.message + '</div>';
     }
@@ -2419,6 +2449,61 @@
   }
 
   document.getElementById('homework-target-class')?.addEventListener('change', refreshHomeworkBatchDropdown);
+
+  function extractYouTubeId(value){
+    const raw=(value||'').trim();
+    if(!raw) return '';
+    if(/^[A-Za-z0-9_-]{11}$/.test(raw)) return raw;
+    try{
+      const u=new URL(raw);
+      if(u.hostname.includes('youtu.be')) return (u.pathname.split('/').filter(Boolean)[0]||'').slice(0,11);
+      if(u.searchParams.get('v')) return u.searchParams.get('v').slice(0,11);
+      const parts=u.pathname.split('/').filter(Boolean);
+      const idx=parts.findIndex(x=>x==='embed'||x==='shorts'||x==='live');
+      if(idx>=0 && parts[idx+1]) return parts[idx+1].slice(0,11);
+    }catch(e){}
+    return '';
+  }
+
+  async function loadYouTubeManager(){
+    const list=document.getElementById('yt-admin-list');
+    if(!list) return;
+    try{
+      const snap=await getDoc(doc(db,'siteContent','youtube'));
+      const videos=snap.exists() && Array.isArray(snap.data().videos)?snap.data().videos.slice(0,2):[];
+      list.innerHTML=videos.length?videos.map((v,i)=>{
+        const id=extractYouTubeId(v.videoId||v.url||'');
+        const safe=(v.title||'Untitled video').replace(/</g,'&lt;');
+        return `<div class="yt-admin-preview-card"><div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--amber-dark);margin-bottom:7px;">${i===0?'Video 1 · Latest':'Video 2 · Previous'}</div>${id?`<iframe src="https://www.youtube.com/embed/${id}" title="${safe}" loading="lazy" allowfullscreen></iframe>`:''}<div style="font-weight:800;color:var(--navy);margin-top:9px;">${safe}</div></div>`;
+      }).join(''):'<div style="grid-column:1/-1;font-size:13px;color:var(--muted);">No videos added yet.</div>';
+    }catch(err){
+      list.innerHTML='<div style="grid-column:1/-1;font-size:13px;color:#b33;">Could not load YouTube videos.</div>';
+    }
+  }
+
+  document.getElementById('yt-save-btn')?.addEventListener('click', async ()=>{
+    const btn=document.getElementById('yt-save-btn');
+    const msg=document.getElementById('yt-msg');
+    const input=document.getElementById('yt-url-input').value.trim();
+    const id=extractYouTubeId(input);
+    if(!id){ msg.textContent='Please enter a valid YouTube video link or 11-character video ID.'; msg.className='msg error'; return; }
+    btn.disabled=true; btn.textContent='Saving...'; msg.textContent='';
+    try{
+      const snap=await getDoc(doc(db,'siteContent','youtube'));
+      const oldVideos=snap.exists() && Array.isArray(snap.data().videos)?snap.data().videos:[];
+      const newVideo={videoId:id,title:document.getElementById('yt-title-input').value.trim()||'Latest Maths Pathshala Video',description:document.getElementById('yt-desc-input').value.trim()};
+      await setDoc(doc(db,'siteContent','youtube'),{videos:[newVideo,...oldVideos].slice(0,2),updatedAt:serverTimestamp()},{merge:true});
+      document.getElementById('yt-url-input').value='';
+      document.getElementById('yt-title-input').value='';
+      document.getElementById('yt-desc-input').value='';
+      msg.textContent='Saved! New video is now Video 1 and the previous video is Video 2.'; msg.className='msg success';
+      await loadYouTubeManager();
+    }catch(err){
+      msg.textContent='Error: '+err.message; msg.className='msg error';
+    }finally{ btn.disabled=false; btn.textContent='+ Add / Replace Latest Video'; }
+  });
+  document.getElementById('yt-refresh-btn')?.addEventListener('click',loadYouTubeManager);
+  loadYouTubeManager();
 
   document.getElementById('add-batch-btn').addEventListener('click', async () => {
     const cls = document.getElementById('batch-class-input').value;
