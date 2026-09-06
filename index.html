@@ -893,6 +893,12 @@
   .batch-card-photo img{display:block;width:100%;height:100%;object-fit:cover;}
   @media(max-width:600px){.batch-card-photo{height:132px!important;}}
 </style>
+<style id="student-public-site-visibility-fix">
+  /* Student login must NEVER hide the public Maths Pathshala website. */
+  #main-site { display:block !important; visibility:visible !important; opacity:1 !important; }
+  body.student-logged-in #main-site { display:block !important; visibility:visible !important; opacity:1 !important; }
+  body.student-logged-in #student-dashboard { display:block !important; visibility:visible !important; opacity:1 !important; }
+</style>
 </head>
 <body>
 
@@ -2077,6 +2083,7 @@
   onAuthStateChanged(auth, async (user) => {
     if(user){
       isLoggedIn = true;
+      document.body.classList.add('student-logged-in');
       // Keep the complete public website visible below the student dashboard.
       mainSite.style.display = 'block';
       studentDashboard.style.display = 'block';
@@ -2099,6 +2106,7 @@
     } else {
       if(dashboardAutoRefreshTimer){ clearInterval(dashboardAutoRefreshTimer); dashboardAutoRefreshTimer = null; }
       isLoggedIn = false;
+      document.body.classList.remove('student-logged-in');
       studentDashboard.style.display = 'none';
       mainSite.style.display = 'block';
       studentLoginBtn.textContent = 'Student Login';
