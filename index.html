@@ -1982,9 +1982,15 @@
     if(!grid) return;
     let batchStats = [];
     try{
-      const snap = await getDoc(doc(db, "stats", "public"));
+      const readPromise = getDoc(doc(db, "stats", "public"));
+      const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Batch data request timed out')), 9000));
+      const snap = await Promise.race([readPromise, timeout]);
       if(snap.exists()) batchStats = snap.data().batchStats || [];
-    } catch(err){ batchStats = []; }
+    } catch(err){
+      console.warn('Public batch data failed:', err);
+      grid.innerHTML = '<div class="batch-load-error" style="color:var(--muted);font-size:14px;">Batch details are temporarily unavailable. Please refresh once or WhatsApp us for current admissions.</div>';
+      return;
+    }
     if(batchStats.length === 0){
       grid.innerHTML = '<div style="color:var(--muted);font-size:14px;">New batch details will appear here soon. Call or WhatsApp us for current admissions.</div>';
       return;
