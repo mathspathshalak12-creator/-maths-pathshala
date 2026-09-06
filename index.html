@@ -2077,7 +2077,9 @@
   onAuthStateChanged(auth, async (user) => {
     if(user){
       isLoggedIn = true;
-      mainSite.style.display = 'none';
+      // Keep the complete public website visible below the student dashboard.
+      mainSite.style.display = 'block';
+      studentDashboard.style.display = 'block';
       await loadStudentDashboard(user.email);
       await loadNotices();
       await loadHomework();
