@@ -223,48 +223,6 @@
 /* Final data-safety polish */
 #dash-download-report,.student-report-download{display:none!important}
 </style>
-
-<style>
-/* ===== FINAL ADMIN UX PASS ===== */
-.admin-main{padding-bottom:40px}
-.admin-sidebar{overflow:hidden}
-.admin-nav a{display:block;min-height:42px;line-height:22px}
-.top-bar{position:relative;overflow:hidden}
-.top-bar:after{content:"";position:absolute;inset:auto -80px -90px auto;width:220px;height:220px;border-radius:50%;background:rgba(245,166,35,.07);pointer-events:none}
-.stat-card{transition:transform .2s ease,box-shadow .2s ease}
-.stat-card:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(11,30,61,.09)!important}
-.card{scroll-margin-top:20px}
-.form-grid input,.form-grid select,.form-grid textarea,.enrolment-form-grid input,.enrolment-form-grid select{min-height:42px}
-@media(max-width:960px){
-  .admin-layout{gap:14px}
-  .admin-sidebar{min-height:auto;padding:14px;border-radius:16px}
-  .admin-brand{padding:8px 10px 14px!important}
-  .admin-nav{margin-top:10px!important;padding-bottom:2px}
-  .admin-nav a{margin:0 3px!important;padding:9px 11px!important;background:rgba(255,255,255,.035)}
-}
-@media(max-width:600px){
-  body{padding:10px!important}
-  .admin-layout{gap:10px}
-  .admin-main{width:100%;overflow:hidden}
-  .top-bar{border-radius:14px!important;padding:14px!important}
-  .card{padding:17px 14px!important;border-radius:15px!important}
-  .card-title-row h2{font-size:19px}
-  .card-title-row p{font-size:12px}
-  .stats-grid{grid-template-columns:1fr 1fr!important;gap:8px!important}
-  .stat-card{padding:15px 12px!important}
-  .stat-num{font-size:25px!important}
-  .stat-label{font-size:10px!important}
-  .student-list li,.att-row,.score-row,.notice-item,.batch-item{padding:12px!important}
-  .save-attendance-bar{position:sticky;bottom:8px;z-index:20;margin-left:-4px;margin-right:-4px}
-  .student-insight-strip{gap:8px!important}
-  .student-insight-strip>div{padding:10px!important}
-  .student-insight-strip strong{font-size:15px!important}
-  .monthly-report-tools{gap:8px!important}
-  .mp-admin-brandline{margin:-10px -10px 10px!important;border-radius:0 0 12px 12px;padding:10px 13px!important}
-}
-@media(prefers-reduced-motion:reduce){.stat-card{transition:none}}
-</style>
-
 </head>
 <body>
 <div class="mp-admin-brandline">
@@ -772,17 +730,16 @@
   let batchesCache = [];
   let editingBatchId = null;
 
-  // SECURITY: admin status is NOT determined by the frontend anymore.
-  // It comes from a Firebase Auth custom claim (`admin: true`) which can
-  // only be set server-side (see /api/set-admin-claim.js + Firebase Admin
-  // SDK). A student can sign in with a valid Firebase account, but their
-  // ID token will never carry this claim, so isAuthorizedAdmin() below
-  // will correctly return false no matter what email/localStorage says.
-  // This function ALSO force-refreshes the token (forceRefresh=true) so a
-  // claim change takes effect without waiting up to an hour for the
-  // cached token to expire.
+  // SECURITY: only the designated owner account OR a Firebase custom
+  // `admin: true` claim may enter the admin panel. The email is checked
+  // against Firebase Auth's verified session user, NOT the text typed into
+  // the login form. This keeps students out while allowing the owner's
+  // existing account to work even if the custom claim has not been set yet.
+  const ADMIN_EMAIL = 'mathspathshala.k12@gmail.com';
   async function isAuthorizedAdmin(user){
     if(!user) return false;
+    const firebaseEmail = String(user.email || '').trim().toLowerCase();
+    if(firebaseEmail === ADMIN_EMAIL) return true;
     try {
       const tokenResult = await user.getIdTokenResult(true);
       return tokenResult.claims && tokenResult.claims.admin === true;
@@ -817,7 +774,10 @@
       await signOut(auth);
       loginScreen.style.display = 'block';
       adminScreen.style.display = 'none';
-      loginMsg.textContent = 'Access denied — this account is not authorized for the Admin Panel.';
+      const signedInEmail = String(user?.email || '').trim();
+      loginMsg.textContent = signedInEmail
+        ? `Access denied — Firebase signed you in as ${signedInEmail}, which is not the admin account.`
+        : 'Access denied — Firebase did not return an authenticated email for this account.';
       loginMsg.className = 'msg error';
       return;
     }
