@@ -1903,14 +1903,39 @@
   async function loadBatchCardsGrid(){
     const grid = document.getElementById('batch-cards-grid');
     if(!grid) return;
+
+    // Never leave the public page stuck on "Loading batches...".
+    // Firestore can occasionally remain pending because of network/rules issues.
     let batchStats = [];
     try{
-      const snap = await getDoc(doc(db, "stats", "public"));
-      if(snap.exists()) batchStats = snap.data().batchStats || [];
-    } catch(err){ batchStats = []; }
+      const snap = await Promise.race([
+        getDoc(doc(db, "stats", "public")),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Batch data request timed out')), 7000)
+        )
+      ]);
+      if(snap && snap.exists()) batchStats = snap.data().batchStats || [];
+    } catch(err){
+      console.warn('Public batch data unavailable:', err);
+      batchStats = [];
+    }
+
+    // Fallback cards keep the section useful even if Firestore is temporarily unavailable.
     if(batchStats.length === 0){
-      grid.innerHTML = '<div style="color:var(--muted);font-size:14px;">New batch details will appear here soon. Call or WhatsApp us for current admissions.</div>';
-      return;
+      batchStats = [
+        {
+          class:'9–10',
+          name:'PCM Coaching',
+          intro:'Mathematics, Physics & Chemistry with regular tests, practice and doubt support.',
+          details:['Class 9–10','Mathematics · Physics · Chemistry','Offline · Small batch','Weekly tests and doubt support']
+        },
+        {
+          class:'11–12',
+          name:'Mathematics',
+          intro:'Focused Mathematics coaching for board preparation with structured practice and doubt support.',
+          details:['Class 11–12','Mathematics only','Offline · Board focused','Regular tests and exam-oriented preparation']
+        }
+      ];
     }
     grid.innerHTML = batchStats.map((b, i) => {
       const hasOffer = Number(b.baseFee) > 0 && Number(b.offerPercent) > 0;
