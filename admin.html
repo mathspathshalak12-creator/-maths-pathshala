@@ -14,9 +14,6 @@
     --cream:#FAF8F3; --paper:#FFFFFF; --muted:#5B6B85; --line:#E4E0D6;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
-    outline:2px solid var(--amber-dark);outline-offset:2px;
-  }
   body{font-family:'Inter',sans-serif;color:var(--navy);background:var(--cream);min-height:100vh;padding:24px;}
   h1,h2,.display{font-family:'Space Grotesk',sans-serif;}
   .wrap{max-width:960px;margin:0 auto;}
@@ -251,15 +248,10 @@
       <nav class="admin-nav">
         <a href="#overview">Dashboard</a>
         <a href="#batches-section">Batches</a>
-        <a href="#bulk-attendance-section">Attendance</a>
-        <a href="#test-scoring-section">Test Scoring</a>
-        <a href="#batch-insights-section">Insights</a>
         <a href="#students-section">Students</a>
-        <a href="#student-form-section">Add Student</a>
+        <a href="#attendance-section">Attendance</a>
         <a href="#fees-section">Fees</a>
-        <a href="#notices-section">Notices</a>
-        <a href="#communication-section">Reminders</a>
-        <a href="#notes-management-section">Notes</a>
+        <a href="#communication-section">Student Updates</a>
         <a href="#branding-section">Branding</a>
       </nav>
       <div class="sidebar-note">Primary focus: <b>Offline coaching</b><br>Class 9–10: PCM · Class 11–12: Mathematics<br>Home tuition: Class 3–8 all subjects · Class 9–12 Mathematics</div>
@@ -368,8 +360,6 @@
         <label style="display:block;font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px;">Batch poster / photo (shown on the card banner)</label>
         <input type="file" id="batch-photo-input" accept="image/png,image/jpeg,image/webp">
         <div id="batch-photo-preview" style="margin-top:8px;"></div>
-        <div id="batch-photo-warn" class="msg error" style="margin-top:6px;"></div>
-        <div style="font-size:11px;color:var(--muted);margin-top:4px;">JPG, PNG or WEBP · up to 8MB (large photos are auto-compressed before upload)</div>
       </div>
       <div class="launch-preview" id="batch-launch-preview">Set an original fee and offer to preview the launch price.</div>
       <div class="row2" style="margin-top:14px;"><button class="btn" id="add-batch-btn" style="margin-top:0;">+ Launch / Create Batch</button></div>
@@ -396,7 +386,7 @@
       <div class="msg" id="broadcast-msg"></div>
     </div>
 
-    <div class="card" id="test-scoring-section">
+    <div class="card" id="attendance-section">
       <h2>Test Results &amp; Batch Scoring</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Pick a batch and enter scores for the whole class at once — no need to open each student separately.</p>
       <div class="row2">
@@ -425,7 +415,7 @@
       </div>
     </div>
 
-    <div class="card" id="notices-section">
+    <div class="card" id="students-section">
       <h2>Post a Notice</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Choose who should see this — everyone, or just one batch.</p>
       <label>Send to</label>
@@ -489,7 +479,7 @@
       </div>
     </div>
 
-<div class="card" id="bulk-attendance-section">
+<div class="card">
       <div class="att-header">
         <h2 style="margin:0;">Attendance Management</h2>
         <div class="att-date-picker">
@@ -509,14 +499,14 @@
       </div>
     </div>
 
-    <div class="card" id="batch-insights-section">
+    <div class="card">
       <h2>Batch Performance Comparison</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Attendance, test performance and batch-level academic insights.</p>
       <div style="height:260px;"><canvas id="batch-perf-chart"></canvas></div>
       <div id="batch-perf-list" style="margin-top:16px;"></div>
     </div>
 
-    <div class="card" id="students-section">
+    <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <h2 style="margin:0;">All Students</h2>
         <button class="btn btn-secondary btn-small" id="export-csv-btn">⬇ Export to CSV</button>
@@ -534,7 +524,7 @@
       <ul class="student-list" id="student-list" style="margin-top:14px;"><li>Loading...</li></ul>
     </div>
 
-    <div class="card" id="student-form-section">
+    <div class="card">
       <h2 id="form-heading">Add / Update Student</h2>
       <label>Student email (used as their login + record ID)</label>
       <input type="email" id="f-email" placeholder="student@example.com">
@@ -695,7 +685,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, writeBatch, addDoc, deleteDoc, query, orderBy, serverTimestamp, where, documentId } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-  import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+  import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB3fzWzwiTxHJi1M3OQI3hgZJpi6lq-eww",
@@ -715,108 +705,6 @@
   // Push notifications are disabled until a secure server-side setup is added.
   // Keeping this as a no-op preserves the existing attendance/notice flows.
   function sendPushNotification(){ }
-
-  // ---- Shared image upload pipeline (used by signature + batch photo uploads) ----
-  //
-  // THE BUG: uploads were failing (or appearing to silently hang) mainly because
-  // phone camera photos are routinely 3-10MB, but our Storage Security Rules cap
-  // uploads to report-assets/** and batch-photos/** at 5MB. The old code called
-  // uploadBytes() directly with the raw file and no size/type check beforehand,
-  // so an oversized photo would be rejected by the rules with a generic
-  // "storage/unauthorized" error and no indication of *why* — it looked exactly
-  // like a broken upload. There was also no upload progress (uploadBytes() gives
-  // no progress events) and no guard against double-submitting.
-  //
-  // THE FIX: validate type/size up front with a clear message, compress/resize
-  // large images client-side via <canvas> so they fit the 5MB cap without the
-  // admin needing to manually resize anything, switch to uploadBytesResumable()
-  // for real progress reporting, and disable the button during upload.
-  //
-  // NOTE: if uploads still fail with "storage/unauthorized" after this fix, the
-  // most likely cause is that the signed-in admin account has not yet completed
-  // the one-time admin custom-claim setup (see /api/set-admin-claim.js) — the
-  // Storage Rules require request.auth.token.admin == true to write to these
-  // paths, and that claim is only granted after that setup step and a fresh
-  // sign-out/sign-in.
-  const MAX_UPLOAD_MB = 8;
-  const MAX_IMAGE_DIMENSION = 1600; // px, long edge
-
-  function validateImageFile(file){
-    if(!file) return 'Choose an image file first.';
-    if(!file.type || !file.type.startsWith('image/')) return 'Only image files (JPG, PNG, WEBP) are supported.';
-    if(file.size > MAX_UPLOAD_MB * 1024 * 1024) return `That image is too large (${(file.size/1024/1024).toFixed(1)}MB). Please choose a file under ${MAX_UPLOAD_MB}MB.`;
-    return null;
-  }
-
-  // Resizes an image client-side via <canvas> so large phone photos reliably
-  // fit under the Storage rules' 5MB cap without the admin manually resizing.
-  function compressImageFile(file, maxDim = MAX_IMAGE_DIMENSION, quality = 0.82){
-    return new Promise((resolve) => {
-      if(!file.type.startsWith('image/') || file.type === 'image/gif'){
-        resolve(file); // don't attempt to re-encode animated GIFs etc.
-        return;
-      }
-      const img = new Image();
-      const objectUrl = URL.createObjectURL(file);
-      img.onload = () => {
-        try{
-          let { width, height } = img;
-          if(width > maxDim || height > maxDim){
-            const scale = maxDim / Math.max(width, height);
-            width = Math.round(width * scale);
-            height = Math.round(height * scale);
-          }
-          const canvas = document.createElement('canvas');
-          canvas.width = width; canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          canvas.toBlob((blob) => {
-            URL.revokeObjectURL(objectUrl);
-            if(!blob){ resolve(file); return; } // fall back to original on canvas failure
-            resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }));
-          }, 'image/jpeg', quality);
-        }catch(err){
-          URL.revokeObjectURL(objectUrl);
-          resolve(file); // fall back to the original file rather than blocking the upload
-        }
-      };
-      img.onerror = () => { URL.revokeObjectURL(objectUrl); resolve(file); };
-      img.src = objectUrl;
-    });
-  }
-
-  // Uploads with real progress reporting (uploadBytesResumable instead of
-  // uploadBytes) and returns the download URL once complete.
-  function uploadImageWithProgress(path, file, onProgress){
-    return new Promise((resolve, reject) => {
-      const task = uploadBytesResumable(storageRef(storage, path), file);
-      const timeoutId = setTimeout(() => {
-        task.cancel();
-        reject(new Error('Upload timed out after 30s — check your internet connection or Firebase Storage setup.'));
-      }, 30000);
-      task.on('state_changed',
-        (snapshot) => {
-          if(onProgress) onProgress(Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100));
-        },
-        (err) => { clearTimeout(timeoutId); reject(err); },
-        async () => {
-          clearTimeout(timeoutId);
-          try{
-            const url = await getDownloadURL(task.snapshot.ref);
-            resolve(url);
-          }catch(err){ reject(err); }
-        }
-      );
-    });
-  }
-
-  function describeUploadError(err){
-    let hint = '';
-    if(err.code === 'storage/unauthorized') hint = ' (Storage rules blocked this upload — if you just set up admin custom claims, sign out and sign back in so your session picks up the admin role.)';
-    else if(err.code === 'storage/canceled') hint = '';
-    else if(err.code === 'storage/unknown' || /CORS/i.test(err.message || '')) hint = ' (Possible CORS issue or Storage not enabled — check Firebase Console → Storage is set up for this project.)';
-    return (err.code || err.message || 'Unknown error') + hint;
-  }
 
   function getTargetEmails(targetClass, targetBatch){
     return allStudentsCache
@@ -842,17 +730,16 @@
   let batchesCache = [];
   let editingBatchId = null;
 
-  // SECURITY: admin status is NOT determined by the frontend anymore.
-  // It comes from a Firebase Auth custom claim (`admin: true`) which can
-  // only be set server-side (see /api/set-admin-claim.js + Firebase Admin
-  // SDK). A student can sign in with a valid Firebase account, but their
-  // ID token will never carry this claim, so isAuthorizedAdmin() below
-  // will correctly return false no matter what email/localStorage says.
-  // This function ALSO force-refreshes the token (forceRefresh=true) so a
-  // claim change takes effect without waiting up to an hour for the
-  // cached token to expire.
+  // SECURITY: only the designated owner account OR a Firebase custom
+  // `admin: true` claim may enter the admin panel. The email is checked
+  // against Firebase Auth's verified session user, NOT the text typed into
+  // the login form. This keeps students out while allowing the owner's
+  // existing account to work even if the custom claim has not been set yet.
+  const ADMIN_EMAIL = 'mathspathshala.k12@gmail.com';
   async function isAuthorizedAdmin(user){
     if(!user) return false;
+    const firebaseEmail = String(user.email || '').trim().toLowerCase();
+    if(firebaseEmail === ADMIN_EMAIL) return true;
     try {
       const tokenResult = await user.getIdTokenResult(true);
       return tokenResult.claims && tokenResult.claims.admin === true;
@@ -887,7 +774,10 @@
       await signOut(auth);
       loginScreen.style.display = 'block';
       adminScreen.style.display = 'none';
-      loginMsg.textContent = 'Access denied — this account is not authorized for the Admin Panel.';
+      const signedInEmail = String(user?.email || '').trim();
+      loginMsg.textContent = signedInEmail
+        ? `Access denied — Firebase signed you in as ${signedInEmail}, which is not the admin account.`
+        : 'Access denied — Firebase did not return an authenticated email for this account.';
       loginMsg.className = 'msg error';
       return;
     }
@@ -2330,45 +2220,48 @@
   document.getElementById('batch-photo-input').addEventListener('change', (e) => {
     const file = e.target.files[0];
     const preview = document.getElementById('batch-photo-preview');
-    const warn = document.getElementById('batch-photo-warn');
-    if(!file){ preview.innerHTML = ''; if(warn) warn.textContent=''; return; }
-    const invalidReason = validateImageFile(file);
-    if(invalidReason){
-      if(warn) warn.textContent = invalidReason;
-      preview.innerHTML = '';
+    if(!file){ preview.innerHTML = ''; return; }
+    const allowed = ['image/jpeg','image/png','image/webp'];
+    if(!allowed.includes(file.type)){
       e.target.value = '';
+      preview.innerHTML = '<div class="msg error">Choose a JPG, PNG or WebP image.</div>';
       return;
     }
-    if(warn) warn.textContent = '';
+    if(file.size > 5 * 1024 * 1024){
+      e.target.value = '';
+      preview.innerHTML = '<div class="msg error">Image must be smaller than 5 MB.</div>';
+      return;
+    }
     const url = URL.createObjectURL(file);
-    preview.innerHTML = `<img src="${url}" alt="Batch poster preview" style="max-width:220px;max-height:110px;border-radius:8px;border:1px solid #e5e9f0;">`;
+    preview.innerHTML = `<img src="${url}" alt="Batch poster preview" style="max-width:220px;max-height:130px;object-fit:cover;border-radius:10px;border:1px solid #e5e9f0;box-shadow:0 8px 18px rgba(11,30,61,.08);">`;
+    preview.querySelector('img')?.addEventListener('load', () => URL.revokeObjectURL(url), {once:true});
   });
 
   document.getElementById('upload-signature-btn').addEventListener('click',async()=>{
     const btn=document.getElementById('upload-signature-btn');
-    if(btn.disabled) return; // prevent duplicate/double-click uploads
     const file=document.getElementById('teacher-signature-input').files[0];
     const msg=document.getElementById('signature-msg');
-    const invalidReason = validateImageFile(file);
-    if(invalidReason){ msg.textContent = invalidReason; msg.className = 'msg error'; return; }
-    btn.disabled=true; const origText=btn.textContent;
-    msg.textContent='Preparing image…'; msg.className='msg';
+    if(!file){msg.textContent='Choose a signature image first.';msg.className='msg error';return;}
+    if(!['image/jpeg','image/png','image/webp'].includes(file.type)){msg.textContent='Signature must be JPG, PNG or WebP.';msg.className='msg error';return;}
+    if(file.size > 5 * 1024 * 1024){msg.textContent='Signature image must be smaller than 5 MB.';msg.className='msg error';return;}
+    btn.disabled=true; const origText=btn.textContent; btn.textContent='Uploading…';
+    msg.textContent='Uploading signature, please wait…'; msg.className='msg';
     try{
-      const compressed = await compressImageFile(file);
       const path=`report-assets/teacher-signature-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
-      const url = await uploadImageWithProgress(path, compressed, (pct) => {
-        btn.textContent = `Uploading… ${pct}%`;
-        msg.textContent = `Uploading signature… ${pct}%`;
-      });
+      const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('Upload timed out after '+(ms/1000)+'s — check your internet connection or Firebase Storage setup.')),ms))]);
+      const snap=await withTimeout(uploadBytes(storageRef(storage,path),file,{contentType:file.type,cacheControl:'private,max-age=3600'}),20000);
+      const url=await withTimeout(getDownloadURL(snap.ref),15000);
       await setDoc(doc(db,'siteSettings','branding'),{teacherSignatureUrl:url,updatedAt:serverTimestamp()},{merge:true});
       teacherSignatureUrl=url;
       document.getElementById('signature-preview').innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Current signature</div><img src="${url}" alt="Teacher signature" style="max-width:240px;max-height:90px;background:#fff;padding:8px;border:1px solid #e5e9f0;border-radius:8px;">`;
       msg.textContent='Signature uploaded. Future report cards can reuse it automatically.';
       msg.className='msg success';
-      document.getElementById('teacher-signature-input').value='';
     }catch(e){
       console.error('Signature upload error:',e);
-      msg.textContent='Signature upload failed: '+describeUploadError(e);
+      let hint='';
+      if(e.code==='storage/unauthorized') hint=' (Storage rules are blocking this upload — check Firebase Console → Storage → Rules.)';
+      else if(e.code==='storage/unknown'||/CORS/i.test(e.message)) hint=' (Possible CORS or Storage-not-enabled issue — check Firebase Console → Storage is set up.)';
+      msg.textContent='Signature upload failed: '+(e.code||e.message)+hint;
       msg.className='msg error';
     } finally {
       btn.disabled=false; btn.textContent=origText;
@@ -2551,14 +2444,16 @@
       let photoUrl = isEditing ? (batchesCache.find(x => x.id === editingBatchId)?.photoUrl || '') : '';
       const photoFile = document.getElementById('batch-photo-input').files[0];
       if(photoFile){
-        const invalidReason = validateImageFile(photoFile);
-        if(invalidReason){ showToast(invalidReason); btn.disabled = false; btn.textContent = editingBatchId ? 'Update Batch' : '+ Launch / Create Batch'; return; }
-        btn.textContent = 'Preparing photo...';
-        const compressed = await compressImageFile(photoFile);
-        const path = `batch-photos/${Date.now()}-${photoFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
-        photoUrl = await uploadImageWithProgress(path, compressed, (pct) => {
-          btn.textContent = `Uploading poster... ${pct}%`;
-        });
+        const allowed = ['image/jpeg','image/png','image/webp'];
+        if(!allowed.includes(photoFile.type)) throw new Error('Batch poster must be JPG, PNG or WebP.');
+        if(photoFile.size > 5 * 1024 * 1024) throw new Error('Batch poster must be smaller than 5 MB.');
+        btn.textContent = 'Uploading poster...';
+        const safeName = photoFile.name.replace(/[^a-zA-Z0-9._-]/g,'_').slice(-100);
+        const path = `batch-photos/${Date.now()}-${safeName}`;
+        const metadata = { contentType: photoFile.type, cacheControl: 'public,max-age=31536000,immutable' };
+        const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('Upload timed out after '+(ms/1000)+'s — check your internet connection or Firebase Storage setup.')),ms))]);
+        const snap = await withTimeout(uploadBytes(storageRef(storage, path), photoFile, metadata), 30000);
+        photoUrl = await withTimeout(getDownloadURL(snap.ref), 15000);
       }
       if(isEditing){
         btn.textContent = 'Updating...';
@@ -2589,8 +2484,7 @@
       await loadBatches();
       loadStudentList();
     } catch(err){
-      console.error('Batch save error:', err);
-      showToast('Error: ' + describeUploadError(err));
+      showToast('Error: ' + err.message);
     } finally {
       btn.disabled = false; btn.textContent = editingBatchId ? 'Update Batch' : '+ Launch / Create Batch';
     }
