@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/pathshala-ai.js": {
+      "maxDuration": 60
+    }
+  }
+}
