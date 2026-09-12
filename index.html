@@ -543,7 +543,15 @@
 
   /* NOTICES BANNER */
   .dash-notices{position:relative;z-index:1;margin-bottom:16px;}
-  \1linear-gradient(135deg,#FFF7E6 0%,#FFE8B8 100%)\3#F2C66D\5 0 8px 24px rgba(11,30,61,0.10),inset 0 1px 0 rgba(255,255,255,0.75)\7#8A5200\9#4D586A\11
+  .notice-banner{
+    background:linear-gradient(135deg,rgba(18,42,82,0.96),rgba(11,30,61,0.98));
+    border:1px solid rgba(91,155,255,0.42);
+    border-radius:12px;padding:14px 18px;margin-bottom:8px;
+    box-shadow:0 8px 24px rgba(4,12,27,0.18),inset 0 1px 0 rgba(255,255,255,0.07);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  }
+  .notice-banner-title{font-size:13.5px;font-weight:700;color:#FFD166;}
+  .notice-banner-msg{font-size:13px;color:#F5F7FB;margin-top:3px;line-height:1.55;}
   .hw-banner{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);border-radius:12px;padding:14px 18px;margin-bottom:8px;backdrop-filter:blur(6px);}
   .hw-banner-title{font-size:13.5px;font-weight:700;color:#fff;}
   .hw-banner-msg{font-size:13px;color:#B9C2D6;margin-top:3px;}
@@ -887,16 +895,6 @@
   .batch-card-photo{height:118px!important;padding:0!important;background:var(--navy)!important;}
   .batch-card-photo img{display:block;width:100%;height:100%;object-fit:cover;}
   @media(max-width:600px){.batch-card-photo{height:132px!important;}}
-</style>
-<style id="student-dashboard-notice-color-fix">
-/* Dashboard notice banner color only — popup manager/data unchanged. */
-.notice-banner{
-  background:linear-gradient(135deg,#FFF7E6 0%,#FFE8B8 100%) !important;
-  border-color:#F2C66D !important;
-  border-left:4px solid #F5A623 !important;
-}
-.notice-banner-title{color:#8A5200 !important;}
-.notice-banner-msg{color:#4D586A !important;}
 </style>
 <style id="student-public-site-visibility-fix">
   /* Student login must NEVER hide the public Maths Pathshala website. */
