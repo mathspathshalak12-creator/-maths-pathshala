@@ -722,9 +722,11 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  // Keep admin login persistent across refreshes, browser restarts and app/PWA reopen.
-  // Existing admin authorization checks remain unchanged.
-  await setPersistence(auth, browserLocalPersistence);
+  // Keep admin login persistent when the browser/app permits Firebase local storage.
+  // Never let a persistence-storage error stop the admin login UI from loading.
+  const persistenceReady = setPersistence(auth, browserLocalPersistence).catch(err => {
+    console.warn('Firebase local persistence could not be enabled for admin:', err);
+  });
   const db = getFirestore(app);
   const storage = getStorage(app);
 
