@@ -2230,9 +2230,18 @@
     return String(data.targetBatch) === String(currentStudentBatchName);
   }
 
+  // Dashboard popups are shown once per app/browser visit. sessionStorage survives
+  // refreshes in the same tab/window, but is cleared when that browsing session ends.
+  // This keeps popups away on refresh while bringing them back after closing/reopening.
+  function dashboardPopupSeen(key){
+    return sessionStorage.getItem('mp_dashboard_popup_seen_' + key) === '1';
+  }
+  function markDashboardPopupSeen(key){
+    sessionStorage.setItem('mp_dashboard_popup_seen_' + key, '1');
+  }
+
   function closeNoticePopup(markSeen=true){
     const popup=document.getElementById('notice-popup');
-    // Dashboard notice returns on every dashboard load/refresh/app reopen.
     popup.classList.remove('show');
     popup.setAttribute('aria-hidden','true');
   }
@@ -2270,16 +2279,20 @@
         banner.appendChild(title); banner.appendChild(msg); box.appendChild(banner);
       });
 
-      // Dashboard notice popup: show the latest relevant notice on every
-      // dashboard load/refresh/app reopen. It remains auth/student-targeted.
+      // Dashboard notice popup: once per app/browser visit, not on refresh.
+      // sessionStorage is intentionally used so a fresh reopen can show it again.
       if(latestForStudent && auth.currentUser){
-        const data = latestForStudent.data;
-        const popup = document.getElementById('notice-popup');
-        document.getElementById('notice-popup-title').textContent = data.title || 'New Notice';
-        document.getElementById('notice-popup-message').textContent = data.message || '';
-        popup.dataset.noticeId = latestForStudent.id;
-        popup.classList.add('show');
-        popup.setAttribute('aria-hidden','false');
+        const noticeKey = 'notice_' + latestForStudent.id;
+        if(!dashboardPopupSeen(noticeKey)){
+          const data = latestForStudent.data;
+          const popup = document.getElementById('notice-popup');
+          document.getElementById('notice-popup-title').textContent = data.title || 'New Notice';
+          document.getElementById('notice-popup-message').textContent = data.message || '';
+          popup.dataset.noticeId = latestForStudent.id;
+          popup.classList.add('show');
+          popup.setAttribute('aria-hidden','false');
+          markDashboardPopupSeen(noticeKey);
+        }
       }
     } catch(err){
       box.innerHTML = '';
@@ -2323,10 +2336,13 @@
 
       if(latestDoc && auth.currentUser){
         const data = latestDoc.data();
-        // Dashboard homework popup returns on every dashboard load/refresh/app reopen.
+        // Dashboard homework popup: once per app/browser visit, not on refresh.
+        const homeworkKey = 'homework_' + latestDoc.id;
+        if(dashboardPopupSeen(homeworkKey)) return;
         document.getElementById('hw-popup-title').textContent = data.title;
         document.getElementById('hw-popup-details').textContent = data.details;
         document.getElementById('hw-popup').classList.add('show');
+        markDashboardPopupSeen(homeworkKey);
         document.getElementById('hw-popup-ok').onclick = () => {
           document.getElementById('hw-popup').classList.remove('show');
         };
@@ -2505,11 +2521,16 @@
     const monthlyFeeList=document.getElementById('dash-monthly-fee-list'); monthlyFeeList.innerHTML=''; const mf=Array.isArray(data.monthlyFees)?data.monthlyFees.slice().sort((a,b)=>(b.monthKey||'').localeCompare(a.monthKey||'')):[]; monthlyFeeList.innerHTML=mf.length?mf.slice(0,6).map(m=>`<li><span>${m.monthLabel||monthLabel(m.monthKey)}</span><span class="${m.status==='Paid'?'att-present':'att-absent'}">${m.status}</span></li>`).join(''):'<li style="color:#B9C2D6">No monthly records yet</li>';
     document.getElementById('dash-batch-value').textContent=data.batchTiming||'Not assigned yet'; document.getElementById('dash-next-test').textContent=data.nextTest||'None scheduled';
     if(data.nextTest && auth.currentUser){
-      // Dashboard test reminder returns on every dashboard load/refresh/app reopen.
-      document.getElementById('test-popup-title').textContent=data.nextTest;
-      document.getElementById('test-popup').classList.add('show');
-      document.getElementById('test-popup-ok').onclick=()=>{ document.getElementById('test-popup').classList.remove('show'); };
-      document.getElementById('test-popup-close').onclick=()=>{ document.getElementById('test-popup').classList.remove('show'); };
+      // Dashboard test reminder: once per app/browser visit, not on refresh.
+      const testKey = 'test_' + String(data.nextTest);
+      if(!dashboardPopupSeen(testKey)){
+        document.getElementById('test-popup-title').textContent=data.nextTest;
+        document.getElementById('test-popup').classList.add('show');
+        markDashboardPopupSeen(testKey);
+      }
+        document.getElementById('test-popup-ok').onclick=()=>{ document.getElementById('test-popup').classList.remove('show'); };
+        document.getElementById('test-popup-close').onclick=()=>{ document.getElementById('test-popup').classList.remove('show'); };
+      }
     }
     const log=Array.isArray(data.attendance?.log)?data.attendance.log:[];
     const todayForMonth=new Date();
