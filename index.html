@@ -543,12 +543,7 @@
 
   /* NOTICES BANNER */
   .dash-notices{position:relative;z-index:1;margin-bottom:16px;}
-  .notice-banner{
-    background:rgba(245,166,35,0.14);border:1px solid rgba(245,166,35,0.4);
-    border-radius:12px;padding:14px 18px;margin-bottom:8px;backdrop-filter:blur(6px);
-  }
-  .notice-banner-title{font-size:13.5px;font-weight:700;color:var(--amber);}
-  .notice-banner-msg{font-size:13px;color:#E4E0D6;margin-top:3px;}
+  \1linear-gradient(135deg,#FFF7E6 0%,#FFE8B8 100%)\3#F2C66D\5 0 8px 24px rgba(11,30,61,0.10),inset 0 1px 0 rgba(255,255,255,0.75)\7#8A5200\9#4D586A\11
   .hw-banner{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);border-radius:12px;padding:14px 18px;margin-bottom:8px;backdrop-filter:blur(6px);}
   .hw-banner-title{font-size:13.5px;font-weight:700;color:#fff;}
   .hw-banner-msg{font-size:13px;color:#B9C2D6;margin-top:3px;}
@@ -892,6 +887,16 @@
   .batch-card-photo{height:118px!important;padding:0!important;background:var(--navy)!important;}
   .batch-card-photo img{display:block;width:100%;height:100%;object-fit:cover;}
   @media(max-width:600px){.batch-card-photo{height:132px!important;}}
+</style>
+<style id="student-dashboard-notice-color-fix">
+/* Dashboard notice banner color only — popup manager/data unchanged. */
+.notice-banner{
+  background:linear-gradient(135deg,#FFF7E6 0%,#FFE8B8 100%) !important;
+  border-color:#F2C66D !important;
+  border-left:4px solid #F5A623 !important;
+}
+.notice-banner-title{color:#8A5200 !important;}
+.notice-banner-msg{color:#4D586A !important;}
 </style>
 <style id="student-public-site-visibility-fix">
   /* Student login must NEVER hide the public Maths Pathshala website. */
@@ -1861,7 +1866,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -1877,6 +1882,14 @@
 
   const fbApp = initializeApp(firebaseConfig);
   const auth = getAuth(fbApp);
+  // Keep student login persistent when the browser/app permits Firebase local storage.
+  // Never let a persistence-storage error stop the rest of the login UI from loading.
+  // Firebase already uses LOCAL persistence by default in normal web contexts.
+  // Try to enforce it, but NEVER block the login action on this optional setup.
+  const persistenceReady = setPersistence(auth, browserLocalPersistence).catch(err => {
+    console.warn('Firebase local persistence could not be enabled:', err);
+    return null;
+  });
   const db = getFirestore(fbApp);
 
   const loginModal = document.getElementById('login-modal');
@@ -2128,7 +2141,7 @@
     if(e.target === loginModal){ loginModal.classList.remove('show'); }
   });
 
-  document.getElementById('login-submit-btn').addEventListener('click', () => {
+  document.getElementById('login-submit-btn').addEventListener('click', async () => {
     const email = document.getElementById('login-email-input').value.trim();
     const password = document.getElementById('login-password-input').value;
     if(!email || !password){
@@ -2138,6 +2151,9 @@
 
     const btn = document.getElementById('login-submit-btn');
     btn.disabled = true; btn.textContent = "Logging in...";
+    // Do not wait for persistence setup here: a storage/iframe restriction must
+    // never make the Student Login button appear stuck. Firebase Auth can proceed
+    // with its normal persistence behaviour.
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
         loginModal.classList.remove('show');
@@ -2225,21 +2241,27 @@
     return String(data.targetBatch) === String(currentStudentBatchName);
   }
 
-  // ===== STUDENT DASHBOARD POPUP MANAGER =====
-  // Dashboard popups show once per app/browser visit.
-  // Page refreshes and the background dashboard auto-refresh must NOT reopen them.
-  // A new app/browser visit (new tab/window/session) can show them again.
-  function dashboardPopupKey(type, identity){
-    return 'mp_dashboard_popup_' + type + '_' + encodeURIComponent(String(identity || 'current'));
+  // Dashboard popups are shown once per app/browser visit. sessionStorage survives
+  // refreshes in the same tab/window, but is cleared when that browsing session ends.
+  // This keeps popups away on refresh while bringing them back after closing/reopening.
+  // Dashboard popups: once per visit, not on a normal refresh.
+  // A fresh navigation/app reopen starts a new visit; a reload keeps the current
+  // visit's seen-state. This avoids relying on browser-close semantics alone.
+  const dashboardNavEntry = performance.getEntriesByType('navigation')[0];
+  const dashboardIsReload = dashboardNavEntry?.type === 'reload';
+  if(!dashboardIsReload){
+    Object.keys(sessionStorage).forEach(k => {
+      if(k.startsWith('mp_dashboard_popup_seen_')) sessionStorage.removeItem(k);
+    });
   }
-  function dashboardPopupSeen(type, identity){
-    return sessionStorage.getItem(dashboardPopupKey(type, identity)) === '1';
+  function dashboardPopupSeen(key){
+    return sessionStorage.getItem('mp_dashboard_popup_seen_' + key) === '1';
   }
-  function markDashboardPopupSeen(type, identity){
-    sessionStorage.setItem(dashboardPopupKey(type, identity), '1');
+  function markDashboardPopupSeen(key){
+    sessionStorage.setItem('mp_dashboard_popup_seen_' + key, '1');
   }
 
-  function closeNoticePopup(){
+  function closeNoticePopup(markSeen=true){
     const popup=document.getElementById('notice-popup');
     popup.classList.remove('show');
     popup.setAttribute('aria-hidden','true');
@@ -2278,18 +2300,19 @@
         banner.appendChild(title); banner.appendChild(msg); box.appendChild(banner);
       });
 
-      // Notice popup: once per app/browser visit, not on refresh/auto-refresh.
+      // Dashboard notice popup: once per app/browser visit, not on refresh.
+      // sessionStorage is intentionally used so a fresh reopen can show it again.
       if(latestForStudent && auth.currentUser){
-        const noticeId = latestForStudent.id;
-        if(!dashboardPopupSeen('notice', noticeId)){
+        const noticeKey = 'notice_' + latestForStudent.id;
+        if(!dashboardPopupSeen(noticeKey)){
           const data = latestForStudent.data;
           const popup = document.getElementById('notice-popup');
           document.getElementById('notice-popup-title').textContent = data.title || 'New Notice';
           document.getElementById('notice-popup-message').textContent = data.message || '';
-          popup.dataset.noticeId = noticeId;
+          popup.dataset.noticeId = latestForStudent.id;
           popup.classList.add('show');
           popup.setAttribute('aria-hidden','false');
-          markDashboardPopupSeen('notice', noticeId);
+          markDashboardPopupSeen(noticeKey);
         }
       }
     } catch(err){
@@ -2297,10 +2320,10 @@
     }
   }
 
-  document.getElementById('notice-popup-ok').addEventListener('click', () => closeNoticePopup());
-  document.getElementById('notice-popup-close').addEventListener('click', () => closeNoticePopup());
+  document.getElementById('notice-popup-ok').addEventListener('click', () => closeNoticePopup(true));
+  document.getElementById('notice-popup-close').addEventListener('click', () => closeNoticePopup(true));
   document.getElementById('notice-popup').addEventListener('click', (e) => {
-    if(e.target.id === 'notice-popup') closeNoticePopup();
+    if(e.target.id === 'notice-popup') closeNoticePopup(true);
   });
 
 
@@ -2333,20 +2356,20 @@
       });
 
       if(latestDoc && auth.currentUser){
-        const homeworkId = latestDoc.id;
-        if(!dashboardPopupSeen('homework', homeworkId)){
-          const data = latestDoc.data();
-          document.getElementById('hw-popup-title').textContent = data.title;
-          document.getElementById('hw-popup-details').textContent = data.details;
-          document.getElementById('hw-popup').classList.add('show');
-          markDashboardPopupSeen('homework', homeworkId);
-          document.getElementById('hw-popup-ok').onclick = () => {
-            document.getElementById('hw-popup').classList.remove('show');
-          };
-          document.getElementById('hw-popup-close').onclick = () => {
-            document.getElementById('hw-popup').classList.remove('show');
-          };
-        }
+        const data = latestDoc.data();
+        // Dashboard homework popup: once per app/browser visit, not on refresh.
+        const homeworkKey = 'homework_' + latestDoc.id;
+        if(dashboardPopupSeen(homeworkKey)) return;
+        document.getElementById('hw-popup-title').textContent = data.title;
+        document.getElementById('hw-popup-details').textContent = data.details;
+        document.getElementById('hw-popup').classList.add('show');
+        markDashboardPopupSeen(homeworkKey);
+        document.getElementById('hw-popup-ok').onclick = () => {
+          document.getElementById('hw-popup').classList.remove('show');
+        };
+        document.getElementById('hw-popup-close').onclick = () => {
+          document.getElementById('hw-popup').classList.remove('show');
+        };
       }
     } catch(err){
       box.innerHTML = '';
@@ -2519,11 +2542,13 @@
     const monthlyFeeList=document.getElementById('dash-monthly-fee-list'); monthlyFeeList.innerHTML=''; const mf=Array.isArray(data.monthlyFees)?data.monthlyFees.slice().sort((a,b)=>(b.monthKey||'').localeCompare(a.monthKey||'')):[]; monthlyFeeList.innerHTML=mf.length?mf.slice(0,6).map(m=>`<li><span>${m.monthLabel||monthLabel(m.monthKey)}</span><span class="${m.status==='Paid'?'att-present':'att-absent'}">${m.status}</span></li>`).join(''):'<li style="color:#B9C2D6">No monthly records yet</li>';
     document.getElementById('dash-batch-value').textContent=data.batchTiming||'Not assigned yet'; document.getElementById('dash-next-test').textContent=data.nextTest||'None scheduled';
     if(data.nextTest && auth.currentUser){
-      const testId = String(data.nextTest);
-      if(!dashboardPopupSeen('test', testId)){
+      // Dashboard test reminder: once per app/browser visit, not on refresh.
+      const testKey = 'test_' + String(data.nextTest);
+      if(!dashboardPopupSeen(testKey)){
         document.getElementById('test-popup-title').textContent=data.nextTest;
         document.getElementById('test-popup').classList.add('show');
-        markDashboardPopupSeen('test', testId);
+        markDashboardPopupSeen(testKey);
+      }
         document.getElementById('test-popup-ok').onclick=()=>{ document.getElementById('test-popup').classList.remove('show'); };
         document.getElementById('test-popup-close').onclick=()=>{ document.getElementById('test-popup').classList.remove('show'); };
       }
