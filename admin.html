@@ -728,8 +728,8 @@
   const adminApp = initializeApp(firebaseConfig, "MathsPathshalaAdmin");
   const auth = getAuth(adminApp);
   let authPersistenceReady = setPersistence(auth, browserLocalPersistence).catch(err => { console.warn("Admin auth persistence setup failed:", err); return null; });
-  const db = getFirestore(app);
-  const storage = getStorage(app);
+  const db = getFirestore(adminApp);
+  const storage = getStorage(adminApp);
 
   // Push notifications are disabled until a secure server-side setup is added.
   // Keeping this as a no-op preserves the existing attendance/notice flows.
