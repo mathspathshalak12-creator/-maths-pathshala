@@ -720,8 +720,13 @@
     measurementId: "G-T8T96LLPQZ"
   };
 
+  // IMPORTANT: keep Admin Firebase Auth in its own named app/session.
+  // The student site uses the default Firebase Auth session. Without this
+  // separation, signing a student in can replace the admin account in the
+  // browser's shared Firebase Auth persistence and the admin panel logs out.
   const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+  const adminApp = initializeApp(firebaseConfig, "MathsPathshalaAdmin");
+  const auth = getAuth(adminApp);
   let authPersistenceReady = setPersistence(auth, browserLocalPersistence).catch(err => { console.warn("Admin auth persistence setup failed:", err); return null; });
   const db = getFirestore(app);
   const storage = getStorage(app);
