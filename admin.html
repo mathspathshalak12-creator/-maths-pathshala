@@ -706,7 +706,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, writeBatch, addDoc, deleteDoc, query, orderBy, serverTimestamp, where, documentId } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
   import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
@@ -722,6 +722,7 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  let authPersistenceReady = setPersistence(auth, browserLocalPersistence).catch(err => { console.warn("Admin auth persistence setup failed:", err); return null; });
   const db = getFirestore(app);
   const storage = getStorage(app);
 
@@ -773,6 +774,7 @@
   }
 
   async function submitAdminLogin(){
+    await authPersistenceReady;
     const email = document.getElementById('admin-email').value.trim().toLowerCase();
     const password = document.getElementById('admin-password').value;
     if(!email || !password){
@@ -834,11 +836,11 @@
       document.getElementById('f-test-date').value = todayStr;
       document.getElementById('f-payment-date').value = todayStr;
       document.getElementById('bulk-att-date').value = todayStr;
-      await loadBatches();
-      await loadStudentList();
-      loadBulkAttendanceRows();
-      loadNotices();
-      loadBranding();
+      try { await loadBatches(); } catch(e) { console.warn("Batches load failed:", e); }
+      try { await loadStudentList(); } catch(e) { console.warn("Students load failed:", e); }
+      try { loadBulkAttendanceRows(); } catch(e) { console.warn("Attendance load failed:", e); }
+      try { loadNotices(); } catch(e) { console.warn("Notices load failed:", e); }
+      try { loadBranding(); } catch(e) { console.warn("Branding load failed:", e); }
 
     } else {
       loginScreen.style.display = 'block';
