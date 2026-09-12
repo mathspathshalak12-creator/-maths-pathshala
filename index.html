@@ -544,11 +544,14 @@
   /* NOTICES BANNER */
   .dash-notices{position:relative;z-index:1;margin-bottom:16px;}
   .notice-banner{
-    background:rgba(245,166,35,0.14);border:1px solid rgba(245,166,35,0.4);
-    border-radius:12px;padding:14px 18px;margin-bottom:8px;backdrop-filter:blur(6px);
+    background:linear-gradient(135deg,rgba(18,42,82,0.96),rgba(11,30,61,0.98));
+    border:1px solid rgba(91,155,255,0.42);
+    border-radius:12px;padding:14px 18px;margin-bottom:8px;
+    box-shadow:0 8px 24px rgba(4,12,27,0.18),inset 0 1px 0 rgba(255,255,255,0.07);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   }
-  .notice-banner-title{font-size:13.5px;font-weight:700;color:var(--amber);}
-  .notice-banner-msg{font-size:13px;color:#E4E0D6;margin-top:3px;}
+  .notice-banner-title{font-size:13.5px;font-weight:700;color:#FFD166;}
+  .notice-banner-msg{font-size:13px;color:#F5F7FB;margin-top:3px;line-height:1.55;}
   .hw-banner{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);border-radius:12px;padding:14px 18px;margin-bottom:8px;backdrop-filter:blur(6px);}
   .hw-banner-title{font-size:13.5px;font-weight:700;color:#fff;}
   .hw-banner-msg{font-size:13px;color:#B9C2D6;margin-top:3px;}
@@ -1861,7 +1864,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -1877,6 +1880,8 @@
 
   const fbApp = initializeApp(firebaseConfig);
   const auth = getAuth(fbApp);
+  // Keep student login persistent across refreshes, browser restarts and app/PWA reopen.
+  await setPersistence(auth, browserLocalPersistence);
   const db = getFirestore(fbApp);
 
   const loginModal = document.getElementById('login-modal');
@@ -2227,9 +2232,7 @@
 
   function closeNoticePopup(markSeen=true){
     const popup=document.getElementById('notice-popup');
-    if(markSeen && auth.currentUser && popup.dataset.noticeId){
-      localStorage.setItem('noticeSeen_'+auth.currentUser.email.toLowerCase(), popup.dataset.noticeId);
-    }
+    // Dashboard notice returns on every dashboard load/refresh/app reopen.
     popup.classList.remove('show');
     popup.setAttribute('aria-hidden','true');
   }
@@ -2267,19 +2270,16 @@
         banner.appendChild(title); banner.appendChild(msg); box.appendChild(banner);
       });
 
-      // Popup is ONLY evaluated after Firebase authentication succeeds, so logged-out visitors never see it.
+      // Dashboard notice popup: show the latest relevant notice on every
+      // dashboard load/refresh/app reopen. It remains auth/student-targeted.
       if(latestForStudent && auth.currentUser){
-        const seenKey = 'noticeSeen_' + auth.currentUser.email.toLowerCase();
-        const lastSeenId = localStorage.getItem(seenKey);
-        if(lastSeenId !== latestForStudent.id){
-          const data = latestForStudent.data;
-          const popup = document.getElementById('notice-popup');
-          document.getElementById('notice-popup-title').textContent = data.title || 'New Notice';
-          document.getElementById('notice-popup-message').textContent = data.message || '';
-          popup.dataset.noticeId = latestForStudent.id;
-          popup.classList.add('show');
-          popup.setAttribute('aria-hidden','false');
-        }
+        const data = latestForStudent.data;
+        const popup = document.getElementById('notice-popup');
+        document.getElementById('notice-popup-title').textContent = data.title || 'New Notice';
+        document.getElementById('notice-popup-message').textContent = data.message || '';
+        popup.dataset.noticeId = latestForStudent.id;
+        popup.classList.add('show');
+        popup.setAttribute('aria-hidden','false');
       }
     } catch(err){
       box.innerHTML = '';
@@ -2322,22 +2322,17 @@
       });
 
       if(latestDoc && auth.currentUser){
-        const seenKey = 'hwSeen_' + auth.currentUser.email;
-        const lastSeenId = localStorage.getItem(seenKey);
-        if(lastSeenId !== latestDoc.id){
-          const data = latestDoc.data();
-          document.getElementById('hw-popup-title').textContent = data.title;
-          document.getElementById('hw-popup-details').textContent = data.details;
-          document.getElementById('hw-popup').classList.add('show');
-          document.getElementById('hw-popup-ok').onclick = () => {
-            localStorage.setItem(seenKey, latestDoc.id);
-            document.getElementById('hw-popup').classList.remove('show');
-          };
-          document.getElementById('hw-popup-close').onclick = () => {
-            localStorage.setItem(seenKey, latestDoc.id);
-            document.getElementById('hw-popup').classList.remove('show');
-          };
-        }
+        const data = latestDoc.data();
+        // Dashboard homework popup returns on every dashboard load/refresh/app reopen.
+        document.getElementById('hw-popup-title').textContent = data.title;
+        document.getElementById('hw-popup-details').textContent = data.details;
+        document.getElementById('hw-popup').classList.add('show');
+        document.getElementById('hw-popup-ok').onclick = () => {
+          document.getElementById('hw-popup').classList.remove('show');
+        };
+        document.getElementById('hw-popup-close').onclick = () => {
+          document.getElementById('hw-popup').classList.remove('show');
+        };
       }
     } catch(err){
       box.innerHTML = '';
@@ -2510,14 +2505,11 @@
     const monthlyFeeList=document.getElementById('dash-monthly-fee-list'); monthlyFeeList.innerHTML=''; const mf=Array.isArray(data.monthlyFees)?data.monthlyFees.slice().sort((a,b)=>(b.monthKey||'').localeCompare(a.monthKey||'')):[]; monthlyFeeList.innerHTML=mf.length?mf.slice(0,6).map(m=>`<li><span>${m.monthLabel||monthLabel(m.monthKey)}</span><span class="${m.status==='Paid'?'att-present':'att-absent'}">${m.status}</span></li>`).join(''):'<li style="color:#B9C2D6">No monthly records yet</li>';
     document.getElementById('dash-batch-value').textContent=data.batchTiming||'Not assigned yet'; document.getElementById('dash-next-test').textContent=data.nextTest||'None scheduled';
     if(data.nextTest && auth.currentUser){
-      const seenKey='testSeen_'+auth.currentUser.email;
-      const lastSeen=localStorage.getItem(seenKey);
-      if(lastSeen!==data.nextTest){
-        document.getElementById('test-popup-title').textContent=data.nextTest;
-        document.getElementById('test-popup').classList.add('show');
-        document.getElementById('test-popup-ok').onclick=()=>{ localStorage.setItem(seenKey,data.nextTest); document.getElementById('test-popup').classList.remove('show'); };
-        document.getElementById('test-popup-close').onclick=()=>{ localStorage.setItem(seenKey,data.nextTest); document.getElementById('test-popup').classList.remove('show'); };
-      }
+      // Dashboard test reminder returns on every dashboard load/refresh/app reopen.
+      document.getElementById('test-popup-title').textContent=data.nextTest;
+      document.getElementById('test-popup').classList.add('show');
+      document.getElementById('test-popup-ok').onclick=()=>{ document.getElementById('test-popup').classList.remove('show'); };
+      document.getElementById('test-popup-close').onclick=()=>{ document.getElementById('test-popup').classList.remove('show'); };
     }
     const log=Array.isArray(data.attendance?.log)?data.attendance.log:[];
     const todayForMonth=new Date();
