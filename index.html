@@ -1880,8 +1880,11 @@
 
   const fbApp = initializeApp(firebaseConfig);
   const auth = getAuth(fbApp);
-  // Keep student login persistent across refreshes, browser restarts and app/PWA reopen.
-  await setPersistence(auth, browserLocalPersistence);
+  // Keep student login persistent when the browser/app permits Firebase local storage.
+  // Never let a persistence-storage error stop the rest of the login UI from loading.
+  const persistenceReady = setPersistence(auth, browserLocalPersistence).catch(err => {
+    console.warn('Firebase local persistence could not be enabled:', err);
+  });
   const db = getFirestore(fbApp);
 
   const loginModal = document.getElementById('login-modal');
@@ -2133,7 +2136,7 @@
     if(e.target === loginModal){ loginModal.classList.remove('show'); }
   });
 
-  document.getElementById('login-submit-btn').addEventListener('click', () => {
+  document.getElementById('login-submit-btn').addEventListener('click', async () => {
     const email = document.getElementById('login-email-input').value.trim();
     const password = document.getElementById('login-password-input').value;
     if(!email || !password){
@@ -2143,6 +2146,7 @@
 
     const btn = document.getElementById('login-submit-btn');
     btn.disabled = true; btn.textContent = "Logging in...";
+    await persistenceReady;
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
         loginModal.classList.remove('show');
