@@ -1861,7 +1861,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -1878,6 +1878,14 @@
   const fbApp = initializeApp(firebaseConfig);
   const auth = getAuth(fbApp);
   const db = getFirestore(fbApp);
+
+  // Keep student/admin authentication persistent on desktop browsers.
+  // This prevents an accidental logout when the page is refreshed or the browser is reopened.
+  // Firebase still controls the actual credential/session lifetime and signOut() remains explicit.
+  let authPersistenceReady = setPersistence(auth, browserLocalPersistence).catch(err => {
+    console.warn('Auth persistence setup failed:', err);
+    return null;
+  });
 
   const loginModal = document.getElementById('login-modal');
   const studentDashboard = document.getElementById('student-dashboard');
@@ -2140,6 +2148,7 @@
   });
 
   async function submitStudentLogin(){
+    await authPersistenceReady;
     const email = document.getElementById('login-email-input').value.trim().toLowerCase();
     const password = document.getElementById('login-password-input').value;
     if(!email || !password){
