@@ -1882,8 +1882,11 @@
   const auth = getAuth(fbApp);
   // Keep student login persistent when the browser/app permits Firebase local storage.
   // Never let a persistence-storage error stop the rest of the login UI from loading.
+  // Firebase already uses LOCAL persistence by default in normal web contexts.
+  // Try to enforce it, but NEVER block the login action on this optional setup.
   const persistenceReady = setPersistence(auth, browserLocalPersistence).catch(err => {
     console.warn('Firebase local persistence could not be enabled:', err);
+    return null;
   });
   const db = getFirestore(fbApp);
 
@@ -2146,7 +2149,9 @@
 
     const btn = document.getElementById('login-submit-btn');
     btn.disabled = true; btn.textContent = "Logging in...";
-    await persistenceReady;
+    // Do not wait for persistence setup here: a storage/iframe restriction must
+    // never make the Student Login button appear stuck. Firebase Auth can proceed
+    // with its normal persistence behaviour.
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
         loginModal.classList.remove('show');
@@ -2237,6 +2242,16 @@
   // Dashboard popups are shown once per app/browser visit. sessionStorage survives
   // refreshes in the same tab/window, but is cleared when that browsing session ends.
   // This keeps popups away on refresh while bringing them back after closing/reopening.
+  // Dashboard popups: once per visit, not on a normal refresh.
+  // A fresh navigation/app reopen starts a new visit; a reload keeps the current
+  // visit's seen-state. This avoids relying on browser-close semantics alone.
+  const dashboardNavEntry = performance.getEntriesByType('navigation')[0];
+  const dashboardIsReload = dashboardNavEntry?.type === 'reload';
+  if(!dashboardIsReload){
+    Object.keys(sessionStorage).forEach(k => {
+      if(k.startsWith('mp_dashboard_popup_seen_')) sessionStorage.removeItem(k);
+    });
+  }
   function dashboardPopupSeen(key){
     return sessionStorage.getItem('mp_dashboard_popup_seen_' + key) === '1';
   }
