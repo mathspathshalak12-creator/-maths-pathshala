@@ -544,14 +544,11 @@
   /* NOTICES BANNER */
   .dash-notices{position:relative;z-index:1;margin-bottom:16px;}
   .notice-banner{
-    background:linear-gradient(135deg,rgba(18,42,82,0.96),rgba(11,30,61,0.98));
-    border:1px solid rgba(91,155,255,0.42);
-    border-radius:12px;padding:14px 18px;margin-bottom:8px;
-    box-shadow:0 8px 24px rgba(4,12,27,0.18),inset 0 1px 0 rgba(255,255,255,0.07);
-    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    background:rgba(245,166,35,0.14);border:1px solid rgba(245,166,35,0.4);
+    border-radius:12px;padding:14px 18px;margin-bottom:8px;backdrop-filter:blur(6px);
   }
-  .notice-banner-title{font-size:13.5px;font-weight:700;color:#FFD166;}
-  .notice-banner-msg{font-size:13px;color:#F5F7FB;margin-top:3px;line-height:1.55;}
+  .notice-banner-title{font-size:13.5px;font-weight:700;color:var(--amber);}
+  .notice-banner-msg{font-size:13px;color:#E4E0D6;margin-top:3px;}
   .hw-banner{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);border-radius:12px;padding:14px 18px;margin-bottom:8px;backdrop-filter:blur(6px);}
   .hw-banner-title{font-size:13.5px;font-weight:700;color:#fff;}
   .hw-banner-msg{font-size:13px;color:#B9C2D6;margin-top:3px;}
@@ -1864,7 +1861,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -1880,11 +1877,6 @@
 
   const fbApp = initializeApp(firebaseConfig);
   const auth = getAuth(fbApp);
-  // Keep student login persistent when the browser/app permits Firebase local storage.
-  // Never let a persistence-storage error stop the rest of the login UI from loading.
-  const persistenceReady = setPersistence(auth, browserLocalPersistence).catch(err => {
-    console.warn('Firebase local persistence could not be enabled:', err);
-  });
   const db = getFirestore(fbApp);
 
   const loginModal = document.getElementById('login-modal');
@@ -1905,12 +1897,19 @@
     return String(value ?? '').replace(/[&<>\"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[ch]));
   }
 
-  function popupSessionKey(launch){
-    const sig = [launch?.class||'', launch?.name||'', launch?.launchTitle||'', launch?.launchPrice||launch?.baseFee||''].join('|');
-    return 'mp_popup_seen_launch_' + encodeURIComponent(sig);
+  // Popup policy:
+  // - A popup appears at most once per app/page session.
+  // - Dashboard refreshes must NOT reopen the same popup.
+  // - A fresh APK/WebView session may show it again.
+  function popupSessionKey(type, signature){
+    return 'mp_popup_seen_' + type + '_' + encodeURIComponent(String(signature || ''));
   }
-  function popupAlreadyShown(launch){ return sessionStorage.getItem(popupSessionKey(launch)) === '1'; }
-  function markPopupShown(launch){ sessionStorage.setItem(popupSessionKey(launch),'1'); }
+  function popupAlreadyShown(type, signature){
+    return sessionStorage.getItem(popupSessionKey(type, signature)) === '1';
+  }
+  function markPopupShown(type, signature){
+    sessionStorage.setItem(popupSessionKey(type, signature), '1');
+  }
 
   async function loadSeatsDisplay(){
     const popup=document.getElementById('seats-popup');
@@ -1919,7 +1918,8 @@
       const snap=await getDoc(doc(db,'stats','public'));
       const batchStats=snap.exists()?(snap.data().batchStats||[]):[];
       const launch=batchStats.find(b=>b.launchActive);
-      if(!launch || popupAlreadyShown(launch)) return;
+      const launchSignature=[launch?.class||'',launch?.name||'',launch?.launchTitle||'',launch?.launchPrice||launch?.baseFee||''].join('|');
+      if(!launch || popupAlreadyShown('launch', launchSignature)) return;
       document.getElementById('popup-batch-class').textContent=`CLASS ${launch.class||''} · ${launch.name||''}`;
       document.getElementById('popup-batch-title').textContent=launch.launchTitle||`${launch.name||'New Batch'} — Admissions Open`;
       document.getElementById('popup-batch-subtitle').textContent=launch.launchSubtitle||launch.intro||'A focused Maths batch for serious students.';
@@ -1931,8 +1931,11 @@
       }else{ priceEl.textContent='Special launch admission'; offerEl.textContent='Limited launch offer · Contact us for details'; }
       const launchWa=`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(`Hi, I want details for the ${launch.name||'new batch'} batch (Class ${launch.class||''}).`)}`;
       document.getElementById('popup-wa').href=launchWa;
-      setTimeout(()=>{popup.classList.add('show');}, 1400);
-        markPopupShown(launch);
+      setTimeout(()=>{
+        // Mark BEFORE opening so a refresh/second auth callback cannot reopen it.
+        markPopupShown('launch', launchSignature);
+        popup.classList.add('show');
+      }, 1400);
     }catch(err){ console.warn('Site popup load failed:',err); }
   }
   function extractYouTubeId(value){
@@ -2136,8 +2139,8 @@
     if(e.target === loginModal){ loginModal.classList.remove('show'); }
   });
 
-  document.getElementById('login-submit-btn').addEventListener('click', async () => {
-    const email = document.getElementById('login-email-input').value.trim();
+  async function submitStudentLogin(){
+    const email = document.getElementById('login-email-input').value.trim().toLowerCase();
     const password = document.getElementById('login-password-input').value;
     if(!email || !password){
       showLoginMsg('Please enter both email and password', 'error');
@@ -2146,31 +2149,29 @@
 
     const btn = document.getElementById('login-submit-btn');
     btn.disabled = true; btn.textContent = "Logging in...";
-    // Do not block sign-in indefinitely on browser storage/persistence setup.
-    // Firebase Auth can complete the sign-in immediately; persistence is configured
-    // in the background and will be used for future auth state.
-    await Promise.race([
-      persistenceReady,
-      new Promise(resolve => setTimeout(resolve, 1500))
-    ]);
-    try {
+    try{
       await signInWithEmailAndPassword(auth, email, password);
       loginModal.classList.remove('show');
       showLoginMsg('', '');
-    } catch (err) {
-      console.error('Student login failed:', err);
-      const code = err?.code || '';
-      const message = code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found'
-        ? 'Login failed: email or password is incorrect.'
-        : code === 'auth/too-many-requests'
-          ? 'Too many attempts. Please wait a little and try again.'
-          : code === 'auth/network-request-failed'
-            ? 'Network error. Please check your internet connection and try again.'
-            : 'Login failed. Please try again.';
+    }catch(err){
+      console.error('Student login error:', err);
+      const code = String(err?.code || '');
+      const message =
+        code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found'
+          ? 'Login failed — please check your email and password.'
+          : code === 'auth/too-many-requests'
+            ? 'Too many attempts. Please wait a little and try again.'
+            : code === 'auth/network-request-failed'
+              ? 'Network error. Please check your internet connection and try again.'
+              : 'Login failed — ' + (err?.message || 'please try again.');
       showLoginMsg(message, 'error');
-    } finally {
+    }finally{
       btn.disabled = false; btn.textContent = "Login";
     }
+  }
+  document.getElementById('login-submit-btn').addEventListener('click', submitStudentLogin);
+  document.getElementById('login-password-input').addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') submitStudentLogin();
   });
 
   document.getElementById('forgot-pw-link').addEventListener('click', () => {
@@ -2197,9 +2198,14 @@
       // Keep the complete public website visible below the student dashboard.
       mainSite.style.display = 'block';
       studentDashboard.style.display = 'block';
-      await loadStudentDashboard(user.email);
-      await loadNotices();
-      await loadHomework();
+      try{
+        await loadStudentDashboard(user.email);
+        await loadNotices();
+        await loadHomework();
+      }catch(err){
+        console.error('Student dashboard load error:', err);
+        showLoginMsg('Login successful, but the dashboard could not load completely. Please tap Refresh.', 'error');
+      }
       studentLoginBtn.textContent = 'Logout';
       mobileLoginBtn.textContent = 'Logout';
       window.scrollTo({top: 0, behavior: 'instant'});
@@ -2207,9 +2213,17 @@
       // Keep the dashboard in sync with admin mark entries. Firebase data can change
       // while the student page is already open, so refresh the student document automatically.
       if(dashboardAutoRefreshTimer) clearInterval(dashboardAutoRefreshTimer);
+      let dashboardRefreshBusy = false;
       dashboardAutoRefreshTimer = setInterval(async () => {
-        if(auth.currentUser && document.visibilityState !== 'hidden'){
-          await loadStudentDashboard(auth.currentUser.email);
+        if(auth.currentUser && document.visibilityState !== 'hidden' && !dashboardRefreshBusy){
+          dashboardRefreshBusy = true;
+          try{
+            await loadStudentDashboard(auth.currentUser.email);
+          }catch(err){
+            console.warn('Dashboard auto-refresh failed:', err);
+          }finally{
+            dashboardRefreshBusy = false;
+          }
         }
       }, 10000);
 
@@ -2250,18 +2264,9 @@
     return String(data.targetBatch) === String(currentStudentBatchName);
   }
 
-  // Dashboard popups are shown once per app/browser visit. sessionStorage survives
-  // refreshes in the same tab/window, but is cleared when that browsing session ends.
-  // This keeps popups away on refresh while bringing them back after closing/reopening.
-  function dashboardPopupSeen(key){
-    return sessionStorage.getItem('mp_dashboard_popup_seen_' + key) === '1';
-  }
-  function markDashboardPopupSeen(key){
-    sessionStorage.setItem('mp_dashboard_popup_seen_' + key, '1');
-  }
-
   function closeNoticePopup(markSeen=true){
     const popup=document.getElementById('notice-popup');
+    // Popup visibility is session-based; closing it must not affect the next fresh app session.
     popup.classList.remove('show');
     popup.setAttribute('aria-hidden','true');
   }
@@ -2299,19 +2304,19 @@
         banner.appendChild(title); banner.appendChild(msg); box.appendChild(banner);
       });
 
-      // Dashboard notice popup: once per app/browser visit, not on refresh.
-      // sessionStorage is intentionally used so a fresh reopen can show it again.
+      // Popup is ONLY evaluated after Firebase authentication succeeds, so logged-out visitors never see it.
       if(latestForStudent && auth.currentUser){
-        const noticeKey = 'notice_' + latestForStudent.id;
-        if(!dashboardPopupSeen(noticeKey)){
+        const signature = auth.currentUser.email.toLowerCase() + '|' + latestForStudent.id;
+        if(!popupAlreadyShown('notice', signature)){
           const data = latestForStudent.data;
           const popup = document.getElementById('notice-popup');
           document.getElementById('notice-popup-title').textContent = data.title || 'New Notice';
           document.getElementById('notice-popup-message').textContent = data.message || '';
           popup.dataset.noticeId = latestForStudent.id;
+          // Mark before showing so refresh/re-render cannot reopen the same popup.
+          markPopupShown('notice', signature);
           popup.classList.add('show');
           popup.setAttribute('aria-hidden','false');
-          markDashboardPopupSeen(noticeKey);
         }
       }
     } catch(err){
@@ -2355,20 +2360,21 @@
       });
 
       if(latestDoc && auth.currentUser){
-        const data = latestDoc.data();
-        // Dashboard homework popup: once per app/browser visit, not on refresh.
-        const homeworkKey = 'homework_' + latestDoc.id;
-        if(dashboardPopupSeen(homeworkKey)) return;
-        document.getElementById('hw-popup-title').textContent = data.title;
-        document.getElementById('hw-popup-details').textContent = data.details;
-        document.getElementById('hw-popup').classList.add('show');
-        markDashboardPopupSeen(homeworkKey);
-        document.getElementById('hw-popup-ok').onclick = () => {
-          document.getElementById('hw-popup').classList.remove('show');
-        };
-        document.getElementById('hw-popup-close').onclick = () => {
-          document.getElementById('hw-popup').classList.remove('show');
-        };
+        const signature = auth.currentUser.email.toLowerCase() + '|' + latestDoc.id;
+        if(!popupAlreadyShown('homework', signature)){
+          const data = latestDoc.data();
+          document.getElementById('hw-popup-title').textContent = data.title;
+          document.getElementById('hw-popup-details').textContent = data.details;
+          // Mark before showing so dashboard refresh cannot reopen it.
+          markPopupShown('homework', signature);
+          document.getElementById('hw-popup').classList.add('show');
+          document.getElementById('hw-popup-ok').onclick = () => {
+            document.getElementById('hw-popup').classList.remove('show');
+          };
+          document.getElementById('hw-popup-close').onclick = () => {
+            document.getElementById('hw-popup').classList.remove('show');
+          };
+        }
       }
     } catch(err){
       box.innerHTML = '';
@@ -2541,13 +2547,12 @@
     const monthlyFeeList=document.getElementById('dash-monthly-fee-list'); monthlyFeeList.innerHTML=''; const mf=Array.isArray(data.monthlyFees)?data.monthlyFees.slice().sort((a,b)=>(b.monthKey||'').localeCompare(a.monthKey||'')):[]; monthlyFeeList.innerHTML=mf.length?mf.slice(0,6).map(m=>`<li><span>${m.monthLabel||monthLabel(m.monthKey)}</span><span class="${m.status==='Paid'?'att-present':'att-absent'}">${m.status}</span></li>`).join(''):'<li style="color:#B9C2D6">No monthly records yet</li>';
     document.getElementById('dash-batch-value').textContent=data.batchTiming||'Not assigned yet'; document.getElementById('dash-next-test').textContent=data.nextTest||'None scheduled';
     if(data.nextTest && auth.currentUser){
-      // Dashboard test reminder: once per app/browser visit, not on refresh.
-      const testKey = 'test_' + String(data.nextTest);
-      if(!dashboardPopupSeen(testKey)){
+      const signature=auth.currentUser.email.toLowerCase()+'|'+data.nextTest;
+      if(!popupAlreadyShown('test', signature)){
         document.getElementById('test-popup-title').textContent=data.nextTest;
+        // Mark before showing so the 10-second dashboard auto-refresh never reopens it.
+        markPopupShown('test', signature);
         document.getElementById('test-popup').classList.add('show');
-        markDashboardPopupSeen(testKey);
-      }
         document.getElementById('test-popup-ok').onclick=()=>{ document.getElementById('test-popup').classList.remove('show'); };
         document.getElementById('test-popup-close').onclick=()=>{ document.getElementById('test-popup').classList.remove('show'); };
       }
