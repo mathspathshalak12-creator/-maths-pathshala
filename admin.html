@@ -706,7 +706,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, writeBatch, addDoc, deleteDoc, query, orderBy, serverTimestamp, where, documentId } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
   import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
@@ -722,11 +722,6 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  // Keep admin login persistent when the browser/app permits Firebase local storage.
-  // Never let a persistence-storage error stop the admin login UI from loading.
-  const persistenceReady = setPersistence(auth, browserLocalPersistence).catch(err => {
-    console.warn('Firebase local persistence could not be enabled for admin:', err);
-  });
   const db = getFirestore(app);
   const storage = getStorage(app);
 
@@ -777,14 +772,36 @@
     }
   }
 
-  document.getElementById('admin-login-btn').addEventListener('click', () => {
-    const email = document.getElementById('admin-email').value.trim();
+  async function submitAdminLogin(){
+    const email = document.getElementById('admin-email').value.trim().toLowerCase();
     const password = document.getElementById('admin-password').value;
-    signInWithEmailAndPassword(auth, email, password)
-      .catch(() => {
-        loginMsg.textContent = 'Login failed — check email and password.';
-        loginMsg.className = 'msg error';
-      });
+    if(!email || !password){
+      loginMsg.textContent = 'Please enter both email and password.';
+      loginMsg.className = 'msg error';
+      return;
+    }
+    const btn = document.getElementById('admin-login-btn');
+    btn.disabled = true;
+    btn.textContent = 'Logging in...';
+    try{
+      await signInWithEmailAndPassword(auth, email, password);
+      loginMsg.textContent = '';
+      loginMsg.className = 'msg';
+    }catch(err){
+      console.error('Admin login error:', err);
+      loginMsg.textContent =
+        err?.code === 'auth/network-request-failed'
+          ? 'Network error — check your internet connection and try again.'
+          : 'Login failed — check the admin email and password.';
+      loginMsg.className = 'msg error';
+    }finally{
+      btn.disabled = false;
+      btn.textContent = 'Login';
+    }
+  }
+  document.getElementById('admin-login-btn').addEventListener('click', submitAdminLogin);
+  document.getElementById('admin-password').addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') submitAdminLogin();
   });
 
   document.getElementById('admin-logout').addEventListener('click', () => {
@@ -1920,7 +1937,15 @@
       // whether any students exist in the database.
       await updatePublicStats();
     } catch(err){
-      list.innerHTML = '<div style="font-size:13px;color:#C0392B;">Error loading batches: ' + err.message + '</div>';
+      console.error('Batch load error:', err);
+      batchesCache = [];
+      updateBatchDropdown();
+      updateBroadcastBatchDropdown();
+      list.innerHTML = '<div style="font-size:13px;color:#C0392B;">Unable to load batches. ' +
+        (err?.code === 'permission-denied'
+          ? 'Firebase rules are blocking admin access. Please verify the admin account/rules.'
+          : (err?.message || 'Please try again.')) +
+        '</div>';
     }
   }
 
