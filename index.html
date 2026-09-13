@@ -2432,9 +2432,13 @@
   }
   function normalizeStudentAttendanceLog(log){
     const byDate = new Map();
+    // Attendance logs are stored newest-first by the admin. Keep the first valid
+    // record for a date so the dashboard agrees with the admin's normalized view.
     (Array.isArray(log) ? log : []).forEach(e => {
       const d = attendanceDateKey(e?.date);
-      if(d && (e?.status === 'Present' || e?.status === 'Absent')) byDate.set(d, {date:d, status:e.status});
+      if(d && (e?.status === 'Present' || e?.status === 'Absent') && !byDate.has(d)){
+        byDate.set(d, {date:d, status:e.status});
+      }
     });
     return [...byDate.values()].sort((a,b)=>b.date.localeCompare(a.date));
   }
@@ -2638,7 +2642,13 @@
     document.getElementById('dash-rank-big').textContent=rank;
     document.getElementById('dash-rank-detail').textContent=recent.name?`Latest test: ${recent.name} · ${recent.rank} of ${recent.size}`:'Rank will appear after a test is recorded.';
     const scores=normalizeStudentTestScores(data.testScores);
-    const latestScore=scores.slice().sort((a,b)=>(parsePortalDate(b.date)?.getTime()||0)-(parsePortalDate(a.date)?.getTime()||0))[0];
+    // Keep the dashboard's Latest Score aligned with the exact test used for rank.
+    // The rank record is authoritative when it contains test name + date.
+    const recentDateKey=attendanceDateKey(recent.date);
+    const recentName=String(recent.name||'').trim().toLowerCase();
+    const latestScore=(recentDateKey && recentName)
+      ? (scores.find(s=>attendanceDateKey(s.date)===recentDateKey && String(s.name||'').trim().toLowerCase()===recentName) || null)
+      : (scores.slice().sort((a,b)=>(parsePortalDate(b.date)?.getTime()||0)-(parsePortalDate(a.date)?.getTime()||0) || String(b.name||'').localeCompare(String(a.name||'')))[0] || null);
     if(document.getElementById('dash-kpi-latest-score')) document.getElementById('dash-kpi-latest-score').textContent=latestScore?scorePct(latestScore)+'%':'—';
     if(document.getElementById('dash-rank-big-secondary')) document.getElementById('dash-rank-big-secondary').textContent=rank;
     if(document.getElementById('dash-latest-test-name')) document.getElementById('dash-latest-test-name').textContent=recent.name||'—';
