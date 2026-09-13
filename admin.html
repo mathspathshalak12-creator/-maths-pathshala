@@ -845,6 +845,14 @@
     for(let start=0;start<ops.length;start+=chunkSize){const wb=writeBatch(db);ops.slice(start,start+chunkSize).forEach(op=>op(wb));await wb.commit();}
   }
 
+  function withTimeout(promise, ms, code, message){
+    let timer;
+    const timeout = new Promise((_, reject) => {
+      timer = setTimeout(() => reject(Object.assign(new Error(message), { code })), ms);
+    });
+    return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+  }
+
   async function submitAdminLogin(){
     await authPersistenceReady;
     const email = document.getElementById('admin-email').value.trim().toLowerCase();
@@ -1105,9 +1113,15 @@
   async function loadStudentList(){
     const list = document.getElementById('student-list');
     list.innerHTML = '<li class="loading-row"><span class="spinner"></span>Loading...</li>';
-    const snap = await getDocs(collection(db, "students"));
+    try {
+      const snap = await withTimeout(
+        getDocs(collection(db, "students")),
+        10000,
+        'student-read-timeout',
+        'Firestore student request timed out after 10 seconds.'
+      );
 
-    let total = 0, paid = 0, due = 0, markedToday = 0, presentToday = 0, absentToday = 0, lowAttendance = 0;
+      let total = 0, paid = 0, due = 0, markedToday = 0, presentToday = 0, absentToday = 0, lowAttendance = 0;
     const todayStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
     allStudentsCache = [];
@@ -1142,12 +1156,23 @@
     if(document.getElementById('stat-absent-today')) document.getElementById('stat-absent-today').textContent = absentToday;
     if(document.getElementById('stat-low-attendance')) document.getElementById('stat-low-attendance').textContent = lowAttendance;
 
-    updateFinanceOverview();
-    updateBatchPerformance();
-    renderStudentList();
-    manualCommStudents();
-    // Public seat counters are useful, but must never delay the admin screen.
-    updatePublicStats().catch(syncErr => console.warn('Public stats sync failed:', syncErr));
+      updateFinanceOverview();
+      updateBatchPerformance();
+      renderStudentList();
+      manualCommStudents();
+      // Public seat counters are useful, but must never delay the admin screen.
+      updatePublicStats().catch(syncErr => console.warn('Public stats sync failed:', syncErr));
+    } catch(err) {
+      console.error('Student list load error:', err);
+      const code = String(err?.code || 'unknown');
+      const detail = code === 'permission-denied'
+        ? 'Firestore rules are denying admin access to /students. Publish the latest Firestore Rules and confirm the admin account.'
+        : code === 'student-read-timeout'
+          ? 'Firestore did not respond within 10 seconds. Check the network/Firebase status and retry.'
+          : (err?.message || 'Please try again.');
+      list.innerHTML = '<li style="padding:14px 0;color:#C0392B;"><strong>Unable to load students.</strong><br>' + escapeHtml(detail) + '<br><span style="font-size:11px;color:var(--muted);">Error code: ' + escapeHtml(code) + '</span><br><button type="button" id="retry-students-btn" class="btn btn-secondary btn-small" style="margin-top:10px;">Retry</button></li>';
+      document.getElementById('retry-students-btn')?.addEventListener('click', loadStudentList);
+    }
   }
 
   function updateFinanceOverview(){
@@ -1257,7 +1282,7 @@
     }
 
     const perfData = batchesCache.map(b => {
-      const students = allStudentsCache.filter(s => s.data.class === b.class && s.data.batchName === b.name);
+      const students = allStudentsCache.filter(s => normalizeClassValue(s.data.class) === normalizeClassValue(b.class) && normalizeBatchName(s.data.batchName) === normalizeBatchName(b.name));
       let avgAttendance = 0;
       let avgScore = 0;
 
@@ -1327,7 +1352,7 @@
   async function updatePublicStats(){
     if(publicStatsSyncPromise) return publicStatsSyncPromise;
     publicStatsSyncPromise=(async()=>{
-      const batchStats=batchesCache.map(b=>({id:b.id||'',class:b.class,name:String(b.name||'').trim(),intro:b.intro||'Focused offline coaching with regular practice, testing and doubt support.',details:Array.isArray(b.details)?b.details:[],timing:b.timing||'',photoUrl:b.photoUrl||'',capacity:Number(b.capacity)>0?Number(b.capacity):7,filled:allStudentsCache.filter(s=>s.data.class===b.class&&s.data.batchName===b.name&&(s.data.studentStatus||'Active')==='Active').length,baseFee:Number(b.baseFee)||0,offerPercent:Number(b.offerPercent)||0,launchPrice:Number(b.launchPrice)||0,launchTitle:b.launchTitle||`${b.name} — Admissions Open`,launchSubtitle:b.launchSubtitle||'A focused Maths batch for serious students.',launchActive:!!b.launchActive}));
+      const batchStats=batchesCache.map(b=>({id:b.id||'',class:b.class,name:String(b.name||'').trim(),intro:b.intro||'Focused offline coaching with regular practice, testing and doubt support.',details:Array.isArray(b.details)?b.details:[],timing:b.timing||'',photoUrl:b.photoUrl||'',capacity:Number(b.capacity)>0?Number(b.capacity):7,filled:allStudentsCache.filter(s=>normalizeClassValue(s.data.class)===normalizeClassValue(b.class)&&normalizeBatchName(s.data.batchName)===normalizeBatchName(b.name)&&(s.data.studentStatus||'Active')==='Active').length,baseFee:Number(b.baseFee)||0,offerPercent:Number(b.offerPercent)||0,launchPrice:Number(b.launchPrice)||0,launchTitle:b.launchTitle||`${b.name} — Admissions Open`,launchSubtitle:b.launchSubtitle||'A focused Maths batch for serious students.',launchActive:!!b.launchActive}));
       await setDoc(doc(db,'stats','public'),{batchStats,updatedAt:serverTimestamp()},{merge:true});
       return batchStats;
     })().catch(err=>{console.error('Public batch sync failed:',err);throw err;}).finally(()=>{publicStatsSyncPromise=null;});
@@ -1576,7 +1601,7 @@
     try{
       const snap=await getDocs(collection(db,'students'));
       const students=[];
-      snap.forEach(d=>{const data={...d.data(),testScores:normalizeTestScores(d.data().testScores||[])};if(data.class===classVal&&data.batchName===batchName&&(data.studentStatus||'Active')==='Active')students.push({id:canonicalStudentId(d.id),data});});
+      snap.forEach(d=>{const data={...d.data(),testScores:normalizeTestScores(d.data().testScores||[])};if(normalizeClassValue(data.class)===normalizeClassValue(classVal)&&normalizeBatchName(data.batchName)===normalizeBatchName(batchName)&&(data.studentStatus||'Active')==='Active')students.push({id:canonicalStudentId(d.id),data});});
       let latestTs=0,latestName='';
       students.forEach(s=>(s.data.testScores||[]).forEach(t=>{const ts=adminParseDate(t.date)?.getTime()||0;if(ts>latestTs){latestTs=ts;latestName=t.name||'Latest Test';}}));
       const latest=latestTs?students.map(s=>{const t=(s.data.testScores||[]).find(x=>(adminParseDate(x.date)?.getTime()||0)===latestTs);return t?{id:s.id,test:t,pct:adminScorePct(t)}:null;}).filter(Boolean).sort((x,y)=>y.pct-x.pct||x.id.localeCompare(y.id)):[];
@@ -2084,20 +2109,18 @@
       }
 
       updateBatchDropdown();
-      updateBroadcastBatchDropdown();
       populateTargetBatchSelect('notice-target-class', 'notice-target-batch');
       populateTargetBatchSelect('homework-target-class', 'homework-target-batch');
-      updateBroadcastBatchDropdown();
+      manualCommStudents();
 
       // Keep the public Live Batches section in sync immediately whenever the
       // batch list is loaded/created/updated/deleted. This must not depend on
       // whether any students exist in the database.
-      await updatePublicStats();
+      updatePublicStats().catch(syncErr => console.warn('Public batch sync failed:', syncErr));
     } catch(err){
       console.error('Batch load error:', err);
-      batchesCache = [];
-      updateBatchDropdown();
-      updateBroadcastBatchDropdown();
+      // Do not destroy a previously loaded cache on a transient read failure.
+      // A temporary network/rules error must not cascade into every dependent dropdown.
       const code = String(err?.code || 'unknown');
       const detail = code === 'permission-denied'
         ? 'Firestore rules are denying admin access to /batches. Publish the latest Firestore Rules and confirm you are logged in with the admin email.'
@@ -2130,17 +2153,6 @@
     }
   }
 
-  function updateBroadcastBatchDropdown(){
-    const classVal = document.getElementById('broadcast-class-input').value;
-    const batchSelect = document.getElementById('broadcast-batch-input');
-    const batchesForClass = batchesCache.filter(b => normalizeClassValue(b.class) === normalizeClassValue(classVal));
-    if(batchesForClass.length === 0){
-      batchSelect.innerHTML = '<option value="">No batches for this class yet</option>';
-    } else {
-      batchSelect.innerHTML = batchesForClass.map(b => `<option value="${escapeHtml(String(b.name||''))}">${escapeHtml(String(b.name||''))}</option>`).join('');
-    }
-  }
-
   function populateTargetBatchSelect(classSelectId, batchSelectId){
     const classVal = document.getElementById(classSelectId).value;
     const batchSelect = document.getElementById(batchSelectId);
@@ -2163,53 +2175,6 @@
     const selected = document.getElementById('f-batch-name').selectedOptions[0];
     if(selected && selected.dataset.timing) document.getElementById('f-batch').value = selected.dataset.timing;
   });
-  document.getElementById('broadcast-class-input')?.addEventListener('change', updateBroadcastBatchDropdown);
-  document.getElementById('notice-target-class').addEventListener('change', () => populateTargetBatchSelect('notice-target-class', 'notice-target-batch'));
-
-  document.getElementById('send-broadcast-btn')?.addEventListener('click', async () => {
-    const cls = document.getElementById('broadcast-class-input').value;
-    const batchName = document.getElementById('broadcast-batch-input').value;
-    const testDetails = document.getElementById('broadcast-test-input').value.trim();
-    const msgBox = document.getElementById('broadcast-msg');
-
-    if(!batchName){
-      msgBox.textContent = 'No batch selected — create a batch for this class first.';
-      msgBox.className = 'msg error';
-      return;
-    }
-    if(!testDetails){
-      msgBox.textContent = 'Please enter the test details.';
-      msgBox.className = 'msg error';
-      return;
-    }
-
-    const matching = allStudentsCache.filter(s => s.data.class === cls && s.data.batchName === batchName);
-    if(matching.length === 0){
-      msgBox.textContent = 'No students found in this class + batch yet.';
-      msgBox.className = 'msg error';
-      return;
-    }
-
-    const btn = document.getElementById('send-broadcast-btn');
-    btn.disabled = true; btn.textContent = 'Sending...';
-    try{
-      await commitBatchOps(matching.map(s => wb => {
-        wb.set(doc(db,'students',canonicalStudentId(s.id)), { nextTest: testDetails }, { merge: true });
-      }));
-      msgBox.textContent = `Sent to ${matching.length} student(s) in Class ${cls} · ${batchName}.`;
-      msgBox.className = 'msg success';
-      document.getElementById('broadcast-test-input').value = '';
-      showToast(`Test reminder sent to ${matching.length} students!`);
-      sendPushNotification(matching.map(s => s.id), "Test Reminder ⏰", testDetails);
-      loadStudentList();
-    } catch(err){
-      msgBox.textContent = 'Error: ' + err.message;
-      msgBox.className = 'msg error';
-    } finally {
-      btn.disabled = false; btn.textContent = 'Send to Batch';
-    }
-  });
-
   // Assign one common note to every student in a selected class + batch.
   // Uses the existing students collection and preserves each student's existing notes.
   document.getElementById('bulk-note-class').addEventListener('change', () => {
@@ -2236,8 +2201,8 @@
     }
 
     const matching = allStudentsCache.filter(s =>
-      String(s.data.class || '') === String(cls) &&
-      String(s.data.batchName || '').trim() === String(batchName).trim()
+      normalizeClassValue(s.data.class) === normalizeClassValue(cls) &&
+      normalizeBatchName(s.data.batchName) === normalizeBatchName(batchName)
     );
 
     if(matching.length === 0){
@@ -2362,7 +2327,7 @@
       showToast('Select a batch first.');
       return;
     }
-    bulkScoreStudents = allStudentsCache.filter(s => s.data.class === cls && s.data.batchName === batchName);
+    bulkScoreStudents = allStudentsCache.filter(s => normalizeClassValue(s.data.class) === normalizeClassValue(cls) && normalizeBatchName(s.data.batchName) === normalizeBatchName(batchName));
     if(bulkScoreStudents.length === 0){
       rowsBox.innerHTML = '<div style="font-size:13px;color:var(--muted);">No students found in this class + batch.</div>';
       document.getElementById('save-bulk-scores-bar').style.display = 'none';
@@ -2414,12 +2379,11 @@
         scoreOps.push(wb => wb.set(doc(db,'students',email),{testScores:normalizeTestScores(merged)},{merge:true}));
         savedCount++;
       });
-      await commitBatchOps(scoreOps);
       if(savedCount === 0){
         showToast('Enter at least one score before saving.');
         return;
       }
-      await batch.commit();
+      await commitBatchOps(scoreOps);
 
       // Recalculate batch rank/average/highest immediately after marks are saved.
       // This writes fresh batchStats back to every student in the same class + batch,
