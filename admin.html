@@ -47,6 +47,12 @@
   .msg.error{color:#C0392B;}
   .msg.success{color:#1E7A46;}
   .attendance-log-item{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--line);}
+  .admin-month-filter{display:flex;align-items:center;gap:10px;margin:10px 0 8px;}
+  .admin-month-filter label{margin:0;font-size:12px;font-weight:700;color:var(--navy);}
+  .admin-month-filter select{min-width:180px;}
+  .admin-month-summary{font-size:12px;color:var(--muted);margin:0 0 8px;}
+  .admin-month-empty{font-size:12px;color:var(--muted);padding:9px 0;}
+
   .notes-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:13px;border-top:1px solid var(--line);}
   .remove-btn{color:#C0392B;font-size:12px;cursor:pointer;font-weight:600;background:none;border:none;}
   .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
@@ -660,6 +666,11 @@
         </select>
       </div>
       <button class="btn btn-secondary btn-small" id="add-attendance-btn">+ Add attendance entry</button>
+      <div class="admin-month-filter">
+        <label for="attendance-month-filter">View month</label>
+        <select id="attendance-month-filter"><option value="">No monthly data</option></select>
+      </div>
+      <div id="attendance-month-summary" class="admin-month-summary"></div>
       <div id="attendance-log-preview"></div>
 
       <label>Add a note (chapter PDF)</label>
@@ -680,6 +691,11 @@
         <input type="number" id="f-test-max" placeholder="Out of, e.g. 50">
       </div>
       <button class="btn btn-secondary btn-small" id="add-score-btn">+ Add test score</button>
+      <div class="admin-month-filter">
+        <label for="test-month-filter">View month</label>
+        <select id="test-month-filter"><option value="">No monthly data</option></select>
+      </div>
+      <div id="test-month-summary" class="admin-month-summary"></div>
       <div id="scores-preview"></div>
 
       <div style="margin-top:20px;">
@@ -1399,6 +1415,7 @@
 
   function loadStudentIntoForm(email, data){
     editingStudentId = canonicalStudentId(email);
+    currentStudentFormData = data || {};
     document.getElementById('form-heading').textContent = 'Editing: ' + (data.name || email);
     document.getElementById('f-email').value = email;
     document.getElementById('f-name').value = data.name || '';
@@ -1434,6 +1451,7 @@
   document.getElementById('clear-form-btn').addEventListener('click', () => {
     document.getElementById('form-heading').textContent = 'Add / Update Student';
     editingStudentId = '';
+    currentStudentFormData = {};
     document.getElementById('f-email').value = '';
     document.getElementById('f-name').value = '';
     document.getElementById('f-fee').value = 'Due';
@@ -1644,67 +1662,117 @@
     win.document.close();win.focus();setTimeout(()=>win.print(),350);
   }
   let currentStudentBatchStats={};
+  let currentStudentFormData={};
   let teacherSignatureUrl="";
   let editingStudentId="";
   getDoc(doc(db,'siteSettings','brandingPrivate')).then(s=>{if(s.exists()) teacherSignatureUrl=s.data().teacherSignatureUrl||'';}).catch(()=>{});
 
-  function renderAttendancePreview(){
-    const box = document.getElementById('attendance-log-preview');
-    const pctDisplay = document.getElementById('f-attendance-pct-display');
+  function adminMonthKeysFromEntries(entries, dateKey='date'){
+    const keys=new Set();
+    (entries||[]).forEach(e=>{const k=adminMonthKey(e?.[dateKey]);if(k)keys.add(k);});
+    return [...keys].sort((a,b)=>b.localeCompare(a));
+  }
 
-    if(currentAttendanceLog.length === 0){
-      box.innerHTML = '<div style="font-size:12px;color:var(--muted);margin-top:8px;">No entries yet</div>';
-      pctDisplay.textContent = '— (add attendance entries to calculate)';
+  function syncMonthFilter(selectId, entries, preferred=''){
+    const select=document.getElementById(selectId);
+    if(!select) return '';
+    const keys=adminMonthKeysFromEntries(entries);
+    const current=preferred||select.value;
+    if(!keys.length){
+      select.innerHTML='<option value="">No monthly data</option>';
+      select.value='';
+      return '';
+    }
+    select.innerHTML=keys.map(k=>`<option value="${k}">${adminMonthLabel(k)}</option>`).join('');
+    select.value=keys.includes(current)?current:keys[0];
+    return select.value;
+  }
+
+  function renderAttendancePreview(preferredMonth=''){
+    const box=document.getElementById('attendance-log-preview');
+    const pctDisplay=document.getElementById('f-attendance-pct-display');
+    const summary=document.getElementById('attendance-month-summary');
+    const select=document.getElementById('attendance-month-filter');
+    const logs=(currentAttendanceLog||[]).slice();
+    if(!logs.length){
+      box.innerHTML='<div class="admin-month-empty">No attendance entries yet</div>';
+      pctDisplay.textContent='— (add attendance entries to calculate)';
+      if(select) select.innerHTML='<option value="">No monthly data</option>';
+      if(summary) summary.textContent='';
       return;
     }
-    const presentCount = currentAttendanceLog.filter(e => e.status === 'Present').length;
-    const pct = Math.round((presentCount / currentAttendanceLog.length) * 100);
-    pctDisplay.textContent = pct + '% (' + presentCount + ' present out of ' + currentAttendanceLog.length + ' recorded days)';
+    const presentCount=logs.filter(e=>e.status==='Present').length;
+    const pct=Math.round((presentCount/logs.length)*100);
+    pctDisplay.textContent=pct+'% ('+presentCount+' present out of '+logs.length+' recorded days)';
 
-    box.innerHTML = currentAttendanceLog.map((e, i) =>
-      `<div class="attendance-log-item"><span>${e.date} — ${e.status}</span><button class="remove-btn" data-idx="${i}">Remove</button></div>`
-    ).join('');
-    box.querySelectorAll('.remove-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        currentAttendanceLog.splice(parseInt(btn.dataset.idx), 1);
-        renderAttendancePreview();
+    const month=syncMonthFilter('attendance-month-filter',logs,preferredMonth);
+    const filtered=month?logs.map((e,i)=>({...e,__idx:i})).filter(e=>adminMonthKey(e.date)===month):[];
+    const present=filtered.filter(e=>e.status==='Present').length;
+    const absent=filtered.filter(e=>e.status==='Absent').length;
+    if(summary) summary.textContent=month?`${adminMonthLabel(month)} · ${present} Present · ${absent} Absent · ${filtered.length} recorded` : '';
+    box.innerHTML=filtered.length
+      ? filtered.sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).map(e=>
+        `<div class="attendance-log-item"><span>${escapeHtml(e.date)} — ${escapeHtml(e.status)}</span><button class="remove-btn" data-idx="${e.__idx}">Remove</button></div>`
+      ).join('')
+      : '<div class="admin-month-empty">No attendance recorded for this month.</div>';
+    box.querySelectorAll('.remove-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        currentAttendanceLog.splice(parseInt(btn.dataset.idx),1);
+        renderAttendancePreview(month);
+        renderAdminStudentInsights(currentStudentFormData||{});
       });
     });
   }
 
   function renderNotesPreview(){
-    const box = document.getElementById('notes-preview');
-    if(currentNotes.length === 0){
-      box.innerHTML = '<div style="font-size:12px;color:var(--muted);margin-top:8px;">No notes yet</div>';
+    const box=document.getElementById('notes-preview');
+    if(currentNotes.length===0){
+      box.innerHTML='<div style="font-size:12px;color:var(--muted);margin-top:8px;">No notes yet</div>';
       return;
     }
-    box.innerHTML = currentNotes.map((n, i) =>
-      `<div class="notes-item"><span>${n.title}</span><button class="remove-btn" data-idx="${i}">Remove</button></div>`
+    box.innerHTML=currentNotes.map((n,i)=>
+      `<div class="notes-item"><span>${escapeHtml(n.title||'')}</span><button class="remove-btn" data-idx="${i}">Remove</button></div>`
     ).join('');
-    box.querySelectorAll('.remove-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        currentNotes.splice(parseInt(btn.dataset.idx), 1);
+    box.querySelectorAll('.remove-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        currentNotes.splice(parseInt(btn.dataset.idx),1);
         renderNotesPreview();
       });
     });
   }
 
-  function renderScoresPreview(){
-    const box = document.getElementById('scores-preview');
-    if(currentTestScores.length === 0){
-      box.innerHTML = '<div style="font-size:12px;color:var(--muted);margin-top:8px;">No test scores yet</div>';
+  function renderScoresPreview(preferredMonth=''){
+    const box=document.getElementById('scores-preview');
+    const summary=document.getElementById('test-month-summary');
+    const scores=(currentTestScores||[]).slice();
+    if(!scores.length){
+      box.innerHTML='<div class="admin-month-empty">No test scores yet</div>';
+      const select=document.getElementById('test-month-filter');
+      if(select) select.innerHTML='<option value="">No monthly data</option>';
+      if(summary) summary.textContent='';
       return;
     }
-    box.innerHTML = currentTestScores.map((s, i) =>
-      `<div class="score-item"><span>${s.date} — ${s.name}: ${s.score}/${s.max}</span><button class="remove-btn" data-idx="${i}">Remove</button></div>`
-    ).join('');
-    box.querySelectorAll('.remove-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        currentTestScores.splice(parseInt(btn.dataset.idx), 1);
-        renderScoresPreview();
+    const month=syncMonthFilter('test-month-filter',scores,preferredMonth);
+    const filtered=scores.map((e,i)=>({...e,__idx:i})).filter(e=>adminMonthKey(e.date)===month);
+    const avg=filtered.length?Math.round(filtered.reduce((a,e)=>a+adminScorePct(e),0)/filtered.length):0;
+    const best=filtered.length?Math.max(...filtered.map(adminScorePct)):0;
+    if(summary) summary.textContent=month?`${adminMonthLabel(month)} · ${filtered.length} test(s) · Average ${avg}% · Best ${best}%` : '';
+    box.innerHTML=filtered.length
+      ? filtered.sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).map(e=>
+        `<div class="score-item"><span>${escapeHtml(e.date)} — ${escapeHtml(e.name||'Test')}: ${escapeHtml(e.score)}/${escapeHtml(e.max)}</span><button class="remove-btn" data-idx="${e.__idx}">Remove</button></div>`
+      ).join('')
+      : '<div class="admin-month-empty">No test scores recorded for this month.</div>';
+    box.querySelectorAll('.remove-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        currentTestScores.splice(parseInt(btn.dataset.idx),1);
+        renderScoresPreview(month);
+        renderAdminStudentInsights(currentStudentFormData||{});
       });
     });
   }
+
+  document.getElementById('attendance-month-filter')?.addEventListener('change',()=>renderAttendancePreview());
+  document.getElementById('test-month-filter')?.addEventListener('change',()=>renderScoresPreview());
 
   document.getElementById('add-score-btn').addEventListener('click', () => {
     const name = document.getElementById('f-test-name').value.trim();
@@ -1960,7 +2028,7 @@
         const classes = ['9','10','11','12'];
         let html = '';
         classes.forEach(cls => {
-          const batchesForClass = batchesCache.filter(b => b.class === cls);
+          const batchesForClass = batchesCache.filter(b => String(b.class ?? '') === String(cls));
           if(batchesForClass.length === 0) return;
           html += `<div class="batch-class-group">Class ${cls}</div>`;
           batchesForClass.forEach(b => {
@@ -2012,9 +2080,10 @@
       updateBroadcastBatchDropdown();
       list.innerHTML = '<div style="font-size:13px;color:#C0392B;">Unable to load batches. ' +
         (err?.code === 'permission-denied'
-          ? 'Firebase rules are blocking admin access. Please verify the admin account/rules.'
+          ? 'Firebase rules are blocking admin access. Confirm the /batches rule is published with the latest Firestore Rules.'
           : (err?.message || 'Please try again.')) +
-        '</div>';
+        ' <button type="button" id="retry-batches-btn" class="btn btn-secondary btn-small" style="margin-top:8px;">Retry</button></div>';
+      document.getElementById('retry-batches-btn')?.addEventListener('click', loadBatches);
     }
   }
 
@@ -2022,7 +2091,7 @@
     const classVal = document.getElementById('f-class').value;
     const batchSelect = document.getElementById('f-batch-name');
     const serviceMode = document.getElementById('f-service-mode').value;
-    const batchesForClass = batchesCache.filter(b => b.class === classVal);
+    const batchesForClass = batchesCache.filter(b => String(b.class ?? '') === String(classVal ?? ''));
     if(batchesForClass.length === 0){
       batchSelect.innerHTML = '<option value="">No batch / home tuition</option>';
     } else {
@@ -2041,7 +2110,7 @@
   function updateBroadcastBatchDropdown(){
     const classVal = document.getElementById('broadcast-class-input').value;
     const batchSelect = document.getElementById('broadcast-batch-input');
-    const batchesForClass = batchesCache.filter(b => b.class === classVal);
+    const batchesForClass = batchesCache.filter(b => String(b.class ?? '') === String(classVal ?? ''));
     if(batchesForClass.length === 0){
       batchSelect.innerHTML = '<option value="">No batches for this class yet</option>';
     } else {
@@ -2056,7 +2125,7 @@
       batchSelect.innerHTML = '<option value="">All batches</option>';
       return;
     }
-    const batchesForClass = batchesCache.filter(b => b.class === classVal);
+    const batchesForClass = batchesCache.filter(b => String(b.class ?? '') === String(classVal ?? ''));
     if(batchesForClass.length === 0){
       batchSelect.innerHTML = '<option value="">No batches for this class yet</option>';
     } else {
