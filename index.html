@@ -2421,6 +2421,29 @@
     if(!key) return 'Unknown';
     const [y,m]=key.split('-').map(Number); return new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
   }
+  function normalizeStudentAttendanceLog(log){
+    const byDate = new Map();
+    (Array.isArray(log) ? log : []).forEach(e => {
+      const d = attendanceDateKey(e?.date);
+      if(d && (e?.status === 'Present' || e?.status === 'Absent')) byDate.set(d, {date:d, status:e.status});
+    });
+    return [...byDate.values()].sort((a,b)=>b.date.localeCompare(a.date));
+  }
+
+  function normalizeStudentTestScores(scores){
+    const byKey = new Map();
+    (Array.isArray(scores) ? scores : []).forEach(s => {
+      const d = attendanceDateKey(s?.date);
+      const name = String(s?.name || 'Test').trim();
+      const score = Number(s?.score), max = Number(s?.max);
+      if(d && Number.isFinite(score) && Number.isFinite(max) && max > 0){
+        const key = d + '__' + name.toLowerCase();
+        if(!byKey.has(key)) byKey.set(key, {name, date:d, score, max});
+      }
+    });
+    return [...byKey.values()].sort((a,b)=>b.date.localeCompare(a.date)||a.name.localeCompare(b.name));
+  }
+
   function aggregateAttendance(log){
     const map={}; (Array.isArray(log)?log:[]).forEach(e=>{ const k=monthKeyForDate(e.date); if(!k)return; if(!map[k])map[k]={present:0,total:0}; map[k].total++; if(e.status==='Present')map[k].present++; });
     return Object.entries(map).sort((a,b)=>b[0].localeCompare(a[0])).map(([key,v])=>({...v,key,label:monthLabel(key),percent:v.total?Math.round(v.present/v.total*100):0}));
@@ -2446,7 +2469,7 @@
     const byDate = {};
     (Array.isArray(log) ? log : []).forEach(e => {
       const key = attendanceDateKey(e && e.date);
-      if(key && (e.status === 'Present' || e.status === 'Absent')){
+      if(key && (e.status === 'Present' || e.status === 'Absent') && !Object.prototype.hasOwnProperty.call(byDate,key)){
         byDate[key] = e.status;
       }
     });
@@ -2583,7 +2606,7 @@
         document.getElementById('test-popup-close').onclick=()=>{ document.getElementById('test-popup').classList.remove('show'); };
       }
     }
-    const log=Array.isArray(data.attendance?.log)?data.attendance.log:[];
+    const log=normalizeStudentAttendanceLog(data.attendance?.log);
     const todayForMonth=new Date();
     const currentMonthKey=`${todayForMonth.getFullYear()}-${String(todayForMonth.getMonth()+1).padStart(2,'0')}`;
     const currentMonthLog=log.filter(e=>monthKeyForDate(e.date)===currentMonthKey);
@@ -2605,7 +2628,7 @@
     document.getElementById('dash-kpi-rank-sub').textContent=recent.name?`Latest: ${recent.name}`:'Based on the latest test';
     document.getElementById('dash-rank-big').textContent=rank;
     document.getElementById('dash-rank-detail').textContent=recent.name?`Latest test: ${recent.name} · ${recent.rank} of ${recent.size}`:'Rank will appear after a test is recorded.';
-    const scores=Array.isArray(data.testScores)?data.testScores:[];
+    const scores=normalizeStudentTestScores(data.testScores);
     const latestScore=scores.slice().sort((a,b)=>(parsePortalDate(b.date)?.getTime()||0)-(parsePortalDate(a.date)?.getTime()||0))[0];
     if(document.getElementById('dash-kpi-latest-score')) document.getElementById('dash-kpi-latest-score').textContent=latestScore?scorePct(latestScore)+'%':'—';
     if(document.getElementById('dash-rank-big-secondary')) document.getElementById('dash-rank-big-secondary').textContent=rank;
