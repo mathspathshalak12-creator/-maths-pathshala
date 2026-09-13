@@ -261,6 +261,7 @@
         <a href="#attendance-section">Attendance</a>
         <a href="#fees-section">Fees</a>
         <a href="#communication-section">Student Updates</a>
+        <a href="#homework-section">Homework</a>
         <a href="#branding-section">Branding</a>
         <a href="#youtube-section">YouTube Videos</a>
       </nav>
@@ -390,23 +391,27 @@
     </div>
 
     <div class="card" id="communication-section">
-      <h2>Send Test Reminder to a Batch</h2>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Sends the same reminder to every student enrolled in the selected class + batch — no need to update each student one by one.</p>
+      <h2>Parent Communication — Manual Only</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">No automatic messages are sent. Select a student, prepare the message, review it yourself, then choose Copy or Open WhatsApp and send it manually.</p>
       <div class="row2">
-        <select id="broadcast-class-input">
-          <option value="9">Class 9</option>
-          <option value="10">Class 10</option>
-          <option value="11">Class 11</option>
-          <option value="12">Class 12</option>
+        <select id="manual-comm-student">
+          <option value="">Select student</option>
         </select>
-        <select id="broadcast-batch-input">
-          <option value="">Select class first</option>
+        <select id="manual-comm-template">
+          <option value="attendance">Attendance Update</option>
+          <option value="test">Test / Marks Update</option>
+          <option value="fees">Fees Update</option>
+          <option value="report">Monthly Report Ready</option>
+          <option value="custom">Custom Message</option>
         </select>
       </div>
-      <label>Test details</label>
-      <input type="text" id="broadcast-test-input" placeholder="e.g. Unit Test 2 - Chapter 5, Monday 14 July">
-      <button class="btn" id="send-broadcast-btn">Send to Batch</button>
-      <div class="msg" id="broadcast-msg"></div>
+      <label>Message to parent</label>
+      <textarea id="manual-comm-message" rows="7" placeholder="Write or edit the message before sending manually..."></textarea>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+        <button class="btn btn-secondary" id="manual-comm-copy">Copy Message</button>
+        <button class="btn" id="manual-comm-whatsapp">Open WhatsApp</button>
+      </div>
+      <div class="msg" id="manual-comm-msg"></div>
     </div>
 
     <div class="card" id="attendance-section">
@@ -502,7 +507,27 @@
       </div>
     </div>
 
-<div class="card">
+<div class="card" id="homework-section">
+      <div class="card-title-row"><div><span class="section-kicker">Student work</span><h2>Homework Management</h2><p>Post homework to one class, one batch, or all students.</p></div></div>
+      <div class="row2" style="margin-top:14px;">
+        <div><label>Homework title</label><input type="text" id="homework-title" placeholder="e.g. Quadratic Equations — Exercise 4.2"></div>
+        <div><label>Due date (optional)</label><input type="date" id="homework-due-date"></div>
+      </div>
+      <label>Homework details</label>
+      <textarea id="homework-details" rows="4" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13.5px;resize:vertical;" placeholder="Write questions, chapter, instructions, or a note for students."></textarea>
+      <div class="row2" style="margin-top:14px;">
+        <div><label>Class</label><select id="homework-target-class"><option value="">All classes</option><option value="9">Class 9</option><option value="10">Class 10</option><option value="11">Class 11</option><option value="12">Class 12</option></select></div>
+        <div><label>Batch</label><select id="homework-target-batch"><option value="">All batches</option></select></div>
+      </div>
+      <button class="btn" id="post-homework-btn" style="margin-top:14px;">+ Post Homework</button>
+      <div id="homework-msg" class="msg"></div>
+      <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--line);">
+        <h3 style="margin:0 0 8px;color:var(--navy);">Recent Homework</h3>
+        <div id="homework-admin-list"><div style="font-size:13px;color:var(--muted);">Loading homework…</div></div>
+      </div>
+    </div>
+
+    <div class="card">
       <div class="att-header">
         <h2 style="margin:0;">Attendance Management</h2>
         <div class="att-date-picker">
@@ -544,6 +569,10 @@
           <option value="Due">Fee: Due</option>
         </select>
       </div>
+      <div style="margin-top:12px;display:flex;justify-content:flex-end;">
+        <button class="btn btn-secondary btn-small" id="repair-student-ids-btn">Repair student IDs</button>
+      </div>
+      <div id="repair-student-ids-msg" class="msg" style="margin-top:8px;"></div>
       <ul class="student-list" id="student-list" style="margin-top:14px;"><li>Loading...</li></ul>
     </div>
 
@@ -707,7 +736,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, writeBatch, addDoc, deleteDoc, query, orderBy, serverTimestamp, where, documentId } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, writeBatch, addDoc, deleteDoc, deleteField, query, orderBy, serverTimestamp, where, documentId } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
   import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
   const firebaseConfig = {
@@ -764,18 +793,29 @@
   // against Firebase Auth's verified session user, NOT the text typed into
   // the login form. This keeps students out while allowing the owner's
   // existing account to work even if the custom claim has not been set yet.
+  // Keep UI authorization aligned with the deployed Firestore policy.
   const ADMIN_EMAIL = 'mathspathshala.k12@gmail.com';
   async function isAuthorizedAdmin(user){
     if(!user) return false;
-    const firebaseEmail = String(user.email || '').trim().toLowerCase();
-    if(firebaseEmail === ADMIN_EMAIL) return true;
-    try {
-      const tokenResult = await user.getIdTokenResult(true);
-      return tokenResult.claims && tokenResult.claims.admin === true;
-    } catch(err){
-      console.error('Failed to verify admin claim:', err);
-      return false;
-    }
+    // Admin access is intentionally limited to the single owner account.
+    // Firestore and Storage rules use the same fixed-email boundary.
+    return String(user.email || '').trim().toLowerCase() === ADMIN_EMAIL;
+  }
+
+  function canonicalStudentId(email){ return String(email || '').trim().toLowerCase(); }
+  function isValidStudentEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(canonicalStudentId(email)); }
+  function normalizeAttendanceLog(log){
+    const byDate=new Map();
+    (Array.isArray(log)?log:[]).forEach(e=>{const d=adminAttendanceDateKey(e?.date);const s=e?.status;if(d&&(s==='Present'||s==='Absent')) byDate.set(d,{date:d,status:s});});
+    return [...byDate.values()].sort((x,y)=>y.date.localeCompare(x.date));
+  }
+  function normalizeTestScores(scores){
+    const byKey=new Map();
+    (Array.isArray(scores)?scores:[]).forEach(s=>{const name=String(s?.name||'Test').trim();const date=adminAttendanceDateKey(s?.date);const score=Number(s?.score);const max=Number(s?.max);if(date&&Number.isFinite(score)&&Number.isFinite(max)&&max>0) byKey.set(date+'__'+name.toLowerCase(),{name,date,score,max});});
+    return [...byKey.values()].sort((x,y)=>y.date.localeCompare(x.date)||x.name.localeCompare(y.name));
+  }
+  async function commitBatchOps(ops, chunkSize=450){
+    for(let start=0;start<ops.length;start+=chunkSize){const wb=writeBatch(db);ops.slice(start,start+chunkSize).forEach(op=>op(wb));await wb.commit();}
   }
 
   async function submitAdminLogin(){
@@ -846,6 +886,7 @@
       try { loadBulkAttendanceRows(); } catch(e) { console.warn("Attendance load failed:", e); }
       try { loadNotices(); } catch(e) { console.warn("Notices load failed:", e); }
       try { loadBranding(); } catch(e) { console.warn("Branding load failed:", e); }
+      try { await loadHomeworkAdminList(); } catch(e) { console.warn("Homework load failed:", e); }
 
     } else {
       loginScreen.style.display = 'block';
@@ -1001,21 +1042,22 @@
     btn.disabled = true; btn.textContent = 'Saving...';
 
     try{
-      const batch = writeBatch(db);
+      const attendanceOps=[];
       toSave.forEach(row => {
-        const email = row.dataset.email;
+        const email = canonicalStudentId(row.dataset.email);
         const status = row.dataset.status;
-        const student = bulkStudentsCache.find(s => s.id === email);
-        let log = (student.data.attendance && student.data.attendance.log) || [];
-        const targetKey = adminAttendanceDateKey(dateLabel);
-        log = log.filter(e => adminAttendanceDateKey(e.date) !== targetKey);
-        log.unshift({ date: dateLabel, status: status });
-        const presentCount = log.filter(e => e.status === 'Present').length;
-        const percent = Math.round((presentCount / log.length) * 100);
-        const docRef = doc(db, "students", email);
-        batch.set(docRef, { attendance: { percent, log } }, { merge: true });
+        const student = bulkStudentsCache.find(s => canonicalStudentId(s.id) === email);
+        if(!student) return;
+        let log=normalizeAttendanceLog(student.data.attendance?.log||[]);
+        const targetKey=adminAttendanceDateKey(dateLabel);
+        log=log.filter(e=>e.date!==targetKey);
+        log.unshift({date:targetKey,status});
+        log=normalizeAttendanceLog(log);
+        const presentCount=log.filter(e=>e.status==='Present').length;
+        const percent=log.length?Math.round(presentCount/log.length*100):0;
+        attendanceOps.push(wb => wb.set(doc(db,'students',email),{attendance:{percent,log}},{merge:true}));
       });
-      await batch.commit();
+      await commitBatchOps(attendanceOps);
       showToast(`Saved attendance for ${toSave.length} student(s)!`);
       sendPushNotification(
         toSave.map(row => row.dataset.email),
@@ -1046,23 +1088,25 @@
       list.innerHTML = '<li>No students yet — add one below.</li>';
       document.getElementById('stat-total').textContent = 0;
       document.getElementById('stat-due').textContent = 0;
+      manualCommStudents();
       if(document.getElementById('stat-present-today')) document.getElementById('stat-present-today').textContent = 0; if(document.getElementById('stat-absent-today')) document.getElementById('stat-absent-today').textContent = 0;
       // No students is still a valid state: public batches must remain visible.
-      await updatePublicStats();
+      try { await updatePublicStats(); } catch(syncErr) { console.warn('Public stats sync failed:', syncErr); }
       return;
     }
     snap.forEach(docSnap => {
-      const data = docSnap.data();
+      const raw=docSnap.data();
+      const log=normalizeAttendanceLog(raw.attendance?.log||[]);
+      const scores=normalizeTestScores(raw.testScores||[]);
+      const percent=log.length?Math.round(log.filter(e=>e.status==='Present').length/log.length*100):0;
+      const data={...raw,attendance:{percent,log},testScores:scores};
       total++;
       if(data.feeStatus === 'Paid'){ paid++; } else { due++; }
-      if(data.attendance && Array.isArray(data.attendance.log)){
-        const todayKey = adminAttendanceDateKey(todayStr);
-        const hasToday = data.attendance.log.some(e => adminAttendanceDateKey(e.date) === todayKey);
-        if(hasToday){ markedToday++; const todayEntry = data.attendance.log.slice().reverse().find(e => adminAttendanceDateKey(e.date) === todayKey); if(todayEntry && todayEntry.status === 'Present') presentToday++; if(todayEntry && todayEntry.status === 'Absent') absentToday++; }
-      }
-      const ap = Number(data.attendance && data.attendance.percent);
-      if(Number.isFinite(ap) && ap < 75){ lowAttendance++; }
-      allStudentsCache.push({ id: docSnap.id, data });
+      const todayKey=adminAttendanceDateKey(todayStr);
+      const todayEntry=log.find(e=>e.date===todayKey);
+      if(todayEntry){markedToday++;if(todayEntry.status==='Present')presentToday++;if(todayEntry.status==='Absent')absentToday++;}
+      if(percent<75){lowAttendance++;}
+      allStudentsCache.push({id:docSnap.id,canonicalId:canonicalStudentId(docSnap.id),data});
     });
 
     document.getElementById('stat-total').textContent = total;
@@ -1074,8 +1118,9 @@
     updateFinanceOverview();
     updateBatchPerformance();
     renderStudentList();
+    manualCommStudents();
     // Public seat counters are useful, but must never delay the admin screen.
-    updatePublicStats();
+    updatePublicStats().catch(syncErr => console.warn('Public stats sync failed:', syncErr));
   }
 
   function updateFinanceOverview(){
@@ -1123,7 +1168,7 @@
     const dueBox = document.getElementById('fin-due-students');
     const dueStudents = allStudentsCache.filter(s => s.data.feeStatus !== 'Paid' && (s.data.studentStatus || 'Active') === 'Active');
     dueBox.innerHTML = dueStudents.length
-      ? dueStudents.map(s => `<div class="payment-item"><span><b>${s.data.name || 'Unnamed'}</b><small style="display:block;color:var(--muted);margin-top:2px;">${s.data.parentPhone || 'No parent WhatsApp saved'}</small></span><button class="btn btn-secondary btn-small due-open-student" data-email="${s.id}">Open profile</button></div>`).join('')
+      ? dueStudents.map(s => `<div class="payment-item"><span><b>${escapeHtml(s.data.name || 'Unnamed')}</b><small style="display:block;color:var(--muted);margin-top:2px;">${s.data.parentPhone || 'No parent WhatsApp saved'}</small></span><button class="btn btn-secondary btn-small due-open-student" data-email="${s.id}">Open profile</button></div>`).join('')
       : '<div style="font-size:13px;color:var(--muted);">No active students with fee due.</div>';
     dueBox.querySelectorAll('.due-open-student').forEach(btn => btn.addEventListener('click', () => {
       const student = allStudentsCache.find(s => s.id === btn.dataset.email);
@@ -1251,26 +1296,15 @@
     }
   }
 
+  let publicStatsSyncPromise=null;
   async function updatePublicStats(){
-    const batchStats = batchesCache.map(b => {
-      const filled = allStudentsCache.filter(s => s.data.class === b.class && s.data.batchName === b.name).length;
-      return {
-        class: b.class, name: b.name,
-        intro: b.intro || "Focused offline coaching with regular practice, testing and doubt support.",
-        details: b.details || [],
-        timing: b.timing || '', photoUrl: b.photoUrl || '',
-        capacity: b.capacity || 7, filled,
-        baseFee: b.baseFee || 0, offerPercent: b.offerPercent || 0, launchPrice: b.launchPrice || 0,
-        launchTitle: b.launchTitle || `${b.name} — Admissions Open`,
-        launchSubtitle: b.launchSubtitle || "A focused Maths batch for serious students.",
-        launchActive: !!b.launchActive
-      };
-    });
-    try{
-      await setDoc(doc(db, "stats", "public"), { batchStats, updatedAt: serverTimestamp() }, { merge: true });
-    } catch(err){
-      console.log('Could not update public stats:', err.message);
-    }
+    if(publicStatsSyncPromise) return publicStatsSyncPromise;
+    publicStatsSyncPromise=(async()=>{
+      const batchStats=batchesCache.map(b=>({id:b.id||'',class:b.class,name:String(b.name||'').trim(),intro:b.intro||'Focused offline coaching with regular practice, testing and doubt support.',details:Array.isArray(b.details)?b.details:[],timing:b.timing||'',photoUrl:b.photoUrl||'',capacity:Number(b.capacity)>0?Number(b.capacity):7,filled:allStudentsCache.filter(s=>s.data.class===b.class&&s.data.batchName===b.name&&(s.data.studentStatus||'Active')==='Active').length,baseFee:Number(b.baseFee)||0,offerPercent:Number(b.offerPercent)||0,launchPrice:Number(b.launchPrice)||0,launchTitle:b.launchTitle||`${b.name} — Admissions Open`,launchSubtitle:b.launchSubtitle||'A focused Maths batch for serious students.',launchActive:!!b.launchActive}));
+      await setDoc(doc(db,'stats','public'),{batchStats,updatedAt:serverTimestamp()},{merge:true});
+      return batchStats;
+    })().catch(err=>{console.error('Public batch sync failed:',err);throw err;}).finally(()=>{publicStatsSyncPromise=null;});
+    return publicStatsSyncPromise;
   }
 
   function renderStudentList(){
@@ -1281,7 +1315,7 @@
     let filtered = allStudentsCache.filter(s => {
       const matchesSearch = !searchTerm ||
         (s.data.name || '').toLowerCase().includes(searchTerm) ||
-        s.id.toLowerCase().includes(searchTerm);
+        canonicalStudentId(s.canonicalId || s.id).includes(searchTerm);
       const matchesFilter = filterVal === 'all' || s.data.feeStatus === filterVal || (s.data.studentStatus || 'Active') === filterVal;
       return matchesSearch && matchesFilter;
     });
@@ -1296,16 +1330,16 @@
       const li = document.createElement('li');
       li.innerHTML = `
         <div>
-          <div class="s-name">${s.data.name || 'Unnamed'}</div>
-          <div class="s-email">${s.id} · ${s.data.studentStatus || 'Active'}</div>
+          <div class="s-name">${escapeHtml(s.data.name || 'Unnamed')}</div>
+          <div class="s-email">${escapeHtml(s.canonicalId || s.id)} · ${escapeHtml(s.data.studentStatus || 'Active')}</div>
         </div>
         <div style="display:flex;align-items:center;gap:14px;">
           <span style="font-size:12px;color:var(--muted);">Edit →</span>
-          <button class="notice-delete" data-email="${s.id}" data-name="${s.data.name || 'this student'}">🗑 Remove</button>
+          <button class="notice-delete" data-email="${s.id}" data-name="${escapeHtml(s.data.name || 'this student')}">🗑 Remove</button>
         </div>`;
       li.addEventListener('click', (e) => {
         if(e.target.classList.contains('notice-delete')) return;
-        loadStudentIntoForm(s.id, s.data);
+        loadStudentIntoForm(s.canonicalId || s.id, s.data);
       });
       li.querySelector('.notice-delete').addEventListener('click', async (e) => {
         e.stopPropagation();
@@ -1323,6 +1357,10 @@
       list.appendChild(li);
     });
   }
+
+  document.getElementById('repair-student-ids-btn')?.addEventListener('click',async()=>{
+    const msg=document.getElementById('repair-student-ids-msg'),btn=document.getElementById('repair-student-ids-btn');btn.disabled=true;btn.textContent='Checking...';
+    try{const snap=await getDocs(collection(db,'students'));const ids=new Set(snap.docs.map(d=>d.id));const safe=snap.docs.filter(d=>canonicalStudentId(d.id)!==d.id&&!ids.has(canonicalStudentId(d.id)));if(!safe.length){msg.textContent='All student IDs are already canonical.';msg.className='msg success';return;}const ops=safe.flatMap(d=>[wb=>wb.set(doc(db,'students',canonicalStudentId(d.id)),{...d.data(),email:canonicalStudentId(d.id)},{merge:false}),wb=>wb.delete(doc(db,'students',d.id))]);await commitBatchOps(ops);msg.textContent=`Repaired ${safe.length} legacy student ID(s).`;msg.className='msg success';await loadStudentList();await loadBulkAttendanceRows();}catch(err){console.error(err);msg.textContent='Repair failed: '+(err?.message||'Unknown error');msg.className='msg error';}finally{btn.disabled=false;btn.textContent='Repair student IDs';}});
 
   document.getElementById('student-search').addEventListener('input', renderStudentList);
   document.getElementById('student-filter').addEventListener('change', renderStudentList);
@@ -1360,6 +1398,7 @@
   });
 
   function loadStudentIntoForm(email, data){
+    editingStudentId = canonicalStudentId(email);
     document.getElementById('form-heading').textContent = 'Editing: ' + (data.name || email);
     document.getElementById('f-email').value = email;
     document.getElementById('f-name').value = data.name || '';
@@ -1394,6 +1433,7 @@
 
   document.getElementById('clear-form-btn').addEventListener('click', () => {
     document.getElementById('form-heading').textContent = 'Add / Update Student';
+    editingStudentId = '';
     document.getElementById('f-email').value = '';
     document.getElementById('f-name').value = '';
     document.getElementById('f-fee').value = 'Due';
@@ -1505,15 +1545,16 @@
   async function refreshBatchInsights(classVal,batchName){
     if(!classVal||!batchName) return;
     try{
-      const snap=await getDocs(collection(db,'students')); const students=[];
-      snap.forEach(d=>{const x=d.data();if(x.class===classVal&&x.batchName===batchName&&(x.studentStatus||'Active')==='Active')students.push({id:d.id,data:x});});
-      let latestDate=0, latestName='';
-      students.forEach(s=>(Array.isArray(s.data.testScores)?s.data.testScores:[]).forEach(t=>{const d=adminParseDate(t.date)?.getTime()||0;if(d>latestDate){latestDate=d;latestName=t.name||'Latest Test';}}));
-      const latestEntries=students.map(s=>{const scores=Array.isArray(s.data.testScores)?s.data.testScores:[];const candidates=scores.filter(t=>(adminParseDate(t.date)?.getTime()||0)===latestDate);const t=candidates[candidates.length-1];return {id:s.id,data:s.data,test:t,pct:t?adminScorePct(t):null};}).filter(x=>x.pct!=null).sort((a,b)=>b.pct-a.pct);
-      const size=latestEntries.length; const highest=size?latestEntries[0].pct:0;
-      const rankMap={}; latestEntries.forEach((x,i)=>{rankMap[x.id]={rank:i+1,size,highest,name:x.test.name||latestName,date:x.test.date||''};});
-      const wb=writeBatch(db); students.forEach(s=>{const recent=rankMap[s.id]||{}; wb.set(doc(db,'students',s.id),{batchStats:{recentTest:recent}},{merge:true});}); await wb.commit();
-      const me=students.find(s=>s.id===document.getElementById('f-email').value.trim().toLowerCase()); if(me){renderAdminStudentInsights({...me.data,batchStats:{...(me.data.batchStats||{}),recentTest:rankMap[me.id]||{}}});}
+      const snap=await getDocs(collection(db,'students'));
+      const students=[];
+      snap.forEach(d=>{const data={...d.data(),testScores:normalizeTestScores(d.data().testScores||[])};if(data.class===classVal&&data.batchName===batchName&&(data.studentStatus||'Active')==='Active')students.push({id:canonicalStudentId(d.id),data});});
+      let latestTs=0,latestName='';
+      students.forEach(s=>(s.data.testScores||[]).forEach(t=>{const ts=adminParseDate(t.date)?.getTime()||0;if(ts>latestTs){latestTs=ts;latestName=t.name||'Latest Test';}}));
+      const latest=latestTs?students.map(s=>{const t=(s.data.testScores||[]).find(x=>(adminParseDate(x.date)?.getTime()||0)===latestTs);return t?{id:s.id,test:t,pct:adminScorePct(t)}:null;}).filter(Boolean).sort((x,y)=>y.pct-x.pct||x.id.localeCompare(y.id)):[];
+      const size=latest.length,highest=size?latest[0].pct:0,rankMap={};
+      latest.forEach((x,idx)=>rankMap[x.id]={rank:idx+1,size,highest,name:x.test.name||latestName,date:x.test.date||'',pct:x.pct});
+      await commitBatchOps(students.map(s=>wb=>wb.set(doc(db,'students',s.id),{batchStats:{recentTest:rankMap[s.id]||{}}},{merge:true})));
+      const meId=canonicalStudentId(document.getElementById('f-email').value);const me=students.find(s=>s.id===meId);if(me)renderAdminStudentInsights({...me.data,batchStats:{...(me.data.batchStats||{}),recentTest:rankMap[meId]||{}}});
     }catch(err){console.warn('Batch insight refresh failed',err);}
   }
   function renderAdminStudentInsights(data){
@@ -1604,7 +1645,8 @@
   }
   let currentStudentBatchStats={};
   let teacherSignatureUrl="";
-  getDoc(doc(db,'siteSettings','branding')).then(s=>{if(s.exists()) teacherSignatureUrl=s.data().teacherSignatureUrl||'';}).catch(()=>{});
+  let editingStudentId="";
+  getDoc(doc(db,'siteSettings','brandingPrivate')).then(s=>{if(s.exists()) teacherSignatureUrl=s.data().teacherSignatureUrl||'';}).catch(()=>{});
 
   function renderAttendancePreview(){
     const box = document.getElementById('attendance-log-preview');
@@ -1669,13 +1711,14 @@
     const dateInput = document.getElementById('f-test-date').value;
     const score = parseFloat(document.getElementById('f-test-score').value);
     const max = parseFloat(document.getElementById('f-test-max').value);
-    if(!name || !dateInput || isNaN(score) || isNaN(max)){
-      alert('Please fill test name, date, score and max marks.');
+    if(!name || !dateInput || isNaN(score) || isNaN(max) || max <= 0 || score < 0 || score > max){
+      alert('Please enter valid test name, date, score and max marks. Score must be between 0 and the maximum marks.');
       return;
     }
-    const dateObj = new Date(dateInput + 'T00:00:00');
-    const dateStr = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-    currentTestScores.push({ name, date: dateStr, score, max });
+    const dateStr=adminAttendanceDateKey(dateInput);
+    currentTestScores=(currentTestScores||[]).filter(s=>!(adminAttendanceDateKey(s.date)===dateStr&&String(s.name||'').trim().toLowerCase()===name.toLowerCase()));
+    currentTestScores.unshift({name,date:dateStr,score,max});
+    currentTestScores=normalizeTestScores(currentTestScores);
     document.getElementById('f-test-name').value = '';
     document.getElementById('f-test-score').value = '';
     document.getElementById('f-test-max').value = '';
@@ -1689,9 +1732,10 @@
       alert('Please pick a date first.');
       return;
     }
-    const dateObj = new Date(dateInput + 'T00:00:00');
-    const dateStr = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-    currentAttendanceLog.unshift({ date: dateStr, status: status });
+    const dateKey=adminAttendanceDateKey(dateInput);
+    currentAttendanceLog=normalizeAttendanceLog((currentAttendanceLog||[]).filter(e=>adminAttendanceDateKey(e.date)!==dateKey));
+    currentAttendanceLog.unshift({date:dateKey,status});
+    currentAttendanceLog=normalizeAttendanceLog(currentAttendanceLog);
     renderAttendancePreview();
   });
 
@@ -1780,12 +1824,16 @@
   });
 
   document.getElementById('save-student-btn').addEventListener('click', async () => {
-    const email = document.getElementById('f-email').value.trim().toLowerCase();
+    const email = canonicalStudentId(document.getElementById('f-email').value);
+    document.getElementById('f-email').value=email;
     if(!email){
       saveMsg.textContent = 'Student email is required.';
       saveMsg.className = 'msg error';
       return;
     }
+    if(!isValidStudentEmail(email)){ saveMsg.textContent='Please enter a valid student email address.'; saveMsg.className='msg error'; return; }
+    currentAttendanceLog=normalizeAttendanceLog(currentAttendanceLog);
+    currentTestScores=normalizeTestScores(currentTestScores);
     const pct = currentAttendanceLog.length > 0
       ? Math.round((currentAttendanceLog.filter(e => e.status === 'Present').length / currentAttendanceLog.length) * 100)
       : 0;
@@ -1810,13 +1858,21 @@
     };
 
     try{
-      await setDoc(doc(db, "students", email), studentData, { merge: true });
+      const previousId = editingStudentId;
+      if(previousId && previousId !== email){
+        const conflict = await getDoc(doc(db, 'students', email));
+        if(conflict.exists()) throw new Error('A student record already exists with this email. Open that student instead of changing the login email.');
+      }
+      await setDoc(doc(db, "students", email), { ...studentData, email }, { merge: true });
+      if(previousId && previousId !== email) await deleteDoc(doc(db, 'students', previousId));
+      editingStudentId = email;
       saveMsg.textContent = 'Saved successfully!';
       saveMsg.className = 'msg success';
-      loadStudentList();
+      await loadStudentList();
       await refreshBatchInsights(studentData.class, studentData.batchName);
     } catch(err){
-      saveMsg.textContent = 'Error saving: ' + err.message;
+      console.error('Student save error:',err);
+      saveMsg.textContent = 'Error saving: ' + (err?.message || 'Unknown error');
       saveMsg.className = 'msg error';
     }
   });
@@ -1847,8 +1903,8 @@
         item.className = 'notice-item';
         item.innerHTML = `
           <div>
-            <div class="notice-title">${data.title}</div>
-            <div class="notice-msg">${data.message}</div>
+            <div class="notice-title">${escapeHtml(data.title)}</div>
+            <div class="notice-msg">${escapeHtml(data.message)}</div>
             <div class="notice-date">${dateStr} · <span style="color:var(--amber-dark);font-weight:600;">${targetStr}</span></div>
           </div>
           <button class="notice-delete" data-id="${docSnap.id}">Delete</button>
@@ -1911,8 +1967,8 @@
             html += `
               <div class="batch-item">
                 <div>
-                  <div class="batch-item-name">${b.name}</div>
-                  <div class="batch-item-meta">${b.timing || 'Timing to be set'}${b.launchActive ? ' · 🚀 Launch LIVE' : ''}${b.offerPercent ? ` · ${b.offerPercent}% OFF` : ''}</div>
+                  <div class="batch-item-name">${escapeHtml(b.name)}</div>
+                  <div class="batch-item-meta">${escapeHtml(b.timing || 'Timing to be set')}${b.launchActive ? ' · 🚀 Launch LIVE' : ''}${b.offerPercent ? ` · ${escapeHtml(b.offerPercent)}% OFF` : ''}</div>
                 </div>
                 <div style="display:flex;gap:14px;align-items:center;flex-shrink:0;">
                   <button class="edit-batch-btn" data-id="${b.id}" style="color:var(--navy);font-size:12px;cursor:pointer;font-weight:600;background:none;border:none;">Edit</button>
@@ -1927,11 +1983,17 @@
         });
         list.querySelectorAll('.notice-delete').forEach(btn => {
           btn.addEventListener('click', async () => {
+            const batch = batchesCache.find(x => x.id === btn.dataset.id);
+            const enrolled = batch ? allStudentsCache.filter(s => String(s.data.class||'') === String(batch.class||'') && String(s.data.batchName||'').trim() === String(batch.name||'').trim() && (s.data.studentStatus||'Active') === 'Active') : [];
+            const warning = enrolled.length ? `\n\n${enrolled.length} active student(s) are still enrolled in this batch. Delete anyway? Their student records will keep the old batch name.` : '';
+            if(!confirm(`Delete batch “${batch?.name || 'this batch'}”? This cannot be undone.${warning}`)) return;
             if(editingBatchId === btn.dataset.id) cancelBatchEdit();
-            await deleteDoc(doc(db, "batches", btn.dataset.id));
-            showToast('Batch deleted.');
-            await loadBatches();
-            loadStudentList();
+            try{
+              await deleteDoc(doc(db, "batches", btn.dataset.id));
+              showToast('Batch deleted.');
+              await loadBatches();
+              await loadStudentList();
+            }catch(err){ showToast('Error deleting batch: '+err.message); }
           });
         });
       }
@@ -2009,10 +2071,10 @@
     const selected = document.getElementById('f-batch-name').selectedOptions[0];
     if(selected && selected.dataset.timing) document.getElementById('f-batch').value = selected.dataset.timing;
   });
-  document.getElementById('broadcast-class-input').addEventListener('change', updateBroadcastBatchDropdown);
+  document.getElementById('broadcast-class-input')?.addEventListener('change', updateBroadcastBatchDropdown);
   document.getElementById('notice-target-class').addEventListener('change', () => populateTargetBatchSelect('notice-target-class', 'notice-target-batch'));
 
-  document.getElementById('send-broadcast-btn').addEventListener('click', async () => {
+  document.getElementById('send-broadcast-btn')?.addEventListener('click', async () => {
     const cls = document.getElementById('broadcast-class-input').value;
     const batchName = document.getElementById('broadcast-batch-input').value;
     const testDetails = document.getElementById('broadcast-test-input').value.trim();
@@ -2039,11 +2101,9 @@
     const btn = document.getElementById('send-broadcast-btn');
     btn.disabled = true; btn.textContent = 'Sending...';
     try{
-      const batch = writeBatch(db);
-      matching.forEach(s => {
-        batch.set(doc(db, "students", s.id), { nextTest: testDetails }, { merge: true });
-      });
-      await batch.commit();
+      await commitBatchOps(matching.map(s => wb => {
+        wb.set(doc(db,'students',canonicalStudentId(s.id)), { nextTest: testDetails }, { merge: true });
+      }));
       msgBox.textContent = `Sent to ${matching.length} student(s) in Class ${cls} · ${batchName}.`;
       msgBox.className = 'msg success';
       document.getElementById('broadcast-test-input').value = '';
@@ -2235,7 +2295,7 @@
     const dateInput = document.getElementById('bulk-score-date').value;
     const maxMarks = parseFloat(document.getElementById('bulk-score-max').value);
 
-    if(!testName || !dateInput || isNaN(maxMarks)){
+    if(!testName || !dateInput || isNaN(maxMarks) || maxMarks <= 0){
       showToast('Please fill test name, date and max marks.');
       return;
     }
@@ -2248,18 +2308,21 @@
     btn.disabled = true; btn.textContent = 'Saving...';
 
     try{
-      const batch = writeBatch(db);
+      const scoreOps=[];
       rows.forEach(row => {
         const input = row.querySelector('.bulk-score-input');
         const scoreVal = parseFloat(input.value);
-        if(isNaN(scoreVal)) return;
-        const email = row.dataset.email;
-        const student = bulkScoreStudents.find(s => s.id === email);
-        const existingScores = (student.data.testScores || []).slice();
-        existingScores.push({ name: testName, date: dateStr, score: scoreVal, max: maxMarks });
-        batch.set(doc(db, "students", email), { testScores: existingScores }, { merge: true });
+        if(isNaN(scoreVal) || scoreVal < 0 || scoreVal > maxMarks) return;
+        const email = canonicalStudentId(row.dataset.email);
+        const student = bulkScoreStudents.find(s => canonicalStudentId(s.id) === email);
+        if(!student) return;
+        const existingScores=normalizeTestScores(student.data.testScores||[]);
+        const merged=existingScores.filter(t=>!(adminAttendanceDateKey(t.date)===dateStr&&String(t.name||'').trim().toLowerCase()===testName.toLowerCase()));
+        merged.push({name:testName,date:dateStr,score:scoreVal,max:maxMarks});
+        scoreOps.push(wb => wb.set(doc(db,'students',email),{testScores:normalizeTestScores(merged)},{merge:true}));
         savedCount++;
       });
+      await commitBatchOps(scoreOps);
       if(savedCount === 0){
         showToast('Enter at least one score before saving.');
         return;
@@ -2318,7 +2381,7 @@
       const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('Upload timed out after '+(ms/1000)+'s — check your internet connection or Firebase Storage setup.')),ms))]);
       const snap=await withTimeout(uploadBytes(storageRef(storage,path),file,{contentType:file.type,cacheControl:'private,max-age=3600'}),20000);
       const url=await withTimeout(getDownloadURL(snap.ref),15000);
-      await setDoc(doc(db,'siteSettings','branding'),{teacherSignatureUrl:url,updatedAt:serverTimestamp()},{merge:true});
+      await setDoc(doc(db,'siteSettings','brandingPrivate'),{teacherSignatureUrl:url,updatedAt:serverTimestamp()},{merge:true});
       teacherSignatureUrl=url;
       document.getElementById('signature-preview').innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Current signature</div><img src="${url}" alt="Teacher signature" style="max-width:240px;max-height:90px;background:#fff;padding:8px;border:1px solid #e5e9f0;border-radius:8px;">`;
       msg.textContent='Signature uploaded. Future report cards can reuse it automatically.';
@@ -2334,7 +2397,7 @@
       btn.disabled=false; btn.textContent=origText;
     }
   });
-  async function loadBranding(){try{const snap=await getDoc(doc(db,'siteSettings','branding'));const u=snap.exists()?snap.data().teacherSignatureUrl:'';if(u)document.getElementById('signature-preview').innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Current signature</div><img src="${u}" alt="Teacher signature" style="max-width:240px;max-height:90px;background:#fff;padding:8px;border:1px solid #e5e9f0;border-radius:8px;">`;}catch(e){}}
+  async function loadBranding(){try{const privateSnap=await getDoc(doc(db,'siteSettings','brandingPrivate'));let u=privateSnap.exists()?privateSnap.data().teacherSignatureUrl:'';if(!u){const legacySnap=await getDoc(doc(db,'siteSettings','branding'));const legacyUrl=legacySnap.exists()?legacySnap.data().teacherSignatureUrl:'';if(legacyUrl){u=legacyUrl;await setDoc(doc(db,'siteSettings','brandingPrivate'),{teacherSignatureUrl:legacyUrl,migratedAt:serverTimestamp()},{merge:true});await updateDoc(doc(db,'siteSettings','branding'),{teacherSignatureUrl:deleteField()});}}if(u)document.getElementById('signature-preview').innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Current signature</div><img src="${u}" alt="Teacher signature" style="max-width:240px;max-height:90px;background:#fff;padding:8px;border:1px solid #e5e9f0;border-radius:8px;">`;}catch(e){}}
 
   const launchPreview = document.getElementById('batch-launch-preview');
   function updateLaunchPreview(){
@@ -2413,9 +2476,9 @@
         const due = h.dueDate ? ` · Due ${dateInputToLabel(h.dueDate)}` : '';
         const item = document.createElement('div');
         item.style.cssText = 'padding:12px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:#fffdf9;';
-        item.innerHTML = `<strong>📝 ${h.title || 'Homework'}</strong>
+        item.innerHTML = `<strong>📝 ${escapeHtml(h.title || 'Homework')}</strong>
           <div style="font-size:11.5px;color:var(--muted);margin-top:4px;">${target}${due}</div>
-          <div style="font-size:12.5px;color:var(--muted);margin-top:4px;">${h.details || ''}</div>`;
+          <div style="font-size:12.5px;color:var(--muted);margin-top:4px;">${escapeHtml(h.details || '')}</div>`;
         box.appendChild(item);
         count++;
       });
@@ -2559,6 +2622,11 @@
       showToast('Please enter a batch name.');
       return;
     }
+    const duplicate = batchesCache.some(b => String(b.name||'').trim().toLowerCase() === name.toLowerCase() && String(b.class) === String(cls) && b.id !== editingBatchId);
+    if(duplicate){
+      showToast('A batch with this name already exists in this class.');
+      return;
+    }
     const btn = document.getElementById('add-batch-btn');
     const isEditing = !!editingBatchId;
     btn.disabled = true; btn.textContent = isEditing ? 'Updating...' : 'Launching...';
@@ -2579,6 +2647,12 @@
       }
       if(isEditing){
         btn.textContent = 'Updating...';
+        const oldBatch = batchesCache.find(x => x.id === editingBatchId);
+        if(oldBatch && (String(oldBatch.name||'').trim() !== name || String(oldBatch.class||'') !== String(cls))){
+          const affected = allStudentsCache.filter(s => String(s.data.class||'') === String(oldBatch.class||'') && String(s.data.batchName||'').trim() === String(oldBatch.name||'').trim());
+          await commitBatchOps(affected.map(s => wb => wb.set(doc(db,'students',canonicalStudentId(s.id)),{class:cls,batchName:name,batchTiming:timing},{merge:true})));
+          affected.forEach(s => { s.data.class=cls; s.data.batchName=name; s.data.batchTiming=timing; });
+        }
         await updateDoc(doc(db, "batches", editingBatchId), {
           class: cls, name, capacity, timing, intro, details, photoUrl,
           baseFee, offerPercent, launchPrice,
@@ -2611,6 +2685,64 @@
       btn.disabled = false; btn.textContent = editingBatchId ? 'Update Batch' : '+ Launch / Create Batch';
     }
   });
+
+  // Manual parent communication only: never auto-sends, never writes a message to a parent account.
+  const manualCommStudent = document.getElementById('manual-comm-student');
+  const manualCommTemplate = document.getElementById('manual-comm-template');
+  const manualCommMessage = document.getElementById('manual-comm-message');
+  const manualCommMsg = document.getElementById('manual-comm-msg');
+  function manualCommShow(msg, type='ok'){ if(manualCommMsg){ manualCommMsg.textContent=msg; manualCommMsg.className='msg '+type; } }
+  function manualCommStudents(){
+    if(!manualCommStudent) return;
+    const list=[];
+    if(typeof allStudentsCache!=='undefined' && Array.isArray(allStudentsCache)) list.push(...allStudentsCache);
+    const unique=new Map();
+    list.forEach(item=>{
+      const d=item?.data||item||{}; const id=item?.id||d.email||'';
+      if(!id || unique.has(id)) return;
+      unique.set(id,{id,name:d.name||id,email:d.email||item?.id||'',phone:d.parentPhone||''});
+    });
+    manualCommStudent.innerHTML='<option value="">Select student</option>'+[...unique.values()].sort((a,b)=>a.name.localeCompare(b.name)).map(x=>`<option value="${escapeHtml(x.id)}">${escapeHtml(x.name)}${x.phone?' · '+escapeHtml(x.phone):''}</option>`).join('');
+  }
+  function manualCommSelected(){
+    const id=manualCommStudent?.value||'';
+    if(!id) return null;
+    const list=[];
+    if(typeof allStudentsCache!=='undefined' && Array.isArray(allStudentsCache)) list.push(...allStudentsCache);
+    const item=list.find(x=>(x?.id||x?.email||x?.data?.email||'')===id);
+    return item?.data||item||null;
+  }
+  function manualCommBuild(){
+    const d=manualCommSelected(); if(!d||!manualCommMessage) return;
+    const name=d.name||'Student'; const cls=d.class||''; const batch=d.batchName||''; const phone=d.parentPhone||'';
+    const template=manualCommTemplate?.value||'custom';
+    const messages={
+      attendance:`Namaste, ${name} ke attendance ka latest update share kar raha hoon. Class: ${cls}${batch?' | Batch: '+batch:''}. Kripya attendance ko regularly maintain karne me bachche ka support karein. — Maths Pathshala`,
+      test:`Namaste, ${name} ke recent test/marks ka update share kar raha hoon. Class: ${cls}${batch?' | Batch: '+batch:''}. Detailed marks student dashboard me available hain. — Maths Pathshala`,
+      fees:`Namaste, ${name} ki fees ka monthly update share karna tha. Kripya Maths Pathshala se related fee status/next due date ke liye message check karein. — Maths Pathshala`,
+      report:`Namaste, ${name} ka monthly progress report ready hai. Main ise aapko manually WhatsApp par share kar raha hoon. Kripya report dekh kar kisi bhi query ke liye hume message karein. — Maths Pathshala`,
+      custom:manualCommMessage.value||''
+    };
+    manualCommMessage.value=messages[template]||'';
+  }
+  manualCommStudent?.addEventListener('change', manualCommBuild);
+  manualCommTemplate?.addEventListener('change', manualCommBuild);
+  document.getElementById('manual-comm-copy')?.addEventListener('click', async()=>{
+    const text=manualCommMessage?.value?.trim(); if(!text){manualCommShow('Write a message first.','error');return;}
+    try{ await navigator.clipboard.writeText(text); manualCommShow('Message copied. You can paste it into WhatsApp manually.'); }
+    catch{ manualCommShow('Copy was blocked by the browser. Select the text and copy it manually.','error'); }
+  });
+  document.getElementById('manual-comm-whatsapp')?.addEventListener('click',()=>{
+    const d=manualCommSelected(); const text=manualCommMessage?.value?.trim(); if(!d){manualCommShow('Select a student first.','error');return;} if(!text){manualCommShow('Write a message first.','error');return;}
+    const rawPhone=String(d.parentPhone||'').replace(/\D/g,'');
+    if(!rawPhone){manualCommShow('This student does not have a parent WhatsApp number saved.','error');return;}
+    const phone=rawPhone.length===10?`91${rawPhone}`:rawPhone;
+    const url=`https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+    window.open(url,'_blank','noopener,noreferrer');
+    manualCommShow('WhatsApp opened. Review and press Send yourself.');
+  });
+  manualCommStudents();
+
 </script>
 </body>
 </html>
