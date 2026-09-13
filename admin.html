@@ -469,7 +469,7 @@
       <input type="text" id="notice-title" placeholder="e.g. No class this Sunday">
       <label>Message</label>
       <input type="text" id="notice-message" placeholder="e.g. Class postponed to Monday due to a holiday.">
-      <button class="btn" id="post-notice-btn">Post Notice</button>
+      <button class="btn" id="post-notice-btn">Post Notice</button><button class="btn btn-secondary" id="cancel-notice-edit-btn" type="button" style="display:none;">Cancel Edit</button>
       <div id="notices-list" style="margin-top:18px;"></div>
     </div>
 
@@ -1109,11 +1109,6 @@
       });
       await commitBatchOps(attendanceOps);
       showToast(`Saved attendance for ${toSave.length} student(s)!`);
-      sendPushNotification(
-        toSave.map(row => row.dataset.email),
-        "Attendance Updated 📋",
-        `Your attendance for ${dateLabel} has been marked. Check your dashboard.`
-      );
       await loadStudentList();
       await loadBulkAttendanceRows();
     } catch(err){
@@ -1485,8 +1480,9 @@
     currentTestScores = normalizeTestScores(data.testScores || []);
     currentStudentBatchStats = data.batchStats || {};
     renderAdminStudentInsights(data);
-    currentPayments = data.feeHistory || [];
-    currentMonthlyFees = data.monthlyFees || [];
+    currentPayments = Array.isArray(data.feeHistory) ? data.feeHistory.slice() : [];
+    currentMonthlyFees = Array.isArray(data.monthlyFees) ? data.monthlyFees.map(m => ({...m})) : [];
+    syncMonthlyFeePaymentDates();
     renderAttendancePreview();
     renderNotesPreview();
     renderScoresPreview();
@@ -1555,7 +1551,9 @@
     const dateStr = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
     currentPayments.unshift({ amount, date: dateStr, isoDate: dateInput });
     document.getElementById('f-payment-amount').value = '';
+    syncMonthlyFeePaymentDates();
     renderPaymentsPreview();
+    renderMonthlyFeesPreview();
   });
 
   function renderMonthlyFeesPreview(){
@@ -1569,10 +1567,11 @@
     box.innerHTML = sorted.map((m) => {
       const realIdx = currentMonthlyFees.indexOf(m);
       const badgeClass = m.status === 'Paid' ? 'paid' : 'due';
+      const paymentNote = m.status === 'Paid' && m.paymentDate ? ` · Paid on ${m.paymentDate}` : '';
       return `<div class="month-status-item">
-        <span>${m.monthLabel}</span>
+        <span>${escapeHtml(m.monthLabel || m.monthKey || '')}<small style="display:block;color:var(--muted);font-size:10.5px;margin-top:2px;">${escapeHtml(paymentNote)}</small></span>
         <span style="display:flex;align-items:center;gap:10px;">
-          <span class="month-status-badge ${badgeClass}">${m.status}</span>
+          <span class="month-status-badge ${badgeClass}">${escapeHtml(m.status)}</span>
           <button class="remove-btn" data-idx="${realIdx}">Remove</button>
         </span>
       </div>`;
@@ -1585,8 +1584,23 @@
     });
   }
 
+  function findLatestPaymentForMonth(monthKey){
+    const payments = Array.isArray(currentPayments) ? currentPayments : [];
+    return payments
+      .filter(p => String(p?.isoDate || '').slice(0,7) === monthKey)
+      .sort((a,b) => String(b?.isoDate || '').localeCompare(String(a?.isoDate || '')))[0] || null;
+  }
+
+  function syncMonthlyFeePaymentDates(){
+    currentMonthlyFees = (Array.isArray(currentMonthlyFees) ? currentMonthlyFees : []).map(m => {
+      if(m?.status !== 'Paid') return { ...m, paymentDate: '' };
+      const payment = findLatestPaymentForMonth(m.monthKey);
+      return { ...m, paymentDate: payment?.date || m.paymentDate || '' };
+    });
+  }
+
   document.getElementById('set-month-status-btn').addEventListener('click', () => {
-    const monthInput = document.getElementById('f-fee-month').value; // format: YYYY-MM
+    const monthInput = document.getElementById('f-fee-month').value;
     const status = document.getElementById('f-fee-month-status').value;
     if(!monthInput){
       alert('Please select a month.');
@@ -1594,12 +1608,13 @@
     }
     const d = new Date(monthInput + '-01T00:00:00');
     const monthLabel = d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
-
+    const payment = status === 'Paid' ? findLatestPaymentForMonth(monthInput) : null;
     const existingIdx = currentMonthlyFees.findIndex(m => m.monthKey === monthInput);
+    const record = { monthKey: monthInput, monthLabel, status, paymentDate: payment?.date || '' };
     if(existingIdx >= 0){
-      currentMonthlyFees[existingIdx].status = status;
+      currentMonthlyFees[existingIdx] = { ...currentMonthlyFees[existingIdx], ...record };
     } else {
-      currentMonthlyFees.push({ monthKey: monthInput, monthLabel, status });
+      currentMonthlyFees.push(record);
     }
     renderMonthlyFeesPreview();
   });
@@ -1611,23 +1626,83 @@
   function adminMonthKey(value){const d=adminParseDate(value);return d?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`:'';}
   function adminMonthLabel(key){if(!key)return 'Unknown';const [y,m]=key.split('-').map(Number);return new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});}
   function adminScorePct(s){return s&&Number(s.max)>0?Math.round(Number(s.score)/Number(s.max)*100):0;}
-  async function refreshBatchInsights(classVal,batchName){
+  async function refreshBatchInsights(classVal,batchName,preferredTestDate='',preferredTestName=''){
     if(!classVal||!batchName) return;
     try{
       const snap=await getDocs(collection(db,'students'));
       const students=[];
-      snap.forEach(d=>{const data={...d.data(),testScores:normalizeTestScores(d.data().testScores||[])};if(normalizeClassValue(data.class)===normalizeClassValue(classVal)&&normalizeBatchName(data.batchName)===normalizeBatchName(batchName)&&(data.studentStatus||'Active')==='Active')students.push({id:canonicalStudentId(d.id),data});});
-      let latestTs=0,latestName='';
-      students.forEach(s=>(s.data.testScores||[]).forEach(t=>{const ts=adminParseDate(t.date)?.getTime()||0;if(ts>latestTs){latestTs=ts;latestName=t.name||'Latest Test';}}));
-      const latest=latestTs?students.map(s=>{const t=(s.data.testScores||[]).find(x=>(adminParseDate(x.date)?.getTime()||0)===latestTs);return t?{id:s.id,test:t,pct:adminScorePct(t)}:null;}).filter(Boolean).sort((x,y)=>y.pct-x.pct||x.id.localeCompare(y.id)):[];
-      const size=latest.length,highest=size?latest[0].pct:0,rankMap={};
-      latest.forEach((x,idx)=>rankMap[x.id]={rank:idx+1,size,highest,name:x.test.name||latestName,date:x.test.date||'',pct:x.pct});
-      await commitBatchOps(students.map(s=>wb=>wb.set(doc(db,'students',s.id),{batchStats:{recentTest:rankMap[s.id]||{}}},{merge:true})));
-      const meId=canonicalStudentId(document.getElementById('f-email').value);const me=students.find(s=>s.id===meId);if(me)renderAdminStudentInsights({...me.data,batchStats:{...(me.data.batchStats||{}),recentTest:rankMap[meId]||{}}});
-    }catch(err){console.warn('Batch insight refresh failed',err);}
+      snap.forEach(d=>{
+        const data={...d.data(),testScores:normalizeTestScores(d.data().testScores||[])};
+        if(normalizeClassValue(data.class)===normalizeClassValue(classVal)
+          && normalizeBatchName(data.batchName)===normalizeBatchName(batchName)
+          && (data.studentStatus||'Active')==='Active'){
+          students.push({id:canonicalStudentId(d.id),data});
+        }
+      });
+
+      // Pick one exact latest test (name + date) for the batch. When a save operation
+      // knows the exact test being written, prefer that test so same-day tests never mix.
+      let latestTestKey='';
+      if(preferredTestDate && preferredTestName){
+        latestTestKey = `${adminAttendanceDateKey(preferredTestDate)}__${String(preferredTestName).trim().toLowerCase()}`;
+      } else {
+        students.forEach(s=>(s.data.testScores||[]).forEach(t=>{
+          const d=adminAttendanceDateKey(t.date);
+          const key=d+'__'+String(t.name||'Test').trim().toLowerCase();
+          if(!d) return;
+          if(!latestTestKey || key > latestTestKey) latestTestKey=key;
+        }));
+      }
+
+      const latest = [];
+      students.forEach(s=>{
+        const test=(s.data.testScores||[]).find(t=>{
+          const key=adminAttendanceDateKey(t.date)+'__'+String(t.name||'Test').trim().toLowerCase();
+          return key===latestTestKey;
+        });
+        if(test) latest.push({id:s.id,test,pct:adminScorePct(test)});
+      });
+
+      latest.sort((a,b)=>b.pct-a.pct||a.id.localeCompare(b.id));
+      const size=latest.length;
+      const highest=size?latest[0].pct:0;
+      const rankMap={};
+      let previousPct=null, previousRank=0;
+      latest.forEach((x,idx)=>{
+        const rank=x.pct===previousPct ? previousRank : idx+1;
+        previousPct=x.pct;
+        previousRank=rank;
+        const allScores=students.find(s=>s.id===x.id)?.data.testScores||[];
+        const average=allScores.length
+          ? Math.round(allScores.reduce((sum,s)=>sum+adminScorePct(s),0)/allScores.length)
+          : x.pct;
+        rankMap[x.id]={
+          rank,size,highest,
+          name:x.test.name||'Latest Test',
+          date:x.test.date||'',
+          pct:x.pct,
+          average
+        };
+      });
+
+      await commitBatchOps(students.map(s=>wb=>wb.set(
+        doc(db,'students',s.id),
+        {batchStats:{recentTest:rankMap[s.id]||{}}},
+        {merge:true}
+      )));
+
+      const meId=canonicalStudentId(document.getElementById('f-email').value);
+      const me=students.find(s=>s.id===meId);
+      if(me) renderAdminStudentInsights({
+        ...me.data,
+        batchStats:{...(me.data.batchStats||{}),recentTest:rankMap[meId]||{}}
+      });
+    }catch(err){
+      console.warn('Batch insight refresh failed',err);
+    }
   }
   function renderAdminStudentInsights(data){
-    const bs=data.batchStats||{}; const recent=bs.recentTest||{}; document.getElementById('admin-student-rank').textContent=recent.rank&&recent.size?`#${recent.rank}`:'—'; document.getElementById('admin-student-batch-size').textContent=recent.size||'—'; document.getElementById('admin-student-highest').textContent=recent.highest!=null?recent.highest+'%':'—'; document.getElementById('admin-student-average').textContent=recent.pct!=null?recent.pct+'%':'—';
+    const bs=data.batchStats||{}; const recent=bs.recentTest||{}; document.getElementById('admin-student-rank').textContent=recent.rank&&recent.size?`#${recent.rank}`:'—'; document.getElementById('admin-student-batch-size').textContent=recent.size||'—'; document.getElementById('admin-student-highest').textContent=recent.highest!=null?recent.highest+'%':'—'; document.getElementById('admin-student-average').textContent=recent.average!=null?recent.average+'%':'—';
     const select=document.getElementById('admin-report-month'); const keys=new Set(); (currentAttendanceLog||[]).forEach(e=>{const k=adminMonthKey(e.date);if(k)keys.add(k)}); (currentTestScores||[]).forEach(s=>{const k=adminMonthKey(s.date);if(k)keys.add(k)}); (currentMonthlyFees||[]).forEach(f=>{if(f.monthKey)keys.add(f.monthKey)}); const arr=[...keys].sort((a,b)=>b.localeCompare(a)); select.innerHTML=arr.length?arr.map(k=>`<option value="${k}">${adminMonthLabel(k)}</option>`).join(''):'<option value="">No monthly data</option>';
   }
   function openAdminMonthlyReport(){
@@ -1988,13 +2063,41 @@
       saveMsg.textContent = 'Saved successfully!';
       saveMsg.className = 'msg success';
       await loadStudentList();
-      await refreshBatchInsights(studentData.class, studentData.batchName);
+      const latestSavedTest=currentTestScores[0]||{};
+      await refreshBatchInsights(studentData.class, studentData.batchName, latestSavedTest.date||'', latestSavedTest.name||'');
     } catch(err){
       console.error('Student save error:',err);
       saveMsg.textContent = 'Error saving: ' + (err?.message || 'Unknown error');
       saveMsg.className = 'msg error';
     }
   });
+
+  let editingNoticeId = null;
+
+  function resetNoticeForm(){
+    editingNoticeId = null;
+    document.getElementById('notice-title').value = '';
+    document.getElementById('notice-message').value = '';
+    document.getElementById('notice-target-class').value = '';
+    populateTargetBatchSelect('notice-target-class','notice-target-batch');
+    document.getElementById('notice-target-batch').value = '';
+    document.getElementById('post-notice-btn').textContent = 'Post Notice';
+    const cancel = document.getElementById('cancel-notice-edit-btn');
+    if(cancel) cancel.style.display = 'none';
+  }
+
+  function startNoticeEdit(id, data){
+    editingNoticeId = id;
+    document.getElementById('notice-title').value = String(data.title || '');
+    document.getElementById('notice-message').value = String(data.message || '');
+    document.getElementById('notice-target-class').value = String(data.targetClass || '');
+    populateTargetBatchSelect('notice-target-class','notice-target-batch');
+    document.getElementById('notice-target-batch').value = String(data.targetBatch || '');
+    document.getElementById('post-notice-btn').textContent = 'Save Notice Changes';
+    const cancel = document.getElementById('cancel-notice-edit-btn');
+    if(cancel) cancel.style.display = 'inline-flex';
+    document.getElementById('notice-section')?.scrollIntoView({behavior:'smooth',block:'start'});
+  }
 
   async function loadNotices(){
     const list = document.getElementById('notices-list');
@@ -2026,8 +2129,14 @@
             <div class="notice-msg">${escapeHtml(data.message)}</div>
             <div class="notice-date">${dateStr} · <span style="color:var(--amber-dark);font-weight:600;">${targetStr}</span></div>
           </div>
-          <button class="notice-delete" data-id="${docSnap.id}">Delete</button>
+          <div style="display:flex;gap:10px;align-items:center;flex-shrink:0;">
+            <button type="button" class="notice-edit-btn" style="color:var(--navy);font-size:12px;cursor:pointer;font-weight:600;background:none;border:none;">Edit</button>
+            <button class="notice-delete" data-id="${docSnap.id}">Delete</button>
+          </div>
         `;
+        item.querySelector('.notice-edit-btn')?.addEventListener('click', () => {
+          startNoticeEdit(docSnap.id, data);
+        });
         item.querySelector('.notice-delete').addEventListener('click', async () => {
           await deleteDoc(doc(db, "notices", docSnap.id));
           loadNotices();
@@ -2040,149 +2149,42 @@
     }
   }
 
+  document.getElementById('cancel-notice-edit-btn')?.addEventListener('click', resetNoticeForm);
+
   document.getElementById('post-notice-btn').addEventListener('click', async () => {
     const title = document.getElementById('notice-title').value.trim();
     const message = document.getElementById('notice-message').value.trim();
     const targetClass = document.getElementById('notice-target-class').value;
     const targetBatch = document.getElementById('notice-target-batch').value;
-    if(!title || !message){
-      showToast('Please fill both title and message.');
-      return;
-    }
     const btn = document.getElementById('post-notice-btn');
-    btn.disabled = true; btn.textContent = 'Posting...';
+    const validTarget = !targetClass || !targetBatch || batchesCache.some(b =>
+      normalizeClassValue(b.class) === normalizeClassValue(targetClass) &&
+      normalizeBatchName(b.name) === normalizeBatchName(targetBatch)
+    );
+    if(!title || !message){ showToast('Enter title and message.'); return; }
+    if(!validTarget){ showToast('Selected batch is not available for this class.'); return; }
+    btn.disabled = true;
+    btn.textContent = editingNoticeId ? 'Saving...' : 'Posting...';
     try{
-      await addDoc(collection(db, "notices"), { title, message, targetClass, targetBatch, recipientEmails: getTargetEmails(targetClass, targetBatch).map(e => String(e).toLowerCase()), createdAt: serverTimestamp() });
-      document.getElementById('notice-title').value = '';
-      document.getElementById('notice-message').value = '';
-      showToast('Notice posted!');
-      sendPushNotification(getTargetEmails(targetClass, targetBatch), "New Notice 📢 " + title, message);
-      loadNotices();
-    } catch(err){
-      showToast('Error: ' + err.message);
-    } finally {
-      btn.disabled = false; btn.textContent = 'Post Notice';
+      const recipients = getTargetEmails(targetClass, targetBatch).map(e => String(e).toLowerCase());
+      const payload = { title, message, targetClass, targetBatch, recipientEmails: recipients };
+      if(editingNoticeId){
+        await updateDoc(doc(db, 'notices', editingNoticeId), { ...payload, updatedAt: serverTimestamp() });
+        showToast('Notice updated.');
+      } else {
+        await addDoc(collection(db, 'notices'), { ...payload, createdAt: serverTimestamp() });
+        showToast('Notice posted.');
+      }
+      resetNoticeForm();
+      await loadNotices();
+    }catch(err){
+      showToast((editingNoticeId ? 'Error updating notice: ' : 'Error posting notice: ') + (err?.message || 'Unknown error'));
+    }finally{
+      btn.disabled = false;
+      btn.textContent = editingNoticeId ? 'Save Notice Changes' : 'Post Notice';
     }
   });
 
-  async function loadBatches(){
-    const list = document.getElementById('batches-list');
-    list.innerHTML = '<div class="loading-row"><span class="spinner"></span>Loading batches...</div>';
-    try{
-      // Never leave the admin panel stuck forever if Firestore is offline,
-      // blocked by rules, or the request is waiting on a bad connection.
-      const firestoreRead = getDocs(collection(db, "batches"));
-      const snap = await Promise.race([
-        firestoreRead,
-        new Promise((_, reject) => setTimeout(() => reject(Object.assign(new Error('Firestore batch request timed out after 8 seconds.'), { code: 'batch-read-timeout' })), 8000))
-      ]);
-      batchesCache = [];
-      snap.forEach(docSnap => batchesCache.push({ id: docSnap.id, ...docSnap.data() }));
-
-      if(batchesCache.length === 0){
-        list.innerHTML = '<div style="font-size:13px;color:var(--muted);">No batches created yet. Add one above.</div>';
-      } else {
-        const classes = ['9','10','11','12'];
-        let html = '';
-        classes.forEach(cls => {
-          const batchesForClass = batchesCache.filter(b => normalizeClassValue(b.class) === normalizeClassValue(cls));
-          if(batchesForClass.length === 0) return;
-          html += `<div class="batch-class-group">Class ${cls}</div>`;
-          batchesForClass.forEach(b => {
-            html += `
-              <div class="batch-item">
-                <div>
-                  <div class="batch-item-name">${escapeHtml(b.name)}</div>
-                  <div class="batch-item-meta">${escapeHtml(b.timing || 'Timing to be set')}${b.launchActive ? ' · 🚀 Launch LIVE' : ''}${b.offerPercent ? ` · ${escapeHtml(b.offerPercent)}% OFF` : ''}</div>
-                </div>
-                <div style="display:flex;gap:14px;align-items:center;flex-shrink:0;">
-                  <button class="edit-batch-btn" data-id="${b.id}" style="color:var(--navy);font-size:12px;cursor:pointer;font-weight:600;background:none;border:none;">Edit</button>
-                  <button class="notice-delete" data-id="${b.id}">Delete</button>
-                </div>
-              </div>`;
-          });
-        });
-        list.innerHTML = html;
-        list.querySelectorAll('.edit-batch-btn').forEach(btn => {
-          btn.addEventListener('click', () => startEditBatch(btn.dataset.id));
-        });
-        list.querySelectorAll('.notice-delete').forEach(btn => {
-          btn.addEventListener('click', async () => {
-            const batch = batchesCache.find(x => x.id === btn.dataset.id);
-            const enrolled = batch ? allStudentsCache.filter(s => normalizeClassValue(s.data.class) === normalizeClassValue(batch.class) && normalizeBatchName(s.data.batchName) === normalizeBatchName(batch.name) && (s.data.studentStatus||'Active') === 'Active') : [];
-            const warning = enrolled.length ? `\n\n${enrolled.length} active student(s) are still enrolled in this batch. Delete anyway? Their student records will keep the old batch name.` : '';
-            if(!confirm(`Delete batch “${batch?.name || 'this batch'}”? This cannot be undone.${warning}`)) return;
-            if(editingBatchId === btn.dataset.id) cancelBatchEdit();
-            try{
-              await deleteDoc(doc(db, "batches", btn.dataset.id));
-              showToast('Batch deleted.');
-              await loadBatches();
-              await loadStudentList();
-            }catch(err){ showToast('Error deleting batch: '+err.message); }
-          });
-        });
-      }
-
-      updateBatchDropdown();
-      populateTargetBatchSelect('notice-target-class', 'notice-target-batch');
-      populateTargetBatchSelect('homework-target-class', 'homework-target-batch');
-      manualCommStudents();
-
-      // Keep the public Live Batches section in sync immediately whenever the
-      // batch list is loaded/created/updated/deleted. This must not depend on
-      // whether any students exist in the database.
-      updatePublicStats().catch(syncErr => console.warn('Public batch sync failed:', syncErr));
-    } catch(err){
-      console.error('Batch load error:', err);
-      // Do not destroy a previously loaded cache on a transient read failure.
-      // A temporary network/rules error must not cascade into every dependent dropdown.
-      const code = String(err?.code || 'unknown');
-      const detail = code === 'permission-denied'
-        ? 'Firestore rules are denying admin access to /batches. Publish the latest Firestore Rules and confirm you are logged in with the admin email.'
-        : code === 'batch-read-timeout'
-          ? 'Firestore did not respond within 8 seconds. Check the browser network connection and Firebase project status, then retry.'
-          : (err?.message || 'Please try again.');
-      list.innerHTML = '<div style="font-size:13px;color:#C0392B;"><strong>Unable to load batches.</strong><br>' + escapeHtml(detail) + '<br><span style="font-size:11px;color:var(--muted);">Error code: ' + escapeHtml(code) + '</span>' +
-        ' <div style="margin-top:10px;"><button type="button" id="retry-batches-btn" class="btn btn-secondary btn-small">Retry</button></div></div>';
-      document.getElementById('retry-batches-btn')?.addEventListener('click', loadBatches);
-    }
-  }
-
-  function updateBatchDropdown(){
-    const classVal = document.getElementById('f-class').value;
-    const batchSelect = document.getElementById('f-batch-name');
-    const serviceMode = document.getElementById('f-service-mode').value;
-    const batchesForClass = batchesCache.filter(b => normalizeClassValue(b.class) === normalizeClassValue(classVal));
-    if(batchesForClass.length === 0){
-      batchSelect.innerHTML = '<option value="">No batch / home tuition</option>';
-    } else {
-      batchSelect.innerHTML = '<option value="">No batch / home tuition</option>' +
-        batchesForClass.map(b => `<option value="${b.name}" data-timing="${b.timing || ''}">${b.name}</option>`).join('');
-    }
-    if(serviceMode === 'Home Tuition'){
-      batchSelect.value = '';
-      document.getElementById('f-batch').value = 'Home tuition — timing to be confirmed';
-    } else if(batchesForClass.length){
-      batchSelect.value = batchesForClass[0].name;
-      document.getElementById('f-batch').value = batchesForClass[0].timing || '';
-    }
-  }
-
-  function populateTargetBatchSelect(classSelectId, batchSelectId){
-    const classVal = document.getElementById(classSelectId).value;
-    const batchSelect = document.getElementById(batchSelectId);
-    if(!classVal){
-      batchSelect.innerHTML = '<option value="">All batches</option>';
-      return;
-    }
-    const batchesForClass = batchesCache.filter(b => normalizeClassValue(b.class) === normalizeClassValue(classVal));
-    if(batchesForClass.length === 0){
-      batchSelect.innerHTML = '<option value="">No batches for this class yet</option>';
-    } else {
-      batchSelect.innerHTML = '<option value="">All batches in Class ' + classVal + '</option>' +
-        batchesForClass.map(b => `<option value="${escapeHtml(String(b.name||''))}">${escapeHtml(String(b.name||''))}</option>`).join('');
-    }
-  }
 
   // Keep Notice/Homework batch dropdowns synchronized with the selected class.
   document.getElementById('notice-target-class')?.addEventListener('change', () => {
@@ -2413,7 +2415,7 @@
       // so the student dashboard can show the new rank without any manual profile save.
       const scoreClass = document.getElementById('bulk-score-class').value;
       const scoreBatch = document.getElementById('bulk-score-batch').value;
-      await refreshBatchInsights(scoreClass, scoreBatch);
+      await refreshBatchInsights(scoreClass, scoreBatch, dateStr, testName);
 
       showToast(`Saved scores for ${savedCount} student(s) and updated batch rank!`);
       document.getElementById('bulk-score-rows').innerHTML = '';
