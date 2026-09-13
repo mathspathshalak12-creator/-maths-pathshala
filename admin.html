@@ -2018,7 +2018,13 @@
     const list = document.getElementById('batches-list');
     list.innerHTML = '<div class="loading-row"><span class="spinner"></span>Loading batches...</div>';
     try{
-      const snap = await getDocs(collection(db, "batches"));
+      // Never leave the admin panel stuck forever if Firestore is offline,
+      // blocked by rules, or the request is waiting on a bad connection.
+      const firestoreRead = getDocs(collection(db, "batches"));
+      const snap = await Promise.race([
+        firestoreRead,
+        new Promise((_, reject) => setTimeout(() => reject(Object.assign(new Error('Firestore batch request timed out after 8 seconds.'), { code: 'batch-read-timeout' })), 8000))
+      ]);
       batchesCache = [];
       snap.forEach(docSnap => batchesCache.push({ id: docSnap.id, ...docSnap.data() }));
 
@@ -2078,11 +2084,14 @@
       batchesCache = [];
       updateBatchDropdown();
       updateBroadcastBatchDropdown();
-      list.innerHTML = '<div style="font-size:13px;color:#C0392B;">Unable to load batches. ' +
-        (err?.code === 'permission-denied'
-          ? 'Firebase rules are blocking admin access. Confirm the /batches rule is published with the latest Firestore Rules.'
-          : (err?.message || 'Please try again.')) +
-        ' <button type="button" id="retry-batches-btn" class="btn btn-secondary btn-small" style="margin-top:8px;">Retry</button></div>';
+      const code = String(err?.code || 'unknown');
+      const detail = code === 'permission-denied'
+        ? 'Firestore rules are denying admin access to /batches. Publish the latest Firestore Rules and confirm you are logged in with the admin email.'
+        : code === 'batch-read-timeout'
+          ? 'Firestore did not respond within 8 seconds. Check the browser network connection and Firebase project status, then retry.'
+          : (err?.message || 'Please try again.');
+      list.innerHTML = '<div style="font-size:13px;color:#C0392B;"><strong>Unable to load batches.</strong><br>' + escapeHtml(detail) + '<br><span style="font-size:11px;color:var(--muted);">Error code: ' + escapeHtml(code) + '</span>' +
+        ' <div style="margin-top:10px;"><button type="button" id="retry-batches-btn" class="btn btn-secondary btn-small">Retry</button></div></div>';
       document.getElementById('retry-batches-btn')?.addEventListener('click', loadBatches);
     }
   }
