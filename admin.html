@@ -525,7 +525,10 @@
         <div><label>Class</label><select id="homework-target-class"><option value="">All classes</option><option value="9">Class 9</option><option value="10">Class 10</option><option value="11">Class 11</option><option value="12">Class 12</option></select></div>
         <div><label>Batch</label><select id="homework-target-batch"><option value="">All batches</option></select></div>
       </div>
-      <button class="btn" id="post-homework-btn" style="margin-top:14px;">+ Post Homework</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
+        <button class="btn" id="post-homework-btn">+ Post Homework</button>
+        <button class="btn btn-secondary" id="cancel-homework-edit-btn" type="button" style="display:none;">Cancel Edit</button>
+      </div>
       <div id="homework-msg" class="msg"></div>
       <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--line);">
         <h3 style="margin:0 0 8px;color:var(--navy);">Recent Homework</h3>
@@ -2532,6 +2535,44 @@
   document.getElementById('cancel-batch-edit-btn').addEventListener('click', cancelBatchEdit);
 
 
+  let editingHomeworkId = null;
+
+  function formatHomeworkCreatedAt(value){
+    try{
+      if(value?.toDate) return value.toDate().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+      if(value) return new Date(value).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+    }catch(e){}
+    return '';
+  }
+
+  function resetHomeworkForm(){
+    editingHomeworkId = null;
+    document.getElementById('homework-title').value = '';
+    document.getElementById('homework-details').value = '';
+    document.getElementById('homework-due-date').value = '';
+    document.getElementById('homework-target-class').value = '';
+    refreshHomeworkBatchDropdown();
+    document.getElementById('homework-target-batch').value = '';
+    document.getElementById('post-homework-btn').textContent = '+ Post Homework';
+    document.getElementById('cancel-homework-edit-btn').style.display = 'none';
+    const msg = document.getElementById('homework-msg');
+    msg.textContent = '';
+    msg.className = 'msg';
+  }
+
+  function startHomeworkEdit(id, data){
+    editingHomeworkId = id;
+    document.getElementById('homework-title').value = String(data.title || '');
+    document.getElementById('homework-details').value = String(data.details || '');
+    document.getElementById('homework-due-date').value = String(data.dueDate || '');
+    document.getElementById('homework-target-class').value = String(data.targetClass || '');
+    refreshHomeworkBatchDropdown();
+    document.getElementById('homework-target-batch').value = String(data.targetBatch || '');
+    document.getElementById('post-homework-btn').textContent = 'Save Homework Changes';
+    document.getElementById('cancel-homework-edit-btn').style.display = 'inline-flex';
+    document.getElementById('homework-section')?.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
   async function loadHomeworkAdminList(){
     const box = document.getElementById('homework-admin-list');
     if(!box) return;
@@ -2544,22 +2585,46 @@
       box.innerHTML = '';
       let count = 0;
       snap.forEach(docSnap => {
-        if(count >= 8) return;
+        if(count >= 12) return;
         const h = docSnap.data();
         const target = h.targetClass
-          ? `Class ${h.targetClass}${h.targetBatch ? ' · ' + h.targetBatch : ''}`
-          : 'All classes';
-        const due = h.dueDate ? ` · Due ${dateInputToLabel(h.dueDate)}` : '';
+          ? `Class ${escapeHtml(h.targetClass)}${h.targetBatch ? ' · ' + escapeHtml(h.targetBatch) : ' (all batches)'}`
+          : 'All students';
+        const due = h.dueDate ? ` · Due ${escapeHtml(dateInputToLabel(h.dueDate))}` : '';
+        const created = formatHomeworkCreatedAt(h.createdAt);
         const item = document.createElement('div');
         item.style.cssText = 'padding:12px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:#fffdf9;';
-        item.innerHTML = `<strong>📝 ${escapeHtml(h.title || 'Homework')}</strong>
-          <div style="font-size:11.5px;color:var(--muted);margin-top:4px;">${target}${due}</div>
-          <div style="font-size:12.5px;color:var(--muted);margin-top:4px;">${escapeHtml(h.details || '')}</div>`;
+        item.innerHTML = `<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;">
+          <div style="min-width:0;">
+            <strong>📝 ${escapeHtml(h.title || 'Homework')}</strong>
+            <div style="font-size:11.5px;color:var(--muted);margin-top:4px;">${target}${due}${created ? ' · Posted ' + escapeHtml(created) : ''}</div>
+            <div style="font-size:12.5px;color:var(--muted);margin-top:4px;white-space:pre-wrap;">${escapeHtml(h.details || '')}</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;flex-shrink:0;">
+            <button type="button" class="homework-edit-btn" data-id="${docSnap.id}" style="color:var(--navy);font-size:12px;cursor:pointer;font-weight:600;background:none;border:none;">Edit</button>
+            <button type="button" class="homework-delete-btn notice-delete" data-id="${docSnap.id}">Delete</button>
+          </div>
+        </div>`;
+
+        item.querySelector('.homework-edit-btn').addEventListener('click', () => {
+          startHomeworkEdit(docSnap.id, h);
+        });
+        item.querySelector('.homework-delete-btn').addEventListener('click', async () => {
+          if(!confirm(`Delete homework “${h.title || 'Homework'}”? This cannot be undone.`)) return;
+          try{
+            await deleteDoc(doc(db, 'homework', docSnap.id));
+            if(editingHomeworkId === docSnap.id) resetHomeworkForm();
+            await loadHomeworkAdminList();
+            showToast('Homework deleted.');
+          }catch(err){
+            showToast('Error deleting homework: ' + (err?.message || 'Unknown error'));
+          }
+        });
         box.appendChild(item);
         count++;
       });
     } catch(err){
-      box.innerHTML = '<div class="msg error">Could not load homework: ' + err.message + '</div>';
+      box.innerHTML = '<div class="msg error">Could not load homework: ' + escapeHtml(err.message || 'Unknown error') + '</div>';
     }
   }
 
@@ -2569,15 +2634,23 @@
     if(!select) return;
     select.innerHTML = '<option value="">All batches</option>';
     if(!cls) return;
-    batchesCache.filter(b => normalizeClassValue(b.class) === normalizeClassValue(cls)).forEach(b => {
+    const batchesForClass = batchesCache.filter(b => normalizeClassValue(b.class) === normalizeClassValue(cls));
+    if(!batchesForClass.length){
+      select.innerHTML = '<option value="">No batches for this class yet</option>';
+      return;
+    }
+    batchesForClass.forEach(b => {
       const opt = document.createElement('option');
-      opt.value = b.name;
-      opt.textContent = b.name;
+      opt.value = String(b.name || '');
+      opt.textContent = String(b.name || '');
       select.appendChild(opt);
     });
   }
 
   const postHomeworkBtn = document.getElementById('post-homework-btn');
+  const cancelHomeworkEditBtn = document.getElementById('cancel-homework-edit-btn');
+  if(cancelHomeworkEditBtn) cancelHomeworkEditBtn.addEventListener('click', resetHomeworkForm);
+
   if(postHomeworkBtn){
     postHomeworkBtn.addEventListener('click', async () => {
       const title = document.getElementById('homework-title').value.trim();
@@ -2592,34 +2665,50 @@
         msg.className = 'msg error';
         return;
       }
+      if(targetClass && targetBatch && !batchesCache.some(b => normalizeClassValue(b.class) === normalizeClassValue(targetClass) && normalizeBatchName(b.name) === normalizeBatchName(targetBatch))){
+        msg.textContent = 'Selected batch is not available for this class. Please choose the batch again.';
+        msg.className = 'msg error';
+        return;
+      }
 
       postHomeworkBtn.disabled = true;
-      postHomeworkBtn.textContent = 'Posting...';
+      postHomeworkBtn.textContent = editingHomeworkId ? 'Saving...' : 'Posting...';
 
       try{
-        await addDoc(collection(db, "homework"), {
+        const recipientEmails = getTargetEmails(targetClass, targetBatch).map(e => String(e).toLowerCase());
+        const payload = {
           title,
           details,
           targetClass,
           targetBatch,
           dueDate,
-          recipientEmails: getTargetEmails(targetClass, targetBatch).map(e => String(e).toLowerCase()),
-          createdAt: serverTimestamp()
-        });
-
-        document.getElementById('homework-title').value = '';
-        document.getElementById('homework-details').value = '';
-        document.getElementById('homework-due-date').value = '';
-        msg.textContent = 'Homework posted successfully.';
-        msg.className = 'msg success';
+          recipientEmails
+        };
+        if(editingHomeworkId){
+          await updateDoc(doc(db, 'homework', editingHomeworkId), {
+            ...payload,
+            updatedAt: serverTimestamp()
+          });
+          msg.textContent = 'Homework updated successfully.';
+          msg.className = 'msg success';
+          showToast('Homework updated.');
+        }else{
+          await addDoc(collection(db, "homework"), {
+            ...payload,
+            createdAt: serverTimestamp()
+          });
+          msg.textContent = 'Homework posted successfully.';
+          msg.className = 'msg success';
+          showToast('Homework posted.');
+        }
         await loadHomeworkAdminList();
-        showToast('Homework posted.');
+        resetHomeworkForm();
       }catch(err){
-        msg.textContent = 'Error posting homework: ' + err.message;
+        msg.textContent = (editingHomeworkId ? 'Error updating homework: ' : 'Error posting homework: ') + (err?.message || 'Unknown error');
         msg.className = 'msg error';
       }finally{
         postHomeworkBtn.disabled = false;
-        postHomeworkBtn.textContent = '+ Post Homework';
+        postHomeworkBtn.textContent = editingHomeworkId ? 'Save Homework Changes' : '+ Post Homework';
       }
     });
   }
