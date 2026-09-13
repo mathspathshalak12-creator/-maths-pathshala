@@ -927,7 +927,7 @@
           <div class="student-brand-mark">∑</div>
           <div><strong>Maths Pathshala</strong><span>Student Learning Portal</span></div>
         </div>
-        <button class="dash-logout" id="dash-refresh-btn">↻ Refresh</button>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><button class="dash-logout" id="dash-refresh-btn">↻ Refresh</button></div>
       </div>
 
       <div class="student-hero-card">
@@ -1983,7 +1983,8 @@
         return `<article class="yt-card"><div class="yt-frame"><iframe src="https://www.youtube.com/embed/${id}" title="${title}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="yt-body"><div class="yt-label">${n===0?'Latest video':'Previous video'}</div><h3 class="yt-title">${title}</h3>${desc?`<p class="yt-desc">${desc}</p>`:''}</div></article>`;
       }).join('') || '<div class="yt-empty">Latest videos will appear here soon.</div>';
     }catch(err){
-      grid.innerHTML='<div class="yt-empty">Latest videos will appear here soon.</div>';
+      grid.innerHTML='<div class="yt-empty">Latest videos will appear here soon. <button type="button" id="retry-youtube" style="margin-left:6px;border:0;background:none;color:var(--amber-dark);font-weight:800;cursor:pointer;text-decoration:underline;">Retry</button></div>';
+      document.getElementById('retry-youtube')?.addEventListener('click', loadLatestYouTubeVideos, {once:true});
     }
   }
   loadLatestYouTubeVideos();
@@ -2007,7 +2008,8 @@
       if(snap && snap.exists()) batchStats = snap.data().batchStats || [];
     } catch(err){
       console.warn('Public batch data unavailable:', err);
-      grid.innerHTML = '<div class="batch-empty-state">Current batches could not be loaded right now. Please try again shortly.</div>';
+      grid.innerHTML = '<div class="batch-empty-state">Current batches could not be loaded right now. <button type="button" id="retry-public-batches" style="margin-left:6px;border:0;background:none;color:var(--amber-dark);font-weight:800;cursor:pointer;text-decoration:underline;">Retry</button></div>';
+      document.getElementById('retry-public-batches')?.addEventListener('click', loadBatchCardsGrid, {once:true});
       return;
     }
 
@@ -2219,8 +2221,9 @@
       mobileLoginBtn.textContent = 'Logout';
       window.scrollTo({top: 0, behavior: 'instant'});
 
-      // Keep the dashboard in sync with admin mark entries. Firebase data can change
-      // while the student page is already open, so refresh the student document automatically.
+      // Keep the dashboard fresh without hammering Firestore.
+      // A 60-second background refresh handles changes while the page stays open;
+      // returning to the tab/app triggers an immediate refresh.
       if(dashboardAutoRefreshTimer) clearInterval(dashboardAutoRefreshTimer);
       let dashboardRefreshBusy = false;
       dashboardAutoRefreshTimer = setInterval(async () => {
@@ -2234,7 +2237,7 @@
             dashboardRefreshBusy = false;
           }
         }
-      }, 10000);
+      }, 60000);
 
     } else {
       if(dashboardAutoRefreshTimer){ clearInterval(dashboardAutoRefreshTimer); dashboardAutoRefreshTimer = null; }
@@ -2247,17 +2250,27 @@
     }
   });
 
+  async function refreshDashboardOnReturn(){
+    if(!auth.currentUser || document.visibilityState === 'hidden') return;
+    try{
+      await loadStudentDashboard(auth.currentUser.email);
+      await loadNotices();
+      await loadHomework();
+    }catch(err){
+      console.warn('Dashboard return refresh failed:', err);
+    }
+  }
+  window.addEventListener('pageshow', refreshDashboardOnReturn);
+  document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible') refreshDashboardOnReturn(); });
+
   document.getElementById('dash-refresh-btn').addEventListener('click', async () => {
     if(auth.currentUser){
       const btn = document.getElementById('dash-refresh-btn');
       btn.textContent = 'Refreshing...';
-      await loadStudentDashboard(auth.currentUser.email);
-      await loadNotices();
-      await loadHomework();
-      btn.textContent = '↻ Refresh';
+      try{ await loadStudentDashboard(auth.currentUser.email); await loadNotices(); await loadHomework(); }
+      finally{ btn.textContent = '↻ Refresh'; }
     }
   });
-
   function matchesStudentTarget(data){
     if(!data.targetClass){ return true; }
     if(data.targetClass !== currentStudentClass){ return false; }
@@ -2364,7 +2377,7 @@
         shown++;
         const banner = document.createElement('div');
         banner.className = 'hw-banner';
-        banner.innerHTML = `<div class="hw-banner-title">📝 ${data.title}</div><div class="hw-banner-msg">${data.details}</div>`;
+        banner.innerHTML = `<div class="hw-banner-title">📝 ${dashEscapeHtml(data.title || 'Homework')}</div><div class="hw-banner-msg">${dashEscapeHtml(data.details || '')}</div>`;
         box.appendChild(banner);
       });
 
@@ -2522,6 +2535,10 @@
   function scoresForMonth(scores,key){ return (Array.isArray(scores)?scores:[]).filter(s=>monthKeyForDate(s.date)===key); }
   function scorePct(s){ return s && Number(s.max)>0 ? Math.round(Number(s.score)/Number(s.max)*100) : 0; }
 
+  function dashEscapeHtml(value){
+    return String(value ?? '').replace(/[&<>\'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;',"\"":'&quot;'}[ch]));
+  }
+
   async function loadStudentDashboard(email){
     document.getElementById('dash-name').innerHTML = '<span class="spinner"></span>Loading...';
     studentDashboard.style.display = 'block';
@@ -2530,12 +2547,8 @@
     const notFoundContent = document.getElementById('dash-not-found-content');
     document.getElementById('dash-email').textContent = email;
 
-    let docSnap = await getDoc(doc(db, "students", email.toLowerCase()));
-    // Older profiles may have been saved with the email's original casing.
-    // Try the authenticated email exactly before showing "profile not found".
-    if(!docSnap.exists() && email !== email.toLowerCase()){
-      docSnap = await getDoc(doc(db, "students", email));
-    }
+    const canonicalEmail = String(email || '').trim().toLowerCase();
+    let docSnap = await getDoc(doc(db, "students", canonicalEmail));
 
     if(!docSnap.exists()){
       foundContent.style.display='none';
@@ -2598,7 +2611,14 @@
     const scoresList=document.getElementById('dash-scores-list');
     scoresList.innerHTML=latestScore?`<li><span>${latestScore.date||''} — ${latestScore.name||'Latest Test'}</span><span>${latestScore.score}/${latestScore.max} · ${scorePct(latestScore)}% · Rank ${recent.rank&&recent.size?'#'+recent.rank+'/'+recent.size:'—'}</span></li>`:'<li>No test scores yet</li>';
     if(scores.length)renderScoreChart(scores); else if(window.scoreChartInstance)window.scoreChartInstance.destroy();
-    const notesList=document.getElementById('dash-notes-list'); const notes=Array.isArray(data.notes)?data.notes:[]; notesList.innerHTML=notes.length?notes.map(n=>`<li><span>${n.title}</span><span><a href="${n.url}" target="_blank">View</a> · <a href="${n.url}" download>Download</a></span></li>`).join(''):'<li>No notes assigned yet</li>';
+    const notesList=document.getElementById('dash-notes-list');
+    const notes=Array.isArray(data.notes)?data.notes:[];
+    notesList.innerHTML=notes.length?notes.map(n=>{
+      const title=dashEscapeHtml(n?.title || 'Note');
+      const url=String(n?.url || '').trim();
+      const safeUrl=/^(https?:\/\/|\/|\.\/?|[A-Za-z0-9_-]+\/)/i.test(url) ? dashEscapeHtml(url) : '#';
+      return `<li><span>${title}</span><span><a href="${safeUrl}" target="_blank" rel="noopener">View</a> · <a href="${safeUrl}" download>Download</a></span></li>`;
+    }).join(''):'<li>No notes assigned yet</li>';
     studentDashboard.style.display='block';
     } catch(err) {
       console.error('Student dashboard load failed:', err);
