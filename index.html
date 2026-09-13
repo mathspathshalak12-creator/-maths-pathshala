@@ -2548,7 +2548,11 @@
     document.getElementById('dash-email').textContent = email;
 
     const canonicalEmail = String(email || '').trim().toLowerCase();
-    let docSnap = await getDoc(doc(db, "students", canonicalEmail));
+    const studentReadPromise = getDoc(doc(db, "students", canonicalEmail));
+    const docSnap = await Promise.race([
+      studentReadPromise,
+      new Promise((_, reject) => setTimeout(() => reject(Object.assign(new Error('Student dashboard request timed out after 8 seconds.'), { code: 'student-read-timeout' })), 8000))
+    ]);
 
     if(!docSnap.exists()){
       foundContent.style.display='none';
