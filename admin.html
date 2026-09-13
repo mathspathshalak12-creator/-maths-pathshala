@@ -833,12 +833,24 @@
   function isValidStudentEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(canonicalStudentId(email)); }
   function normalizeAttendanceLog(log){
     const byDate=new Map();
-    (Array.isArray(log)?log:[]).forEach(e=>{const d=adminAttendanceDateKey(e?.date);const s=e?.status;if(d&&(s==='Present'||s==='Absent')) byDate.set(d,{date:d,status:s});});
+    (Array.isArray(log)?log:[]).forEach(e=>{
+      const d=adminAttendanceDateKey(e?.date);
+      const s=e?.status;
+      // Logs are normalized newest-first; keep the first valid entry for a date.
+      if(d&&(s==='Present'||s==='Absent')&&!byDate.has(d)) byDate.set(d,{date:d,status:s});
+    });
     return [...byDate.values()].sort((x,y)=>y.date.localeCompare(x.date));
   }
   function normalizeTestScores(scores){
     const byKey=new Map();
-    (Array.isArray(scores)?scores:[]).forEach(s=>{const name=String(s?.name||'Test').trim();const date=adminAttendanceDateKey(s?.date);const score=Number(s?.score);const max=Number(s?.max);if(date&&Number.isFinite(score)&&Number.isFinite(max)&&max>0) byKey.set(date+'__'+name.toLowerCase(),{name,date,score,max});});
+    (Array.isArray(scores)?scores:[]).forEach(s=>{
+      const name=String(s?.name||'Test').trim();
+      const date=adminAttendanceDateKey(s?.date);
+      const score=Number(s?.score);
+      const max=Number(s?.max);
+      const key=date+'__'+name.toLowerCase();
+      if(date&&Number.isFinite(score)&&Number.isFinite(max)&&max>0&&!byKey.has(key)) byKey.set(key,{name,date,score,max});
+    });
     return [...byKey.values()].sort((x,y)=>y.date.localeCompare(x.date)||x.name.localeCompare(y.name));
   }
   async function commitBatchOps(ops, chunkSize=450){
@@ -996,7 +1008,7 @@
     const dateLabel = dateInputToLabel(document.getElementById('bulk-att-date').value);
     container.innerHTML = '';
     bulkStudentsCache.forEach(student => {
-      const existingLog = (student.data.attendance && student.data.attendance.log) || [];
+      const existingLog = normalizeAttendanceLog(student.data.attendance?.log || []);
       const targetKey = adminAttendanceDateKey(dateLabel);
       const existingEntry = existingLog.find(e => adminAttendanceDateKey(e.date) === targetKey);
       const currentStatus = existingEntry ? existingEntry.status : null;
@@ -1465,9 +1477,9 @@
     document.getElementById('f-batch').value = data.batchTiming || '';
     document.getElementById('f-admission-date').value = data.admissionDate || '';
     document.getElementById('f-next-test').value = data.nextTest || '';
-    currentAttendanceLog = (data.attendance && data.attendance.log) || [];
-    currentNotes = data.notes || [];
-    currentTestScores = data.testScores || [];
+    currentAttendanceLog = normalizeAttendanceLog((data.attendance && data.attendance.log) || []);
+    currentNotes = Array.isArray(data.notes) ? data.notes : [];
+    currentTestScores = normalizeTestScores(data.testScores || []);
     currentStudentBatchStats = data.batchStats || {};
     renderAdminStudentInsights(data);
     currentPayments = data.feeHistory || [];
@@ -2671,7 +2683,7 @@
 
   document.getElementById('add-batch-btn').addEventListener('click', async () => {
     const cls = document.getElementById('batch-class-input').value;
-    const name = document.getElementById('batch-name-input').value.trim();
+    const name = document.getElementById('batch-name-input').value.trim().replace(/\s+/g,' ');
     const capacity = 7;
     const timing = document.getElementById('batch-timing-input').value.trim() || 'Timing to be confirmed';
     const intro = document.getElementById('batch-intro-input').value.trim() || 'Focused offline coaching with regular practice, testing and doubt support.';
@@ -2695,6 +2707,12 @@
     const isEditing = !!editingBatchId;
     btn.disabled = true; btn.textContent = isEditing ? 'Updating...' : 'Launching...';
     try{
+      const originalBatch = isEditing ? batchesCache.find(x => x.id === editingBatchId) : null;
+      const originalClassNorm = originalBatch ? normalizeClassValue(originalBatch.class) : '';
+      const originalBatchNorm = originalBatch ? normalizeBatchName(originalBatch.name) : '';
+      const classChanged = !!originalBatch && originalClassNorm !== normalizeClassValue(cls);
+      const nameChanged = !!originalBatch && originalBatchNorm !== normalizeBatchName(name);
+
       let photoUrl = isEditing ? (batchesCache.find(x => x.id === editingBatchId)?.photoUrl || '') : '';
       const photoFile = document.getElementById('batch-photo-input').files[0];
       if(photoFile){
@@ -2723,7 +2741,8 @@
           launchTitle, launchSubtitle, launchActive,
           updatedAt: serverTimestamp()
         });
-        showToast('Batch updated.');
+
+        showToast(classChanged || nameChanged ? 'Batch updated and enrolled students synchronized.' : 'Batch updated.');
         cancelBatchEdit();
       } else {
         btn.textContent = 'Launching...';
