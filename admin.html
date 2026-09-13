@@ -780,13 +780,24 @@
   // Keeping this as a no-op preserves the existing attendance/notice flows.
   function sendPushNotification(){ }
 
+  function normalizeClassValue(value){
+    const raw = String(value ?? '').trim().toLowerCase();
+    const m = raw.match(/(?:class\s*)?(9|10|11|12)(?:th)?(?:\s*standard)?/);
+    return m ? m[1] : raw;
+  }
+  function normalizeBatchName(value){
+    return String(value ?? '').trim().replace(/\s+/g,' ').toLowerCase();
+  }
+
   function getTargetEmails(targetClass, targetBatch){
+    const targetClassNorm = normalizeClassValue(targetClass);
+    const targetBatchNorm = normalizeBatchName(targetBatch);
     return allStudentsCache
       .filter(s => {
-        if(!targetClass) return true;
-        if(s.data.class !== targetClass) return false;
-        if(!targetBatch) return true;
-        return s.data.batchName === targetBatch;
+        if(!targetClassNorm) return true;
+        if(normalizeClassValue(s.data.class) !== targetClassNorm) return false;
+        if(!targetBatchNorm) return true;
+        return normalizeBatchName(s.data.batchName) === targetBatchNorm;
       })
       .map(s => s.id);
   }
@@ -2034,7 +2045,7 @@
         const classes = ['9','10','11','12'];
         let html = '';
         classes.forEach(cls => {
-          const batchesForClass = batchesCache.filter(b => String(b.class ?? '') === String(cls));
+          const batchesForClass = batchesCache.filter(b => normalizeClassValue(b.class) === normalizeClassValue(cls));
           if(batchesForClass.length === 0) return;
           html += `<div class="batch-class-group">Class ${cls}</div>`;
           batchesForClass.forEach(b => {
@@ -2058,7 +2069,7 @@
         list.querySelectorAll('.notice-delete').forEach(btn => {
           btn.addEventListener('click', async () => {
             const batch = batchesCache.find(x => x.id === btn.dataset.id);
-            const enrolled = batch ? allStudentsCache.filter(s => String(s.data.class||'') === String(batch.class||'') && String(s.data.batchName||'').trim() === String(batch.name||'').trim() && (s.data.studentStatus||'Active') === 'Active') : [];
+            const enrolled = batch ? allStudentsCache.filter(s => normalizeClassValue(s.data.class) === normalizeClassValue(batch.class) && normalizeBatchName(s.data.batchName) === normalizeBatchName(batch.name) && (s.data.studentStatus||'Active') === 'Active') : [];
             const warning = enrolled.length ? `\n\n${enrolled.length} active student(s) are still enrolled in this batch. Delete anyway? Their student records will keep the old batch name.` : '';
             if(!confirm(`Delete batch “${batch?.name || 'this batch'}”? This cannot be undone.${warning}`)) return;
             if(editingBatchId === btn.dataset.id) cancelBatchEdit();
@@ -2073,6 +2084,9 @@
       }
 
       updateBatchDropdown();
+      updateBroadcastBatchDropdown();
+      populateTargetBatchSelect('notice-target-class', 'notice-target-batch');
+      populateTargetBatchSelect('homework-target-class', 'homework-target-batch');
       updateBroadcastBatchDropdown();
 
       // Keep the public Live Batches section in sync immediately whenever the
@@ -2100,7 +2114,7 @@
     const classVal = document.getElementById('f-class').value;
     const batchSelect = document.getElementById('f-batch-name');
     const serviceMode = document.getElementById('f-service-mode').value;
-    const batchesForClass = batchesCache.filter(b => String(b.class ?? '') === String(classVal ?? ''));
+    const batchesForClass = batchesCache.filter(b => normalizeClassValue(b.class) === normalizeClassValue(classVal));
     if(batchesForClass.length === 0){
       batchSelect.innerHTML = '<option value="">No batch / home tuition</option>';
     } else {
@@ -2119,11 +2133,11 @@
   function updateBroadcastBatchDropdown(){
     const classVal = document.getElementById('broadcast-class-input').value;
     const batchSelect = document.getElementById('broadcast-batch-input');
-    const batchesForClass = batchesCache.filter(b => String(b.class ?? '') === String(classVal ?? ''));
+    const batchesForClass = batchesCache.filter(b => normalizeClassValue(b.class) === normalizeClassValue(classVal));
     if(batchesForClass.length === 0){
       batchSelect.innerHTML = '<option value="">No batches for this class yet</option>';
     } else {
-      batchSelect.innerHTML = batchesForClass.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+      batchSelect.innerHTML = batchesForClass.map(b => `<option value="${escapeHtml(String(b.name||''))}">${escapeHtml(String(b.name||''))}</option>`).join('');
     }
   }
 
@@ -2134,12 +2148,12 @@
       batchSelect.innerHTML = '<option value="">All batches</option>';
       return;
     }
-    const batchesForClass = batchesCache.filter(b => String(b.class ?? '') === String(classVal ?? ''));
+    const batchesForClass = batchesCache.filter(b => normalizeClassValue(b.class) === normalizeClassValue(classVal));
     if(batchesForClass.length === 0){
       batchSelect.innerHTML = '<option value="">No batches for this class yet</option>';
     } else {
       batchSelect.innerHTML = '<option value="">All batches in Class ' + classVal + '</option>' +
-        batchesForClass.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+        batchesForClass.map(b => `<option value="${escapeHtml(String(b.name||''))}">${escapeHtml(String(b.name||''))}</option>`).join('');
     }
   }
 
@@ -2201,9 +2215,9 @@
   document.getElementById('bulk-note-class').addEventListener('change', () => {
     const cls = document.getElementById('bulk-note-class').value;
     const batchSelect = document.getElementById('bulk-note-batch');
-    const batchesForClass = batchesCache.filter(b => String(b.class) === String(cls));
+    const batchesForClass = batchesCache.filter(b => normalizeClassValue(b.class) === normalizeClassValue(cls));
     batchSelect.innerHTML = batchesForClass.length
-      ? '<option value="">Select batch</option>' + batchesForClass.map(b => `<option value="${b.name}">${b.name}</option>`).join('')
+      ? '<option value="">Select batch</option>' + batchesForClass.map(b => `<option value="${escapeHtml(String(b.name||''))}">${escapeHtml(String(b.name||''))}</option>`).join('')
       : '<option value="">No batches for this class yet</option>';
   });
 
@@ -2329,11 +2343,11 @@
   function populateTargetBatchSelectPlain(classSelectId, batchSelectId){
     const classVal = document.getElementById(classSelectId).value;
     const batchSelect = document.getElementById(batchSelectId);
-    const batchesForClass = batchesCache.filter(b => b.class === classVal);
+    const batchesForClass = batchesCache.filter(b => normalizeClassValue(b.class) === normalizeClassValue(classVal));
     if(batchesForClass.length === 0){
       batchSelect.innerHTML = '<option value="">No batches for this class yet</option>';
     } else {
-      batchSelect.innerHTML = batchesForClass.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+      batchSelect.innerHTML = batchesForClass.map(b => `<option value="${escapeHtml(String(b.name||''))}">${escapeHtml(String(b.name||''))}</option>`).join('');
     }
   }
 
@@ -2571,7 +2585,7 @@
     if(!select) return;
     select.innerHTML = '<option value="">All batches</option>';
     if(!cls) return;
-    batchesCache.filter(b => b.class === cls).forEach(b => {
+    batchesCache.filter(b => normalizeClassValue(b.class) === normalizeClassValue(cls)).forEach(b => {
       const opt = document.createElement('option');
       opt.value = b.name;
       opt.textContent = b.name;
@@ -2700,7 +2714,7 @@
       showToast('Please enter a batch name.');
       return;
     }
-    const duplicate = batchesCache.some(b => String(b.name||'').trim().toLowerCase() === name.toLowerCase() && String(b.class) === String(cls) && b.id !== editingBatchId);
+    const duplicate = batchesCache.some(b => String(b.name||'').trim().toLowerCase() === name.toLowerCase() && normalizeClassValue(b.class) === normalizeClassValue(cls) && b.id !== editingBatchId);
     if(duplicate){
       showToast('A batch with this name already exists in this class.');
       return;
@@ -2726,8 +2740,8 @@
       if(isEditing){
         btn.textContent = 'Updating...';
         const oldBatch = batchesCache.find(x => x.id === editingBatchId);
-        if(oldBatch && (String(oldBatch.name||'').trim() !== name || String(oldBatch.class||'') !== String(cls))){
-          const affected = allStudentsCache.filter(s => String(s.data.class||'') === String(oldBatch.class||'') && String(s.data.batchName||'').trim() === String(oldBatch.name||'').trim());
+        if(oldBatch && (normalizeBatchName(oldBatch.name) !== normalizeBatchName(name) || normalizeClassValue(oldBatch.class) !== normalizeClassValue(cls))){
+          const affected = allStudentsCache.filter(s => normalizeClassValue(s.data.class) === normalizeClassValue(oldBatch.class) && normalizeBatchName(s.data.batchName) === normalizeBatchName(oldBatch.name));
           await commitBatchOps(affected.map(s => wb => wb.set(doc(db,'students',canonicalStudentId(s.id)),{class:cls,batchName:name,batchTiming:timing},{merge:true})));
           affected.forEach(s => { s.data.class=cls; s.data.batchName=name; s.data.batchTiming=timing; });
         }
