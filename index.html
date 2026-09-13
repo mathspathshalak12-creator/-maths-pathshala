@@ -549,9 +549,9 @@
   }
   .notice-banner-title{font-size:13.5px;font-weight:700;color:var(--amber);}
   .notice-banner-msg{font-size:13px;color:#172033;margin-top:3px;font-weight:600;}
-  .hw-banner{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);border-radius:12px;padding:14px 18px;margin-bottom:8px;backdrop-filter:blur(6px);}
-  .hw-banner-title{font-size:13.5px;font-weight:700;color:#fff;}
-  .hw-banner-msg{font-size:13px;color:#B9C2D6;margin-top:3px;}
+  .hw-banner{background:#FFF8E8;border:1px solid rgba(245,166,35,0.55);border-left:4px solid var(--amber);border-radius:12px;padding:14px 18px;margin-bottom:8px;box-shadow:0 6px 18px rgba(11,30,61,0.12);}
+  .hw-banner-title{font-size:13.5px;font-weight:800;color:#172033;}
+  .hw-banner-msg{font-size:13px;color:#38445A;margin-top:4px;line-height:1.5;}
 
   .payment-history-list{list-style:none;font-size:13px;max-height:120px;overflow-y:auto;margin-top:8px;}
   .payment-history-list li{display:flex;justify-content:space-between;padding:5px 0;color:#E4E0D6;}
@@ -2231,6 +2231,8 @@
           dashboardRefreshBusy = true;
           try{
             await loadStudentDashboard(auth.currentUser.email);
+            await loadNotices();
+            await loadHomework();
           }catch(err){
             console.warn('Dashboard auto-refresh failed:', err);
           }finally{
@@ -2271,19 +2273,25 @@
       finally{ btn.textContent = '↻ Refresh'; }
     }
   });
+  function normalizeDashClass(value){
+    return String(value || '').replace(/class\s*/ig,'').replace(/[^0-9a-z]/ig,'').toLowerCase();
+  }
+  function normalizeDashBatch(value){
+    return String(value || '').trim().replace(/\s+/g,' ').toLowerCase();
+  }
   function matchesStudentTarget(data){
     if(!data.targetClass){ return true; }
-    if(data.targetClass !== currentStudentClass){ return false; }
+    if(normalizeDashClass(data.targetClass) !== normalizeDashClass(currentStudentClass)){ return false; }
     if(!data.targetBatch){ return true; }
-    return data.targetBatch === currentStudentBatchName;
+    return normalizeDashBatch(data.targetBatch) === normalizeDashBatch(currentStudentBatchName);
   }
 
   function noticeMatchesCurrentStudent(data){
     if(!auth.currentUser) return false;
     if(!data.targetClass) return true;
-    if(String(data.targetClass) !== String(currentStudentClass)) return false;
+    if(normalizeDashClass(data.targetClass) !== normalizeDashClass(currentStudentClass)) return false;
     if(!data.targetBatch) return true;
-    return String(data.targetBatch) === String(currentStudentBatchName);
+    return normalizeDashBatch(data.targetBatch) === normalizeDashBatch(currentStudentBatchName);
   }
 
   function closeNoticePopup(markSeen=true){
@@ -2377,7 +2385,8 @@
         shown++;
         const banner = document.createElement('div');
         banner.className = 'hw-banner';
-        banner.innerHTML = `<div class="hw-banner-title">📝 ${dashEscapeHtml(data.title || 'Homework')}</div><div class="hw-banner-msg">${dashEscapeHtml(data.details || '')}</div>`;
+        const dueText = data.dueDate ? ` · Due ${dashEscapeHtml(data.dueDate)}` : '';
+        banner.innerHTML = `<div class="hw-banner-title">📝 ${dashEscapeHtml(data.title || 'Homework')}</div><div class="hw-banner-msg">${dashEscapeHtml(data.details || '')}${dueText ? `<span style="display:block;margin-top:6px;font-size:11.5px;font-weight:700;color:#8A5A00;">${dueText}</span>` : ''}</div>`;
         box.appendChild(banner);
       });
 
@@ -2593,7 +2602,7 @@
     document.getElementById('dash-class-batch').textContent=data.class&&data.batchName?`Class ${data.class} · ${data.batchName}`:'—';
     const feeBadge=document.getElementById('dash-fee-badge'); feeBadge.textContent=data.feeStatus||'Due'; feeBadge.className='dash-fee-badge '+(data.feeStatus==='Paid'?'dash-fee-paid':'dash-fee-due');
     document.getElementById('dash-admission-date').textContent=data.admissionDate?new Date(data.admissionDate+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'Not set yet';
-    const monthlyFeeList=document.getElementById('dash-monthly-fee-list'); monthlyFeeList.innerHTML=''; const mf=Array.isArray(data.monthlyFees)?data.monthlyFees.slice().sort((a,b)=>(b.monthKey||'').localeCompare(a.monthKey||'')):[]; monthlyFeeList.innerHTML=mf.length?mf.slice(0,6).map(m=>`<li><span>${m.monthLabel||monthLabel(m.monthKey)}</span><span class="${m.status==='Paid'?'att-present':'att-absent'}">${m.status}</span></li>`).join(''):'<li style="color:#B9C2D6">No monthly records yet</li>';
+    const monthlyFeeList=document.getElementById('dash-monthly-fee-list'); monthlyFeeList.innerHTML=''; const mf=Array.isArray(data.monthlyFees)?data.monthlyFees.slice().sort((a,b)=>(b.monthKey||'').localeCompare(a.monthKey||'')):[]; monthlyFeeList.innerHTML=mf.length?mf.slice(0,6).map(m=>`<li><span>${dashEscapeHtml(m.monthLabel||monthLabel(m.monthKey))}${m.status==='Paid'&&m.paymentDate?`<small style="display:block;font-size:10px;color:#B9C2D6;margin-top:2px;">Paid on ${dashEscapeHtml(m.paymentDate)}</small>`:''}</span><span class="${m.status==='Paid'?'att-present':'att-absent'}">${dashEscapeHtml(m.status)}</span></li>`).join(''):'<li style="color:#B9C2D6">No monthly records yet</li>';
     document.getElementById('dash-batch-value').textContent=data.batchTiming||'Not assigned yet'; document.getElementById('dash-next-test').textContent=data.nextTest||'None scheduled';
     if(data.nextTest && auth.currentUser){
       const signature=auth.currentUser.email.toLowerCase()+'|'+data.nextTest;
