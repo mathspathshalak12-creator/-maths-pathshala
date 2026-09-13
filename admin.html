@@ -1693,10 +1693,12 @@
 
       const meId=canonicalStudentId(document.getElementById('f-email').value);
       const me=students.find(s=>s.id===meId);
-      if(me) renderAdminStudentInsights({
-        ...me.data,
-        batchStats:{...(me.data.batchStats||{}),recentTest:rankMap[meId]||{}}
-      });
+      if(me){
+        const nextBatchStats={...(me.data.batchStats||{}),recentTest:rankMap[meId]||{}};
+        currentStudentBatchStats=nextBatchStats;
+        currentStudentFormData={...(currentStudentFormData||{}),batchStats:nextBatchStats};
+        renderAdminStudentInsights({...me.data,batchStats:nextBatchStats});
+      }
     }catch(err){
       console.warn('Batch insight refresh failed',err);
     }
@@ -2062,9 +2064,17 @@
       editingStudentId = email;
       saveMsg.textContent = 'Saved successfully!';
       saveMsg.className = 'msg success';
+      const previousData = currentStudentFormData || {};
+      const previousClass = previousData.class || '';
+      const previousBatch = previousData.batchName || '';
       await loadStudentList();
       const latestSavedTest=currentTestScores[0]||{};
+      // Rebuild the previous batch when the student was moved, then rebuild the new batch.
+      if(previousClass && previousBatch && (normalizeClassValue(previousClass)!==normalizeClassValue(studentData.class) || normalizeBatchName(previousBatch)!==normalizeBatchName(studentData.batchName))){
+        await refreshBatchInsights(previousClass, previousBatch);
+      }
       await refreshBatchInsights(studentData.class, studentData.batchName, latestSavedTest.date||'', latestSavedTest.name||'');
+      currentStudentFormData = { ...studentData, batchStats: currentStudentBatchStats };
     } catch(err){
       console.error('Student save error:',err);
       saveMsg.textContent = 'Error saving: ' + (err?.message || 'Unknown error');
@@ -2193,6 +2203,46 @@
   document.getElementById('homework-target-class')?.addEventListener('change', () => {
     populateTargetBatchSelect('homework-target-class', 'homework-target-batch');
   });
+
+  // Populate a class-linked batch dropdown from the single batchesCache source.
+  // This is shared by Notice, Homework, and any future targeted messaging controls.
+  function populateTargetBatchSelect(classSelectId, batchSelectId){
+    const classSelect = document.getElementById(classSelectId);
+    const batchSelect = document.getElementById(batchSelectId);
+    if(!classSelect || !batchSelect) return;
+
+    const classVal = normalizeClassValue(classSelect.value);
+    const current = batchSelect.value;
+    if(!classVal){
+      batchSelect.innerHTML = '<option value="">All batches</option>';
+      return;
+    }
+
+    const seen = new Set();
+    const batchesForClass = batchesCache
+      .filter(b => normalizeClassValue(b.class) === classVal)
+      .filter(b => {
+        const name = String(b?.name || '').trim();
+        const key = normalizeBatchName(name);
+        if(!name || seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .sort((a,b) => String(a.name||'').localeCompare(String(b.name||''), undefined, {numeric:true, sensitivity:'base'}));
+
+    if(!batchesForClass.length){
+      batchSelect.innerHTML = '<option value="">No batches for this class yet</option>';
+      return;
+    }
+
+    batchSelect.innerHTML = '<option value="">All batches</option>' +
+      batchesForClass.map(b => `<option value="${escapeHtml(String(b.name||''))}">${escapeHtml(String(b.name||''))}</option>`).join('');
+
+    if(current && batchesForClass.some(b => normalizeBatchName(b.name) === normalizeBatchName(current))){
+      const match = batchesForClass.find(b => normalizeBatchName(b.name) === normalizeBatchName(current));
+      if(match) batchSelect.value = match.name;
+    }
+  }
 
   // =========================
   // BATCH CORE — single source of truth for every admin dropdown
@@ -2546,7 +2596,7 @@
         const student = bulkScoreStudents.find(s => canonicalStudentId(s.id) === email);
         if(!student) return;
         const existingScores=normalizeTestScores(student.data.testScores||[]);
-        const merged=existingScores.filter(t=>!(adminAttendanceDateKey(t.date)===dateStr&&String(t.name||'').trim().toLowerCase()===testName.toLowerCase()));
+        const merged=existingScores.filter(t=>!(adminAttendanceDateKey(t.date)===adminAttendanceDateKey(dateStr)&&String(t.name||'').trim().toLowerCase()===testName.toLowerCase()));
         merged.push({name:testName,date:dateStr,score:scoreVal,max:maxMarks});
         scoreOps.push(wb => wb.set(doc(db,'students',email),{testScores:normalizeTestScores(merged)},{merge:true}));
         savedCount++;
@@ -3008,6 +3058,13 @@
           launchTitle, launchSubtitle, launchActive,
           updatedAt: serverTimestamp()
         });
+
+        // A batch move can change rank membership in both the old and new batch.
+        // Rebuild both caches so dashboards do not retain stale rank data.
+        if(classChanged || nameChanged){
+          await refreshBatchInsights(originalBatch?.class || '', originalBatch?.name || '');
+          await refreshBatchInsights(cls, name);
+        }
 
         showToast(classChanged || nameChanged ? 'Batch updated and enrolled students synchronized.' : 'Batch updated.');
         cancelBatchEdit();
