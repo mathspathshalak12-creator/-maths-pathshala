@@ -2169,6 +2169,14 @@
     }
   }
 
+  // Keep Notice/Homework batch dropdowns synchronized with the selected class.
+  document.getElementById('notice-target-class')?.addEventListener('change', () => {
+    populateTargetBatchSelect('notice-target-class', 'notice-target-batch');
+  });
+  document.getElementById('homework-target-class')?.addEventListener('change', () => {
+    populateTargetBatchSelect('homework-target-class', 'homework-target-batch');
+  });
+
   document.getElementById('f-class').addEventListener('change', updateBatchDropdown);
   document.getElementById('f-service-mode').addEventListener('change', updateBatchDropdown);
   document.getElementById('f-batch-name').addEventListener('change', () => {
