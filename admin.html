@@ -2194,6 +2194,153 @@
     populateTargetBatchSelect('homework-target-class', 'homework-target-batch');
   });
 
+  // =========================
+  // BATCH CORE — single source of truth for every admin dropdown
+  // =========================
+  function refreshAllBatchDependentDropdowns(){
+    try { updateBatchDropdown(); } catch(e){ console.warn('Student batch dropdown refresh failed:', e); }
+    try { populateTargetBatchSelect('notice-target-class','notice-target-batch'); } catch(e){ console.warn('Notice batch dropdown refresh failed:', e); }
+    try { populateTargetBatchSelect('homework-target-class','homework-target-batch'); } catch(e){ console.warn('Homework batch dropdown refresh failed:', e); }
+    try { populateTargetBatchSelectPlain('bulk-score-class','bulk-score-batch'); } catch(e){ console.warn('Bulk score batch dropdown refresh failed:', e); }
+    try {
+      const cls = document.getElementById('bulk-note-class')?.value || '';
+      const select = document.getElementById('bulk-note-batch');
+      if(select){
+        const list = batchesCache
+          .filter(b => normalizeClassValue(b.class) === normalizeClassValue(cls))
+          .sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),undefined,{numeric:true,sensitivity:'base'}));
+        select.innerHTML = !cls
+          ? '<option value="">Select class first</option>'
+          : (list.length
+              ? '<option value="">Select batch</option>' + list.map(b=>`<option value="${escapeHtml(String(b.name||''))}">${escapeHtml(String(b.name||''))}</option>`).join('')
+              : '<option value="">No batches for this class yet</option>');
+      }
+    } catch(e){ console.warn('Bulk note batch dropdown refresh failed:', e); }
+    try { manualCommStudents(); } catch(e){ console.warn('Communication student list refresh failed:', e); }
+  }
+
+  async function loadBatches(){
+    const list = document.getElementById('batches-list');
+    if(list) list.innerHTML = '<div class="loading-row"><span class="spinner"></span>Loading batches...</div>';
+    try{
+      const snap = await withTimeout(
+        getDocs(collection(db,'batches')),
+        10000,
+        'batch-read-timeout',
+        'Firestore batch request timed out after 10 seconds.'
+      );
+
+      const next = [];
+      snap.forEach(docSnap => {
+        const data = docSnap.data() || {};
+        const name = String(data.name || '').trim().replace(/\s+/g,' ');
+        if(!name) return;
+        next.push({id:docSnap.id,...data,name});
+      });
+      next.sort((a,b)=>normalizeClassValue(a.class).localeCompare(normalizeClassValue(b.class),undefined,{numeric:true}) || String(a.name).localeCompare(String(b.name),undefined,{numeric:true,sensitivity:'base'}));
+      batchesCache = next;
+
+      if(list){
+        if(!batchesCache.length){
+          list.innerHTML = '<div style="font-size:13px;color:var(--muted);">No batches created yet. Add one above.</div>';
+        }else{
+          const groups = new Map();
+          batchesCache.forEach(b=>{
+            const cls = normalizeClassValue(b.class) || String(b.class || 'Other');
+            if(!groups.has(cls)) groups.set(cls,[]);
+            groups.get(cls).push(b);
+          });
+          let html='';
+          [...groups.keys()].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true})).forEach(cls=>{
+            html += `<div class="batch-class-group">Class ${escapeHtml(cls)}</div>`;
+            groups.get(cls).forEach(b=>{
+              const enrolled = allStudentsCache.filter(s =>
+                normalizeClassValue(s.data.class) === normalizeClassValue(b.class) &&
+                normalizeBatchName(s.data.batchName) === normalizeBatchName(b.name) &&
+                (s.data.studentStatus || 'Active') === 'Active'
+              ).length;
+              const capacity = Number(b.capacity) > 0 ? Number(b.capacity) : 7;
+              const fillText = `${enrolled}/${capacity} students`;
+              html += `
+                <div class="batch-item">
+                  <div>
+                    <div class="batch-item-name">${escapeHtml(b.name)}</div>
+                    <div class="batch-item-meta">${escapeHtml(b.timing || 'Timing to be set')} · ${escapeHtml(fillText)}${b.launchActive ? ' · 🚀 Launch LIVE' : ''}${Number(b.offerPercent)>0 ? ` · ${escapeHtml(b.offerPercent)}% OFF` : ''}</div>
+                  </div>
+                  <div style="display:flex;gap:14px;align-items:center;flex-shrink:0;">
+                    <button type="button" class="edit-batch-btn" data-id="${escapeHtml(b.id)}" style="color:var(--navy);font-size:12px;cursor:pointer;font-weight:600;background:none;border:none;">Edit</button>
+                    <button type="button" class="delete-batch-btn notice-delete" data-id="${escapeHtml(b.id)}" style="color:#C0392B;font-size:12px;cursor:pointer;font-weight:600;background:none;border:none;">Delete</button>
+                  </div>
+                </div>`;
+            });
+          });
+          list.innerHTML=html;
+          list.querySelectorAll('.edit-batch-btn').forEach(btn=>btn.addEventListener('click',()=>startEditBatch(btn.dataset.id)));
+          list.querySelectorAll('.delete-batch-btn').forEach(btn=>btn.addEventListener('click',async()=>{
+            const id=btn.dataset.id;
+            const batch=batchesCache.find(x=>x.id===id);
+            if(!batch) return;
+            const enrolled=allStudentsCache.filter(s=>normalizeClassValue(s.data.class)===normalizeClassValue(batch.class)&&normalizeBatchName(s.data.batchName)===normalizeBatchName(batch.name)&&(s.data.studentStatus||'Active')==='Active');
+            const warning=enrolled.length?`\\n\\n${enrolled.length} active student(s) are enrolled. Deleting the batch will NOT delete their student records; they will keep the current batch name until you reassign them.`:'';
+            if(!confirm(`Delete batch “${batch.name}”? This cannot be undone.${warning}`)) return;
+            btn.disabled=true; btn.textContent='Deleting…';
+            try{
+              await deleteDoc(doc(db,'batches',id));
+              if(editingBatchId===id) cancelBatchEdit();
+              showToast('Batch deleted.');
+              await loadBatches();
+            }catch(err){
+              btn.disabled=false; btn.textContent='Delete';
+              showToast('Error deleting batch: '+(err?.message||'Unknown error'));
+            }
+          }));
+        }
+      }
+
+      refreshAllBatchDependentDropdowns();
+      // Public stats are a secondary cache; they must never block admin batch loading.
+      updatePublicStats().catch(err=>console.warn('Public batch stats sync failed:',err));
+      return batchesCache;
+    }catch(err){
+      console.error('Batch list load error:',err);
+      if(!batchesCache.length) refreshAllBatchDependentDropdowns();
+      if(list){
+        const code=String(err?.code||'unknown');
+        const detail=code==='permission-denied'
+          ? 'Firestore rules are denying admin access to /batches. Publish the latest Firestore Rules and confirm the admin account.'
+          : code==='batch-read-timeout'
+            ? 'Firestore did not respond within 10 seconds. Check the network/Firebase status and retry.'
+            : (err?.message||'Please try again.');
+        list.innerHTML=`<div style="font-size:13px;color:#C0392B;"><strong>Unable to load batches.</strong><br>${escapeHtml(detail)}<br><span style="font-size:11px;color:var(--muted);">Error code: ${escapeHtml(code)}</span><br><button type="button" id="retry-batches-btn" class="btn btn-secondary btn-small" style="margin-top:10px;">Retry</button></div>`;
+        document.getElementById('retry-batches-btn')?.addEventListener('click',loadBatches,{once:true});
+      }
+      return [];
+    }
+  }
+
+  function updateBatchDropdown(){
+    const classSelect=document.getElementById('f-class');
+    const batchSelect=document.getElementById('f-batch-name');
+    const serviceMode=document.getElementById('f-service-mode')?.value || '';
+    if(!classSelect || !batchSelect) return;
+    const classVal=normalizeClassValue(classSelect.value);
+    const batchesForClass=batchesCache.filter(b=>normalizeClassValue(b.class)===classVal);
+    const current=batchSelect.value;
+    batchSelect.innerHTML='<option value="">No batch / home tuition</option>'+
+      batchesForClass.map(b=>`<option value="${escapeHtml(String(b.name||''))}" data-timing="${escapeHtml(String(b.timing||''))}">${escapeHtml(String(b.name||''))}</option>`).join('');
+    if(serviceMode==='Home Tuition'){
+      batchSelect.value='';
+      const fBatch=document.getElementById('f-batch');
+      if(fBatch) fBatch.value='Home tuition — timing to be confirmed';
+      return;
+    }
+    const hasCurrent=batchesForClass.some(b=>normalizeBatchName(b.name)===normalizeBatchName(current));
+    batchSelect.value=hasCurrent?current:(batchesForClass[0]?.name||'');
+    const selected=batchSelect.selectedOptions[0];
+    const fBatch=document.getElementById('f-batch');
+    if(fBatch) fBatch.value=selected?.dataset?.timing || '';
+  }
+
   document.getElementById('f-class').addEventListener('change', updateBatchDropdown);
   document.getElementById('f-service-mode').addEventListener('change', updateBatchDropdown);
   document.getElementById('f-batch-name').addEventListener('change', () => {
@@ -2636,17 +2783,46 @@
     if(!select) return;
     select.innerHTML = '<option value="">All batches</option>';
     if(!cls) return;
-    const batchesForClass = batchesCache.filter(b => normalizeClassValue(b.class) === normalizeClassValue(cls));
+
+    // Homework dropdown must not depend on another UI section having refreshed first.
+    // Reuse the cache when available; otherwise fetch the admin-visible batches directly.
+    let source = Array.isArray(batchesCache) ? batchesCache.slice() : [];
+    if(!source.length){
+      try{
+        const snap = await getDocs(collection(db, 'batches'));
+        source = [];
+        snap.forEach(docSnap => source.push({ id: docSnap.id, ...docSnap.data() }));
+        batchesCache = source.slice();
+      }catch(err){
+        select.innerHTML = '<option value="">Unable to load batches</option>';
+        console.warn('Homework batch dropdown load failed:', err);
+        return;
+      }
+    }
+
+    const seen = new Set();
+    const batchesForClass = source.filter(b => {
+      const name = String(b?.name || '').trim();
+      const key = normalizeBatchName(name);
+      if(!name || seen.has(key)) return false;
+      if(normalizeClassValue(b?.class) !== normalizeClassValue(cls)) return false;
+      seen.add(key);
+      return true;
+    });
+
     if(!batchesForClass.length){
       select.innerHTML = '<option value="">No batches for this class yet</option>';
       return;
     }
-    batchesForClass.forEach(b => {
-      const opt = document.createElement('option');
-      opt.value = String(b.name || '');
-      opt.textContent = String(b.name || '');
-      select.appendChild(opt);
-    });
+
+    batchesForClass
+      .sort((a,b) => String(a.name||'').localeCompare(String(b.name||''), undefined, {numeric:true, sensitivity:'base'}))
+      .forEach(b => {
+        const opt = document.createElement('option');
+        opt.value = String(b.name || '');
+        opt.textContent = String(b.name || '');
+        select.appendChild(opt);
+      });
   }
 
   const postHomeworkBtn = document.getElementById('post-homework-btn');
