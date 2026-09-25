@@ -238,6 +238,24 @@
   @media(max-width:700px){.yt-admin-grid,.yt-admin-preview{grid-template-columns:1fr;}}
 </style>
 
+
+<style id="admissions-admin-style">
+  #admissions-section{display:none;}
+  .admission-toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px;}
+  .admission-list{display:grid;gap:10px;}
+  .admission-item{border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;}
+  .admission-item:hover{box-shadow:0 10px 28px rgba(11,30,61,.06);}
+  .admission-meta{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.6;}
+  .admission-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
+  .admission-status{border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:#fff;color:var(--navy);font:inherit;font-size:12px;font-weight:700;}
+  .admission-detail{position:fixed;inset:0;background:rgba(7,18,38,.58);z-index:1000;display:none;align-items:center;justify-content:center;padding:18px;}
+  .admission-detail-card{width:min(760px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:18px;padding:22px;box-shadow:0 30px 80px rgba(0,0,0,.22);}
+  .admission-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px;}
+  .admission-detail-row{border:1px solid var(--line);border-radius:10px;padding:11px;background:#fafbfc;}
+  .admission-detail-row span{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:800;margin-bottom:4px;}
+  .admission-detail-row strong{font-size:13px;white-space:pre-wrap;word-break:break-word;}
+  @media(max-width:600px){.admission-item{grid-template-columns:1fr}.admission-actions{justify-content:flex-start}.admission-detail-grid{grid-template-columns:1fr;}}
+</style>
 </head>
 <body>
 <div class="mp-admin-brandline">
@@ -263,6 +281,7 @@
       <nav class="admin-nav">
         <a href="#overview">Dashboard</a>
         <a href="#batches-section">Batches</a>
+        <a href="#admissions-section" id="admissions-nav-link">🎓 Admissions <em id="admission-new-count" style="display:none">0</em></a>
         <a href="#students-section">Students</a>
         <a href="#attendance-section">Attendance</a>
         <a href="#fees-section">Fees</a>
@@ -324,6 +343,31 @@
         <div id="fin-recent-payments"><div style="font-size:13px;color:var(--muted);">No payments recorded yet.</div></div>
         <div style="font-size:13px;font-weight:700;color:#C0392B;text-transform:uppercase;letter-spacing:.03em;margin:20px 0 10px;">Fee follow-up</div>
         <div id="fin-due-students"><div style="font-size:13px;color:var(--muted);">No pending fees.</div></div>
+      </div>
+    </div>
+
+
+    <div class="card" id="admissions-section">
+      <div class="card-title-row">
+        <div><span class="section-kicker">Private admissions</span><h2>Admission Applications</h2><p>New applications submitted through the premium admission form appear here. This section stays hidden until you open it.</p></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <button class="btn btn-secondary btn-small" id="refresh-admissions-btn" type="button">Refresh</button>
+          <button class="btn btn-secondary btn-small" id="close-admissions-btn" type="button">Close</button>
+        </div>
+      </div>
+      <div class="admission-toolbar">
+        <div style="font-size:12px;color:var(--muted);" id="admissions-summary">Click Admissions to load applications.</div>
+        <select class="admission-status" id="admission-filter">
+          <option value="All">All statuses</option><option value="New">New</option><option value="Contacted">Contacted</option><option value="Discussion / Demo">Discussion / Demo</option><option value="Selected">Selected</option><option value="Enrolled">Enrolled</option><option value="Closed">Closed</option>
+        </select>
+      </div>
+      <div id="admissions-list" class="admission-list"><div style="font-size:13px;color:var(--muted);">Admissions are hidden until you click the Admissions menu.</div></div>
+    </div>
+
+    <div class="admission-detail" id="admission-detail-modal">
+      <div class="admission-detail-card">
+        <div class="card-title-row"><div><span class="section-kicker">Application details</span><h2 id="admission-detail-title">Admission Application</h2></div><button class="btn btn-secondary btn-small" id="close-admission-modal" type="button">Close</button></div>
+        <div id="admission-detail-grid" class="admission-detail-grid"></div>
       </div>
     </div>
 
@@ -3150,6 +3194,81 @@
   });
   manualCommStudents();
 
+
+  // =========================
+  // ADMISSIONS — hidden admin section
+  // =========================
+  let admissionsCache = [];
+  let admissionsLoaded = false;
+  const admissionFields = [
+    ['studentName','Student'],['dob','Date of Birth'],['className','Class'],['programme','Programme'],['school','School'],['city','City / Area'],
+    ['parentName','Parent / Guardian'],['relationship','Relationship'],['parentPhone','Parent Mobile'],['whatsapp','WhatsApp'],['parentEmail','Email'],
+    ['preferredBatch','Preferred Batch'],['preferredTiming','Preferred Timing'],['goal','Academic Goal'],['previousResult','Previous Result'],
+    ['previousCoaching','Previous Coaching'],['concern','Academic Concern'],['source','How they heard about us']
+  ];
+  function admissionStatusOptions(current){
+    return ['New','Contacted','Discussion / Demo','Selected','Enrolled','Closed'].map(x=>`<option value="${escapeHtml(x)}" ${x===current?'selected':''}>${escapeHtml(x)}</option>`).join('');
+  }
+  function renderAdmissions(){
+    const box=document.getElementById('admissions-list'); if(!box) return;
+    const filter=document.getElementById('admission-filter')?.value || 'All';
+    const list=admissionsCache.filter(a=>filter==='All'||String(a.status||'New')===filter);
+    const newCount=admissionsCache.filter(a=>String(a.status||'New')==='New').length;
+    const badge=document.getElementById('admission-new-count');
+    if(badge){badge.textContent=newCount;badge.style.display=newCount?'inline':'none';}
+    const summary=document.getElementById('admissions-summary');
+    if(summary) summary.textContent=`${list.length} application${list.length===1?'':'s'} shown · ${newCount} new`;
+    if(!list.length){box.innerHTML='<div style="font-size:13px;color:var(--muted);padding:12px 0;">No applications match this filter.</div>';return;}
+    box.innerHTML=list.map(a=>{
+      const created=a.createdAt?.toDate ? a.createdAt.toDate().toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'}) : 'Date not available';
+      const id=a.applicationId || ('MP-'+String(a.id||'').slice(-6).toUpperCase());
+      return `<div class="admission-item">
+        <div><strong>${escapeHtml(a.studentName||'Unnamed Student')}</strong><div class="admission-meta">${escapeHtml(id)} · Class ${escapeHtml(a.className||'—')} · ${escapeHtml(a.programme||'Programme not selected')} · ${escapeHtml(a.parentPhone||'No phone')}<br>Submitted ${escapeHtml(created)}</div></div>
+        <div class="admission-actions"><select class="admission-status" data-status-id="${escapeHtml(a.id)}">${admissionStatusOptions(a.status||'New')}</select><button type="button" class="btn btn-secondary btn-small admission-view" data-id="${escapeHtml(a.id)}">View</button></div>
+      </div>`;
+    }).join('');
+    box.querySelectorAll('.admission-view').forEach(btn=>btn.addEventListener('click',()=>showAdmissionDetail(btn.dataset.id)));
+    box.querySelectorAll('[data-status-id]').forEach(sel=>sel.addEventListener('change',()=>updateAdmissionStatus(sel.dataset.statusId,sel.value)));
+  }
+  async function loadAdmissionsAdminList(){
+    const box=document.getElementById('admissions-list');
+    if(box) box.innerHTML='<div style="font-size:13px;color:var(--muted);"><span class="spinner"></span> Loading admission applications...</div>';
+    try{
+      const snap=await getDocs(query(collection(db,'admissions'),orderBy('createdAt','desc')));
+      admissionsCache=[];
+      snap.forEach(d=>admissionsCache.push({id:d.id,...(d.data()||{})}));
+      admissionsLoaded=true; renderAdmissions();
+    }catch(err){
+      console.error('Admissions load error:',err);
+      if(box) box.innerHTML=`<div class="msg error">Could not load admissions: ${escapeHtml(err.message||'Unknown error')}</div>`;
+    }
+  }
+  async function updateAdmissionStatus(id,status){
+    try{
+      await updateDoc(doc(db,'admissions',id),{status,updatedAt:serverTimestamp()});
+      const item=admissionsCache.find(a=>a.id===id); if(item) item.status=status;
+      renderAdmissions(); showToast('Admission status updated.');
+    }catch(err){showToast('Could not update admission status: '+(err.message||'Unknown error'));renderAdmissions();}
+  }
+  function showAdmissionDetail(id){
+    const a=admissionsCache.find(x=>x.id===id); if(!a) return;
+    const title=document.getElementById('admission-detail-title'); const grid=document.getElementById('admission-detail-grid'); const modal=document.getElementById('admission-detail-modal');
+    if(title) title.textContent=(a.studentName||'Admission Application')+' · '+(a.applicationId||'');
+    if(grid) grid.innerHTML=admissionFields.map(([key,label])=>`<div class="admission-detail-row"><span>${escapeHtml(label)}</span><strong>${escapeHtml(a[key]||'—')}</strong></div>`).join('') + `<div class="admission-detail-row"><span>Status</span><strong>${escapeHtml(a.status||'New')}</strong></div>`;
+    if(modal) modal.style.display='flex';
+  }
+  function closeAdmissionDetail(){const m=document.getElementById('admission-detail-modal');if(m)m.style.display='none';}
+  function openAdmissions(){
+    const section=document.getElementById('admissions-section'); if(!section)return;
+    section.style.display='block'; section.scrollIntoView({behavior:'smooth',block:'start'});
+    if(!admissionsLoaded) loadAdmissionsAdminList(); else renderAdmissions();
+  }
+  document.getElementById('admissions-nav-link')?.addEventListener('click',e=>{e.preventDefault();openAdmissions();});
+  document.getElementById('close-admissions-btn')?.addEventListener('click',()=>{const s=document.getElementById('admissions-section');if(s)s.style.display='none';});
+  document.getElementById('refresh-admissions-btn')?.addEventListener('click',loadAdmissionsAdminList);
+  document.getElementById('admission-filter')?.addEventListener('change',renderAdmissions);
+  document.getElementById('close-admission-modal')?.addEventListener('click',closeAdmissionDetail);
+  document.getElementById('admission-detail-modal')?.addEventListener('click',e=>{if(e.target.id==='admission-detail-modal')closeAdmissionDetail();});
 </script>
 </body>
 </html>
