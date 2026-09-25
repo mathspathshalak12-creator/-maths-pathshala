@@ -358,7 +358,7 @@
       <div class="admission-toolbar">
         <div style="font-size:12px;color:var(--muted);" id="admissions-summary">Click Admissions to load applications.</div>
         <select class="admission-status" id="admission-filter">
-          <option value="All">All statuses</option><option value="New">New</option><option value="Contacted">Contacted</option><option value="Discussion / Demo">Discussion / Demo</option><option value="Selected">Selected</option><option value="Enrolled">Enrolled</option><option value="Closed">Closed</option>
+          <option value="Active">Active enquiries</option><option value="All">All active statuses</option><option value="New">New</option><option value="Contacted">Contacted</option><option value="Discussion / Demo">Discussion / Demo</option><option value="Selected">Selected</option><option value="Enrolled">Enrolled</option><option value="Closed">Closed</option><option value="Archived">Archived</option>
         </select>
       </div>
       <div id="admissions-list" class="admission-list"><div style="font-size:13px;color:var(--muted);">Admissions are hidden until you click the Admissions menu.</div></div>
@@ -3211,9 +3211,15 @@
   }
   function renderAdmissions(){
     const box=document.getElementById('admissions-list'); if(!box) return;
-    const filter=document.getElementById('admission-filter')?.value || 'All';
-    const list=admissionsCache.filter(a=>filter==='All'||String(a.status||'New')===filter);
-    const newCount=admissionsCache.filter(a=>String(a.status||'New')==='New').length;
+    const filter=document.getElementById('admission-filter')?.value || 'Active';
+    const list=admissionsCache.filter(a=>{
+      const archived=!!a.archived || String(a.status||'')==='Archived';
+      if(filter==='Active') return !archived;
+      if(filter==='All') return !archived;
+      if(filter==='Archived') return archived;
+      return !archived && String(a.status||'New')===filter;
+    });
+    const newCount=admissionsCache.filter(a=>!a.archived && String(a.status||'New')==='New').length;
     const badge=document.getElementById('admission-new-count');
     if(badge){badge.textContent=newCount;badge.style.display=newCount?'inline':'none';}
     const summary=document.getElementById('admissions-summary');
@@ -3224,11 +3230,28 @@
       const id=a.applicationId || ('MP-'+String(a.id||'').slice(-6).toUpperCase());
       return `<div class="admission-item">
         <div><strong>${escapeHtml(a.studentName||'Unnamed Student')}</strong><div class="admission-meta">${escapeHtml(id)} · Class ${escapeHtml(a.className||'—')} · ${escapeHtml(a.programme||'Programme not selected')} · ${escapeHtml(a.parentPhone||'No phone')}<br>Submitted ${escapeHtml(created)}</div></div>
-        <div class="admission-actions"><select class="admission-status" data-status-id="${escapeHtml(a.id)}">${admissionStatusOptions(a.status||'New')}</select><button type="button" class="btn btn-secondary btn-small admission-view" data-id="${escapeHtml(a.id)}">View</button></div>
+        <div class="admission-actions"><select class="admission-status" data-status-id="${escapeHtml(a.id)}" ${a.archived?'disabled':''}>${admissionStatusOptions(a.status||'New')}</select><button type="button" class="btn btn-secondary btn-small admission-view" data-id="${escapeHtml(a.id)}">View</button>${a.archived?`<button type="button" class="btn btn-secondary btn-small admission-unarchive" data-id="${escapeHtml(a.id)}">Restore</button>`:`<button type="button" class="btn btn-secondary btn-small admission-archive" data-id="${escapeHtml(a.id)}">Archive</button>`}</div>
       </div>`;
     }).join('');
     box.querySelectorAll('.admission-view').forEach(btn=>btn.addEventListener('click',()=>showAdmissionDetail(btn.dataset.id)));
     box.querySelectorAll('[data-status-id]').forEach(sel=>sel.addEventListener('change',()=>updateAdmissionStatus(sel.dataset.statusId,sel.value)));
+    box.querySelectorAll('.admission-archive').forEach(btn=>btn.addEventListener('click',()=>archiveAdmission(btn.dataset.id)));
+    box.querySelectorAll('.admission-unarchive').forEach(btn=>btn.addEventListener('click',()=>restoreAdmission(btn.dataset.id)));
+  }
+  async function archiveAdmission(id){
+    if(!confirm('Archive this enquiry? It will disappear from the active list but remain safely stored in Firebase.')) return;
+    try{
+      await updateDoc(doc(db,'admissions',id),{archived:true,archivedAt:serverTimestamp(),updatedAt:serverTimestamp()});
+      const item=admissionsCache.find(a=>a.id===id); if(item){item.archived=true;}
+      renderAdmissions(); showToast('Enquiry archived.');
+    }catch(err){showToast('Could not archive enquiry: '+(err.message||'Unknown error'));}
+  }
+  async function restoreAdmission(id){
+    try{
+      await updateDoc(doc(db,'admissions',id),{archived:false,updatedAt:serverTimestamp()});
+      const item=admissionsCache.find(a=>a.id===id); if(item){item.archived=false;}
+      renderAdmissions(); showToast('Enquiry restored.');
+    }catch(err){showToast('Could not restore enquiry: '+(err.message||'Unknown error'));}
   }
   async function loadAdmissionsAdminList(){
     const box=document.getElementById('admissions-list');
