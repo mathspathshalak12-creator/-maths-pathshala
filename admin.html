@@ -269,6 +269,14 @@
   @media(max-width:600px){.ht-grid,.ht-finance{grid-template-columns:1fr}.ht-internal-head{display:block}.ht-private{display:inline-block;margin-top:7px}}
   @media(max-width:600px){.admission-item{grid-template-columns:1fr}.admission-actions{justify-content:flex-start}.admission-detail-grid{grid-template-columns:1fr;}}
 </style>
+
+<style id="teacher-management-style">
+.teacher-management-panel{margin-top:18px;padding:18px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,.98),rgba(253,248,238,.9));}
+.teacher-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 16px;}
+.teacher-row{display:grid;grid-template-columns:1.2fr .9fr 1fr 1fr auto;gap:10px;align-items:center;padding:12px 0;border-top:1px solid var(--line);}
+.teacher-row-main strong{display:block;color:var(--navy);font-size:14px}.teacher-row-main small{display:block;color:var(--muted);margin-top:3px;line-height:1.5}.teacher-badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800;background:#e9f7ef;color:#1e7a46}.teacher-badge.inactive{background:#f3f4f6;color:#6b7280}
+@media(max-width:760px){.teacher-form-grid{grid-template-columns:1fr}.teacher-row{grid-template-columns:1fr}.teacher-row button{justify-self:start}}
+</style>
 </head>
 <body>
 <div class="mp-admin-brandline">
@@ -365,6 +373,7 @@
         <div><span class="section-kicker">Private admissions</span><h2>Admission Applications</h2><p>New applications submitted through the premium admission form appear here. This section stays hidden until you open it.</p></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
           <button class="btn btn-secondary btn-small" id="refresh-admissions-btn" type="button">Refresh</button>
+          <button class="btn btn-small" id="toggle-teacher-management-btn" type="button">👨‍🏫 Teacher Management</button>
           <button class="btn btn-secondary btn-small" id="close-admissions-btn" type="button">Close</button>
         </div>
       </div>
@@ -375,6 +384,28 @@
         </select>
       </div>
       <div id="admissions-list" class="admission-list"><div style="font-size:13px;color:var(--muted);">Admissions are hidden until you click the Admissions menu.</div></div>
+
+      <div id="teacher-management-panel" class="teacher-management-panel" style="display:none;">
+        <div class="card-title-row" style="margin-top:18px;">
+          <div><span class="section-kicker">Home Tuition Team</span><h3 style="margin:4px 0 4px;">Teacher Management</h3><p style="margin:0;color:var(--muted);font-size:12px;">Save each teacher once. Their default first-month commission will auto-fill when you assign them to a Home Tuition enquiry.</p></div>
+          <button class="btn btn-secondary btn-small" id="teacher-cancel-edit-btn" type="button" style="display:none;">Cancel Edit</button>
+        </div>
+        <div class="teacher-form-grid">
+          <div><label>Teacher Name</label><input id="teacher-name-input" placeholder="e.g. Amit Sharma"></div>
+          <div><label>Teacher WhatsApp / Phone</label><input id="teacher-phone-input" type="tel" placeholder="e.g. 9876543210"></div>
+          <div><label>Subjects</label><input id="teacher-subjects-input" placeholder="e.g. Mathematics, Science"></div>
+          <div><label>Areas / Localities</label><input id="teacher-areas-input" placeholder="e.g. Kalyanpur, Kakadeo"></div>
+          <div><label>Availability</label><input id="teacher-availability-input" placeholder="e.g. Mon–Sat, 4–8 PM"></div>
+          <div><label>Default First-Month Commission %</label><input id="teacher-commission-input" type="number" min="0" max="100" step="1" value="50"></div>
+          <div><label>Status</label><select id="teacher-status-input"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+        </div>
+        <div class="ht-actions" style="margin-top:12px;">
+          <button type="button" class="btn btn-small" id="teacher-save-btn">+ Add Teacher</button>
+          <button type="button" class="btn btn-secondary btn-small" id="teacher-refresh-btn">Refresh Teachers</button>
+        </div>
+        <div class="msg" id="teacher-form-msg"></div>
+        <div id="teachers-list" style="margin-top:14px;"><div style="font-size:12px;color:var(--muted);">No teachers loaded yet.</div></div>
+      </div>
     </div>
 
     <div class="admission-detail" id="admission-detail-modal">
@@ -384,6 +415,7 @@
         <div class="ht-internal" id="home-tuition-internal">
           <div class="ht-internal-head"><div><div class="ht-internal-title">🏠 Home Tuition — Internal Management</div><div style="font-size:11px;color:var(--muted);margin-top:3px;">Admin-only. Teacher assignment, finance and notes are never sent to the parent automatically.</div></div><span class="ht-private">ADMIN ONLY</span></div>
           <div class="ht-grid">
+            <div><label>Select Teacher</label><select id="ht-teacher-select"><option value="">Select a saved teacher</option></select><div style="font-size:11px;color:var(--muted);margin-top:5px;">Selecting a teacher fills their contact, subjects and default commission. You can still edit the assignment-specific values.</div></div>
             <div><label>Assigned Teacher</label><input id="ht-teacher-name" placeholder="Teacher name"></div>
             <div><label>Teacher Contact</label><input id="ht-teacher-phone" placeholder="Optional"></div>
             <div><label>Teaching Subject(s)</label><input id="ht-subjects" placeholder="e.g. Mathematics"></div>
@@ -1020,6 +1052,7 @@
       try { loadNotices(); } catch(e) { console.warn("Notices load failed:", e); }
       try { loadBranding(); } catch(e) { console.warn("Branding load failed:", e); }
       try { await loadHomeworkAdminList(); } catch(e) { console.warn("Homework load failed:", e); }
+      try { await loadTeachers(); } catch(e) { console.warn("Teacher list load failed:", e); }
 
     } else {
       loginScreen.style.display = 'block';
@@ -1869,18 +1902,6 @@
   </div>
   <div class="foot">Generated by Maths Pathshala · Share this report with parents for monthly progress tracking.</div>
 </div>
-
-<script>
-/* Home Tuition: variable first-month commission helper.
-   Admin-only UI can call this function when fee or percentage changes. */
-function calculateTeacherCommission(parentFee, commissionPercent){
-  const fee = Number(parentFee) || 0;
-  const pct = Math.max(0, Number(commissionPercent) || 0);
-  const commission = Math.round(fee * pct / 100);
-  const teacherAmount = Math.max(0, fee - commission);
-  return { commission, teacherAmount, recurringCommissionPercent: 0 };
-}
-</script>
 
 </body></html>`);
     win.document.close();win.focus();setTimeout(()=>win.print(),350);
@@ -3326,12 +3347,138 @@ function calculateTeacherCommission(parentFee, commissionPercent){
     }catch(err){showToast('Could not update admission status: '+(err.message||'Unknown error'));renderAdmissions();}
   }
   function currentAdmission(){const id=document.getElementById('admission-detail-modal')?.dataset.admissionId;return id?admissionsCache.find(x=>x.id===id):null;}
+  let teachersCache = [];
+  let editingTeacherId = null;
+
+  function teacherSafeText(value){ return escapeHtml(String(value ?? '').trim()); }
+
+  async function loadTeachers(){
+    const list=document.getElementById('teachers-list');
+    if(list) list.innerHTML='<div style="font-size:12px;color:var(--muted);"><span class="spinner"></span> Loading teachers...</div>';
+    try{
+      const snap=await getDocs(collection(db,'teachers'));
+      teachersCache=[];
+      snap.forEach(d=>teachersCache.push({id:d.id,...(d.data()||{})}));
+      teachersCache.sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
+      renderTeachers();
+      populateTeacherSelect();
+      return teachersCache;
+    }catch(err){
+      console.error('Teacher load error:',err);
+      if(list) list.innerHTML=`<div class="msg error">Could not load teachers: ${escapeHtml(err.message||'Unknown error')}<br><span style="font-size:11px;">If Firestore rules are not updated for <b>teachers</b> yet, add the admin-only rule later.</span></div>`;
+      throw err;
+    }
+  }
+
+  function renderTeachers(){
+    const list=document.getElementById('teachers-list'); if(!list)return;
+    if(!teachersCache.length){ list.innerHTML='<div style="font-size:12px;color:var(--muted);padding:10px 0;">No teachers saved yet. Add your first teacher above.</div>'; return; }
+    list.innerHTML=teachersCache.map(t=>{
+      const badge=t.status==='Inactive'?'teacher-badge inactive':'teacher-badge';
+      return `<div class="teacher-row">\
+        <div class="teacher-row-main"><strong>${teacherSafeText(t.name||'Unnamed teacher')}</strong><small>${teacherSafeText(t.phone||'No phone')} · ${teacherSafeText(t.subjects||'Subjects not set')}<br>${teacherSafeText(t.areas||'Areas not set')} · ${teacherSafeText(t.availability||'Availability not set')}</small></div>\
+        <div><span class="${badge}">${teacherSafeText(t.status||'Active')}</span></div>\
+        <div><small style="color:var(--muted);font-weight:700;">Default first-month</small><strong>${Number(t.commissionPct||0)}%</strong></div>\
+        <div><small style="color:var(--muted);">Teacher ID</small><div style="font-size:11px;word-break:break-all;">${teacherSafeText(t.id)}</div></div>\
+        <div style="display:flex;gap:6px;flex-wrap:wrap;"><button type="button" class="btn btn-secondary btn-small teacher-edit-btn" data-id="${teacherSafeText(t.id)}">Edit</button><button type="button" class="btn btn-small teacher-delete-btn" data-id="${teacherSafeText(t.id)}" style="background:#f5e5e5;color:#9b2c2c;">Delete</button></div>\
+      </div>`;
+    }).join('');
+    list.querySelectorAll('.teacher-edit-btn').forEach(btn=>btn.addEventListener('click',()=>startTeacherEdit(btn.dataset.id)));
+    list.querySelectorAll('.teacher-delete-btn').forEach(btn=>btn.addEventListener('click',()=>deleteTeacher(btn.dataset.id)));
+  }
+
+  function populateTeacherSelect(selectedId=''){
+    const select=document.getElementById('ht-teacher-select'); if(!select)return;
+    const active=teachersCache.filter(t=>t.status!=='Inactive');
+    select.innerHTML='<option value="">Select a saved teacher</option>'+active.map(t=>`<option value="${teacherSafeText(t.id)}">${teacherSafeText(t.name)} — ${Number(t.commissionPct||0)}%</option>`).join('');
+    if(selectedId) select.value=selectedId;
+  }
+
+  function resetTeacherForm(){
+    editingTeacherId=null;
+    ['teacher-name-input','teacher-phone-input','teacher-subjects-input','teacher-areas-input','teacher-availability-input'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+    document.getElementById('teacher-commission-input').value='50';
+    document.getElementById('teacher-status-input').value='Active';
+    document.getElementById('teacher-save-btn').textContent='+ Add Teacher';
+    document.getElementById('teacher-cancel-edit-btn').style.display='none';
+    const msg=document.getElementById('teacher-form-msg'); if(msg){msg.textContent='';msg.className='msg';}
+  }
+
+  function startTeacherEdit(id){
+    const t=teachersCache.find(x=>x.id===id); if(!t)return;
+    editingTeacherId=id;
+    document.getElementById('teacher-name-input').value=t.name||'';
+    document.getElementById('teacher-phone-input').value=t.phone||'';
+    document.getElementById('teacher-subjects-input').value=t.subjects||'';
+    document.getElementById('teacher-areas-input').value=t.areas||'';
+    document.getElementById('teacher-availability-input').value=t.availability||'';
+    document.getElementById('teacher-commission-input').value=Number(t.commissionPct||0);
+    document.getElementById('teacher-status-input').value=t.status||'Active';
+    document.getElementById('teacher-save-btn').textContent='Update Teacher';
+    document.getElementById('teacher-cancel-edit-btn').style.display='inline-block';
+    document.getElementById('teacher-management-panel').scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+
+  async function saveTeacher(){
+    const name=document.getElementById('teacher-name-input').value.trim();
+    const phone=document.getElementById('teacher-phone-input').value.trim();
+    const subjects=document.getElementById('teacher-subjects-input').value.trim();
+    const areas=document.getElementById('teacher-areas-input').value.trim();
+    const availability=document.getElementById('teacher-availability-input').value.trim();
+    const commissionPct=Math.min(100,Math.max(0,Number(document.getElementById('teacher-commission-input').value||0)));
+    const status=document.getElementById('teacher-status-input').value;
+    const msg=document.getElementById('teacher-form-msg');
+    if(!name){msg.textContent='Teacher name is required.';msg.className='msg error';return;}
+    const payload={name,phone,subjects,areas,availability,commissionPct,status,updatedAt:serverTimestamp()};
+    try{
+      if(editingTeacherId){
+        await updateDoc(doc(db,'teachers',editingTeacherId),payload);
+        showToast('Teacher updated.');
+      }else{
+        await addDoc(collection(db,'teachers'),{...payload,createdAt:serverTimestamp()});
+        showToast('Teacher added.');
+      }
+      msg.textContent='Saved successfully.';msg.className='msg success';
+      resetTeacherForm();
+      await loadTeachers();
+    }catch(err){
+      console.error('Teacher save error:',err);msg.textContent='Could not save teacher: '+(err.message||'Unknown error');msg.className='msg error';
+    }
+  }
+
+  async function deleteTeacher(id){
+    const t=teachersCache.find(x=>x.id===id); if(!t)return;
+    if(!confirm(`Delete teacher ${t.name||''}? Existing Home Tuition assignments will keep their saved teacher details.`))return;
+    try{await deleteDoc(doc(db,'teachers',id));if(editingTeacherId===id)resetTeacherForm();await loadTeachers();showToast('Teacher deleted.');}
+    catch(err){showToast('Could not delete teacher: '+(err.message||'Unknown error'));}
+  }
+
+  function fillAssignmentFromTeacher(id){
+    const t=teachersCache.find(x=>x.id===id); if(!t)return;
+    const set=(el,v)=>{if(el)el.value=v??''};
+    set(document.getElementById('ht-teacher-name'),t.name||'');
+    set(document.getElementById('ht-teacher-phone'),t.phone||'');
+    if(!document.getElementById('ht-subjects').value.trim()) set(document.getElementById('ht-subjects'),t.subjects||'');
+    set(document.getElementById('ht-commission-pct'),Number(t.commissionPct||0));
+    setHtFinancePreview();
+  }
+
+  document.getElementById('toggle-teacher-management-btn')?.addEventListener('click',async()=>{
+    const panel=document.getElementById('teacher-management-panel'); if(!panel)return;
+    const open=panel.style.display!=='none'; panel.style.display=open?'none':'block';
+    if(!open){try{await loadTeachers();}catch(e){}}
+  });
+  document.getElementById('teacher-save-btn')?.addEventListener('click',saveTeacher);
+  document.getElementById('teacher-refresh-btn')?.addEventListener('click',()=>loadTeachers());
+  document.getElementById('teacher-cancel-edit-btn')?.addEventListener('click',resetTeacherForm);
+  document.getElementById('ht-teacher-select')?.addEventListener('change',e=>fillAssignmentFromTeacher(e.target.value));
+
   function setHtFinancePreview(){const fee=Number(document.getElementById('ht-monthly-fee')?.value||0);const pct=Math.min(100,Math.max(0,Number(document.getElementById('ht-commission-pct')?.value||50)));const commission=Math.round(fee*pct/100);const teacher=fee-commission;document.getElementById('ht-commission-amount').textContent='₹'+commission.toLocaleString('en-IN');document.getElementById('ht-teacher-first-month').textContent='₹'+teacher.toLocaleString('en-IN');document.getElementById('ht-teacher-recurring').textContent='₹'+fee.toLocaleString('en-IN');}
   function populateHomeTuitionPanel(a){
     const panel=document.getElementById('home-tuition-internal'); if(!panel)return;
     const isHome=String(a.serviceMode||'')==='Home Tuition'; panel.style.display=isHome?'block':'none'; if(!isHome)return;
     const ht=a.homeTuition||{}; const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v??''};
-    set('ht-teacher-name',ht.teacherName||''); set('ht-teacher-phone',ht.teacherPhone||''); set('ht-subjects',ht.subjects||a.homeSubjects||''); set('ht-schedule',ht.schedule||[a.homeDays,a.homeTiming].filter(Boolean).join(' · ')); set('ht-start-date',ht.startDate||''); set('ht-assignment-status',ht.assignmentStatus||'Pending'); set('ht-monthly-fee',ht.monthlyFee??''); set('ht-commission-pct',ht.commissionPct??50); set('ht-payment-mode',ht.paymentMode||'Direct to Teacher'); set('ht-internal-notes',ht.internalNotes||''); setHtFinancePreview();
+    set('ht-teacher-name',ht.teacherName||''); set('ht-teacher-phone',ht.teacherPhone||''); set('ht-subjects',ht.subjects||a.homeSubjects||''); set('ht-schedule',ht.schedule||[a.homeDays,a.homeTiming].filter(Boolean).join(' · ')); set('ht-start-date',ht.startDate||''); set('ht-assignment-status',ht.assignmentStatus||'Pending'); set('ht-monthly-fee',ht.monthlyFee??''); set('ht-commission-pct',ht.commissionPct??50); set('ht-payment-mode',ht.paymentMode||'Direct to Teacher'); set('ht-internal-notes',ht.internalNotes||''); populateTeacherSelect(ht.teacherId||''); setHtFinancePreview();
   }
   function showAdmissionDetail(id){
     const a=admissionsCache.find(x=>x.id===id); if(!a)return;
@@ -3346,7 +3493,7 @@ function calculateTeacherCommission(parentFee, commissionPercent){
     if(String(a.serviceMode||'')!=='Home Tuition'){showToast('This application is not a Home Tuition enquiry.');return;}
     const fee=Number(document.getElementById('ht-monthly-fee').value||0); const pct=Math.min(100,Math.max(0,Number(document.getElementById('ht-commission-pct').value||50)));
     const commission=Math.round(fee*pct/100); const teacherFirst=fee-commission;
-    const homeTuition={teacherName:document.getElementById('ht-teacher-name').value.trim(),teacherPhone:document.getElementById('ht-teacher-phone').value.trim(),subjects:document.getElementById('ht-subjects').value.trim(),schedule:document.getElementById('ht-schedule').value.trim(),startDate:document.getElementById('ht-start-date').value,assignmentStatus:document.getElementById('ht-assignment-status').value,monthlyFee:fee,commissionPct:pct,commissionAmount:commission,teacherFirstMonth:teacherFirst,teacherRecurring:fee,paymentMode:document.getElementById('ht-payment-mode').value,internalNotes:document.getElementById('ht-internal-notes').value.trim(),updatedAt:new Date().toISOString()};
+    const selectedTeacherId=document.getElementById('ht-teacher-select')?.value||''; const homeTuition={teacherId:selectedTeacherId,teacherName:document.getElementById('ht-teacher-name').value.trim(),teacherPhone:document.getElementById('ht-teacher-phone').value.trim(),subjects:document.getElementById('ht-subjects').value.trim(),schedule:document.getElementById('ht-schedule').value.trim(),startDate:document.getElementById('ht-start-date').value,assignmentStatus:document.getElementById('ht-assignment-status').value,monthlyFee:fee,commissionPct:pct,commissionAmount:commission,teacherFirstMonth:teacherFirst,teacherRecurring:fee,paymentMode:document.getElementById('ht-payment-mode').value,internalNotes:document.getElementById('ht-internal-notes').value.trim(),updatedAt:new Date().toISOString()};
     try{await updateDoc(doc(db,'admissions',a.id),{homeTuition,updatedAt:serverTimestamp()});Object.assign(a,{homeTuition});const msg=document.getElementById('ht-msg');msg.textContent='Assignment saved securely. Parent has not been contacted automatically.';msg.className='msg success show';showToast('Home Tuition assignment saved.');}catch(err){const msg=document.getElementById('ht-msg');msg.textContent='Could not save: '+(err.message||'Unknown error');msg.className='msg error show';}
   }
   function prepareParentWhatsApp(){
