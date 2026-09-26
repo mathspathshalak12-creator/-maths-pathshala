@@ -400,6 +400,69 @@
     .workspace-switch-btn{font-size:11px;padding:8px 9px;}
   }
 </style>
+
+<style id="mp-attendance-alignment-fix">
+  /* Attendance Calendar alignment repair — scoped only to the locked calendar. */
+  #admin-screen .att-calendar-wrap{
+    width:100%;
+    min-width:0;
+    align-items:start;
+  }
+  #admin-screen .att-calendar,
+  #admin-screen .att-detail{
+    min-width:0;
+    width:100%;
+  }
+  #admin-screen .att-calendar-head{
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  #admin-screen .att-month-title{
+    min-width:0;
+    line-height:1.25;
+  }
+  #admin-screen .att-nav{
+    flex-shrink:0;
+    align-items:center;
+  }
+  #admin-screen .att-weekdays,
+  #admin-screen .att-days{
+    width:100%;
+    min-width:0;
+  }
+  #admin-screen .att-weekdays div,
+  #admin-screen .att-day{
+    min-width:0;
+  }
+  @media(max-width:1050px){
+    #admin-screen .att-calendar-wrap{
+      grid-template-columns:minmax(0,1fr);
+    }
+    #admin-screen .att-detail{
+      width:100%;
+    }
+  }
+  @media(max-width:650px){
+    #admin-screen .att-calendar-head{
+      align-items:flex-start;
+    }
+    #admin-screen .att-nav{
+      width:100%;
+      justify-content:flex-end;
+    }
+    #admin-screen .att-day{
+      min-height:58px;
+      padding:6px 5px;
+    }
+    #admin-screen .att-day-num{
+      width:23px;
+      height:23px;
+    }
+    #admin-screen .att-day-meta{
+      font-size:8px;
+    }
+  }
+</style>
 </head>
 <body>
 <div class="mp-admin-brandline">
