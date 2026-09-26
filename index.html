@@ -914,6 +914,12 @@
   @media(max-width:700px){.yt-grid{grid-template-columns:1fr;gap:16px;}.yt-title{font-size:16px;}}
 </style>
 
+
+<style id="mp-attendance-calendar-patch">
+.mp-att-head{align-items:center}.mp-att-controls{display:flex;gap:6px}.mp-att-controls button{border:1px solid #dfe5ee;background:#fff;color:#253550;border-radius:9px;min-width:34px;height:34px;font-weight:800;cursor:pointer}.mp-att-controls button:hover{background:#f4f7fb}.mp-att-controls button:active{transform:scale(.97)}
+.mp-att-month-label{font-size:15px;font-weight:850;color:#17233b;margin:2px 0 12px}.mp-att-summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.mp-att-summary span{padding:7px 10px;border-radius:999px;background:#f7f9fc;border:1px solid #e7ebf2;font-size:11px;font-weight:800;color:#536078}.mp-att-summary span strong{color:#17233b}.mp-att-calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px}.mp-att-week{font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.06em;color:#8a94a7;text-align:center;padding:4px 0}.mp-att-day{min-height:72px;border:1px solid #e7ebf2;border-radius:12px;background:#fff;padding:8px;position:relative}.mp-att-day.empty{border:0;background:transparent}.mp-att-day.future{opacity:.55}.mp-att-day.today{box-shadow:0 0 0 2px rgba(245,166,35,.28)}.mp-att-day-num{font-size:12px;font-weight:900;color:#27354f}.mp-att-status{margin-top:12px;font-size:10px;font-weight:850}.mp-att-day.present{background:#f0faf4;border-color:#bfe7cd}.mp-att-day.present .mp-att-status{color:#198754}.mp-att-day.absent{background:#fff3f3;border-color:#f0c5c5}.mp-att-day.absent .mp-att-status{color:#c23b3b}.mp-att-day.no-class{background:#f5f7fa;border-color:#e1e5eb}.mp-att-day.no-class .mp-att-status{color:#788397}.mp-att-day.unmarked .mp-att-status{color:#b07a12}.mp-att-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:10px;font-weight:750;color:#6c7688}.mp-att-legend span{display:inline-flex;align-items:center;gap:5px}.mp-dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:#d6dbe4}.mp-dot.present{background:#39a96b}.mp-dot.absent{background:#d95353}.mp-dot.no-class{background:#9aa4b2}.mp-dot.unmarked{background:#e2a52f}
+@media(max-width:600px){.mp-att-head{align-items:flex-start;gap:10px}.mp-att-controls button{min-width:32px;height:32px}.mp-att-calendar{gap:4px}.mp-att-day{min-height:58px;padding:6px;border-radius:9px}.mp-att-status{margin-top:8px;font-size:8px}.mp-att-day-num{font-size:11px}.mp-att-week{font-size:8px}.mp-att-summary{gap:5px}.mp-att-summary span{font-size:9px;padding:6px 8px}.mp-att-legend{gap:9px;font-size:9px}}
+</style>
 </head>
 <body>
 
@@ -994,20 +1000,22 @@
           </div>
 
           <div class="student-panel student-panel-wide" id="panel-daily">
-            <div class="student-panel-head">
-              <div><span class="panel-kicker">ATTENDANCE CALENDAR</span><h3>Daily Attendance</h3></div>
-              <div style="display:flex;gap:8px;align-items:center;">
-                <select id="attendance-month-select" style="padding:7px 9px;border:1px solid #dfe5ee;border-radius:8px;font-size:12px;color:#253550;"></select>
+            <div class="student-panel-head mp-att-head">
+              <div><span class="panel-kicker">ATTENDANCE CALENDAR</span><h3 id="attendance-calendar-title">Monthly Attendance</h3></div>
+              <div class="mp-att-controls">
+                <button type="button" id="attendance-prev-month" aria-label="Previous month">‹</button>
+                <button type="button" id="attendance-today-btn">Today</button>
+                <button type="button" id="attendance-next-month" aria-label="Next month">›</button>
               </div>
             </div>
-            <div class="daily-attendance-summary" id="daily-attendance-summary"></div>
-            <div class="daily-attendance-table-wrap">
-              <table class="daily-attendance-table">
-                <thead>
-                  <tr><th>Date</th><th>Day</th><th>Status</th></tr>
-                </thead>
-                <tbody id="daily-attendance-table"></tbody>
-              </table>
+            <div class="mp-att-month-label" id="attendance-month-label">—</div>
+            <div class="mp-att-summary" id="daily-attendance-summary"></div>
+            <div class="mp-att-calendar" id="student-attendance-calendar"></div>
+            <div class="mp-att-legend">
+              <span><i class="mp-dot present"></i>Present</span>
+              <span><i class="mp-dot absent"></i>Absent</span>
+              <span><i class="mp-dot no-class"></i>No Class</span>
+              <span><i class="mp-dot unmarked"></i>Not Recorded</span>
             </div>
           </div>
 
@@ -2470,87 +2478,56 @@
   }
 
   function renderDailyAttendance(log){
-    const table = document.getElementById('daily-attendance-table');
-    const select = document.getElementById('attendance-month-select');
-    const summary = document.getElementById('daily-attendance-summary');
-    if(!table || !select || !summary) return;
+    const calendar=document.getElementById('student-attendance-calendar');
+    const summary=document.getElementById('daily-attendance-summary');
+    const label=document.getElementById('attendance-month-label');
+    const prev=document.getElementById('attendance-prev-month');
+    const next=document.getElementById('attendance-next-month');
+    const todayBtn=document.getElementById('attendance-today-btn');
+    if(!calendar||!summary||!label) return;
 
-    const today = new Date();
-    const todayKey = attendanceDateKey(today);
-    const currentKey = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+    const today=new Date();
+    const todayKey=attendanceDateKey(today);
+    const saved=sessionStorage.getItem('mp_attendance_month')||'';
+    let view=new Date(today.getFullYear(),today.getMonth(),1);
+    if(/^\d{4}-\d{2}$/.test(saved)){ const [y,m]=saved.split('-').map(Number); view=new Date(y,m-1,1); }
 
-    // Normalize all old/new attendance date formats (e.g. "20 Aug 2026",
-    // "20/08/2026", ISO dates) to one internal YYYY-MM-DD key.
-    const byDate = {};
-    (Array.isArray(log) ? log : []).forEach(e => {
-      const key = attendanceDateKey(e && e.date);
-      if(key && (e.status === 'Present' || e.status === 'Absent') && !Object.prototype.hasOwnProperty.call(byDate,key)){
-        byDate[key] = e.status;
-      }
+    const byDate={};
+    (Array.isArray(log)?log:[]).forEach(e=>{
+      const key=attendanceDateKey(e?.date);
+      if(key && !Object.prototype.hasOwnProperty.call(byDate,key)) byDate[key]=e?.status||'Not Recorded';
     });
 
-    const monthKeys = [];
-    const start = new Date(today.getFullYear(), today.getMonth()-11, 1);
-    for(let i=0;i<12;i++){
-      const d = new Date(start.getFullYear(), start.getMonth()+i, 1);
-      monthKeys.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
-    }
-
-    const previousKey = select.dataset.selectedMonth || select.value || sessionStorage.getItem('mp_attendance_month') || currentKey;
-    const availableKeys = monthKeys.slice().reverse();
-    const selectedKey = availableKeys.includes(previousKey) ? previousKey : currentKey;
-    select.innerHTML = availableKeys.map(key => {
-      const [y,m] = key.split('-').map(Number);
-      const label = new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
-      return `<option value="${key}" ${key===selectedKey?'selected':''}>${label}</option>`;
-    }).join('');
-    select.value = selectedKey;
-    select.dataset.selectedMonth = selectedKey;
-
-    function renderMonth(key){
-      const [year, month] = key.split('-').map(Number);
-      const days = new Date(year, month, 0).getDate();
-      let present=0, absent=0, unmarked=0;
-      let html='';
-
-      for(let day=1; day<=days; day++){
-        const d = new Date(year, month-1, day);
-        const dateKey = attendanceDateKey(d);
-        const label = d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
-        const dayName = d.toLocaleDateString('en-GB',{weekday:'short'});
-        const status = byDate[dateKey] || 'Unmarked';
-        const isFuture = dateKey > todayKey;
-
-        if(status==='Present') present++;
-        else if(status==='Absent') absent++;
-        else if(!isFuture) unmarked++;
-
-        const cls = status==='Present' ? 'att-present-row' : status==='Absent' ? 'att-absent-row' : '';
-        const badge = status==='Present'
-          ? '<span class="daily-attendance-status present">✓ Present</span>'
-          : status==='Absent'
-            ? '<span class="daily-attendance-status absent">✕ Absent</span>'
-            : isFuture
-              ? '<span class="daily-attendance-status future">— Upcoming</span>'
-              : '<span class="daily-attendance-status unmarked">— Not recorded</span>';
-
-        html += `<tr class="${cls}"><td>${label}</td><td>${dayName}</td><td>${badge}</td></tr>`;
+    function draw(){
+      const year=view.getFullYear(), month=view.getMonth();
+      const key=`${year}-${String(month+1).padStart(2,'0')}`;
+      sessionStorage.setItem('mp_attendance_month',key);
+      label.textContent=view.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+      const firstDay=new Date(year,month,1).getDay();
+      const mondayOffset=(firstDay+6)%7;
+      const days=new Date(year,month+1,0).getDate();
+      let present=0,absent=0,noClass=0,unmarked=0;
+      let html=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<div class="mp-att-week">${d}</div>`).join('');
+      for(let i=0;i<mondayOffset;i++) html+='<div class="mp-att-day empty"></div>';
+      for(let day=1;day<=days;day++){
+        const d=new Date(year,month,day);
+        const dateKey=attendanceDateKey(d);
+        const raw=byDate[dateKey];
+        const status=(raw==='Present'||raw==='Absent'||raw==='No Class')?raw:'Not Recorded';
+        if(status==='Present')present++; else if(status==='Absent')absent++; else if(status==='No Class')noClass++; else if(dateKey<=todayKey)unmarked++;
+        const future=dateKey>todayKey;
+        const cls=status==='Present'?'present':status==='Absent'?'absent':status==='No Class'?'no-class':'unmarked';
+        const text=status==='Present'?'✓ Present':status==='Absent'?'✕ Absent':status==='No Class'?'• No Class':future?'— Upcoming':'• Not Recorded';
+        html+=`<div class="mp-att-day ${cls}${future?' future':''}${dateKey===todayKey?' today':''}" title="${dateKey} · ${status}"><div class="mp-att-day-num">${day}</div><div class="mp-att-status">${text}</div></div>`;
       }
-
-      table.innerHTML = html;
-      summary.innerHTML =
-        `<span>✓ Present: ${present}</span>` +
-        `<span>✕ Absent: ${absent}</span>` +
-        `<span>— Not recorded: ${unmarked}</span>` +
-        `<span>Total calendar days: ${days}</span>`;
+      calendar.innerHTML=html;
+      const counted=present+absent, pct=counted?Math.round(present/counted*100):0;
+      summary.innerHTML=`<span>🟢 <strong>${present}</strong> Present</span><span>🔴 <strong>${absent}</strong> Absent</span><span>⚪ <strong>${noClass}</strong> No Class</span><span>🟡 <strong>${unmarked}</strong> Not Recorded</span><span>Attendance <strong>${counted?pct+'%':'—'}</strong></span>`;
     }
-
-    renderMonth(select.value);
-    select.onchange = () => {
-      select.dataset.selectedMonth = select.value;
-      sessionStorage.setItem('mp_attendance_month', select.value);
-      renderMonth(select.value);
-    };
+    prev.onclick=()=>{view=new Date(view.getFullYear(),view.getMonth()-1,1);draw();};
+    next.onclick=()=>{view=new Date(view.getFullYear(),view.getMonth()+1,1);draw();};
+    todayBtn.onclick=()=>{view=new Date(today.getFullYear(),today.getMonth(),1);draw();};
+    draw();
   }
 
   function calculateStreak(log){
