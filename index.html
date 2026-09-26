@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Maths Pathshala — Home Tutor for Class 3–12 in Kanpur | Home Tuition &amp; Offline Coaching</title>
 <meta name="description" content="Find the right home tutor for your child. Maths Pathshala provides personalised home tuition for Class 3–8 (all subjects) and Class 9–12 (Mathematics, Physics, Chemistry) across CBSE, ICSE and UP Board in Kanpur, plus small offline coaching batches in Kalyanpur for Class 9–10 PCM and Class 11–12 Mathematics. Taught personally by Vipin Kumar.">
 <meta name="keywords" content="home tutor Kanpur, home tuition class 3 4 5 6 7 8, home tuition class 9 10 11 12, offline coaching Kalyanpur Kanpur, class 9 10 PCM coaching, class 11 12 Mathematics coaching">
@@ -1133,6 +1133,9 @@
   @media(max-width:520px){.mp-p2-card{padding:13px}.mp-p2-test{align-items:flex-start}.mp-p2-countdown{font-size:9px;padding:6px}.mp-p2-resource{align-items:flex-start}.mp-p2-resource-actions{flex-direction:column}}
 </style>
 
+<style id="mp-phase3-student-css">
+.mp-p3-student-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.mp-p3-student-panel{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:18px;background:linear-gradient(145deg,rgba(14,34,65,.96),rgba(8,24,48,.98));box-shadow:0 16px 36px rgba(4,15,32,.20)}.mp-p3-student-panel:after{content:'';position:absolute;width:150px;height:150px;right:-70px;top:-75px;border-radius:50%;background:rgba(245,166,35,.10);pointer-events:none}.mp-p3-student-kicker{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:#f5a623;font-weight:800}.mp-p3-student-panel h3{margin:4px 0 5px;color:#fff;font-size:15px}.mp-p3-student-sub{font-size:10.5px;color:#9daac0;line-height:1.5;margin:0}.mp-p3-profile-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}.mp-p3-profile-item{padding:10px;border-radius:11px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.07)}.mp-p3-profile-item span{display:block;font-size:8px;text-transform:uppercase;letter-spacing:.06em;color:#8e9bb1;font-weight:700}.mp-p3-profile-item strong{display:block;color:#fff;font-size:11px;margin-top:4px;word-break:break-word}.mp-p3-notification-list{display:grid;gap:8px;margin-top:13px}.mp-p3-notification{padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.07)}.mp-p3-notification-top{display:flex;justify-content:space-between;gap:8px;align-items:center}.mp-p3-notification strong{font-size:11.5px;color:#fff}.mp-p3-notification small{font-size:8.5px;color:#8795ad}.mp-p3-notification p{font-size:10px;color:#b7c1d1;line-height:1.5;margin:5px 0 0}.mp-p3-type{font-size:8px;padding:3px 7px;border-radius:99px;background:rgba(245,166,35,.14);color:#f5c46e;font-weight:800}.mp-p3-report-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:13px}.mp-p3-report-stat{padding:11px;border-radius:12px;background:#f7f9fc;border:1px solid #e6ebf2;text-align:center}.mp-p3-report-stat span{display:block;font-size:8px;color:#7f8ba0;text-transform:uppercase;font-weight:800;letter-spacing:.05em}.mp-p3-report-stat strong{display:block;font-size:18px;color:#0b1e3d;margin-top:5px}.mp-p3-comm-row{margin-top:11px;padding:10px 12px;border-radius:11px;background:rgba(255,255,255,.055);display:flex;justify-content:space-between;gap:10px}.mp-p3-comm-row span{font-size:9px;color:#8e9bb1}.mp-p3-comm-row strong{font-size:10.5px;color:#fff;text-align:right}.mp-p3-empty{font-size:10.5px;color:#8e9bb1;padding:10px 0}@media(max-width:900px){.mp-p3-student-grid{grid-template-columns:1fr}.mp-p3-profile-grid{grid-template-columns:repeat(2,1fr)}.mp-p3-report-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
 </head>
 <body>
 
@@ -1168,6 +1171,11 @@
 
       <div class="dash-notices" id="dash-notices"></div>
       <div id="dash-homework"></div>
+
+      <div id="mp-p3-top" class="mp-p3-student-grid" style="margin-top:14px;display:none;">
+        <div class="mp-p3-student-panel"><span class="mp-p3-student-kicker">PHASE 3 · STUDENT PROFILE</span><h3>Your Profile</h3><p class="mp-p3-student-sub">Your current academic and batch information, synced from Maths Pathshala.</p><div class="mp-p3-profile-grid"><div class="mp-p3-profile-item"><span>Class</span><strong id="mp-p3-profile-class">—</strong></div><div class="mp-p3-profile-item"><span>Batch</span><strong id="mp-p3-profile-batch">—</strong></div><div class="mp-p3-profile-item"><span>Service</span><strong id="mp-p3-profile-service">—</strong></div><div class="mp-p3-profile-item"><span>Timing</span><strong id="mp-p3-profile-timing">—</strong></div><div class="mp-p3-profile-item"><span>Joined</span><strong id="mp-p3-profile-joined">—</strong></div><div class="mp-p3-profile-item"><span>Fee Status</span><strong id="mp-p3-profile-fee">—</strong></div><div class="mp-p3-profile-item"><span>Next Test</span><strong id="mp-p3-profile-test">—</strong></div><div class="mp-p3-profile-item"><span>Student Status</span><strong id="mp-p3-profile-status">Active</strong></div></div></div>
+        <div class="mp-p3-student-panel"><span class="mp-p3-student-kicker">PHASE 3 · SMART NOTIFICATIONS</span><h3>Your Updates</h3><p class="mp-p3-student-sub">Important updates, reminders and progress messages for your account.</p><div id="mp-p3-notifications" class="mp-p3-notification-list"><div class="mp-p3-empty">No new updates right now.</div></div><div class="mp-p3-comm-row"><span>Latest communication</span><strong id="mp-p3-student-comm">No recent update</strong></div></div>
+      </div>
 
       <div id="dash-found-content">
         <div class="student-kpi-grid">
@@ -1298,6 +1306,13 @@
             <div class="student-panel-head"><div><span class="panel-kicker">FEES</span><h3>Fee Status</h3></div></div>
             <span class="dash-fee-badge" id="dash-fee-badge">—</span>
             <ul class="payment-history-list" id="dash-monthly-fee-list"></ul>
+          </div>
+
+          <div class="student-panel student-panel-wide" id="panel-monthly-report">
+            <div class="student-panel-head"><div><span class="panel-kicker">PHASE 3 · MONTHLY REPORT</span><h3>Monthly Progress Snapshot</h3><p style="margin:4px 0 0;color:var(--muted);font-size:10.5px;">Live summary from attendance, tests and fee status.</p></div><span class="panel-pill">Live</span></div>
+            <div class="mp-p3-report-grid"><div class="mp-p3-report-stat"><span>Attendance</span><strong id="mp-p3-report-attendance">—</strong></div><div class="mp-p3-report-stat"><span>Test Average</span><strong id="mp-p3-report-average">—</strong></div><div class="mp-p3-report-stat"><span>Best Score</span><strong id="mp-p3-report-best">—</strong></div><div class="mp-p3-report-stat"><span>Tests</span><strong id="mp-p3-report-tests">0</strong></div></div>
+            <div class="detail-list" style="margin-top:12px;"><div><span>Focus area</span><strong id="mp-p3-report-focus">Keep building consistency</strong></div><div><span>Fee status</span><strong id="mp-p3-report-fee">—</strong></div><div><span>Report month</span><strong id="mp-p3-report-month">—</strong></div></div>
+            <div style="margin-top:10px;font-size:10px;color:var(--muted);">Monthly report download is managed by Admin. Your dashboard always shows the latest live snapshot.</div>
           </div>
 
           <div class="student-panel student-panel-wide" id="panel-notes">
@@ -3085,6 +3100,22 @@
 
 
   // =========================
+  // =========================
+  // PHASE 3 — STUDENT MANAGEMENT 360
+  // =========================
+  function mpP3MonthKey(v){const d=parsePortalDate(v);return d?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`:'';}
+  function mpP3MonthLabel(k){if(!/^\d{4}-\d{2}$/.test(String(k||'')))return 'Current month';const [y,m]=k.split('-').map(Number);return new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});}
+  function mpP3Render(data,scores,attendance){
+    const top=document.getElementById('mp-p3-top');if(top)top.style.display='grid';const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v||'—';};
+    set('mp-p3-profile-class',data.class?`Class ${data.class}`:'—');set('mp-p3-profile-batch',data.batchName||'Not assigned');set('mp-p3-profile-service',data.serviceMode||'—');set('mp-p3-profile-timing',data.batchTiming||'Not assigned');set('mp-p3-profile-joined',data.admissionDate?new Date(data.admissionDate+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—');set('mp-p3-profile-fee',data.feeStatus||'Due');set('mp-p3-profile-test',data.nextTest||'None scheduled');set('mp-p3-profile-status',data.studentStatus||'Active');
+    const notices=Array.isArray(data?.phase3?.notifications)?data.phase3.notifications.slice(0,6):[];const box=document.getElementById('mp-p3-notifications');if(box)box.innerHTML=notices.length?notices.map(n=>`<div class="mp-p3-notification"><div class="mp-p3-notification-top"><strong>${dashEscapeHtml(n.title||'Update')}</strong><span class="mp-p3-type">${dashEscapeHtml(n.type||'Update')}</span></div><p>${dashEscapeHtml(n.message||'')}</p><small>${n.createdAt?new Date(n.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}):''}</small></div>`).join(''):'<div class="mp-p3-empty">No new updates right now.</div>';
+    const comm=data?.phase3?.communication||{};set('mp-p3-student-comm',comm.status&&comm.status!=='Not Contacted'?`${comm.status}${comm.updatedAt?' · '+new Date(comm.updatedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}):''}`:'No recent update');
+    const now=new Date(),key=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`,ma=(Array.isArray(attendance)?attendance:[]).filter(e=>mpP3MonthKey(e.date)===key),counted=ma.filter(e=>e.status==='Present'||e.status==='Absent'),pct=counted.length?Math.round(counted.filter(e=>e.status==='Present').length/counted.length*100):0,ms=(Array.isArray(scores)?scores:[]).filter(x=>mpP3MonthKey(x.date)===key),avg=ms.length?Math.round(ms.reduce((a,x)=>a+scorePct(x),0)/ms.length):0,best=ms.length?Math.max(...ms.map(scorePct)):0;
+    set('mp-p3-report-attendance',counted.length?pct+'%':'—');set('mp-p3-report-average',ms.length?avg+'%':'—');set('mp-p3-report-best',ms.length?best+'%':'—');set('mp-p3-report-tests',String(ms.length));set('mp-p3-report-fee',data.feeStatus||'Due');set('mp-p3-report-month',mpP3MonthLabel(key));
+    const tm={};ms.forEach(x=>{const t=String(x.topic||'').trim();if(t)(tm[t]??=[]).push(scorePct(x));});const focus=Object.entries(tm).map(([t,v])=>({t,a:Math.round(v.reduce((a,b)=>a+b,0)/v.length)})).sort((a,b)=>a.a-b.a)[0];set('mp-p3-report-focus',focus?`${focus.t} · ${focus.a}%`:(pct<75?'Improve attendance consistency':ms.length?'Keep strengthening your test performance':'Build a regular practice routine'));
+  }
+  function mpP3Smart(data,attendance){const items=[],now=new Date(),key=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`,m=(Array.isArray(attendance)?attendance:[]).filter(e=>mpP3MonthKey(e.date)===key&&(e.status==='Present'||e.status==='Absent')),pct=m.length?Math.round(m.filter(e=>e.status==='Present').length/m.length*100):100;if(data.feeStatus==='Due')items.push({title:'Fee reminder',message:'Your current fee status is marked as Due. Please contact Maths Pathshala for payment details.',type:'Reminder'});if(data.nextTest)items.push({title:'Upcoming test',message:`Keep your revision ready for: ${data.nextTest}`,type:'Reminder'});if(m.length&&pct<75)items.push({title:'Attendance focus',message:`Your attendance is ${pct}% this month. Try to maintain regular class attendance.`,type:'Important'});return items;}
+
   // PHASE 2 — LEARNING HUB
   // =========================
   function mpP2ParseDate(value){
