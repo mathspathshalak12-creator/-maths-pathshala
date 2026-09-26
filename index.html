@@ -915,29 +915,50 @@
 </style>
 
 
-<style id="mp-student-dashboard-premium-v2">
-  #student-dashboard{position:relative;z-index:5;background:linear-gradient(180deg,#eef3f9 0%,#f7f9fc 100%);padding:18px 0 28px;}
-  .mp-dash-syncbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 22px;background:#fff;border-bottom:1px solid #e4e9f1;font-size:11px;color:#718097;}
-  .mp-dash-sync-status{display:inline-flex;align-items:center;gap:7px;font-weight:700;color:#2b6b4f;}
-  .mp-dash-sync-dot{width:7px;height:7px;border-radius:50%;background:#2aa66f;box-shadow:0 0 0 4px rgba(42,166,111,.10);}
-  .mp-dash-date{font-weight:700;color:#4c5d76;}
-  .mp-today-strip{display:grid;grid-template-columns:1.45fr 1fr 1fr 1fr;gap:12px;padding:0 22px 18px;}
-  .mp-today-card{position:relative;overflow:hidden;min-height:112px;background:#fff;border:1px solid #e2e7ef;border-radius:17px;padding:17px;box-shadow:0 8px 22px rgba(11,30,61,.045);}
-  .mp-today-card.primary{background:linear-gradient(135deg,#0b2348,#153e73);color:#fff;border-color:transparent;}
-  .mp-today-card:after{content:'';position:absolute;width:90px;height:90px;right:-35px;top:-42px;border-radius:50%;background:rgba(245,166,35,.10);}
-  .mp-today-label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;font-weight:800;color:#8a96a8;}
-  .mp-today-card.primary .mp-today-label{color:#f5a623;}
-  .mp-today-title{font-size:17px;font-weight:800;margin-top:8px;color:#0b1e3d;line-height:1.2;}
-  .mp-today-card.primary .mp-today-title{color:#fff;}
-  .mp-today-meta{font-size:11px;color:#718097;margin-top:6px;line-height:1.5;}
-  .mp-today-card.primary .mp-today-meta{color:#c3d0e2;}
-  .mp-live-admin{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:5px 8px;border-radius:999px;background:rgba(42,166,111,.10);color:#287554;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;}
-  .mp-quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:0 22px 18px;}
-  .mp-quick-action{display:flex;align-items:center;gap:10px;padding:12px 13px;border:1px solid #e2e7ef;border-radius:13px;background:#fff;color:#243653;text-decoration:none;font-size:11px;font-weight:800;transition:.18s ease;cursor:pointer;}
-  .mp-quick-action:hover{transform:translateY(-2px);border-color:rgba(245,166,35,.6);box-shadow:0 8px 18px rgba(11,30,61,.07);}
-  .mp-quick-icon{width:30px;height:30px;border-radius:9px;background:#f4f6fa;display:grid;place-items:center;font-size:15px;flex-shrink:0;}
-  @media(max-width:900px){.mp-today-strip{grid-template-columns:1fr 1fr}.mp-today-card.primary{grid-column:span 2}.mp-quick-actions{grid-template-columns:1fr 1fr}}
-  @media(max-width:600px){#student-dashboard{padding-top:10px}.mp-dash-syncbar{padding:9px 14px}.mp-today-strip{grid-template-columns:1fr;padding:0 14px 14px}.mp-today-card.primary{grid-column:auto}.mp-quick-actions{grid-template-columns:1fr 1fr;padding:0 14px 14px;gap:8px}.mp-quick-action{padding:10px}.mp-quick-action span:last-child{font-size:10px}.student-lms-topbar{padding:0 14px!important;height:62px!important}.student-hero-card{padding:20px 16px!important}.student-kpi-grid,.student-main-grid{padding-left:14px!important;padding-right:14px!important}}
+<style id="mp-student-attendance-calendar-only">
+  /* Attendance-only patch: isolated from the rest of the student dashboard. */
+  .mp-att-calendar{border:1px solid #e5e9f0;border-radius:14px;background:#fff;overflow:hidden;}
+  .mp-att-cal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;border-bottom:1px solid #edf0f5;background:#fafbfc;}
+  .mp-att-cal-nav{display:flex;align-items:center;gap:7px;}
+  .mp-att-cal-btn{border:1px solid #dfe5ee;background:#fff;color:#253550;border-radius:8px;width:34px;height:32px;cursor:pointer;font-weight:800;}
+  .mp-att-cal-btn:hover{background:#f5f7fa;}
+  .mp-att-cal-month{font-size:14px;font-weight:800;color:#172a46;min-width:145px;text-align:center;}
+  .mp-att-today-btn{width:auto;padding:0 11px;font-size:11px;}
+  .mp-att-weekdays,.mp-att-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));}
+  .mp-att-weekdays{background:#f5f7fa;border-bottom:1px solid #edf0f5;}
+  .mp-att-weekdays span{padding:9px 4px;text-align:center;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#6b778c;}
+  .mp-att-grid{padding:8px;gap:6px;background:#fff;}
+  .mp-att-day{min-height:68px;border:1px solid #edf0f5;border-radius:10px;background:#fff;padding:7px;display:flex;flex-direction:column;justify-content:space-between;position:relative;}
+  .mp-att-day.empty{border-color:transparent;background:transparent;}
+  .mp-att-day.future{background:#fafbfc;}
+  .mp-att-day.today{box-shadow:inset 0 0 0 2px #f5a623;}
+  .mp-att-date{font-size:11px;font-weight:800;color:#52627a;}
+  .mp-att-status{font-size:10px;font-weight:800;border-radius:7px;padding:4px 5px;text-align:center;line-height:1.15;}
+  .mp-att-day.present{background:#f3fbf6;border-color:#cdebd8;}
+  .mp-att-day.present .mp-att-status{background:#dff4e7;color:#1e7a46;}
+  .mp-att-day.absent{background:#fdf3f2;border-color:#f1d1ce;}
+  .mp-att-day.absent .mp-att-status{background:#fbe2e1;color:#c0392b;}
+  .mp-att-day.no-class{background:#f7f8fa;border-color:#e1e5eb;}
+  .mp-att-day.no-class .mp-att-status{background:#e9edf2;color:#5d697a;}
+  .mp-att-day.unmarked .mp-att-status{background:#f4f6f8;color:#7b8798;}
+  .mp-att-day.future .mp-att-status{background:#f5f6f8;color:#98a2b1;}
+  .mp-att-reason{font-size:9px;color:#66748a;line-height:1.2;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mp-att-summary{display:flex;gap:8px;flex-wrap:wrap;padding:11px 12px;border-top:1px solid #edf0f5;background:#fafbfc;}
+  .mp-att-summary span{padding:6px 9px;border-radius:8px;background:#fff;border:1px solid #e5e9f0;font-size:10.5px;font-weight:800;color:#52627a;}
+  .mp-att-legend{display:flex;gap:10px;flex-wrap:wrap;padding:9px 12px 12px;background:#fafbfc;}
+  .mp-att-legend span{font-size:10px;color:#68768b;font-weight:700;}
+  @media(max-width:600px){
+    .mp-att-cal-head{padding:10px 8px;}
+    .mp-att-cal-month{min-width:120px;font-size:13px;}
+    .mp-att-cal-btn{width:31px;height:30px;}
+    .mp-att-today-btn{padding:0 8px;}
+    .mp-att-grid{padding:5px;gap:4px;}
+    .mp-att-day{min-height:56px;padding:5px;border-radius:8px;}
+    .mp-att-date{font-size:10px;}
+    .mp-att-status{font-size:8.5px;padding:3px 2px;}
+    .mp-att-reason{font-size:8px;}
+    .mp-att-weekdays span{font-size:8px;padding:7px 2px;}
+  }
 </style>
 
 </head>
@@ -954,11 +975,6 @@
           <div><strong>Maths Pathshala</strong><span>Student Learning Portal</span></div>
         </div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><button class="dash-logout" id="dash-refresh-btn">↻ Refresh</button></div>
-      </div>
-
-      <div class="mp-dash-syncbar">
-        <span class="mp-dash-sync-status"><i class="mp-dash-sync-dot"></i> Live data from Maths Pathshala Admin</span>
-        <span class="mp-dash-date" id="mp-dash-date">Today</span>
       </div>
 
       <div class="student-hero-card">
@@ -980,37 +996,6 @@
 
       <div class="dash-notices" id="dash-notices"></div>
       <div id="dash-homework"></div>
-
-      <div class="mp-today-strip">
-        <div class="mp-today-card primary">
-          <div class="mp-today-label">🎓 Your learning setup</div>
-          <div class="mp-today-title" id="mp-live-class">Class &amp; Batch</div>
-          <div class="mp-today-meta" id="mp-live-timing">Batch timing will appear here.</div>
-          <span class="mp-live-admin">● Admin managed</span>
-        </div>
-        <div class="mp-today-card">
-          <div class="mp-today-label">📝 Next Test</div>
-          <div class="mp-today-title" id="mp-live-test">No test scheduled</div>
-          <div class="mp-today-meta">Updated from your student record.</div>
-        </div>
-        <div class="mp-today-card">
-          <div class="mp-today-label">💳 Fee Status</div>
-          <div class="mp-today-title" id="mp-live-fee">—</div>
-          <div class="mp-today-meta">Your latest fee record.</div>
-        </div>
-        <div class="mp-today-card">
-          <div class="mp-today-label">🏆 Latest Rank</div>
-          <div class="mp-today-title" id="mp-live-rank">—</div>
-          <div class="mp-today-meta">Based on the latest recorded test.</div>
-        </div>
-      </div>
-
-      <div class="mp-quick-actions">
-        <button type="button" class="mp-quick-action" data-scroll-target="panel-attendance"><span class="mp-quick-icon">📅</span><span>Attendance</span></button>
-        <button type="button" class="mp-quick-action" data-scroll-target="panel-performance"><span class="mp-quick-icon">📈</span><span>Performance</span></button>
-        <button type="button" class="mp-quick-action" data-scroll-target="panel-notes"><span class="mp-quick-icon">📚</span><span>Study Notes</span></button>
-        <button type="button" class="mp-quick-action" data-scroll-target="panel-fees"><span class="mp-quick-icon">💳</span><span>Fee Status</span></button>
-      </div>
 
       <div id="dash-found-content">
         <div class="student-kpi-grid">
@@ -1058,18 +1043,22 @@
           <div class="student-panel student-panel-wide" id="panel-daily">
             <div class="student-panel-head">
               <div><span class="panel-kicker">ATTENDANCE CALENDAR</span><h3>Daily Attendance</h3></div>
-              <div style="display:flex;gap:8px;align-items:center;">
-                <select id="attendance-month-select" style="padding:7px 9px;border:1px solid #dfe5ee;border-radius:8px;font-size:12px;color:#253550;"></select>
-              </div>
             </div>
-            <div class="daily-attendance-summary" id="daily-attendance-summary"></div>
-            <div class="daily-attendance-table-wrap">
-              <table class="daily-attendance-table">
-                <thead>
-                  <tr><th>Date</th><th>Day</th><th>Status</th></tr>
-                </thead>
-                <tbody id="daily-attendance-table"></tbody>
-              </table>
+            <div class="mp-att-calendar" id="mp-att-calendar">
+              <div class="mp-att-cal-head">
+                <div class="mp-att-cal-nav">
+                  <button type="button" class="mp-att-cal-btn" id="mp-att-prev" aria-label="Previous month">‹</button>
+                  <div class="mp-att-cal-month" id="mp-att-month-label">Attendance</div>
+                  <button type="button" class="mp-att-cal-btn" id="mp-att-next" aria-label="Next month">›</button>
+                </div>
+                <button type="button" class="mp-att-cal-btn mp-att-today-btn" id="mp-att-today">Today</button>
+              </div>
+              <div class="mp-att-weekdays"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+              <div class="mp-att-grid" id="mp-att-grid"></div>
+              <div class="mp-att-summary" id="mp-att-summary"></div>
+              <div class="mp-att-legend">
+                <span>🟢 Present</span><span>🔴 Absent</span><span>⚪ No Class</span><span>🟡 Not Recorded</span>
+              </div>
             </div>
           </div>
 
@@ -2262,10 +2251,6 @@
       });
   });
 
-  document.querySelectorAll('.mp-quick-action[data-scroll-target]').forEach(btn=>{
-    btn.addEventListener('click',()=>{ const id=btn.getAttribute('data-scroll-target'); document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'}); });
-  });
-
   let dashboardAutoRefreshTimer = null;
 
   onAuthStateChanged(auth, async (user) => {
@@ -2498,11 +2483,10 @@
   }
   function normalizeStudentAttendanceLog(log){
     const byDate = new Map();
-    // Attendance logs are stored newest-first by the admin. Keep the first valid
-    // record for a date so the dashboard agrees with the admin's normalized view.
+    // Keep the same date/status model used by Admin, including No Class + reason.
     (Array.isArray(log) ? log : []).forEach(e => {
       const d = attendanceDateKey(e?.date);
-      if(d && (e?.status === 'Present' || e?.status === 'Absent' || e?.status === 'No Class') && !byDate.has(d)){
+      if(d && ['Present','Absent','No Class'].includes(e?.status) && !byDate.has(d)){
         byDate.set(d, {date:d, status:e.status, reason:String(e?.reason||'').trim()});
       }
     });
@@ -2524,7 +2508,14 @@
   }
 
   function aggregateAttendance(log){
-    const map={}; (Array.isArray(log)?log:[]).forEach(e=>{ const k=monthKeyForDate(e.date); if(!k)return; if(e.status!=='Present' && e.status!=='Absent') return; if(!map[k])map[k]={present:0,total:0}; map[k].total++; if(e.status==='Present')map[k].present++; });
+    const map={};
+    (Array.isArray(log)?log:[]).forEach(e=>{
+      const k=monthKeyForDate(e.date);
+      if(!k || !['Present','Absent'].includes(e.status)) return;
+      if(!map[k])map[k]={present:0,total:0};
+      map[k].total++;
+      if(e.status==='Present')map[k].present++;
+    });
     return Object.entries(map).sort((a,b)=>b[0].localeCompare(a[0])).map(([key,v])=>({...v,key,label:monthLabel(key),percent:v.total?Math.round(v.present/v.total*100):0}));
   }
 
@@ -2534,91 +2525,70 @@
   }
 
   function renderDailyAttendance(log){
-    const table = document.getElementById('daily-attendance-table');
-    const select = document.getElementById('attendance-month-select');
-    const summary = document.getElementById('daily-attendance-summary');
-    if(!table || !select || !summary) return;
+    const grid=document.getElementById('mp-att-grid');
+    const label=document.getElementById('mp-att-month-label');
+    const summary=document.getElementById('mp-att-summary');
+    if(!grid||!label||!summary) return;
 
-    const today = new Date();
-    const todayKey = attendanceDateKey(today);
-    const currentKey = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
-
-    // Normalize all old/new attendance date formats (e.g. "20 Aug 2026",
-    // "20/08/2026", ISO dates) to one internal YYYY-MM-DD key.
-    const byDate = {};
-    (Array.isArray(log) ? log : []).forEach(e => {
-      const key = attendanceDateKey(e && e.date);
-      if(key && (e.status === 'Present' || e.status === 'Absent') && !Object.prototype.hasOwnProperty.call(byDate,key)){
-        byDate[key] = e.status;
+    const today=new Date();
+    const todayKey=attendanceDateKey(today);
+    const entries={};
+    (Array.isArray(log)?log:[]).forEach(e=>{
+      const key=attendanceDateKey(e?.date);
+      if(key && ['Present','Absent','No Class'].includes(e?.status) && !entries[key]){
+        entries[key]={status:e.status,reason:String(e?.reason||'').trim()};
       }
     });
 
-    const monthKeys = [];
-    const start = new Date(today.getFullYear(), today.getMonth()-11, 1);
-    for(let i=0;i<12;i++){
-      const d = new Date(start.getFullYear(), start.getMonth()+i, 1);
-      monthKeys.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
+    let viewDate=renderDailyAttendance._month;
+    if(!(viewDate instanceof Date)||isNaN(viewDate.getTime())) viewDate=new Date(today.getFullYear(),today.getMonth(),1);
+    viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth(),1);
+    renderDailyAttendance._month=viewDate;
+
+    const year=viewDate.getFullYear(), month=viewDate.getMonth();
+    label.textContent=viewDate.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+    const firstDay=new Date(year,month,1).getDay();
+    const days=new Date(year,month+1,0).getDate();
+    let present=0,absent=0,noClass=0,unmarked=0,upcoming=0;
+    let html='';
+
+    for(let i=0;i<firstDay;i++) html+='<div class="mp-att-day empty" aria-hidden="true"></div>';
+
+    for(let day=1;day<=days;day++){
+      const d=new Date(year,month,day);
+      const key=attendanceDateKey(d);
+      const entry=entries[key];
+      const future=key>todayKey;
+      let status=entry?.status||'Unmarked';
+      if(future && !entry) status='Upcoming';
+      if(status==='Present') present++;
+      else if(status==='Absent') absent++;
+      else if(status==='No Class') noClass++;
+      else if(status==='Upcoming') upcoming++;
+      else unmarked++;
+      const cls=status==='Present'?'present':status==='Absent'?'absent':status==='No Class'?'no-class':status==='Upcoming'?'future':'unmarked';
+      const text=status==='Present'?'✓ Present':status==='Absent'?'✕ Absent':status==='No Class'?'No Class':status==='Upcoming'?'Upcoming':'Not recorded';
+      const reason=status==='No Class'&&entry?.reason?`<div class="mp-att-reason" title="${dashEscapeHtml(entry.reason)}">${dashEscapeHtml(entry.reason)}</div>`:'';
+      html+=`<div class="mp-att-day ${cls}${key===todayKey?' today':''}" title="${dashEscapeHtml(entry?.reason||'')}"><span class="mp-att-date">${day}</span><div><div class="mp-att-status">${text}</div>${reason}</div></div>`;
     }
+    const totalCells=firstDay+days, trailing=(7-(totalCells%7))%7;
+    for(let i=0;i<trailing;i++) html+='<div class="mp-att-day empty" aria-hidden="true"></div>';
+    grid.innerHTML=html;
 
-    const previousKey = select.dataset.selectedMonth || select.value || sessionStorage.getItem('mp_attendance_month') || currentKey;
-    const availableKeys = monthKeys.slice().reverse();
-    const selectedKey = availableKeys.includes(previousKey) ? previousKey : currentKey;
-    select.innerHTML = availableKeys.map(key => {
-      const [y,m] = key.split('-').map(Number);
-      const label = new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
-      return `<option value="${key}" ${key===selectedKey?'selected':''}>${label}</option>`;
-    }).join('');
-    select.value = selectedKey;
-    select.dataset.selectedMonth = selectedKey;
+    const counted=present+absent;
+    const pct=counted?Math.round(present/counted*100):0;
+    summary.innerHTML=`<span>✓ Present: ${present}</span><span>✕ Absent: ${absent}</span><span>⚪ No Class: ${noClass}</span><span>🟡 Not Recorded: ${unmarked}</span><span>Attendance: ${pct}%</span>`;
 
-    function renderMonth(key){
-      const [year, month] = key.split('-').map(Number);
-      const days = new Date(year, month, 0).getDate();
-      let present=0, absent=0, unmarked=0;
-      let html='';
-
-      for(let day=1; day<=days; day++){
-        const d = new Date(year, month-1, day);
-        const dateKey = attendanceDateKey(d);
-        const label = d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
-        const dayName = d.toLocaleDateString('en-GB',{weekday:'short'});
-        const status = byDate[dateKey] || 'Unmarked';
-        const isFuture = dateKey > todayKey;
-
-        if(status==='Present') present++;
-        else if(status==='Absent') absent++;
-        else if(!isFuture) unmarked++;
-
-        const cls = status==='Present' ? 'att-present-row' : status==='Absent' ? 'att-absent-row' : '';
-        const badge = status==='Present'
-          ? '<span class="daily-attendance-status present">✓ Present</span>'
-          : status==='Absent'
-            ? '<span class="daily-attendance-status absent">✕ Absent</span>'
-            : isFuture
-              ? '<span class="daily-attendance-status future">— Upcoming</span>'
-              : '<span class="daily-attendance-status unmarked">— Not recorded</span>';
-
-        html += `<tr class="${cls}"><td>${label}</td><td>${dayName}</td><td>${badge}</td></tr>`;
-      }
-
-      table.innerHTML = html;
-      summary.innerHTML =
-        `<span>✓ Present: ${present}</span>` +
-        `<span>✕ Absent: ${absent}</span>` +
-        `<span>— Not recorded: ${unmarked}</span>` +
-        `<span>Total calendar days: ${days}</span>`;
-    }
-
-    renderMonth(select.value);
-    select.onchange = () => {
-      select.dataset.selectedMonth = select.value;
-      sessionStorage.setItem('mp_attendance_month', select.value);
-      renderMonth(select.value);
-    };
+    const prev=document.getElementById('mp-att-prev');
+    const next=document.getElementById('mp-att-next');
+    const todayBtn=document.getElementById('mp-att-today');
+    if(prev) prev.onclick=()=>{renderDailyAttendance._month=new Date(year,month-1,1);renderDailyAttendance(log);};
+    if(next) next.onclick=()=>{renderDailyAttendance._month=new Date(year,month+1,1);renderDailyAttendance(log);};
+    if(todayBtn) todayBtn.onclick=()=>{renderDailyAttendance._month=new Date(today.getFullYear(),today.getMonth(),1);renderDailyAttendance(log);};
   }
 
   function calculateStreak(log){
-    const ordered=(Array.isArray(log)?log:[]).map(e=>({d:parsePortalDate(e.date),status:e.status})).filter(x=>x.d).sort((a,b)=>b.d-a.d);
+    const ordered=(Array.isArray(log)?log:[]).map(e=>({d:parsePortalDate(e.date),status:e.status})).filter(x=>x.d&&x.status!=='No Class').sort((a,b)=>b.d-a.d);
     let streak=0; for(const x of ordered){ if(x.status==='Present') streak++; else break; } return streak;
   }
   function animateNumberTo(el, target, suffix, showDash){
@@ -2674,11 +2644,6 @@
     document.getElementById('dash-admission-date').textContent=data.admissionDate?new Date(data.admissionDate+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'Not set yet';
     const monthlyFeeList=document.getElementById('dash-monthly-fee-list'); monthlyFeeList.innerHTML=''; const mf=Array.isArray(data.monthlyFees)?data.monthlyFees.slice().sort((a,b)=>(b.monthKey||'').localeCompare(a.monthKey||'')):[]; monthlyFeeList.innerHTML=mf.length?mf.slice(0,6).map(m=>`<li><span>${dashEscapeHtml(m.monthLabel||monthLabel(m.monthKey))}${m.status==='Paid'&&m.paymentDate?`<small style="display:block;font-size:10px;color:#B9C2D6;margin-top:2px;">Paid on ${dashEscapeHtml(m.paymentDate)}</small>`:''}</span><span class="${m.status==='Paid'?'att-present':'att-absent'}">${dashEscapeHtml(m.status)}</span></li>`).join(''):'<li style="color:#B9C2D6">No monthly records yet</li>';
     document.getElementById('dash-batch-value').textContent=data.batchTiming||'Not assigned yet'; document.getElementById('dash-next-test').textContent=data.nextTest||'None scheduled';
-    const liveClass=document.getElementById('mp-live-class'); if(liveClass) liveClass.textContent=data.class&&data.batchName?`Class ${data.class} · ${data.batchName}`:'Class / Batch not assigned';
-    const liveTiming=document.getElementById('mp-live-timing'); if(liveTiming) liveTiming.textContent=data.batchTiming||'Batch timing not assigned yet.';
-    const liveTest=document.getElementById('mp-live-test'); if(liveTest) liveTest.textContent=data.nextTest||'No test scheduled';
-    const liveFee=document.getElementById('mp-live-fee'); if(liveFee) liveFee.textContent=data.feeStatus||'Due';
-    const dashDate=document.getElementById('mp-dash-date'); if(dashDate) dashDate.textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'short',year:'numeric'});
     if(data.nextTest && auth.currentUser){
       const signature=auth.currentUser.email.toLowerCase()+'|'+data.nextTest;
       if(!popupAlreadyShown('test', signature)){
@@ -2695,8 +2660,8 @@
     const currentMonthKey=`${todayForMonth.getFullYear()}-${String(todayForMonth.getMonth()+1).padStart(2,'0')}`;
     const currentMonthLog=log.filter(e=>monthKeyForDate(e.date)===currentMonthKey);
     const currentMonthPresent=currentMonthLog.filter(e=>e.status==='Present').length;
-    const countedMonth=currentMonthLog.filter(e=>e.status==='Present'||e.status==='Absent');
-    const currentMonthPct=countedMonth.length?Math.round(currentMonthPresent/countedMonth.length*100):0;
+    const currentMonthCounted=currentMonthLog.filter(e=>e.status==='Present'||e.status==='Absent').length;
+    const currentMonthPct=currentMonthCounted?Math.round(currentMonthPresent/currentMonthCounted*100):0;
     const streak=calculateStreak(currentMonthLog);
     animateNumberTo(document.getElementById('dash-kpi-attendance'), currentMonthLog.length?currentMonthPct:0, currentMonthLog.length?'%':'—', !currentMonthLog.length);
     document.getElementById('dash-kpi-attendance-sub').textContent=currentMonthLog.length?monthLabel(currentMonthKey):'No classes yet this month';
@@ -2709,7 +2674,6 @@
     const stats=data.batchStats||{};
     const recent=stats.recentTest||{};
     const rank=recent.rank&&recent.size?`#${recent.rank}`:'—';
-    const liveRank=document.getElementById('mp-live-rank'); if(liveRank) liveRank.textContent=rank;
     document.getElementById('dash-kpi-rank').textContent=rank;
     document.getElementById('dash-kpi-rank-sub').textContent=recent.name?`Latest: ${recent.name}`:'Based on the latest test';
     document.getElementById('dash-rank-big').textContent=rank;
@@ -2837,3 +2801,4 @@
 
 </body>
 </html>
+  
