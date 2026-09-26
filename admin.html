@@ -277,6 +277,10 @@
 .teacher-row-main strong{display:block;color:var(--navy);font-size:14px}.teacher-row-main small{display:block;color:var(--muted);margin-top:3px;line-height:1.5}.teacher-badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800;background:#e9f7ef;color:#1e7a46}.teacher-badge.inactive{background:#f3f4f6;color:#6b7280}
 @media(max-width:760px){.teacher-form-grid{grid-template-columns:1fr}.teacher-row{grid-template-columns:1fr}.teacher-row button{justify-self:start}}
 </style>
+
+<style id="mp-admin-attendance-calendar-patch">
+.mp-admin-att-calendar{margin-top:10px;border:1px solid rgba(15,35,70,.10);border-radius:16px;padding:12px;background:#fff}.mp-admin-att-week,.mp-admin-att-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.mp-admin-att-week{margin-bottom:5px}.mp-admin-att-week span{text-align:center;font-size:10px;font-weight:800;color:#64748b;padding:5px}.mp-admin-att-day{min-height:52px;border:1px solid #e5e7eb;border-radius:10px;padding:6px;position:relative;background:#fafafa}.mp-admin-att-day.empty{border-color:transparent;background:transparent}.mp-admin-att-day b{font-size:11px}.mp-admin-att-day i{display:block;font-style:normal;font-size:9px;font-weight:800;margin-top:5px}.mp-admin-att-day.present{background:#ecfdf3;border-color:#b7ebc9}.mp-admin-att-day.present i{color:#16834b}.mp-admin-att-day.absent{background:#fff1f2;border-color:#fecdd3}.mp-admin-att-day.absent i{color:#c6283d}.mp-admin-att-day.noclass{background:#f8fafc}.mp-admin-att-day.noclass i{color:#64748b}.mp-admin-att-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:11px;font-weight:700;color:#64748b}.mp-admin-att-legend span{display:inline-flex;align-items:center;gap:5px}.mp-admin-att-dot{width:9px;height:9px;border-radius:50%;display:inline-block}.mp-admin-att-dot.p{background:#22c55e}.mp-admin-att-dot.a{background:#ef4444}.mp-admin-att-dot.n{background:#94a3b8}.mp-admin-att-dot.u{background:#f59e0b}@media(max-width:600px){.mp-admin-att-calendar{padding:8px}.mp-admin-att-day{min-height:45px;padding:5px}.mp-admin-att-day i{font-size:8px}.mp-admin-att-week span{font-size:9px}}
+</style>
 </head>
 <body>
 <div class="mp-admin-brandline">
@@ -1220,7 +1224,8 @@
         log.unshift({date:targetKey,status});
         log=normalizeAttendanceLog(log);
         const presentCount=log.filter(e=>e.status==='Present').length;
-        const percent=log.length?Math.round(presentCount/log.length*100):0;
+        const counted=log.filter(e=>adminAttendanceCounted(e.status));
+        const percent=counted.length?Math.round(presentCount/counted.length*100):0;
         attendanceOps.push(wb => wb.set(doc(db,'students',email),{attendance:{percent,log}},{merge:true}));
       });
       await commitBatchOps(attendanceOps);
@@ -1948,27 +1953,28 @@
       if(summary) summary.textContent='';
       return;
     }
-    const presentCount=logs.filter(e=>e.status==='Present').length;
-    const pct=Math.round((presentCount/logs.length)*100);
-    pctDisplay.textContent=pct+'% ('+presentCount+' present out of '+logs.length+' recorded days)';
+    const counted=logs.filter(e=>adminAttendanceCounted(e.status));
+    const presentCount=counted.filter(e=>e.status==='Present').length;
+    const pct=counted.length?Math.round((presentCount/counted.length)*100):0;
+    pctDisplay.textContent=pct+'% ('+presentCount+' present out of '+counted.length+' class days)';
 
     const month=syncMonthFilter('attendance-month-filter',logs,preferredMonth);
-    const filtered=month?logs.map((e,i)=>({...e,__idx:i})).filter(e=>adminMonthKey(e.date)===month):[];
-    const present=filtered.filter(e=>e.status==='Present').length;
-    const absent=filtered.filter(e=>e.status==='Absent').length;
-    if(summary) summary.textContent=month?`${adminMonthLabel(month)} · ${present} Present · ${absent} Absent · ${filtered.length} recorded` : '';
-    box.innerHTML=filtered.length
-      ? filtered.sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).map(e=>
-        `<div class="attendance-log-item"><span>${escapeHtml(e.date)} — ${escapeHtml(e.status)}</span><button class="remove-btn" data-idx="${e.__idx}">Remove</button></div>`
-      ).join('')
-      : '<div class="admin-month-empty">No attendance recorded for this month.</div>';
-    box.querySelectorAll('.remove-btn').forEach(btn=>{
-      btn.addEventListener('click',()=>{
-        currentAttendanceLog.splice(parseInt(btn.dataset.idx),1);
-        renderAttendancePreview(month);
-        renderAdminStudentInsights(currentStudentFormData||{});
-      });
-    });
+    const byDate={}; logs.forEach((e,i)=>{const k=adminAttendanceDateKey(e.date);if(k)byDate[k]={...e,__idx:i};});
+    let year,mon; if(month){[year,mon]=month.split('-').map(Number);} else {const d=new Date();year=d.getFullYear();mon=d.getMonth()+1;}
+    const first=new Date(year,mon-1,1); const days=new Date(year,mon,0).getDate();
+    let html='<div class="mp-admin-att-calendar"><div class="mp-admin-att-week"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div><div class="mp-admin-att-grid">';
+    let offset=(first.getDay()+6)%7;
+    for(let i=0;i<offset;i++) html+='<div class="mp-admin-att-day empty"></div>';
+    let mp=0,ma=0,mn=0,mu=0;
+    for(let day=1;day<=days;day++){
+      const key=`${year}-${String(mon).padStart(2,'0')}-${String(day).padStart(2,'0')}`; const e=byDate[key]; const status=e?.status||'Not Recorded';
+      let cls='',label='Not recorded'; if(status==='Present'){cls='present';label='Present';mp++;} else if(status==='Absent'){cls='absent';label='Absent';ma++;} else if(status==='No Class'){cls='noclass';label='No class';mn++;} else mu++;
+      html+=`<div class="mp-admin-att-day ${cls}" title="${key} · ${label}"><b>${day}</b><i>${label}</i></div>`;
+    }
+    html+='</div><div class="mp-admin-att-legend"><span><em class="mp-admin-att-dot p"></em>Present</span><span><em class="mp-admin-att-dot a"></em>Absent</span><span><em class="mp-admin-att-dot n"></em>No Class</span><span><em class="mp-admin-att-dot u"></em>Not Recorded</span></div></div>';
+    box.innerHTML=html;
+    const mcount=mp+ma; const mpct=mcount?Math.round(mp/mcount*100):0;
+    if(summary) summary.textContent=month?`${adminMonthLabel(month)} · ${mp} Present · ${ma} Absent · ${mn} No Class · ${mu} Not Recorded · ${mpct}% attendance` : '';
   }
 
   function renderNotesPreview(){
