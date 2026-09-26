@@ -1101,6 +1101,38 @@
   @media(max-width:560px){.mp-p1-metrics>div{padding:11px}.mp-p1-metrics strong{font-size:18px}.mp-p1-history{min-width:560px}}
 </style>
 
+
+<style id="mp-phase2-learning-ui">
+  .mp-p2-learning{margin:18px 0 0;}
+  .mp-p2-learning-grid{display:grid;grid-template-columns:1.35fr .9fr;gap:16px;margin-top:14px;}
+  .mp-p2-card{background:linear-gradient(145deg,#ffffff,#f7f9fc);border:1px solid #e2e8f0;border-radius:18px;padding:16px;box-shadow:0 12px 30px rgba(11,30,61,.08);position:relative;overflow:hidden;}
+  .mp-p2-card:after{content:"";position:absolute;inset:auto -30px -55px auto;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(245,166,35,.13),transparent 68%);pointer-events:none;}
+  .mp-p2-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px;}
+  .mp-p2-head h4{margin:0;color:var(--navy);font-size:15px;}
+  .mp-p2-head p{margin:4px 0 0;color:var(--muted);font-size:10.5px;line-height:1.5;}
+  .mp-p2-pill{font-size:9px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border-radius:999px;background:#eef3fa;color:#31598f;white-space:nowrap;}
+  .mp-p2-test{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-top:1px solid #edf0f5;position:relative;z-index:1;}
+  .mp-p2-test:first-child{border-top:0;padding-top:0;}
+  .mp-p2-test-main{min-width:0;}
+  .mp-p2-test-title{font-weight:850;color:#263852;font-size:12px;word-break:break-word;}
+  .mp-p2-test-meta{font-size:10px;color:#7b8798;margin-top:3px;line-height:1.5;}
+  .mp-p2-countdown{font-size:10px;font-weight:900;color:#9a5e10;background:#fff4df;border:1px solid #f3d59e;padding:7px 8px;border-radius:10px;white-space:nowrap;}
+  .mp-p2-empty{font-size:11px;color:#8a95a5;padding:10px 0;}
+  .mp-p2-resource-list{display:grid;gap:8px;position:relative;z-index:1;}
+  .mp-p2-resource{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 11px;border:1px solid #e8edf4;border-radius:12px;background:#fff;}
+  .mp-p2-resource-title{font-size:11px;font-weight:800;color:#30415b;min-width:0;}
+  .mp-p2-resource-actions{display:flex;gap:6px;flex-shrink:0;}
+  .mp-p2-resource-actions a{font-size:10px;font-weight:800;text-decoration:none;padding:5px 8px;border-radius:8px;border:1px solid #dbe3ee;color:#31598f;background:#f8fbff;}
+  .mp-p2-resource-actions a:hover{background:#31598f;color:#fff;}
+  .mp-p2-study-plan{display:grid;gap:8px;position:relative;z-index:1;}
+  .mp-p2-plan-row{display:flex;gap:9px;align-items:flex-start;padding:9px 10px;border-radius:11px;background:#fff;border:1px solid #e8edf4;}
+  .mp-p2-plan-icon{width:27px;height:27px;border-radius:9px;display:grid;place-items:center;background:#eef3fa;flex:0 0 auto;}
+  .mp-p2-plan-row strong{display:block;font-size:10.5px;color:#30415b;}
+  .mp-p2-plan-row span{display:block;font-size:10px;color:#7b8798;margin-top:2px;line-height:1.4;}
+  @media(max-width:780px){.mp-p2-learning-grid{grid-template-columns:1fr;}}
+  @media(max-width:520px){.mp-p2-card{padding:13px}.mp-p2-test{align-items:flex-start}.mp-p2-countdown{font-size:9px;padding:6px}.mp-p2-resource{align-items:flex-start}.mp-p2-resource-actions{flex-direction:column}}
+</style>
+
 </head>
 <body>
 
@@ -1165,6 +1197,33 @@
             <div class="score-chart-wrap student-score-chart"><canvas id="score-chart"></canvas></div>
             <ul class="score-list student-score-list" id="dash-scores-list"><li>No test scores yet</li></ul>
           </div>
+
+
+          
+<div class="student-panel student-panel-wide mp-p2-learning" id="panel-learning-hub">
+  <div class="student-panel-head">
+    <div><span class="panel-kicker">PHASE 2 · LEARNING HUB</span><h3>Study &amp; Learn</h3><p style="margin:4px 0 0;color:var(--muted);font-size:10.5px;">Your homework, upcoming tests and assigned study resources in one place.</p></div>
+    <span class="panel-pill">Live</span>
+  </div>
+  <div class="mp-p2-learning-grid">
+    <div class="mp-p2-card">
+      <div class="mp-p2-head"><div><h4>🧪 Upcoming Tests</h4><p>Published by your Admin for your class/batch.</p></div><span class="mp-p2-pill" id="mp-p2-test-count">0 tests</span></div>
+      <div id="mp-p2-upcoming-tests"><div class="mp-p2-empty">No upcoming tests scheduled.</div></div>
+    </div>
+    <div class="mp-p2-card">
+      <div class="mp-p2-head"><div><h4>📚 Study Resources</h4><p>Your assigned notes and learning files.</p></div><span class="mp-p2-pill" id="mp-p2-resource-count">0 files</span></div>
+      <div id="mp-p2-resources" class="mp-p2-resource-list"><div class="mp-p2-empty">No assigned resources yet.</div></div>
+    </div>
+    <div class="mp-p2-card">
+      <div class="mp-p2-head"><div><h4>🎯 Today's Study Plan</h4><p>Automatically built from due homework and upcoming tests.</p></div><span class="mp-p2-pill">Smart</span></div>
+      <div id="mp-p2-study-plan" class="mp-p2-study-plan"><div class="mp-p2-empty">Your study plan will appear here.</div></div>
+    </div>
+    <div class="mp-p2-card">
+      <div class="mp-p2-head"><div><h4>📝 Homework Snapshot</h4><p>Recent assignments and deadlines.</p></div><span class="mp-p2-pill" id="mp-p2-homework-count">0 active</span></div>
+      <div id="mp-p2-homework-snapshot" class="mp-p2-study-plan"><div class="mp-p2-empty">No active homework.</div></div>
+    </div>
+  </div>
+</div>
 
 
           <div class="student-panel student-panel-wide mp-phase1-performance-intel" id="panel-performance-intel">
@@ -2929,6 +2988,7 @@
       return `<li><span>${title}</span><span><a href="${safeUrl}" target="_blank" rel="noopener">View</a> · <a href="${safeUrl}" download>Download</a></span></li>`;
     }).join(''):'<li>No notes assigned yet</li>';
     studentDashboard.style.display='block';
+    try{ await refreshPhase2LearningHub(); }catch(e){ console.warn('Phase 2 learning hub refresh failed',e); }
     } catch(err) {
       console.error('Student dashboard load failed:', err);
       const foundContent = document.getElementById('dash-found-content');
@@ -3022,6 +3082,91 @@
       ).join('');
     }
   }
+
+
+  // =========================
+  // PHASE 2 — LEARNING HUB
+  // =========================
+  function mpP2ParseDate(value){
+    if(!value) return null;
+    const raw=String(value).trim();
+    if(/^\d{4}-\d{2}-\d{2}$/.test(raw)) return new Date(raw+'T00:00:00');
+    const m=raw.match(/^(\d{1,2})\s+([A-Za-z]{3})(?:\s+(\d{4}))?$/);
+    if(m){const d=new Date(`${m[1]} ${m[2]} ${m[3]||new Date().getFullYear()} 00:00:00`);return isNaN(d.getTime())?null:d;}
+    const d=new Date(raw); return isNaN(d.getTime())?null:d;
+  }
+  function mpP2DayDiff(dateValue){
+    const d=mpP2ParseDate(dateValue); if(!d) return null;
+    const today=new Date(); today.setHours(0,0,0,0); d.setHours(0,0,0,0);
+    return Math.round((d-today)/86400000);
+  }
+  function mpP2Countdown(dateValue){
+    const n=mpP2DayDiff(dateValue); if(n===null) return '';
+    if(n<0) return 'Completed';
+    if(n===0) return 'Today';
+    if(n===1) return 'Tomorrow';
+    return `In ${n} days`;
+  }
+  function mpP2SafeUrl(url){return /^https?:\/\//i.test(String(url||'').trim())?dashEscapeHtml(String(url).trim()):'';}
+
+  function renderPhase2LearningHub(data, homeworkItems){
+    const tests=Array.isArray(data?.upcomingTests)?data.upcomingTests.slice():[];
+    tests.sort((a,b)=>(mpP2ParseDate(a.date)?.getTime()||0)-(mpP2ParseDate(b.date)?.getTime()||0));
+    const upcoming=tests.filter(t=>{const n=mpP2DayDiff(t.date);return n!==null&&n>=0;}).slice(0,6);
+    const testBox=document.getElementById('mp-p2-upcoming-tests');
+    const testCount=document.getElementById('mp-p2-test-count');
+    if(testCount) testCount.textContent=`${upcoming.length} test${upcoming.length===1?'':'s'}`;
+    if(testBox){
+      testBox.innerHTML=upcoming.length?upcoming.map(t=>{
+        const date=mpP2ParseDate(t.date); const label=date?date.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):String(t.date||'');
+        const meta=[t.subject,t.topic,t.time,t.maxMarks?`Max ${t.maxMarks}`:''].filter(Boolean).map(dashEscapeHtml).join(' · ');
+        return `<div class="mp-p2-test"><div class="mp-p2-test-main"><div class="mp-p2-test-title">${dashEscapeHtml(t.title||'Upcoming Test')}</div><div class="mp-p2-test-meta">${dashEscapeHtml(label)}${meta?' · '+meta:''}${t.instructions?' · '+dashEscapeHtml(t.instructions):''}</div></div><span class="mp-p2-countdown">${mpP2Countdown(t.date)}</span></div>`;
+      }).join(''):'<div class="mp-p2-empty">No upcoming tests scheduled.</div>';
+    }
+
+    const notes=Array.isArray(data?.notes)?data.notes:[];
+    const resources=notes.slice(0,8);
+    const rc=document.getElementById('mp-p2-resource-count'); if(rc) rc.textContent=`${resources.length} file${resources.length===1?'':'s'}`;
+    const rb=document.getElementById('mp-p2-resources');
+    if(rb){
+      rb.innerHTML=resources.length?resources.map(n=>{
+        const url=mpP2SafeUrl(n?.url); const title=dashEscapeHtml(n?.title||'Study Note');
+        return `<div class="mp-p2-resource"><span class="mp-p2-resource-title">📄 ${title}</span><span class="mp-p2-resource-actions">${url?`<a href="${url}" target="_blank" rel="noopener noreferrer">Open</a><a href="${url}" download>Download</a>`:''}</span></div>`;
+      }).join(''):'<div class="mp-p2-empty">No assigned resources yet.</div>';
+    }
+
+    const hw=Array.isArray(homeworkItems)?homeworkItems.filter(h=>{const n=mpP2DayDiff(h.dueDate);return !h.dueDate||n===null||n>=0;}).slice(0,4):[];
+    const hc=document.getElementById('mp-p2-homework-count'); if(hc) hc.textContent=`${hw.length} active`;
+    const hb=document.getElementById('mp-p2-homework-snapshot');
+    if(hb){
+      hb.innerHTML=hw.length?hw.map(h=>`<div class="mp-p2-plan-row"><div class="mp-p2-plan-icon">📝</div><div><strong>${dashEscapeHtml(h.title||'Homework')}</strong><span>${h.dueDate?`Due ${dashEscapeHtml(h.dueDate)}`:'No due date'}${h.details?' · '+dashEscapeHtml(String(h.details).slice(0,80)):''}</span></div></div>`).join(''):'<div class="mp-p2-empty">No active homework.</div>';
+    }
+
+    const plan=[];
+    if(upcoming[0]) plan.push({icon:'🧪',title:`Prepare for ${upcoming[0].title||'your next test'}`,sub:`${mpP2Countdown(upcoming[0].date)}${upcoming[0].topic?' · Focus: '+upcoming[0].topic:''}`});
+    if(hw[0]) plan.push({icon:'📝',title:`Complete ${hw[0].title||'your homework'}`,sub:hw[0].dueDate?`Due ${hw[0].dueDate}`:'No due date — keep it moving'});
+    if(!plan.length) plan.push({icon:'📖',title:'Revise one topic today',sub:'Keep your learning streak active with a focused practice session.'});
+    const pb=document.getElementById('mp-p2-study-plan'); if(pb) pb.innerHTML=plan.map(x=>`<div class="mp-p2-plan-row"><div class="mp-p2-plan-icon">${x.icon}</div><div><strong>${dashEscapeHtml(x.title)}</strong><span>${dashEscapeHtml(x.sub)}</span></div></div>`).join('');
+  }
+
+  async function refreshPhase2LearningHub(){
+    if(!auth.currentUser) return;
+    try{
+      const snap=await getDoc(doc(db,'students',auth.currentUser.email.toLowerCase()));
+      if(!snap.exists()) return;
+      const data=snap.data()||{};
+      const email=auth.currentUser.email.toLowerCase();
+      let homeworkItems=[];
+      try{
+        const q=query(collection(db,'homework'),where('recipientEmails','array-contains',email));
+        const hs=await getDocs(q);
+        homeworkItems=hs.docs.map(d=>d.data()).filter(matchesStudentTarget).sort((a,b)=>(b.createdAt?.toMillis?.()||0)-(a.createdAt?.toMillis?.()||0)).slice(0,8);
+      }catch(e){ console.warn('Phase 2 homework snapshot unavailable',e); }
+      renderPhase2LearningHub(data,homeworkItems);
+    }catch(err){console.warn('Phase 2 learning hub unavailable',err);}
+  }
+  window.mpRefreshPhase2LearningHub=refreshPhase2LearningHub;
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible' && auth.currentUser) refreshPhase2LearningHub();});
 
 </script>
 
