@@ -518,19 +518,41 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       </div>
       <div id="admissions-list" class="admission-list"><div style="font-size:13px;color:var(--muted);">Admissions are hidden until you click the Admissions menu.</div></div>
 
-      <div id="teacher-management-panel" class="teacher-management-panel" style="display:none;">
+      <div id="teacher-assignments-panel" class="teacher-management-panel" style="margin-top:18px;">
+        <div class="card-title-row">
+          <div><span class="section-kicker">Home Tuition Operations</span><h3 style="margin:4px 0 4px;">Teacher Assignments</h3><p style="margin:0;color:var(--muted);font-size:12px;">Every saved assignment stays separate from the teacher master profile. Assignments can be reviewed and teacher WhatsApp summaries can be prepared manually.</p></div>
+          <button class="btn btn-secondary btn-small" id="refresh-teacher-assignments-btn" type="button">Refresh</button>
+        </div>
+        <div id="teacher-assignments-list" style="margin-top:12px;"><div style="font-size:12px;color:var(--muted);">No assignments loaded yet.</div></div>
+      </div>
+
+      <div id="teacher-management-panel" class="teacher-management-panel">
         <div class="card-title-row" style="margin-top:18px;">
           <div><span class="section-kicker">Home Tuition Team</span><h3 style="margin:4px 0 4px;">Teacher Management</h3><p style="margin:0;color:var(--muted);font-size:12px;">Save each teacher once. Their default first-month commission will auto-fill when you assign them to a Home Tuition enquiry.</p></div>
           <button class="btn btn-secondary btn-small" id="teacher-cancel-edit-btn" type="button" style="display:none;">Cancel Edit</button>
         </div>
         <div class="teacher-form-grid">
-          <div><label>Teacher Name</label><input id="teacher-name-input" placeholder="e.g. Amit Sharma"></div>
-          <div><label>Teacher WhatsApp / Phone</label><input id="teacher-phone-input" type="tel" placeholder="e.g. 9876543210"></div>
+          <div><label>Teacher Name *</label><input id="teacher-name-input" placeholder="e.g. Amit Sharma"></div>
+          <div><label>Gender</label><select id="teacher-gender-input"><option value="">Select gender</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+          <div><label>Date of Birth</label><input id="teacher-dob-input" type="date"></div>
+          <div><label>Teacher WhatsApp / Phone *</label><input id="teacher-phone-input" type="tel" placeholder="e.g. 9876543210"></div>
+          <div><label>Email</label><input id="teacher-email-input" type="email" placeholder="teacher@example.com"></div>
+          <div><label>Alternate Phone</label><input id="teacher-alt-phone-input" type="tel" placeholder="Optional"></div>
           <div><label>Subjects</label><input id="teacher-subjects-input" placeholder="e.g. Mathematics, Science"></div>
+          <div><label>Classes They Can Teach</label><input id="teacher-classes-input" placeholder="e.g. Class 9–12"></div>
+          <div><label>Boards</label><input id="teacher-boards-input" placeholder="CBSE, ICSE, UP Board"></div>
+          <div><label>Qualification</label><input id="teacher-qualification-input" placeholder="e.g. M.Sc. Mathematics, B.Ed."></div>
+          <div><label>Experience</label><input id="teacher-experience-input" placeholder="e.g. 5 years"></div>
+          <div><label>Teaching Mode</label><select id="teacher-mode-input"><option value="">Select mode</option><option>Home Tuition</option><option>Online</option><option>Home Tuition + Online</option></select></div>
           <div><label>Areas / Localities</label><input id="teacher-areas-input" placeholder="e.g. Kalyanpur, Kakadeo"></div>
           <div><label>Availability</label><input id="teacher-availability-input" placeholder="e.g. Mon–Sat, 4–8 PM"></div>
+          <div><label>Joining Date</label><input id="teacher-joining-date-input" type="date"></div>
+          <div><label>Emergency Contact Name</label><input id="teacher-emergency-name-input" placeholder="Optional"></div>
+          <div><label>Emergency Contact Phone</label><input id="teacher-emergency-phone-input" type="tel" placeholder="Optional"></div>
+          <div><label>Address</label><input id="teacher-address-input" placeholder="Full address / locality"></div>
           <div><label>Default First-Month Commission %</label><input id="teacher-commission-input" type="number" min="0" max="100" step="1" value="50"></div>
           <div><label>Status</label><select id="teacher-status-input"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+          <div style="grid-column:1/-1;"><label>Internal Notes</label><textarea id="teacher-notes-input" rows="3" placeholder="Private admin notes: teaching style, preferences, documents, special instructions, etc."></textarea></div>
         </div>
         <div class="ht-actions" style="margin-top:12px;">
           <button type="button" class="btn btn-small" id="teacher-save-btn">+ Add Teacher</button>
@@ -571,6 +593,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
           </div>
           <div class="ht-actions">
             <button type="button" class="btn btn-small" id="ht-save-btn">Save Assignment</button>
+            <button type="button" class="btn btn-secondary btn-small" id="ht-teacher-whatsapp-btn">📲 Prepare Teacher WhatsApp</button>
             <button type="button" class="btn btn-secondary btn-small" id="ht-whatsapp-btn">📲 Prepare Parent WhatsApp</button>
             <button type="button" class="btn btn-secondary btn-small" id="ht-call-btn">📞 Call Parent</button>
           </div>
@@ -1096,6 +1119,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     localStorage.setItem('mpAdminWorkspace', currentWorkspace);
     if(currentWorkspace === 'admission'){
       document.getElementById('admissions-section')?.scrollIntoView({behavior:'smooth',block:'start'});
+      try { loadTeachers(); } catch(e) {}
     } else {
       document.getElementById('overview')?.scrollIntoView({behavior:'smooth',block:'start'});
     }
@@ -3652,14 +3676,14 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
   function renderTeachers(){
     const list=document.getElementById('teachers-list'); if(!list)return;
     const q=String(document.getElementById('teacher-search-input')?.value||'').trim().toLowerCase();
-    const filtered=teachersCache.filter(t=>!q || [t.name,t.phone,t.subjects,t.areas,t.availability,t.status].some(v=>String(v||'').toLowerCase().includes(q)));
+    const filtered=teachersCache.filter(t=>!q || [t.name,t.phone,t.email,t.subjects,t.areas,t.availability,t.classes,t.boards,t.qualification,t.experience,t.mode,t.address,t.status].some(v=>String(v||'').toLowerCase().includes(q)));
     const count=document.getElementById('teacher-count-label');
     if(count) count.textContent=`${teachersCache.length} saved teacher${teachersCache.length===1?'':'s'}`;
     if(!filtered.length){ list.innerHTML=`<div style="font-size:12px;color:var(--muted);padding:14px 0;">${teachersCache.length?'No teacher matches your search.':'No teachers saved yet. Add your first teacher above.'}</div>`; return; }
     list.innerHTML=filtered.map(t=>{
       const badge=t.status==='Inactive'?'teacher-badge inactive':'teacher-badge';
       const assigned=admissionsCache.filter(a=>String(a.homeTuition?.teacherId||a.homeTuition?.teacherName||'').toLowerCase()===String(t.id).toLowerCase() || String(a.homeTuition?.teacherName||'').toLowerCase()===String(t.name||'').toLowerCase()).filter(a=>!a.archived).length;
-      return `<div class="teacher-row">        <div class="teacher-row-main"><strong>${teacherSafeText(t.name||'Unnamed teacher')}</strong><small>${teacherSafeText(t.phone||'No phone')} · ${teacherSafeText(t.subjects||'Subjects not set')}<br>${teacherSafeText(t.areas||'Areas not set')} · ${teacherSafeText(t.availability||'Availability not set')}</small></div>        <div><span class="${badge}">${teacherSafeText(t.status||'Active')}</span><div style="font-size:11px;color:var(--muted);margin-top:4px;">${assigned} active assignment${assigned===1?'':'s'}</div></div>        <div><small style="color:var(--muted);font-weight:700;">Default first-month</small><strong>${Number(t.commissionPct||0)}%</strong></div>        <div style="display:flex;gap:6px;flex-wrap:wrap;"><button type="button" class="btn btn-secondary btn-small teacher-edit-btn" data-id="${teacherSafeText(t.id)}">Edit</button><button type="button" class="btn btn-small teacher-delete-btn" data-id="${teacherSafeText(t.id)}" style="background:#f5e5e5;color:#9b2c2c;">Delete</button></div>      </div>`;
+      return `<div class="teacher-row">        <div class="teacher-row-main"><strong>${teacherSafeText(t.name||'Unnamed teacher')}</strong><small>${teacherSafeText(t.phone||'No phone')} · ${teacherSafeText(t.subjects||'Subjects not set')} · ${teacherSafeText(t.classes||'Classes not set')}<br>${teacherSafeText(t.areas||'Areas not set')} · ${teacherSafeText(t.availability||'Availability not set')}${t.experience?' · '+teacherSafeText(t.experience):''}</small></div>        <div><span class="${badge}">${teacherSafeText(t.status||'Active')}</span><div style="font-size:11px;color:var(--muted);margin-top:4px;">${assigned} active assignment${assigned===1?'':'s'}</div></div>        <div><small style="color:var(--muted);font-weight:700;">Default first-month</small><strong>${Number(t.commissionPct||0)}%</strong></div>        <div style="display:flex;gap:6px;flex-wrap:wrap;"><button type="button" class="btn btn-secondary btn-small teacher-edit-btn" data-id="${teacherSafeText(t.id)}">Edit</button><button type="button" class="btn btn-small teacher-delete-btn" data-id="${teacherSafeText(t.id)}" style="background:#f5e5e5;color:#9b2c2c;">Delete</button></div>      </div>`;
     }).join('');
     list.querySelectorAll('.teacher-edit-btn').forEach(btn=>btn.addEventListener('click',()=>startTeacherEdit(btn.dataset.id)));
     list.querySelectorAll('.teacher-delete-btn').forEach(btn=>btn.addEventListener('click',()=>deleteTeacher(btn.dataset.id)));
@@ -3674,7 +3698,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
 
   function resetTeacherForm(){
     editingTeacherId=null;
-    ['teacher-name-input','teacher-phone-input','teacher-subjects-input','teacher-areas-input','teacher-availability-input'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+    ['teacher-name-input','teacher-gender-input','teacher-dob-input','teacher-phone-input','teacher-email-input','teacher-alt-phone-input','teacher-subjects-input','teacher-classes-input','teacher-boards-input','teacher-qualification-input','teacher-experience-input','teacher-mode-input','teacher-areas-input','teacher-availability-input','teacher-joining-date-input','teacher-emergency-name-input','teacher-emergency-phone-input','teacher-address-input','teacher-notes-input'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
     document.getElementById('teacher-commission-input').value='50';
     document.getElementById('teacher-status-input').value='Active';
     document.getElementById('teacher-save-btn').textContent='+ Add Teacher';
@@ -3686,12 +3710,26 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     const t=teachersCache.find(x=>x.id===id); if(!t)return;
     editingTeacherId=id;
     document.getElementById('teacher-name-input').value=t.name||'';
+    document.getElementById('teacher-gender-input').value=t.gender||'';
+    document.getElementById('teacher-dob-input').value=t.dob||'';
     document.getElementById('teacher-phone-input').value=t.phone||'';
+    document.getElementById('teacher-email-input').value=t.email||'';
+    document.getElementById('teacher-alt-phone-input').value=t.altPhone||'';
     document.getElementById('teacher-subjects-input').value=t.subjects||'';
+    document.getElementById('teacher-classes-input').value=t.classes||'';
+    document.getElementById('teacher-boards-input').value=t.boards||'';
+    document.getElementById('teacher-qualification-input').value=t.qualification||'';
+    document.getElementById('teacher-experience-input').value=t.experience||'';
+    document.getElementById('teacher-mode-input').value=t.mode||'';
     document.getElementById('teacher-areas-input').value=t.areas||'';
     document.getElementById('teacher-availability-input').value=t.availability||'';
+    document.getElementById('teacher-joining-date-input').value=t.joiningDate||'';
+    document.getElementById('teacher-emergency-name-input').value=t.emergencyName||'';
+    document.getElementById('teacher-emergency-phone-input').value=t.emergencyPhone||'';
+    document.getElementById('teacher-address-input').value=t.address||'';
     document.getElementById('teacher-commission-input').value=Number(t.commissionPct||0);
     document.getElementById('teacher-status-input').value=t.status||'Active';
+    document.getElementById('teacher-notes-input').value=t.notes||'';
     document.getElementById('teacher-save-btn').textContent='Update Teacher';
     document.getElementById('teacher-cancel-edit-btn').style.display='inline-block';
     document.getElementById('teacher-management-panel').scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -3699,15 +3737,29 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
 
   async function saveTeacher(){
     const name=document.getElementById('teacher-name-input').value.trim();
+    const gender=document.getElementById('teacher-gender-input').value;
+    const dob=document.getElementById('teacher-dob-input').value;
     const phone=document.getElementById('teacher-phone-input').value.trim();
+    const email=document.getElementById('teacher-email-input').value.trim();
+    const altPhone=document.getElementById('teacher-alt-phone-input').value.trim();
     const subjects=document.getElementById('teacher-subjects-input').value.trim();
+    const classes=document.getElementById('teacher-classes-input').value.trim();
+    const boards=document.getElementById('teacher-boards-input').value.trim();
+    const qualification=document.getElementById('teacher-qualification-input').value.trim();
+    const experience=document.getElementById('teacher-experience-input').value.trim();
+    const mode=document.getElementById('teacher-mode-input').value;
     const areas=document.getElementById('teacher-areas-input').value.trim();
     const availability=document.getElementById('teacher-availability-input').value.trim();
+    const joiningDate=document.getElementById('teacher-joining-date-input').value;
+    const emergencyName=document.getElementById('teacher-emergency-name-input').value.trim();
+    const emergencyPhone=document.getElementById('teacher-emergency-phone-input').value.trim();
+    const address=document.getElementById('teacher-address-input').value.trim();
     const commissionPct=Math.min(100,Math.max(0,Number(document.getElementById('teacher-commission-input').value||0)));
     const status=document.getElementById('teacher-status-input').value;
+    const notes=document.getElementById('teacher-notes-input').value.trim();
     const msg=document.getElementById('teacher-form-msg');
     if(!name){msg.textContent='Teacher name is required.';msg.className='msg error';return;}
-    const payload={name,phone,subjects,areas,availability,commissionPct,status,updatedAt:serverTimestamp()};
+    const payload={name,gender,dob,phone,email,altPhone,subjects,classes,boards,qualification,experience,mode,areas,availability,joiningDate,emergencyName,emergencyPhone,address,commissionPct,status,notes,updatedAt:serverTimestamp()};
     try{
       if(editingTeacherId){
         await updateDoc(doc(db,'teachers',editingTeacherId),payload);
@@ -3754,8 +3806,8 @@ This permanently removes the saved teacher profile.`))return;
 
   document.getElementById('toggle-teacher-management-btn')?.addEventListener('click',async()=>{
     const panel=document.getElementById('teacher-management-panel'); if(!panel)return;
-    const open=panel.style.display!=='none'; panel.style.display=open?'none':'block';
-    if(!open){try{await loadTeachers();}catch(e){}}
+    panel.scrollIntoView({behavior:'smooth',block:'start'});
+    try{await loadTeachers();}catch(e){}
   });
   document.getElementById('teacher-search-input')?.addEventListener('input',renderTeachers);
   document.getElementById('teacher-save-btn')?.addEventListener('click',saveTeacher);
@@ -3784,8 +3836,77 @@ This permanently removes the saved teacher profile.`))return;
     const fee=Number(document.getElementById('ht-monthly-fee').value||0); const pct=Math.min(100,Math.max(0,Number(document.getElementById('ht-commission-pct').value||50)));
     const commission=Math.round(fee*pct/100); const teacherFirst=fee-commission;
     const selectedTeacherId=document.getElementById('ht-teacher-select')?.value||''; const homeTuition={teacherId:selectedTeacherId,teacherName:document.getElementById('ht-teacher-name').value.trim(),teacherPhone:document.getElementById('ht-teacher-phone').value.trim(),subjects:document.getElementById('ht-subjects').value.trim(),schedule:document.getElementById('ht-schedule').value.trim(),startDate:document.getElementById('ht-start-date').value,assignmentStatus:document.getElementById('ht-assignment-status').value,monthlyFee:fee,commissionPct:pct,commissionAmount:commission,teacherFirstMonth:teacherFirst,teacherRecurring:fee,paymentMode:document.getElementById('ht-payment-mode').value,internalNotes:document.getElementById('ht-internal-notes').value.trim(),updatedAt:new Date().toISOString()};
-    try{await updateDoc(doc(db,'admissions',a.id),{homeTuition,updatedAt:serverTimestamp()});Object.assign(a,{homeTuition});const msg=document.getElementById('ht-msg');msg.textContent='Assignment saved securely. Parent has not been contacted automatically.';msg.className='msg success show';showToast('Home Tuition assignment saved.');}catch(err){const msg=document.getElementById('ht-msg');msg.textContent='Could not save: '+(err.message||'Unknown error');msg.className='msg error show';}
+    try{
+      await updateDoc(doc(db,'admissions',a.id),{homeTuition,updatedAt:serverTimestamp()});
+      const assignmentRef=doc(db,'teacherAssignments',a.id);
+      await setDoc(assignmentRef,{
+        admissionId:a.id, applicationId:a.applicationId||'', studentName:a.studentName||'', className:a.className||'',
+        parentName:a.parentName||'', parentPhone:a.parentPhone||a.whatsapp||'', teacherId:selectedTeacherId,
+        teacherName:homeTuition.teacherName, teacherPhone:homeTuition.teacherPhone, subjects:homeTuition.subjects,
+        area:a.homeArea||a.area||a.locality||'',
+        schedule:homeTuition.schedule, startDate:homeTuition.startDate, assignmentStatus:homeTuition.assignmentStatus,
+        monthlyFee:fee, commissionPct:pct, commissionAmount:commission, teacherFirstMonth:teacherFirst,
+        teacherRecurring:fee, paymentMode:homeTuition.paymentMode, internalNotes:homeTuition.internalNotes,
+        updatedAt:serverTimestamp(), source:'admission-management'
+      },{merge:true});
+      Object.assign(a,{homeTuition});
+      const msg=document.getElementById('ht-msg');msg.textContent='Assignment saved securely. Teacher master + assignment record updated. Parent has not been contacted automatically.';msg.className='msg success show';
+      showToast('Home Tuition assignment saved.');
+      if(typeof loadTeachers==='function') await loadTeachers();
+      if(typeof loadTeacherAssignments==='function') await loadTeacherAssignments();
+    }catch(err){const msg=document.getElementById('ht-msg');msg.textContent='Could not save: '+(err.message||'Unknown error');msg.className='msg error show';}
   }
+  async function loadTeacherAssignments(){
+    const box=document.getElementById('teacher-assignments-list'); if(!box)return;
+    box.innerHTML='<div style="font-size:12px;color:var(--muted);"><span class="spinner"></span> Loading assignments...</div>';
+    try{
+      const snap=await getDocs(collection(db,'teacherAssignments'));
+      const rows=[]; snap.forEach(d=>rows.push({id:d.id,...(d.data()||{})}));
+      rows.sort((a,b)=>String(b.startDate||'').localeCompare(String(a.startDate||'')));
+      if(!rows.length){box.innerHTML='<div style="font-size:12px;color:var(--muted);padding:14px 0;">No teacher assignments saved yet. Assign a teacher from a Home Tuition admission.</div>';return;}
+      box.innerHTML=rows.map(r=>{
+        const status=String(r.assignmentStatus||'Pending');
+        const badge=status==='Active'?'teacher-badge':(status==='Completed'?'teacher-badge inactive':'teacher-badge');
+        return `<div class="teacher-row" style="grid-template-columns:1.4fr 1.2fr .8fr .8fr auto;">\
+          <div class="teacher-row-main"><strong>${teacherSafeText(r.teacherName||'Unassigned')}</strong><small>${teacherSafeText(r.teacherPhone||'No teacher phone')} · ${teacherSafeText(r.subjects||'Subject not set')}<br>${teacherSafeText(r.schedule||'Schedule not set')} · Start ${teacherSafeText(r.startDate||'—')}</small></div>\
+          <div><strong>${teacherSafeText(r.studentName||'Student')}</strong><small style="display:block;color:var(--muted);">Class ${teacherSafeText(r.className||'—')} · ${teacherSafeText(r.applicationId||'')}</small></div>\
+          <div><span class="${badge}">${teacherSafeText(status)}</span></div>\
+          <div><small style="color:var(--muted);font-weight:700;">Monthly fee</small><strong>₹${Number(r.monthlyFee||0).toLocaleString('en-IN')}</strong></div>\
+          <div><button type="button" class="btn btn-secondary btn-small assignment-teacher-wa" data-id="${teacherSafeText(r.id)}">📲 Teacher WA</button></div>\
+        </div>`;
+      }).join('');
+      box.querySelectorAll('.assignment-teacher-wa').forEach(btn=>btn.addEventListener('click',()=>prepareTeacherWhatsApp(btn.dataset.id)));
+    }catch(err){
+      console.error('Teacher assignments load error:',err);
+      box.innerHTML=`<div class="msg error">Could not load teacher assignments: ${escapeHtml(err.message||'Unknown error')}</div>`;
+    }
+  }
+
+  async function prepareTeacherWhatsApp(assignmentId){
+    let r=null;
+    try{
+      const snap=await getDoc(doc(db,'teacherAssignments',assignmentId));
+      if(snap.exists()) r={id:snap.id,...(snap.data()||{})};
+    }catch(err){showToast('Could not load assignment: '+(err.message||'Unknown error'));return;}
+    if(!r?.teacherPhone){showToast('Teacher WhatsApp number is missing.');return;}
+    if(!r.teacherName){showToast('Teacher name is missing.');return;}
+    const phone=String(r.teacherPhone).replace(/\D/g,'');
+    if(phone.length<10){showToast('Teacher WhatsApp number is invalid.');return;}
+    const fullPhone=phone.length===10?'91'+phone:phone;
+    const text=`Hello ${r.teacherName},\n\nMaths Pathshala — Home Tuition Assignment\n\nStudent: ${r.studentName||'—'}\nClass: ${r.className||'—'}\nSubject: ${r.subjects||'—'}\nSchedule: ${r.schedule||'As discussed'}\n${r.startDate?'Start Date: '+r.startDate+'\n':''}Area: ${r.area||'As discussed'}\n\nParent: ${r.parentName||'—'}\nParent Contact: ${r.parentPhone||'—'}\n\nPlease coordinate with the parent regarding the first class and let Maths Pathshala know if there is any issue.\n\nRegards,\nMaths Pathshala`;
+    window.open(`https://wa.me/${fullPhone}?text=${encodeURIComponent(text)}`,'_blank','noopener,noreferrer');
+  }
+
+  function prepareTeacherWhatsAppFromCurrent(){
+    const a=currentAdmission(); if(!a)return;
+    const ht=a.homeTuition||{};
+    if(!ht.teacherPhone){showToast('Assign/save a teacher first.');return;}
+    const phone=String(ht.teacherPhone).replace(/\D/g,''); if(phone.length<10){showToast('Teacher WhatsApp number is invalid.');return;}
+    const fullPhone=phone.length===10?'91'+phone:phone;
+    const text=`Hello ${ht.teacherName||'Sir/Ma’am'},\n\nMaths Pathshala — Home Tuition Assignment\n\nStudent: ${a.studentName||'—'}\nClass: ${a.className||'—'}\nSubject: ${ht.subjects||a.homeSubjects||'—'}\nSchedule: ${ht.schedule||'As discussed'}\n${ht.startDate?'Start Date: '+ht.startDate+'\n':''}\nParent: ${a.parentName||'—'}\nParent Contact: ${a.parentPhone||a.whatsapp||'—'}\n\nPlease coordinate with the parent regarding the first class and inform Maths Pathshala if there is any issue.\n\nRegards,\nMaths Pathshala`;
+    window.open(`https://wa.me/${fullPhone}?text=${encodeURIComponent(text)}`,'_blank','noopener,noreferrer');
+  }
+
   function prepareParentWhatsApp(){
     const a=currentAdmission();if(!a)return; const ht=a.homeTuition||{}; const teacher=document.getElementById('ht-teacher-name').value.trim(); const subject=document.getElementById('ht-subjects').value.trim()||a.homeSubjects||'Required subject'; const schedule=document.getElementById('ht-schedule').value.trim()||[a.homeDays,a.homeTiming].filter(Boolean).join(' · ')||'As discussed'; const start=document.getElementById('ht-start-date').value; const phone=(a.whatsapp||a.parentPhone||'').replace(/\D/g,''); if(phone.length<10){showToast('Parent WhatsApp number is missing.');return;} if(!teacher){showToast('Assign a teacher first.');return;} const fullPhone=phone.length===10?'91'+phone:phone; const text=`Hello ${a.parentName||'Parent'},\n\nMaths Pathshala — Home Tuition\n\nStudent: ${a.studentName||'—'}\nClass: ${a.className||'—'}\nSubject: ${subject}\nTeacher: ${teacher}\nSchedule: ${schedule}\n${start?'Start Date: '+start+'\n':''}\nYour child's home tuition arrangement has been confirmed. Please feel free to contact us if you need any help.\n\nRegards,\nMaths Pathshala`; window.open(`https://wa.me/${fullPhone}?text=${encodeURIComponent(text)}`,'_blank','noopener,noreferrer');}
   function callParent(){const a=currentAdmission();if(!a)return;const phone=(a.parentPhone||a.whatsapp||'').replace(/\D/g,'');if(phone.length<10){showToast('Parent phone number is missing.');return;}window.location.href='tel:'+(phone.length===10?'91'+phone:phone);}
@@ -3795,6 +3916,7 @@ function closeAdmissionDetail(){const m=document.getElementById('admission-detai
     const section=document.getElementById('admissions-section'); if(!section)return;
     section.style.display='block'; section.scrollIntoView({behavior:'smooth',block:'start'});
     if(!admissionsLoaded) loadAdmissionsAdminList(); else renderAdmissions();
+    loadTeacherAssignments();
   }
   document.getElementById('admissions-nav-link')?.addEventListener('click',e=>{e.preventDefault();openAdmissions();});
   document.getElementById('close-admissions-btn')?.addEventListener('click',()=>{const s=document.getElementById('admissions-section');if(s)s.style.display='none';});
@@ -3810,7 +3932,9 @@ function closeAdmissionDetail(){const m=document.getElementById('admission-detai
   document.getElementById('close-admission-modal')?.addEventListener('click',closeAdmissionDetail);
   document.getElementById('admission-detail-modal')?.addEventListener('click',e=>{if(e.target.id==='admission-detail-modal')closeAdmissionDetail();});
   document.getElementById('ht-save-btn')?.addEventListener('click',saveHomeTuitionAssignment);
+  document.getElementById('ht-teacher-whatsapp-btn')?.addEventListener('click',prepareTeacherWhatsAppFromCurrent);
   document.getElementById('ht-whatsapp-btn')?.addEventListener('click',prepareParentWhatsApp);
+  document.getElementById('refresh-teacher-assignments-btn')?.addEventListener('click',loadTeacherAssignments);
   document.getElementById('ht-call-btn')?.addEventListener('click',callParent);
   ['ht-monthly-fee','ht-commission-pct'].forEach(id=>document.getElementById(id)?.addEventListener('input',setHtFinancePreview));
 </script>
