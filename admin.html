@@ -783,9 +783,14 @@
       <div class="row2">
         <input type="date" id="f-att-date">
         <select id="f-att-status">
-          <option value="Present">Present</option>
-          <option value="Absent">Absent</option>
+          <option value="Present">🟢 Present</option>
+          <option value="Absent">🔴 Absent</option>
+          <option value="No Class">⚪ No Class</option>
         </select>
+      </div>
+      <div id="f-att-reason-wrap" style="display:none;margin-top:9px;">
+        <input type="text" id="f-att-reason" placeholder="Reason for No Class (e.g. Festival / Teacher unavailable / Holiday)">
+        <div style="font-size:10.5px;color:var(--muted);margin-top:4px;">Reason is required when No Class is selected.</div>
       </div>
       <button class="btn btn-secondary btn-small" id="add-attendance-btn">+ Add attendance entry</button>
       <div class="admin-month-filter">
@@ -959,7 +964,7 @@
       const d=adminAttendanceDateKey(e?.date);
       const s=e?.status;
       // Logs are normalized newest-first; keep the first valid entry for a date.
-      if(d&&(s==='Present'||s==='Absent')&&!byDate.has(d)) byDate.set(d,{date:d,status:s});
+      if(d&&(s==='Present'||s==='Absent'||s==='No Class')&&!byDate.has(d)) byDate.set(d,{date:d,status:s,reason:String(e?.reason||'').trim()});
     });
     return [...byDate.values()].sort((x,y)=>y.date.localeCompare(x.date));
   }
@@ -1969,7 +1974,8 @@
     for(let day=1;day<=days;day++){
       const key=`${year}-${String(mon).padStart(2,'0')}-${String(day).padStart(2,'0')}`; const e=byDate[key]; const status=e?.status||'Not Recorded';
       let cls='',label='Not recorded'; if(status==='Present'){cls='present';label='Present';mp++;} else if(status==='Absent'){cls='absent';label='Absent';ma++;} else if(status==='No Class'){cls='noclass';label='No class';mn++;} else mu++;
-      html+=`<div class="mp-admin-att-day ${cls}" title="${key} · ${label}"><b>${day}</b><i>${label}</i></div>`;
+      const reason=e?.reason ? ` · ${String(e.reason).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}` : '';
+      html+=`<div class="mp-admin-att-day ${cls}" title="${key} · ${label}${reason}"><b>${day}</b><i>${label}</i>${status==='No Class'&&e?.reason?`<small>${String(e.reason).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}</small>`:''}</div>`;
     }
     html+='</div><div class="mp-admin-att-legend"><span><em class="mp-admin-att-dot p"></em>Present</span><span><em class="mp-admin-att-dot a"></em>Absent</span><span><em class="mp-admin-att-dot n"></em>No Class</span><span><em class="mp-admin-att-dot u"></em>Not Recorded</span></div></div>';
     box.innerHTML=html;
@@ -2046,16 +2052,33 @@
     renderScoresPreview();
   });
 
+  const attStatusSelect=document.getElementById('f-att-status');
+  const attReasonWrap=document.getElementById('f-att-reason-wrap');
+  const attReasonInput=document.getElementById('f-att-reason');
+  function syncAttendanceReasonField(){
+    const isNoClass=attStatusSelect?.value==='No Class';
+    if(attReasonWrap) attReasonWrap.style.display=isNoClass?'block':'none';
+    if(!isNoClass && attReasonInput) attReasonInput.value='';
+  }
+  attStatusSelect?.addEventListener('change',syncAttendanceReasonField);
+  syncAttendanceReasonField();
+
   document.getElementById('add-attendance-btn').addEventListener('click', () => {
     const status = document.getElementById('f-att-status').value;
     const dateInput = document.getElementById('f-att-date').value;
+    const reason = document.getElementById('f-att-reason')?.value.trim() || '';
     if(!dateInput){
       alert('Please pick a date first.');
       return;
     }
+    if(status==='No Class' && !reason){
+      alert('Please enter a reason for No Class.');
+      attReasonInput?.focus();
+      return;
+    }
     const dateKey=adminAttendanceDateKey(dateInput);
     currentAttendanceLog=normalizeAttendanceLog((currentAttendanceLog||[]).filter(e=>adminAttendanceDateKey(e.date)!==dateKey));
-    currentAttendanceLog.unshift({date:dateKey,status});
+    currentAttendanceLog.unshift({date:dateKey,status,reason:status==='No Class'?reason:''});
     currentAttendanceLog=normalizeAttendanceLog(currentAttendanceLog);
     renderAttendancePreview();
   });
