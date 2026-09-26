@@ -71,38 +71,6 @@
   .att-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:18px;}
   .att-date-picker{display:flex;align-items:center;gap:10px;}
   .att-date-picker input{width:auto;padding:9px 12px;}
-  .att-calendar-wrap{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.9fr);gap:18px;align-items:start;}
-  .att-calendar{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;}
-  .att-calendar-head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,#f8fbff,#fffaf0);}
-  .att-month-title{font-weight:800;color:var(--navy);font-size:17px;}
-  .att-nav{display:flex;gap:6px;}
-  .att-nav button{width:34px;height:34px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--navy);font-weight:800;cursor:pointer;}
-  .att-weekdays,.att-days{display:grid;grid-template-columns:repeat(7,1fr);}
-  .att-weekdays div{padding:9px 4px;text-align:center;font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;}
-  .att-day{min-height:66px;border:0;border-top:1px solid rgba(11,30,61,.07);border-right:1px solid rgba(11,30,61,.07);background:#fff;text-align:left;padding:7px;cursor:pointer;position:relative;transition:.15s ease;}
-  .att-day:hover{background:#f7faff;}
-  .att-day:nth-child(7n){border-right:0;}
-  .att-day.muted{opacity:.35;}
-  .att-day.selected{box-shadow:inset 0 0 0 2px var(--navy);background:#f5f8ff;}
-  .att-day.today .att-day-num{background:var(--navy);color:#fff;}
-  .att-day-num{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:50%;font-size:12px;font-weight:800;}
-  .att-day-meta{display:block;margin-top:5px;font-size:9px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .att-day.meta-present .att-day-meta{color:#1E7A46;}
-  .att-day.meta-absent .att-day-meta{color:#C0392B;}
-  .att-day.meta-noclass .att-day-meta{color:#a66a00;}
-  .att-day.meta-mixed .att-day-meta{color:#315b92;}
-  .att-detail{border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff;min-width:0;}
-  .att-detail h3{margin:0 0 4px;color:var(--navy);}
-  .att-detail-date{font-size:12px;color:var(--muted);margin-bottom:14px;}
-  .att-class-status{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px;}
-  .att-class-status button{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:10px;font-weight:800;color:var(--muted);cursor:pointer;}
-  .att-class-status button.active-held{border-color:#1E7A46;background:#F3FBF6;color:#1E7A46;}
-  .att-class-status button.active-none{border-color:#d79b28;background:#fff8e8;color:#9a6500;}
-  .att-reason{display:none;margin-bottom:12px;}
-  .att-reason.show{display:block;}
-  .att-detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
-  .att-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:11px;color:var(--muted);}
-  .att-legend span{display:inline-flex;align-items:center;gap:5px;}
   .att-summary{display:flex;gap:16px;font-size:13px;font-weight:600;}
   .att-summary span{display:flex;align-items:center;gap:6px;}
   .att-dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
@@ -237,28 +205,6 @@
 
 /* ===== PREMIUM ACADEMIC COMMAND CENTER ===== */
 .admin-layout{background:#f4f6fa!important}.admin-sidebar{background:linear-gradient(180deg,#06162f,#0c2850)!important;color:#fff!important}.admin-brand{padding:22px 18px!important}.admin-nav a{border-radius:10px!important;margin:3px 8px!important}.admin-nav a:hover{background:rgba(255,255,255,.08)!important}.admin-main{background:#f4f6fa!important}.top-bar{background:#fff!important;border:1px solid #e2e7ef!important;border-radius:16px!important;box-shadow:0 8px 25px rgba(11,30,61,.05)!important}.card{border:1px solid #e2e7ef!important;border-radius:18px!important;box-shadow:0 8px 25px rgba(11,30,61,.045)!important}.card h2{color:#0b1e3d!important}.section-kicker{color:#b5760f!important;font-weight:800!important;letter-spacing:.1em!important}.stat-card{border:1px solid #e2e7ef!important;border-radius:15px!important;background:#fff!important}.stat-num{color:#0b1e3d!important}.btn{border-radius:10px!important}.student-insight-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0}.student-insight-strip>div{background:#f7f9fc;border:1px solid #e4e9f1;border-radius:12px;padding:11px}.student-insight-strip span{display:block;font-size:9px;text-transform:uppercase;color:#8490a2;letter-spacing:.06em;font-weight:700}.student-insight-strip strong{display:block;font-size:17px;color:#0b1e3d;margin-top:4px}.monthly-report-tools{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-top:12px}.monthly-report-tools .btn{margin:0}.report-help{font-size:11px;color:#78859a;margin-top:7px}@media(max-width:800px){.student-insight-strip{grid-template-columns:1fr 1fr}.monthly-report-tools{grid-template-columns:1fr}}
-
-/* WORKSPACE SYSTEM */
-.workspace-chooser{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(5,18,38,.78);backdrop-filter:blur(14px)}
-.workspace-chooser-card{width:min(920px,100%);background:linear-gradient(145deg,#fff,#fbf8f0);border:1px solid rgba(255,255,255,.35);border-radius:28px;padding:34px;box-shadow:0 30px 90px rgba(0,0,0,.28)}
-.workspace-eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--amber-dark);margin-bottom:8px}
-.workspace-chooser h2{font-size:30px;margin-bottom:8px}.workspace-chooser p{color:var(--muted);font-size:14px;margin-bottom:24px}
-.workspace-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.workspace-card{position:relative;text-align:left;border:1px solid rgba(11,30,61,.10);border-radius:22px;padding:24px;background:#fff;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;overflow:hidden}
-.workspace-card:after{content:'';position:absolute;right:-45px;bottom:-55px;width:150px;height:150px;border-radius:50%;background:rgba(245,166,35,.10)}
-.workspace-card:hover{transform:translateY(-5px);box-shadow:0 18px 42px rgba(11,30,61,.14);border-color:rgba(245,166,35,.65)}
-.workspace-icon{width:52px;height:52px;display:grid;place-items:center;border-radius:16px;background:linear-gradient(135deg,#0B1E3D,#1b477f);color:#fff;font-size:25px;margin-bottom:18px;box-shadow:0 10px 22px rgba(11,30,61,.18)}
-.workspace-card:nth-child(2) .workspace-icon{background:linear-gradient(135deg,#F5A623,#d88b0d);color:#0B1E3D}
-.workspace-card h3{font:700 21px 'Space Grotesk',sans-serif;margin-bottom:7px}.workspace-card p{margin:0 0 18px;font-size:12px;line-height:1.6}.workspace-open{font-size:12px;font-weight:800;color:var(--amber-dark)}
-.workspace-switcher{display:flex;align-items:center;gap:8px;margin-right:auto;margin-left:18px;position:relative}
-.workspace-switch-btn{border:1px solid rgba(11,30,61,.12);background:#fff;border-radius:12px;padding:8px 12px;font:700 12px 'Inter',sans-serif;color:var(--navy);cursor:pointer;box-shadow:0 5px 14px rgba(11,30,61,.06)}
-.workspace-switch-menu{display:none;position:absolute;top:43px;left:0;min-width:220px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px;box-shadow:0 18px 40px rgba(11,30,61,.16);z-index:1000}
-.workspace-switch-menu button{width:100%;border:0;background:transparent;text-align:left;padding:11px 12px;border-radius:9px;cursor:pointer;font:600 12px 'Inter',sans-serif;color:var(--navy)}.workspace-switch-menu button:hover{background:#f7f2e8}
-.workspace-mode-admission .student-workspace-item{display:none!important}.workspace-mode-student .admission-workspace-item{display:none!important}
-.workspace-mode-admission #admissions-section{display:block!important}.workspace-mode-admission .admission-workspace-only{display:block!important}
-@media(max-width:700px){.workspace-grid{grid-template-columns:1fr}.workspace-chooser-card{padding:24px}.workspace-chooser h2{font-size:25px}.workspace-switcher{margin-left:8px}.workspace-switch-btn{font-size:11px;padding:7px 9px}}
-
-.workspace-mode-student .admission-nav-item{display:none!important}.workspace-mode-admission .student-nav-item{display:none!important}.workspace-mode-admission > .admin-main > .stats-grid{display:none!important}.workspace-mode-admission > .admin-main > .card:not(#admissions-section),.workspace-mode-admission > .admin-main > .card[id="batches-section"]{display:none!important}
 </style>
 <style>
 /* Maths Pathshala Academic Command Center — premium cleanup */
@@ -332,51 +278,23 @@
 @media(max-width:760px){.teacher-form-grid{grid-template-columns:1fr}.teacher-row{grid-template-columns:1fr}.teacher-row button{justify-self:start}}
 </style>
 
-<style id="premium-ui-pass">
-/* Maths Pathshala — Premium UI layer. Visual-only: no data, Firebase or workflow changes. */
-:root{--mp-bg:#f3f6fb;--mp-surface:#fff;--mp-ink:#10213f;--mp-muted:#6f7d93;--mp-line:#e5eaf2;--mp-gold:#f5a623;--mp-blue:#0b1e3d;--mp-blue2:#163d73;}
-html{scroll-behavior:smooth}
-body{background:radial-gradient(circle at 88% -8%,rgba(245,166,35,.12),transparent 24rem),linear-gradient(180deg,#f8fafc 0,#f2f5fa 100%);padding:18px;}
-.wrap{max-width:1480px}
-.mp-admin-brandline{border:1px solid rgba(255,255,255,.08);border-radius:16px;box-shadow:0 10px 30px rgba(8,25,52,.16);margin-bottom:18px;backdrop-filter:blur(10px);position:relative;overflow:hidden}
-.mp-admin-brandline:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(245,166,35,.09),transparent);transform:translateX(-100%);animation:mpShimmer 7s linear infinite;pointer-events:none}
-@keyframes mpShimmer{to{transform:translateX(100%)}}
-.admin-layout{grid-template-columns:250px minmax(0,1fr);gap:18px;align-items:start}
-.admin-sidebar{top:18px;min-height:calc(100vh - 36px);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:18px 12px;background:linear-gradient(165deg,#06152e 0%,#0b2852 58%,#123d70 100%);box-shadow:0 24px 60px rgba(7,24,47,.18);overflow:hidden}
-.admin-sidebar:before{content:"";position:absolute;width:180px;height:180px;border-radius:50%;background:rgba(245,166,35,.09);filter:blur(8px);top:-80px;right:-70px;pointer-events:none}
-.admin-brand{position:relative;z-index:1;padding:8px 8px 20px!important;margin-bottom:12px!important}
-.admin-brand>span{box-shadow:0 8px 22px rgba(245,166,35,.25);transition:transform .25s ease}
-.admin-brand:hover>span{transform:rotate(-5deg) scale(1.04)}
-.admin-nav{position:relative;z-index:1;display:grid;gap:4px}
-.admin-nav a{position:relative;margin:0!important;padding:12px 12px!important;border:1px solid transparent;border-radius:12px!important;color:#dce7f7!important;font-size:13px;font-weight:600;transition:all .2s ease;display:flex;align-items:center;gap:8px}
-.admin-nav a:hover{background:rgba(255,255,255,.09)!important;border-color:rgba(255,255,255,.08);transform:translateX(2px)}
-.admin-nav a[href="#overview"]{background:linear-gradient(90deg,rgba(245,166,35,.16),rgba(245,166,35,.04));border-color:rgba(245,166,35,.18);color:#fff!important}
-.admin-nav em{margin-left:auto;background:var(--mp-gold);color:#13213a;border-radius:999px;padding:2px 7px;font-style:normal;font-size:10px}
-.sidebar-note{position:relative;z-index:1;margin:18px 6px 4px!important;padding:13px!important;border:1px solid rgba(255,255,255,.09);border-radius:14px;background:rgba(255,255,255,.045);color:#9eb0c9!important;line-height:1.65!important;font-size:10px!important}
-.admin-main{min-width:0}
-.top-bar{position:sticky;top:18px;z-index:20;padding:16px 20px!important;border-radius:18px!important;background:rgba(255,255,255,.88)!important;backdrop-filter:blur(14px);box-shadow:0 12px 35px rgba(11,30,61,.08)!important;display:flex!important;align-items:center;justify-content:space-between;gap:16px}
-.top-bar h1{font-size:22px!important;letter-spacing:-.02em}
-.logout-link{padding:9px 13px;border:1px solid #e2e7ef;border-radius:10px;background:#fff;cursor:pointer;transition:.2s ease}
-.logout-link:hover{border-color:#f0c36d;background:#fff8ea;transform:translateY(-1px)}
-.card{border:1px solid var(--mp-line)!important;border-radius:20px!important;box-shadow:0 10px 35px rgba(11,30,61,.055)!important;transition:box-shadow .2s ease,transform .2s ease}
-.card:hover{box-shadow:0 14px 42px rgba(11,30,61,.075)!important}
-.card-title-row h2{letter-spacing:-.02em}
-.section-kicker{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;background:#fff6e7;color:#9b650c!important;font-size:9px!important}
-.stat-card{position:relative;overflow:hidden;border:1px solid var(--mp-line)!important;border-radius:18px!important;box-shadow:0 8px 24px rgba(11,30,61,.045)!important;padding:18px!important;transition:transform .2s ease,box-shadow .2s ease}
-.stat-card:after{content:"";position:absolute;width:70px;height:70px;border-radius:50%;right:-25px;top:-28px;background:rgba(245,166,35,.08)}
-.stat-card:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(11,30,61,.08)!important}
-.stat-num{font-size:28px!important;letter-spacing:-.04em}
-.stat-label{font-weight:600!important;color:#78859a!important}
-input,select,textarea{border-color:#dfe5ee!important;background:#fbfcfe!important;border-radius:11px!important;transition:border-color .18s,box-shadow .18s,background .18s}
-input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#e0a53a!important;box-shadow:0 0 0 3px rgba(245,166,35,.12)!important}
-.btn{border-radius:11px!important;box-shadow:0 5px 12px rgba(11,30,61,.08);transition:transform .18s,box-shadow .18s,filter .18s}
-.btn:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(11,30,61,.11)}
-.btn:active{transform:translateY(0)}
-.admission-item,.teacher-management-panel,.attendance-calendar,.notice-item,.student-row{box-shadow:0 5px 18px rgba(11,30,61,.035);transition:transform .18s,box-shadow .18s}
-.admission-item:hover,.teacher-management-panel:hover,.attendance-calendar:hover,.notice-item:hover,.student-row:hover{box-shadow:0 10px 26px rgba(11,30,61,.065)}
-.toast{border-radius:12px!important;box-shadow:0 14px 35px rgba(7,24,47,.2)!important}
-@media(max-width:960px){body{padding:12px}.admin-layout{grid-template-columns:1fr}.admin-sidebar{min-height:0;position:relative;top:0}.admin-nav{display:flex;overflow:auto;padding-bottom:2px}.admin-nav a{white-space:nowrap}.top-bar{position:relative;top:0}.sidebar-note{display:none}}
-@media(max-width:600px){.top-bar{padding:13px 14px!important}.top-bar h1{font-size:18px!important}.stat-num{font-size:24px!important}}
+<style id="mp-admin-attendance-calendar-patch">
+.mp-admin-att-calendar{margin-top:10px;border:1px solid rgba(15,35,70,.10);border-radius:16px;padding:12px;background:#fff}.mp-admin-att-week,.mp-admin-att-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.mp-admin-att-week{margin-bottom:5px}.mp-admin-att-week span{text-align:center;font-size:10px;font-weight:800;color:#64748b;padding:5px}.mp-admin-att-day{min-height:52px;border:1px solid #e5e7eb;border-radius:10px;padding:6px;position:relative;background:#fafafa}.mp-admin-att-day.empty{border-color:transparent;background:transparent}.mp-admin-att-day b{font-size:11px}.mp-admin-att-day i{display:block;font-style:normal;font-size:9px;font-weight:800;margin-top:5px}.mp-admin-att-day.present{background:#ecfdf3;border-color:#b7ebc9}.mp-admin-att-day.present i{color:#16834b}.mp-admin-att-day.absent{background:#fff1f2;border-color:#fecdd3}.mp-admin-att-day.absent i{color:#c6283d}.mp-admin-att-day.noclass{background:#f8fafc}.mp-admin-att-day.noclass i{color:#64748b}.mp-admin-att-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:11px;font-weight:700;color:#64748b}.mp-admin-att-legend span{display:inline-flex;align-items:center;gap:5px}.mp-admin-att-dot{width:9px;height:9px;border-radius:50%;display:inline-block}.mp-admin-att-dot.p{background:#22c55e}.mp-admin-att-dot.a{background:#ef4444}.mp-admin-att-dot.n{background:#94a3b8}.mp-admin-att-dot.u{background:#f59e0b}@media(max-width:600px){.mp-admin-att-calendar{padding:8px}.mp-admin-att-day{min-height:45px;padding:5px}.mp-admin-att-day i{font-size:8px}.mp-admin-att-week span{font-size:9px}}
+</style>
+
+<style id="mp-phase1-admin-performance-ui">
+  .mp-admin-p1-box{margin-top:14px;padding:14px;border:1px solid #e2e8f1;border-radius:14px;background:linear-gradient(145deg,#fff,#f8fbff);box-shadow:0 8px 20px rgba(11,30,61,.05);}
+  .mp-admin-p1-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;}
+  .mp-admin-p1-head strong{font-size:12px;color:var(--navy);}
+  .mp-admin-p1-head span{font-size:10px;color:var(--muted);}
+  .mp-admin-p1-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .mp-admin-p1-metrics>div{padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff;}
+  .mp-admin-p1-metrics span{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:800;}
+  .mp-admin-p1-metrics strong{display:block;margin-top:4px;font-size:17px;color:var(--navy);}
+  .mp-admin-p1-note{margin-top:9px;font-size:10.5px;color:var(--muted);line-height:1.5;}
+  .mp-admin-p1-focus{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;}
+  .mp-admin-p1-tag{padding:5px 8px;border-radius:999px;background:#fff4df;border:1px solid #efd39b;color:#805811;font-size:10px;font-weight:800;}
+  @media(max-width:650px){.mp-admin-p1-metrics{grid-template-columns:1fr 1fr}}
 </style>
 
 </head>
@@ -398,53 +316,26 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     <div class="msg" id="login-msg"></div>
   </div>
 
-  <div id="workspace-chooser" class="workspace-chooser" aria-modal="true" role="dialog">
-    <div class="workspace-chooser-card">
-      <div class="workspace-eyebrow">Maths Pathshala · Admin Workspace</div>
-      <h2>What would you like to manage?</h2>
-      <p>Choose your workspace. You can switch between them anytime without logging out.</p>
-      <div class="workspace-grid">
-        <button type="button" class="workspace-card" data-workspace="student">
-          <span class="workspace-icon">👨‍🎓</span><h3>Student Management</h3>
-          <p>Students, batches, attendance, tests, scores, notices, fees and complete academic management.</p>
-          <span class="workspace-open">Open Student Management →</span>
-        </button>
-        <button type="button" class="workspace-card" data-workspace="admission">
-          <span class="workspace-icon">📝</span><h3>Admission Management</h3>
-          <p>Admissions, home tuition enquiries, teacher assignment, follow-ups and admission records.</p>
-          <span class="workspace-open">Open Admission Management →</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
   <div id="admin-screen" class="admin-layout">
     <aside class="admin-sidebar">
       <div class="admin-brand"><span>∑</span><div>Maths <b>Pathshala</b><small>ACADEMIC COMMAND CENTER</small></div></div>
       <nav class="admin-nav">
         <a href="#overview">Dashboard</a>
-        <a href="#batches-section" class="student-nav-item">Batches</a>
+        <a href="#batches-section">Batches</a>
         <a href="#admissions-section" id="admissions-nav-link">🎓 Admissions <em id="admission-new-count" style="display:none">0</em></a>
-        <a href="#students-section" class="student-nav-item">Students</a>
-        <a href="#attendance-section" class="student-nav-item">Attendance</a>
-        <a href="#fees-section" class="student-nav-item">Fees</a>
-        <a href="#communication-section" class="student-nav-item">Student Updates</a>
-        <a href="#homework-section" class="student-nav-item">Homework</a>
-        <a href="#branding-section" class="student-nav-item">Branding</a>
-        <a href="#youtube-section" class="student-nav-item">YouTube Videos</a>
+        <a href="#students-section">Students</a>
+        <a href="#attendance-section">Attendance</a>
+        <a href="#fees-section">Fees</a>
+        <a href="#communication-section">Student Updates</a>
+        <a href="#homework-section">Homework</a>
+        <a href="#branding-section">Branding</a>
+        <a href="#youtube-section">YouTube Videos</a>
       </nav>
       <div class="sidebar-note">Primary focus: <b>Offline coaching</b><br>Class 9–10: PCM · Class 11–12: Mathematics<br>Home tuition: Class 3–8 all subjects · Class 9–12 Mathematics</div>
     </aside>
     <main class="admin-main">
     <div class="top-bar" id="overview">
       <h1 style="font-size:24px;">Maths Pathshala — Admin Panel</h1>
-      <div class="workspace-switcher">
-        <button type="button" class="workspace-switch-btn" id="workspace-switch-btn">👨‍🎓 Student Management ▾</button>
-        <div class="workspace-switch-menu" id="workspace-switch-menu">
-          <button type="button" data-workspace="student">👨‍🎓 Student Management</button>
-          <button type="button" data-workspace="admission">📝 Admission Management</button>
-        </div>
-      </div>
       <span class="logout-link" id="admin-logout">Logout</span>
     </div>
 
@@ -467,7 +358,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       </div>
     </div>
 
-    <div class="card" class="student-workspace-item" id="fees-section">
+    <div class="card" id="fees-section">
       <div class="card-title-row"><div><span class="section-kicker">Private finance</span><h2>Finance Overview</h2><p>Fee amounts stay hidden by default. Reveal them only when you need the actual figures.</p></div><button class="btn btn-secondary btn-small" id="toggle-finance-amounts">Show amounts</button></div>
       <div class="stats-grid" style="margin-top:14px;margin-bottom:0;">
         <div class="stat-card good">
@@ -497,7 +388,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     </div>
 
 
-    <div class="card admission-workspace-item" id="admissions-section">
+    <div class="card" id="admissions-section">
       <div class="card-title-row">
         <div><span class="section-kicker">Private admissions</span><h2>Admission Applications</h2><p>New applications submitted through the premium admission form appear here. This section stays hidden until you open it.</p></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
@@ -507,63 +398,33 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
         </div>
       </div>
       <div class="admission-toolbar">
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0;">
-          <div style="font-size:12px;color:var(--muted);" id="admissions-summary">Click Admissions to load applications.</div>
-          <button class="btn btn-secondary btn-small" id="admission-select-all-btn" type="button" style="display:none;">Select All</button>
-          <button class="btn btn-small" id="admission-delete-selected-btn" type="button" style="display:none;background:#f5e5e5;color:#9b2c2c;">🗑 Delete Selected</button>
-        </div>
+        <div style="font-size:12px;color:var(--muted);" id="admissions-summary">Click Admissions to load applications.</div>
         <select class="admission-status" id="admission-filter">
           <option value="Active">Active enquiries</option><option value="All">All active statuses</option><option value="New">New</option><option value="Contacted">Contacted</option><option value="Discussion / Demo">Discussion / Demo</option><option value="Selected">Selected</option><option value="Enrolled">Enrolled</option><option value="Closed">Closed</option><option value="Archived">Archived</option>
         </select>
       </div>
       <div id="admissions-list" class="admission-list"><div style="font-size:13px;color:var(--muted);">Admissions are hidden until you click the Admissions menu.</div></div>
 
-      <div id="teacher-assignments-panel" class="teacher-management-panel" style="margin-top:18px;">
-        <div class="card-title-row">
-          <div><span class="section-kicker">Home Tuition Operations</span><h3 style="margin:4px 0 4px;">Teacher Assignments</h3><p style="margin:0;color:var(--muted);font-size:12px;">Every saved assignment stays separate from the teacher master profile. Assignments can be reviewed and teacher WhatsApp summaries can be prepared manually.</p></div>
-          <button class="btn btn-secondary btn-small" id="refresh-teacher-assignments-btn" type="button">Refresh</button>
-        </div>
-        <div id="teacher-assignments-list" style="margin-top:12px;"><div style="font-size:12px;color:var(--muted);">No assignments loaded yet.</div></div>
-      </div>
-
-      <div id="teacher-management-panel" class="teacher-management-panel">
+      <div id="teacher-management-panel" class="teacher-management-panel" style="display:none;">
         <div class="card-title-row" style="margin-top:18px;">
           <div><span class="section-kicker">Home Tuition Team</span><h3 style="margin:4px 0 4px;">Teacher Management</h3><p style="margin:0;color:var(--muted);font-size:12px;">Save each teacher once. Their default first-month commission will auto-fill when you assign them to a Home Tuition enquiry.</p></div>
           <button class="btn btn-secondary btn-small" id="teacher-cancel-edit-btn" type="button" style="display:none;">Cancel Edit</button>
         </div>
         <div class="teacher-form-grid">
-          <div><label>Teacher Name *</label><input id="teacher-name-input" placeholder="e.g. Amit Sharma"></div>
-          <div><label>Gender</label><select id="teacher-gender-input"><option value="">Select gender</option><option>Male</option><option>Female</option><option>Other</option></select></div>
-          <div><label>Date of Birth</label><input id="teacher-dob-input" type="date"></div>
-          <div><label>Teacher WhatsApp / Phone *</label><input id="teacher-phone-input" type="tel" placeholder="e.g. 9876543210"></div>
-          <div><label>Email</label><input id="teacher-email-input" type="email" placeholder="teacher@example.com"></div>
-          <div><label>Alternate Phone</label><input id="teacher-alt-phone-input" type="tel" placeholder="Optional"></div>
+          <div><label>Teacher Name</label><input id="teacher-name-input" placeholder="e.g. Amit Sharma"></div>
+          <div><label>Teacher WhatsApp / Phone</label><input id="teacher-phone-input" type="tel" placeholder="e.g. 9876543210"></div>
           <div><label>Subjects</label><input id="teacher-subjects-input" placeholder="e.g. Mathematics, Science"></div>
-          <div><label>Classes They Can Teach</label><input id="teacher-classes-input" placeholder="e.g. Class 9–12"></div>
-          <div><label>Boards</label><input id="teacher-boards-input" placeholder="CBSE, ICSE, UP Board"></div>
-          <div><label>Qualification</label><input id="teacher-qualification-input" placeholder="e.g. M.Sc. Mathematics, B.Ed."></div>
-          <div><label>Experience</label><input id="teacher-experience-input" placeholder="e.g. 5 years"></div>
-          <div><label>Teaching Mode</label><select id="teacher-mode-input"><option value="">Select mode</option><option>Home Tuition</option><option>Online</option><option>Home Tuition + Online</option></select></div>
           <div><label>Areas / Localities</label><input id="teacher-areas-input" placeholder="e.g. Kalyanpur, Kakadeo"></div>
           <div><label>Availability</label><input id="teacher-availability-input" placeholder="e.g. Mon–Sat, 4–8 PM"></div>
-          <div><label>Joining Date</label><input id="teacher-joining-date-input" type="date"></div>
-          <div><label>Emergency Contact Name</label><input id="teacher-emergency-name-input" placeholder="Optional"></div>
-          <div><label>Emergency Contact Phone</label><input id="teacher-emergency-phone-input" type="tel" placeholder="Optional"></div>
-          <div><label>Address</label><input id="teacher-address-input" placeholder="Full address / locality"></div>
           <div><label>Default First-Month Commission %</label><input id="teacher-commission-input" type="number" min="0" max="100" step="1" value="50"></div>
           <div><label>Status</label><select id="teacher-status-input"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
-          <div style="grid-column:1/-1;"><label>Internal Notes</label><textarea id="teacher-notes-input" rows="3" placeholder="Private admin notes: teaching style, preferences, documents, special instructions, etc."></textarea></div>
         </div>
         <div class="ht-actions" style="margin-top:12px;">
           <button type="button" class="btn btn-small" id="teacher-save-btn">+ Add Teacher</button>
           <button type="button" class="btn btn-secondary btn-small" id="teacher-refresh-btn">Refresh Teachers</button>
         </div>
         <div class="msg" id="teacher-form-msg"></div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:14px;">
-          <input id="teacher-search-input" placeholder="Search saved teachers by name, subject or area…" style="flex:1;min-width:220px;">
-          <span id="teacher-count-label" style="font-size:12px;color:var(--muted);font-weight:700;"></span>
-        </div>
-        <div id="teachers-list" style="margin-top:10px;"><div style="font-size:12px;color:var(--muted);">No teachers loaded yet.</div></div>
+        <div id="teachers-list" style="margin-top:14px;"><div style="font-size:12px;color:var(--muted);">No teachers loaded yet.</div></div>
       </div>
     </div>
 
@@ -593,7 +454,6 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
           </div>
           <div class="ht-actions">
             <button type="button" class="btn btn-small" id="ht-save-btn">Save Assignment</button>
-            <button type="button" class="btn btn-secondary btn-small" id="ht-teacher-whatsapp-btn">📲 Prepare Teacher WhatsApp</button>
             <button type="button" class="btn btn-secondary btn-small" id="ht-whatsapp-btn">📲 Prepare Parent WhatsApp</button>
             <button type="button" class="btn btn-secondary btn-small" id="ht-call-btn">📞 Call Parent</button>
           </div>
@@ -602,7 +462,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       </div>
     </div>
 
-    <div class="card" class="student-workspace-item" id="branding-section">
+    <div class="card" id="branding-section">
       <div style="margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--cream);">
         <div style="font-weight:800;color:var(--navy);margin-bottom:6px;">Public Contact & Socials</div>
         <div style="font-size:12px;color:var(--muted);line-height:1.9;">📞 9506054813 · ✉️ mathspathshala.k12@gmail.com<br>📸 Instagram: @pathshalamaths · ▶️ YouTube: Maths Pathshala K12<br>CBSE · ICSE · UP Board · Kalyanpur, Kanpur</div>
@@ -613,7 +473,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     </div>
 
 
-    <div class="card" class="student-workspace-item" id="youtube-section">
+    <div class="card" id="youtube-section">
       <div class="card-title-row"><div><span class="section-kicker">Content automation</span><h2>YouTube Video Manager</h2><p>Add a new YouTube video here. The newest video becomes Video 1, the previous one becomes Video 2, and anything older is automatically removed from the public site.</p></div></div>
       <div class="yt-admin-grid" style="margin-top:14px;">
         <input type="text" id="yt-url-input" placeholder="YouTube video link or video ID">
@@ -625,7 +485,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       <div id="yt-admin-list" class="yt-admin-preview"></div>
     </div>
 
-    <div class="card" class="student-workspace-item" id="batches-section">
+    <div class="card" id="batches-section">
       <h2>Manage Batches</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Create named batches per class (e.g. "Rankers" for Class 9). Students get enrolled into these.</p>
       <div id="batch-edit-banner" style="display:none;align-items:center;justify-content:space-between;gap:10px;background:#FDF0DA;color:#9b6512;padding:10px 14px;border-radius:8px;margin-bottom:14px;font-size:13px;font-weight:600;">
@@ -671,7 +531,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       <div id="batches-list" style="margin-top:18px;"></div>
     </div>
 
-    <div class="card" class="student-workspace-item" id="communication-section">
+    <div class="card" id="communication-section">
       <h2>Parent Communication — Manual Only</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">No automatic messages are sent. Select a student, prepare the message, review it yourself, then choose Copy or Open WhatsApp and send it manually.</p>
       <div class="row2">
@@ -695,7 +555,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       <div class="msg" id="manual-comm-msg"></div>
     </div>
 
-    <div class="card" class="student-workspace-item" id="attendance-section">
+    <div class="card" id="attendance-section">
       <h2>Test Results &amp; Batch Scoring</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Pick a batch and enter scores for the whole class at once — no need to open each student separately.</p>
       <div class="row2">
@@ -715,6 +575,9 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       </div>
       <div class="row2" style="margin-top:14px;">
         <input type="number" id="bulk-score-max" placeholder="Max marks, e.g. 50" value="50">
+        <input type="text" id="bulk-score-topic" placeholder="Topic / Chapter (optional)">
+      </div>
+      <div style="margin-top:10px;">
         <button class="btn btn-secondary" id="load-bulk-score-students-btn" style="margin-top:0;">Load Students</button>
       </div>
       <div id="bulk-score-rows" style="margin-top:16px;"></div>
@@ -724,7 +587,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       </div>
     </div>
 
-    <div class="card" class="student-workspace-item" id="students-section">
+    <div class="card" id="students-section">
       <h2>Post a Notice</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Choose who should see this — everyone, or just one batch.</p>
       <label>Send to</label>
@@ -749,7 +612,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     </div>
 
     <!-- NOTES MANAGEMENT: works independently, just like the Notice manager. No student profile needs to be opened. -->
-    <div class="card" class="student-workspace-item" id="notes-management-section">
+    <div class="card" id="notes-management-section">
       <h2>Notes Management</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Assign one common note to every student in a selected class and batch — without opening any student profile.</p>
       <div class="row2">
@@ -788,7 +651,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       </div>
     </div>
 
-<div class="card" class="student-workspace-item" id="homework-section">
+<div class="card" id="homework-section">
       <div class="card-title-row"><div><span class="section-kicker">Student work</span><h2>Homework Management</h2><p>Post homework to one class, one batch, or all students.</p></div></div>
       <div class="row2" style="margin-top:14px;">
         <div><label>Homework title</label><input type="text" id="homework-title" placeholder="e.g. Quadratic Equations — Exercise 4.2"></div>
@@ -813,38 +676,18 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
 
     <div class="card">
       <div class="att-header">
-        <div>
-          <h2 style="margin:0;">Attendance Calendar</h2>
-          <p style="margin:5px 0 0;font-size:12px;color:var(--muted);">Record class days, attendance, and why a class was not held.</p>
-        </div>
+        <h2 style="margin:0;">Attendance Management</h2>
         <div class="att-date-picker">
-          <label style="margin:0;">Jump to:</label>
+          <label style="margin:0;">Date:</label>
           <input type="date" id="bulk-att-date">
         </div>
       </div>
-      <div class="att-calendar-wrap">
-        <div class="att-calendar">
-          <div class="att-calendar-head">
-            <div class="att-month-title" id="att-month-title">Loading…</div>
-            <div class="att-nav"><button type="button" id="att-prev-month" aria-label="Previous month">‹</button><button type="button" id="att-today-btn">Today</button><button type="button" id="att-next-month" aria-label="Next month">›</button></div>
-          </div>
-          <div class="att-weekdays"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
-          <div class="att-days" id="att-calendar-days"></div>
-        </div>
-        <div class="att-detail" id="att-detail-panel">
-          <h3>Select a date</h3>
-          <div class="att-detail-date">Choose any date from the calendar.</div>
-        </div>
-      </div>
-      <div class="att-legend">
-        <span>🟢 Class held / attendance recorded</span><span>🔴 Absence recorded</span><span>🟠 No class</span><span>⚪ Not recorded</span>
-      </div>
-      <div class="att-summary" id="att-summary" style="margin-top:14px;">
+      <div class="att-summary" id="att-summary">
         <span><span class="att-dot present"></span>0 Present</span>
         <span><span class="att-dot absent"></span>0 Absent</span>
-        <span><span class="att-dot unmarked"></span>0 Not Recorded</span>
+        <span><span class="att-dot unmarked"></span>0 Unmarked</span>
       </div>
-      <div id="att-rows-container" style="margin-top:16px;"></div>
+      <div id="att-rows-container" style="margin-top:16px;"><div style="color:var(--muted);font-size:13px;">Loading students...</div></div>
       <div class="save-attendance-bar" id="save-attendance-bar" style="display:none;">
         <span id="save-bar-text">Ready to save</span>
         <button class="btn" id="save-bulk-attendance-btn" style="margin:0;">Save Attendance</button>
@@ -965,7 +808,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
         </select>
       </div>
       <div id="f-att-reason-wrap" style="display:none;margin-top:9px;">
-        <input type="text" id="f-att-reason" placeholder="Reason for No Class (e.g. Festival / Holiday / Teacher unavailable)">
+        <input type="text" id="f-att-reason" placeholder="Reason for No Class (e.g. Festival / Teacher unavailable / Holiday)">
         <div style="font-size:10.5px;color:var(--muted);margin-top:4px;">Reason is required when No Class is selected.</div>
       </div>
       <button class="btn btn-secondary btn-small" id="add-attendance-btn">+ Add attendance entry</button>
@@ -993,6 +836,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
         <input type="number" id="f-test-score" placeholder="Score, e.g. 42">
         <input type="number" id="f-test-max" placeholder="Out of, e.g. 50">
       </div>
+      <input type="text" id="f-test-topic" placeholder="Topic / Chapter (optional)" style="margin-top:10px;">
       <button class="btn btn-secondary btn-small" id="add-score-btn">+ Add test score</button>
       <div class="admin-month-filter">
         <label for="test-month-filter">View month</label>
@@ -1015,6 +859,19 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
         <div><span>Highest Score</span><strong id="admin-student-highest">—</strong></div>
         <div><span>Test Average</span><strong id="admin-student-average">—</strong></div>
       </div>
+
+      <div class="mp-admin-p1-box" id="mp-admin-p1-performance">
+        <div class="mp-admin-p1-head"><strong>Phase 1 · Performance Intelligence</strong><span>Derived from saved test scores</span></div>
+        <div class="mp-admin-p1-metrics">
+          <div><span>Overall average</span><strong id="mp-admin-p1-average">—</strong></div>
+          <div><span>Best score</span><strong id="mp-admin-p1-best">—</strong></div>
+          <div><span>Latest change</span><strong id="mp-admin-p1-improvement">—</strong></div>
+          <div><span>Tests</span><strong id="mp-admin-p1-tests">0</strong></div>
+        </div>
+        <div class="mp-admin-p1-focus" id="mp-admin-p1-focus"></div>
+        <div class="mp-admin-p1-note" id="mp-admin-p1-note">Student dashboard uses these same test records. Topic-wise focus appears when a topic/chapter is saved with tests.</div>
+      </div>
+
       <div class="monthly-report-tools">
         <select id="admin-report-month"><option value="">Select month for report</option></select>
         <button class="btn btn-secondary" id="admin-download-month-report">↓ Open &amp; Download Report Card</button>
@@ -1110,28 +967,6 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
   const loginMsg = document.getElementById('login-msg');
   const saveMsg = document.getElementById('save-msg');
 
-  let currentWorkspace = 'student';
-  const workspaceChooser = document.getElementById('workspace-chooser');
-  const workspaceSwitchBtn = document.getElementById('workspace-switch-btn');
-  const workspaceSwitchMenu = document.getElementById('workspace-switch-menu');
-  function applyWorkspace(mode, showChooser=false){
-    currentWorkspace = mode === 'admission' ? 'admission' : 'student';
-    adminScreen.classList.toggle('workspace-mode-admission', currentWorkspace === 'admission');
-    adminScreen.classList.toggle('workspace-mode-student', currentWorkspace === 'student');
-    if(workspaceSwitchBtn) workspaceSwitchBtn.textContent = currentWorkspace === 'admission' ? '📝 Admission Management ▾' : '👨‍🎓 Student Management ▾';
-    if(workspaceChooser) workspaceChooser.style.display = showChooser ? 'flex' : 'none';
-    if(workspaceSwitchMenu) workspaceSwitchMenu.style.display = 'none';
-    localStorage.setItem('mpAdminWorkspace', currentWorkspace);
-    if(currentWorkspace === 'admission'){
-      document.getElementById('admissions-section')?.scrollIntoView({behavior:'smooth',block:'start'});
-      try { loadTeachers(); } catch(e) {}
-    } else {
-      document.getElementById('overview')?.scrollIntoView({behavior:'smooth',block:'start'});
-    }
-  }
-  document.querySelectorAll('[data-workspace]').forEach(btn=>btn.addEventListener('click',()=>applyWorkspace(btn.dataset.workspace)));
-  workspaceSwitchBtn?.addEventListener('click',()=>{ if(workspaceSwitchMenu) workspaceSwitchMenu.style.display = workspaceSwitchMenu.style.display === 'block' ? 'none' : 'block'; });
-  document.addEventListener('click',(e)=>{ if(workspaceSwitchMenu && !e.target.closest('.workspace-switcher')) workspaceSwitchMenu.style.display='none'; });
   let currentAttendanceLog = [];
   let currentNotes = [];
   let currentTestScores = [];
@@ -1161,11 +996,8 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     (Array.isArray(log)?log:[]).forEach(e=>{
       const d=adminAttendanceDateKey(e?.date);
       const s=e?.status;
-      // Keep the first valid entry for a date. “No Class” is an explicit class-day state,
-      // not an absence, so it must remain visible and excluded from attendance %.
-      if(d&&(s==='Present'||s==='Absent'||s==='No Class')&&!byDate.has(d)){
-        byDate.set(d,{date:d,status:s,reason:String(e?.reason||'').trim()});
-      }
+      // Logs are normalized newest-first; keep the first valid entry for a date.
+      if(d&&(s==='Present'||s==='Absent'||s==='No Class')&&!byDate.has(d)) byDate.set(d,{date:d,status:s,reason:String(e?.reason||'').trim()});
     });
     return [...byDate.values()].sort((x,y)=>y.date.localeCompare(x.date));
   }
@@ -1177,7 +1009,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       const score=Number(s?.score);
       const max=Number(s?.max);
       const key=date+'__'+name.toLowerCase();
-      if(date&&Number.isFinite(score)&&Number.isFinite(max)&&max>0&&!byKey.has(key)) byKey.set(key,{name,date,score,max});
+      if(date&&Number.isFinite(score)&&Number.isFinite(max)&&max>0&&!byKey.has(key)) byKey.set(key,{name,date,score,max,topic:String(s?.topic||'').trim()});
     });
     return [...byKey.values()].sort((x,y)=>y.date.localeCompare(x.date)||x.name.localeCompare(y.name));
   }
@@ -1241,7 +1073,6 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       await signOut(auth);
       loginScreen.style.display = 'block';
       adminScreen.style.display = 'none';
-      if(workspaceChooser) workspaceChooser.style.display = 'none';
       const signedInEmail = String(user?.email || '').trim();
       loginMsg.textContent = signedInEmail
         ? `Access denied — Firebase signed you in as ${signedInEmail}, which is not the admin account.`
@@ -1252,8 +1083,6 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     if(user && authorized){
       loginScreen.style.display = 'none';
       adminScreen.style.display = 'grid';
-      const savedWorkspace = localStorage.getItem('mpAdminWorkspace');
-      applyWorkspace(savedWorkspace === 'admission' ? 'admission' : 'student', !savedWorkspace);
       const todayStr = new Date().toISOString().split('T')[0];
       document.getElementById('f-att-date').value = todayStr;
       document.getElementById('f-test-date').value = todayStr;
@@ -1320,164 +1149,133 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     return `https://wa.me/${digits}?text=${text}`;
   }
 
-  let attendanceCalendarDate = new Date();
-  let attendanceSelectedDate = '';
-
-  function attendanceDateObj(key){
-    return new Date(String(key)+'T00:00:00');
-  }
-  function attendanceIsoDate(d){
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  }
-  function attendanceMonthLabel(d){
-    return d.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
-  }
-  function getAttendanceForDate(dateKey){
-    const rows=[];
-    bulkStudentsCache.forEach(student=>{
-      const log=normalizeAttendanceLog(student.data.attendance?.log||[]);
-      const entry=log.find(e=>e.date===dateKey);
-      rows.push({student,entry});
-    });
-    return rows;
-  }
-  function getAttendanceDayState(dateKey){
-    const entries=getAttendanceForDate(dateKey).map(x=>x.entry).filter(Boolean);
-    if(!entries.length) return {type:'none',label:'Not Recorded'};
-    const noClass=entries.find(e=>e.status==='No Class');
-    if(noClass && entries.every(e=>e.status==='No Class')) return {type:'noclass',label:'No Class',reason:noClass.reason||''};
-    const present=entries.filter(e=>e.status==='Present').length;
-    const absent=entries.filter(e=>e.status==='Absent').length;
-    if(present && !absent) return {type:'present',label:`${present} Present`};
-    if(absent && !present) return {type:'absent',label:`${absent} Absent`};
-    return {type:'mixed',label:`${present} P · ${absent} A`};
-  }
-  function renderAttendanceCalendar(){
-    const title=document.getElementById('att-month-title');
-    const grid=document.getElementById('att-calendar-days');
-    if(!title||!grid) return;
-    title.textContent=attendanceMonthLabel(attendanceCalendarDate);
-    const y=attendanceCalendarDate.getFullYear(), m=attendanceCalendarDate.getMonth();
-    const first=new Date(y,m,1), last=new Date(y,m+1,0);
-    const prevLast=new Date(y,m,0).getDate();
-    const cells=[];
-    const startOffset=first.getDay();
-    for(let i=0;i<42;i++){
-      const dayNum=i-startOffset+1;
-      let d, muted=false;
-      if(dayNum<1){d=new Date(y,m-1,prevLast+dayNum);muted=true;}
-      else if(dayNum>last.getDate()){d=new Date(y,m+1,dayNum-last.getDate());muted=true;}
-      else d=new Date(y,m,dayNum);
-      const key=attendanceIsoDate(d);
-      const state=getAttendanceDayState(key);
-      const today=key===attendanceIsoDate(new Date());
-      const selected=key===attendanceSelectedDate;
-      cells.push(`<button type="button" class="att-day ${muted?'muted':''} ${today?'today':''} ${selected?'selected':''} meta-${state.type}" data-date="${key}"><span class="att-day-num">${d.getDate()}</span><span class="att-day-meta">${state.label}</span></button>`);
+  async function loadBulkAttendanceRows(){
+    const container = document.getElementById('att-rows-container');
+    container.innerHTML = '<div class="loading-row"><span class="spinner"></span>Loading students...</div>';
+    // Reuse the main student cache instead of downloading every student a second time.
+    if(allStudentsCache.length){
+      bulkStudentsCache = allStudentsCache.map(student => ({ id: student.id, data: student.data }));
+    } else {
+      const snap = await getDocs(collection(db, "students"));
+      bulkStudentsCache = [];
+      snap.forEach(docSnap => bulkStudentsCache.push({ id: docSnap.id, data: docSnap.data() }));
     }
-    grid.innerHTML=cells.join('');
-    grid.querySelectorAll('.att-day').forEach(btn=>btn.addEventListener('click',()=>selectAttendanceDate(btn.dataset.date)));
-  }
-  function renderAttendanceSummary(dateKey){
-    const summary=document.getElementById('att-summary');
-    if(!summary) return;
-    const rows=getAttendanceForDate(dateKey);
-    let present=0,absent=0,unmarked=0,noclass=0;
-    rows.forEach(({entry})=>{if(entry?.status==='Present')present++;else if(entry?.status==='Absent')absent++;else if(entry?.status==='No Class')noclass++;else unmarked++;});
-    summary.innerHTML=`<span><span class="att-dot present"></span>${present} Present</span><span><span class="att-dot absent"></span>${absent} Absent</span><span><span class="att-dot unmarked"></span>${unmarked} Not Recorded</span>${noclass?`<span>🟠 ${noclass} No Class</span>`:''}`;
-  }
-  function renderAttendanceStudentRows(dateKey){
-    const container=document.getElementById('att-rows-container');
-    if(!container) return;
-    const rows=getAttendanceForDate(dateKey);
-    container.innerHTML=rows.map(({student,entry})=>{
-      const status=entry?.status||'';
-      return `<div class="att-row ${status==='Present'?'marked-present':status==='Absent'?'marked-absent':''}" data-email="${escapeHtml(student.id)}" data-status="${escapeHtml(status)}" data-parent-phone="${escapeHtml(student.data.parentPhone||'')}" data-student-name="${escapeHtml(student.data.name||'Student')}">\n        <div><div class="att-row-name">${escapeHtml(student.data.name||'Unnamed')}</div><div class="att-row-email">${escapeHtml(student.data.batchName||student.id)}</div></div>\n        <div class="att-row-actions"><div class="att-toggle-group"><button class="att-toggle-btn present ${status==='Present'?'active':''}" data-status="Present">Present</button><button class="att-toggle-btn absent ${status==='Absent'?'active':''}" data-status="Absent">Absent</button><button class="att-toggle-btn ${status==='No Class'?'active':''}" data-status="No Class" style="border-color:#d79b28;">No Class</button></div><span class="wa-slot"></span></div>\n      </div>`;
-    }).join('');
-    container.querySelectorAll('.att-row').forEach(row=>{
-      row.querySelectorAll('.att-toggle-btn').forEach(btn=>btn.addEventListener('click',()=>{
-        const status=btn.dataset.status;
-        row.dataset.status=status;
-        row.querySelectorAll('.att-toggle-btn').forEach(b=>b.classList.remove('active','active-none'));
-        btn.classList.add('active');
-        row.classList.remove('marked-present','marked-absent');
-        if(status==='Present') row.classList.add('marked-present');
-        if(status==='Absent') row.classList.add('marked-absent');
-        const phone=row.dataset.parentPhone||'';
-        const slot=row.querySelector('.wa-slot');
-        slot.innerHTML=(status==='Absent'&&parentWaLink(phone,row.dataset.studentName,dateInputToLabel(dateKey)))?`<a class="wa-parent-btn" href="${parentWaLink(phone,row.dataset.studentName,dateInputToLabel(dateKey))}" target="_blank" rel="noopener">💬 Parent</a>`:'';
-        renderAttendanceSummary(dateKey);
-      }));
+
+    if(bulkStudentsCache.length === 0){
+      container.innerHTML = '<div style="color:var(--muted);font-size:13px;">No students yet.</div>';
+      return;
+    }
+
+    const dateLabel = dateInputToLabel(document.getElementById('bulk-att-date').value);
+    container.innerHTML = '';
+    bulkStudentsCache.forEach(student => {
+      const existingLog = normalizeAttendanceLog(student.data.attendance?.log || []);
+      const targetKey = adminAttendanceDateKey(dateLabel);
+      const existingEntry = existingLog.find(e => adminAttendanceDateKey(e.date) === targetKey);
+      const currentStatus = existingEntry ? existingEntry.status : null;
+
+      const row = document.createElement('div');
+      row.className = 'att-row' + (currentStatus === 'Present' ? ' marked-present' : currentStatus === 'Absent' ? ' marked-absent' : '');
+      row.dataset.email = student.id;
+      row.dataset.status = currentStatus || '';
+      row.dataset.parentPhone = student.data.parentPhone || '';
+      row.dataset.studentName = student.data.name || 'Student';
+      row.innerHTML = `
+        <div>
+          <div class="att-row-name">${student.data.name || 'Unnamed'}</div>
+          <div class="att-row-email">${student.id}</div>
+        </div>
+        <div class="att-row-actions">
+          <div class="att-toggle-group">
+            <button class="att-toggle-btn present ${currentStatus === 'Present' ? 'active' : ''}" data-status="Present">Present</button>
+            <button class="att-toggle-btn absent ${currentStatus === 'Absent' ? 'active' : ''}" data-status="Absent">Absent</button>
+          </div>
+          <span class="wa-slot"></span>
+        </div>
+      `;
+      row.querySelectorAll('.att-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const status = btn.dataset.status;
+          row.dataset.status = status;
+          row.querySelectorAll('.att-toggle-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          row.classList.remove('marked-present', 'marked-absent');
+          row.classList.add(status === 'Present' ? 'marked-present' : 'marked-absent');
+          const slot = row.querySelector('.wa-slot');
+          const phone = row.dataset.parentPhone || '';
+          if(slot){
+            slot.innerHTML = (status === 'Absent' && parentWaLink(phone,row.dataset.studentName,dateLabel))
+              ? `<a class="wa-parent-btn" href="${parentWaLink(phone,row.dataset.studentName,dateLabel)}" target="_blank" rel="noopener">💬 Parent</a>`
+              : '';
+          }
+          updateAttendanceSummary();
+        });
+      });
+      container.appendChild(row);
     });
+
+    document.getElementById('save-attendance-bar').style.display = 'flex';
+    updateAttendanceSummary();
   }
-  function selectAttendanceDate(dateKey){
-    attendanceSelectedDate=dateKey;
-    const d=attendanceDateObj(dateKey);
-    document.getElementById('bulk-att-date').value=dateKey;
-    const state=getAttendanceDayState(dateKey);
-    const detail=document.getElementById('att-detail-panel');
-    const reason=state.reason||'';
-    detail.innerHTML=`<h3>${d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</h3><div class="att-detail-date">${state.type==='none'?'No record exists for this date yet.':state.type==='noclass'?'The class was not held.':'Attendance can be edited below.'}</div>\n      <div class="att-class-status"><button type="button" id="att-class-held" class="${state.type!=='noclass'?'active-held':''}">🟢 Class Held</button><button type="button" id="att-class-none" class="${state.type==='noclass'?'active-none':''}">🟠 No Class</button></div>\n      <div class="att-reason ${state.type==='noclass'?'show':''}" id="att-no-class-reason"><label>Why was class not held?</label><input type="text" id="att-reason-input" value="${escapeHtml(reason)}" placeholder="e.g. Heavy rain / Holiday / Teacher unavailable"></div>\n      <div id="att-detail-msg" class="msg"></div>\n      <div class="att-detail-actions"><button class="btn btn-secondary btn-small" id="att-mark-all-present" type="button">Mark All Present</button><button class="btn btn-small" id="att-save-day" type="button">Save Date</button></div>`;
-    const held=document.getElementById('att-class-held'), none=document.getElementById('att-class-none'), reasonBox=document.getElementById('att-no-class-reason');
-    held.onclick=()=>{held.classList.add('active-held');none.classList.remove('active-none');reasonBox.classList.remove('show');document.getElementById('att-detail-msg').textContent='Class marked as held. Now mark students Present/Absent below.';};
-    none.onclick=()=>{none.classList.add('active-none');held.classList.remove('active-held');reasonBox.classList.add('show');document.getElementById('att-detail-msg').textContent='Save this date as No Class. It will not reduce attendance percentage.';};
-    document.getElementById('att-mark-all-present').onclick=()=>{document.querySelectorAll('#att-rows-container .att-row').forEach(r=>{r.dataset.status='Present';r.querySelectorAll('.att-toggle-btn').forEach(b=>b.classList.toggle('active',b.dataset.status==='Present'));r.classList.add('marked-present');r.classList.remove('marked-absent');});renderAttendanceSummary(dateKey);};
-    document.getElementById('att-save-day').onclick=()=>saveAttendanceDay(dateKey);
-    renderAttendanceCalendar();
-    renderAttendanceStudentRows(dateKey);
-    renderAttendanceSummary(dateKey);
-  }
-  async function saveAttendanceDay(dateKey){
-    const noClass=document.getElementById('att-class-none')?.classList.contains('active-none');
-    const reason=document.getElementById('att-reason-input')?.value.trim()||'';
-    if(noClass&&!reason){showToast('Please enter why the class was not held.');return;}
-    const rows=Array.from(document.querySelectorAll('#att-rows-container .att-row'));
-    if(!rows.length){showToast('No students found.');return;}
-    const ops=[];
-    rows.forEach(row=>{
-      const email=canonicalStudentId(row.dataset.email);
-      const student=bulkStudentsCache.find(s=>canonicalStudentId(s.id)===email);
-      if(!student)return;
-      let log=normalizeAttendanceLog(student.data.attendance?.log||[]);
-      log=log.filter(e=>e.date!==dateKey);
-      if(noClass){
-        log.unshift({date:dateKey,status:'No Class',reason});
-      }else{
-        const status=row.dataset.status;
-        if(status==='Present'||status==='Absent') log.unshift({date:dateKey,status});
-      }
-      log=normalizeAttendanceLog(log);
-      const counted=log.filter(e=>e.status==='Present'||e.status==='Absent');
-      const presentCount=counted.filter(e=>e.status==='Present').length;
-      const percent=counted.length?Math.round(presentCount/counted.length*100):0;
-      ops.push(wb=>wb.set(doc(db,'students',email),{attendance:{percent,log}},{merge:true}));
+
+  function updateAttendanceSummary(){
+    const rows = document.querySelectorAll('.att-row');
+    let present = 0, absent = 0, unmarked = 0;
+    rows.forEach(r => {
+      if(r.dataset.status === 'Present'){ present++; }
+      else if(r.dataset.status === 'Absent'){ absent++; }
+      else { unmarked++; }
     });
+    document.getElementById('att-summary').innerHTML = `
+      <span><span class="att-dot present"></span>${present} Present</span>
+      <span><span class="att-dot absent"></span>${absent} Absent</span>
+      <span><span class="att-dot unmarked"></span>${unmarked} Unmarked</span>
+    `;
+    document.getElementById('save-bar-text').textContent = `${present + absent} of ${rows.length} students marked`;
+  }
+
+  document.getElementById('bulk-att-date').addEventListener('change', loadBulkAttendanceRows);
+
+  document.getElementById('save-bulk-attendance-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('save-bulk-attendance-btn');
+    const dateLabel = dateInputToLabel(document.getElementById('bulk-att-date').value);
+    const rows = document.querySelectorAll('.att-row');
+    const toSave = Array.from(rows).filter(r => r.dataset.status);
+
+    if(toSave.length === 0){
+      showToast('Mark at least one student first.');
+      return;
+    }
+
+    btn.disabled = true; btn.textContent = 'Saving...';
+
     try{
-      const btn=document.getElementById('att-save-day');btn.disabled=true;btn.textContent='Saving…';
-      await commitBatchOps(ops);
-      showToast(noClass?`No Class saved for ${dateInputToLabel(dateKey)}.`:`Attendance saved for ${dateInputToLabel(dateKey)}.`);
+      const attendanceOps=[];
+      toSave.forEach(row => {
+        const email = canonicalStudentId(row.dataset.email);
+        const status = row.dataset.status;
+        const student = bulkStudentsCache.find(s => canonicalStudentId(s.id) === email);
+        if(!student) return;
+        let log=normalizeAttendanceLog(student.data.attendance?.log||[]);
+        const targetKey=adminAttendanceDateKey(dateLabel);
+        log=log.filter(e=>e.date!==targetKey);
+        log.unshift({date:targetKey,status});
+        log=normalizeAttendanceLog(log);
+        const presentCount=log.filter(e=>e.status==='Present').length;
+        const counted=log.filter(e=>adminAttendanceCounted(e.status));
+        const percent=counted.length?Math.round(presentCount/counted.length*100):0;
+        attendanceOps.push(wb => wb.set(doc(db,'students',email),{attendance:{percent,log}},{merge:true}));
+      });
+      await commitBatchOps(attendanceOps);
+      showToast(`Saved attendance for ${toSave.length} student(s)!`);
       await loadStudentList();
       await loadBulkAttendanceRows();
-    }catch(err){showToast('Error: '+(err?.message||'Could not save attendance.'));}
-    finally{const btn=document.getElementById('att-save-day');if(btn){btn.disabled=false;btn.textContent='Save Date';}}
-  }
-  async function loadBulkAttendanceRows(){
-    const container=document.getElementById('att-rows-container');
-    if(container) container.innerHTML='<div class="loading-row"><span class="spinner"></span>Loading students...</div>';
-    if(allStudentsCache.length) bulkStudentsCache=allStudentsCache.map(student=>({id:student.id,data:student.data}));
-    else {const snap=await getDocs(collection(db,'students'));bulkStudentsCache=[];snap.forEach(docSnap=>bulkStudentsCache.push({id:docSnap.id,data:docSnap.data()}));}
-    if(!bulkStudentsCache.length){if(container)container.innerHTML='<div style="color:var(--muted);font-size:13px;">No students yet.</div>';return;}
-    const initial=document.getElementById('bulk-att-date')?.value||attendanceIsoDate(new Date());
-    attendanceSelectedDate=initial;
-    attendanceCalendarDate=attendanceDateObj(initial);
-    renderAttendanceCalendar();
-    selectAttendanceDate(initial);
-    const bar=document.getElementById('save-attendance-bar');if(bar)bar.style.display='none';
-  }
-
-  document.getElementById('bulk-att-date').addEventListener('change',e=>selectAttendanceDate(e.target.value));
-  document.getElementById('att-prev-month').addEventListener('click',()=>{attendanceCalendarDate=new Date(attendanceCalendarDate.getFullYear(),attendanceCalendarDate.getMonth()-1,1);renderAttendanceCalendar();});
-  document.getElementById('att-next-month').addEventListener('click',()=>{attendanceCalendarDate=new Date(attendanceCalendarDate.getFullYear(),attendanceCalendarDate.getMonth()+1,1);renderAttendanceCalendar();});
-  document.getElementById('att-today-btn').addEventListener('click',()=>{const k=attendanceIsoDate(new Date());attendanceCalendarDate=attendanceDateObj(k);selectAttendanceDate(k);});
+    } catch(err){
+      showToast('Error: ' + err.message);
+    } finally {
+      btn.disabled = false; btn.textContent = 'Save Attendance';
+    }
+  });
 
   let allStudentsCache = [];
 
@@ -1510,8 +1308,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       const raw=docSnap.data();
       const log=normalizeAttendanceLog(raw.attendance?.log||[]);
       const scores=normalizeTestScores(raw.testScores||[]);
-      const countedLog=log.filter(e=>e.status==='Present'||e.status==='Absent');
-      const percent=countedLog.length?Math.round(countedLog.filter(e=>e.status==='Present').length/countedLog.length*100):0;
+      const percent=log.length?Math.round(log.filter(e=>e.status==='Present').length/log.length*100):0;
       const data={...raw,attendance:{percent,log},testScores:scores};
       total++;
       if(data.feeStatus === 'Paid'){ paid++; } else { due++; }
@@ -1985,6 +1782,8 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
   function adminParseDate(value){
     if(!value) return null; if(/^\d{4}-\d{2}-\d{2}$/.test(value)) return new Date(value+'T00:00:00'); const m=String(value).match(/^(\d{1,2})\s+([A-Za-z]{3})(?:\s+(\d{4}))?$/); if(m){const yr=m[3]||String(new Date().getFullYear());const x=new Date(`${m[1]} ${m[2]} ${yr} 00:00:00`);if(!isNaN(x.getTime()))return x;} const d=new Date(value); if(!isNaN(d.getTime())) return d; return null;
   }
+  function adminAttendanceCounted(status){ return status==='Present' || status==='Absent'; }
+
   function adminMonthKey(value){const d=adminParseDate(value);return d?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`:'';}
   function adminMonthLabel(key){if(!key)return 'Unknown';const [y,m]=key.split('-').map(Number);return new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});}
   function adminScorePct(s){return s&&Number(s.max)>0?Math.round(Number(s.score)/Number(s.max)*100):0;}
@@ -2065,12 +1864,32 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       console.warn('Batch insight refresh failed',err);
     }
   }
+
+  function renderAdminPhase1Performance(data){
+    const scores=normalizeTestScores(data?.testScores||[]).slice();
+    const chronological=scores.slice().sort((a,b)=>adminAttendanceDateKey(a.date).localeCompare(adminAttendanceDateKey(b.date)));
+    const avg=scores.length?Math.round(scores.reduce((sum,s)=>sum+adminScorePct(s),0)/scores.length):null;
+    const best=scores.length?Math.max(...scores.map(adminScorePct)):null;
+    const latest=chronological[chronological.length-1], previous=chronological[chronological.length-2];
+    const change=(latest&&previous)?adminScorePct(latest)-adminScorePct(previous):null;
+    document.getElementById('mp-admin-p1-average').textContent=avg==null?'—':avg+'%';
+    document.getElementById('mp-admin-p1-best').textContent=best==null?'—':best+'%';
+    document.getElementById('mp-admin-p1-improvement').textContent=change==null?'—':(change>0?'+':'')+change+'%';
+    document.getElementById('mp-admin-p1-tests').textContent=scores.length;
+    const map=new Map();
+    scores.forEach(s=>{const t=String(s.topic||'').trim();if(!t)return;const v=map.get(t)||{sum:0,count:0};v.sum+=adminScorePct(s);v.count++;map.set(t,v);});
+    const focus=[...map.entries()].map(([topic,v])=>({topic,avg:Math.round(v.sum/v.count)})).sort((x,y)=>x.avg-y.avg).slice(0,4);
+    const box=document.getElementById('mp-admin-p1-focus');
+    box.innerHTML=focus.length?focus.map(x=>`<span class="mp-admin-p1-tag">🎯 ${escapeHtml(x.topic)} · ${x.avg}%</span>`).join(''):'<span style="font-size:10px;color:var(--muted);">No topic-wise focus data yet.</span>';
+  }
+
   function renderAdminStudentInsights(data){
     const bs=data.batchStats||{}; const recent=bs.recentTest||{}; document.getElementById('admin-student-rank').textContent=recent.rank&&recent.size?`#${recent.rank}`:'—'; document.getElementById('admin-student-batch-size').textContent=recent.size||'—'; document.getElementById('admin-student-highest').textContent=recent.highest!=null?recent.highest+'%':'—'; document.getElementById('admin-student-average').textContent=recent.average!=null?recent.average+'%':'—';
+    renderAdminPhase1Performance(data);
     const select=document.getElementById('admin-report-month'); const keys=new Set(); (currentAttendanceLog||[]).forEach(e=>{const k=adminMonthKey(e.date);if(k)keys.add(k)}); (currentTestScores||[]).forEach(s=>{const k=adminMonthKey(s.date);if(k)keys.add(k)}); (currentMonthlyFees||[]).forEach(f=>{if(f.monthKey)keys.add(f.monthKey)}); const arr=[...keys].sort((a,b)=>b.localeCompare(a)); select.innerHTML=arr.length?arr.map(k=>`<option value="${k}">${adminMonthLabel(k)}</option>`).join(''):'<option value="">No monthly data</option>';
   }
   function openAdminMonthlyReport(){
-    const key=document.getElementById('admin-report-month').value; if(!key){showToast('Select a month first.');return;} const name=document.getElementById('f-name').value.trim()||'Student'; const cls=document.getElementById('f-class').value; const batch=document.getElementById('f-batch-name').value; const att=(currentAttendanceLog||[]).filter(e=>adminMonthKey(e.date)===key); const present=att.filter(e=>e.status==='Present').length; const tests=(currentTestScores||[]).filter(s=>adminMonthKey(s.date)===key); const avg=tests.length?Math.round(tests.reduce((a,s)=>a+adminScorePct(s),0)/tests.length):0; const best=tests.length?Math.max(...tests.map(adminScorePct)):0; const bs=(currentStudentBatchStats||{}); const countedAtt=att.filter(e=>e.status==='Present'||e.status==='Absent'); const attPct=countedAtt.length?Math.round(present/countedAtt.length*100):0;
+    const key=document.getElementById('admin-report-month').value; if(!key){showToast('Select a month first.');return;} const name=document.getElementById('f-name').value.trim()||'Student'; const cls=document.getElementById('f-class').value; const batch=document.getElementById('f-batch-name').value; const att=(currentAttendanceLog||[]).filter(e=>adminMonthKey(e.date)===key); const counted=att.filter(e=>adminAttendanceCounted(e.status)); const present=counted.filter(e=>e.status==='Present').length; const tests=(currentTestScores||[]).filter(s=>adminMonthKey(s.date)===key); const avg=tests.length?Math.round(tests.reduce((a,s)=>a+adminScorePct(s),0)/tests.length):0; const best=tests.length?Math.max(...tests.map(adminScorePct)):0; const bs=(currentStudentBatchStats||{}); const attPct=counted.length?Math.round(present/counted.length*100):0;
     const win=window.open('','_blank','width=960,height=1000'); if(!win)return;
     win.document.write(`<html><head><title>${name} — Monthly Report — ${adminMonthLabel(key)}</title><meta charset="utf-8">
 <style>
@@ -2192,30 +2011,29 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       if(summary) summary.textContent='';
       return;
     }
-    const countedLogs=logs.filter(e=>e.status==='Present'||e.status==='Absent');
-    const presentCount=countedLogs.filter(e=>e.status==='Present').length;
-    const pct=countedLogs.length?Math.round((presentCount/countedLogs.length)*100):0;
-    const noClassCount=logs.filter(e=>e.status==='No Class').length;
-    pctDisplay.textContent=pct+'% ('+presentCount+' present out of '+countedLogs.length+' class days'+(noClassCount?`, ${noClassCount} no-class`:'')+')';
+    const counted=logs.filter(e=>adminAttendanceCounted(e.status));
+    const presentCount=counted.filter(e=>e.status==='Present').length;
+    const pct=counted.length?Math.round((presentCount/counted.length)*100):0;
+    pctDisplay.textContent=pct+'% ('+presentCount+' present out of '+counted.length+' class days)';
 
     const month=syncMonthFilter('attendance-month-filter',logs,preferredMonth);
-    const filtered=month?logs.map((e,i)=>({...e,__idx:i})).filter(e=>adminMonthKey(e.date)===month):[];
-    const present=filtered.filter(e=>e.status==='Present').length;
-    const absent=filtered.filter(e=>e.status==='Absent').length;
-    const monthNoClass=filtered.filter(e=>e.status==='No Class').length;
-    if(summary) summary.textContent=month?`${adminMonthLabel(month)} · ${present} Present · ${absent} Absent${monthNoClass?` · ${monthNoClass} No Class`:''}` : '';
-    box.innerHTML=filtered.length
-      ? filtered.sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).map(e=>
-        `<div class="attendance-log-item"><span>${escapeHtml(e.date)} — ${escapeHtml(e.status)}</span><button class="remove-btn" data-idx="${e.__idx}">Remove</button></div>`
-      ).join('')
-      : '<div class="admin-month-empty">No attendance recorded for this month.</div>';
-    box.querySelectorAll('.remove-btn').forEach(btn=>{
-      btn.addEventListener('click',()=>{
-        currentAttendanceLog.splice(parseInt(btn.dataset.idx),1);
-        renderAttendancePreview(month);
-        renderAdminStudentInsights(currentStudentFormData||{});
-      });
-    });
+    const byDate={}; logs.forEach((e,i)=>{const k=adminAttendanceDateKey(e.date);if(k)byDate[k]={...e,__idx:i};});
+    let year,mon; if(month){[year,mon]=month.split('-').map(Number);} else {const d=new Date();year=d.getFullYear();mon=d.getMonth()+1;}
+    const first=new Date(year,mon-1,1); const days=new Date(year,mon,0).getDate();
+    let html='<div class="mp-admin-att-calendar"><div class="mp-admin-att-week"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div><div class="mp-admin-att-grid">';
+    let offset=(first.getDay()+6)%7;
+    for(let i=0;i<offset;i++) html+='<div class="mp-admin-att-day empty"></div>';
+    let mp=0,ma=0,mn=0,mu=0;
+    for(let day=1;day<=days;day++){
+      const key=`${year}-${String(mon).padStart(2,'0')}-${String(day).padStart(2,'0')}`; const e=byDate[key]; const status=e?.status||'Not Recorded';
+      let cls='',label='Not recorded'; if(status==='Present'){cls='present';label='Present';mp++;} else if(status==='Absent'){cls='absent';label='Absent';ma++;} else if(status==='No Class'){cls='noclass';label='No class';mn++;} else mu++;
+      const reason=e?.reason ? ` · ${String(e.reason).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}` : '';
+      html+=`<div class="mp-admin-att-day ${cls}" title="${key} · ${label}${reason}"><b>${day}</b><i>${label}</i>${status==='No Class'&&e?.reason?`<small>${String(e.reason).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}</small>`:''}</div>`;
+    }
+    html+='</div><div class="mp-admin-att-legend"><span><em class="mp-admin-att-dot p"></em>Present</span><span><em class="mp-admin-att-dot a"></em>Absent</span><span><em class="mp-admin-att-dot n"></em>No Class</span><span><em class="mp-admin-att-dot u"></em>Not Recorded</span></div></div>';
+    box.innerHTML=html;
+    const mcount=mp+ma; const mpct=mcount?Math.round(mp/mcount*100):0;
+    if(summary) summary.textContent=month?`${adminMonthLabel(month)} · ${mp} Present · ${ma} Absent · ${mn} No Class · ${mu} Not Recorded · ${mpct}% attendance` : '';
   }
 
   function renderNotesPreview(){
@@ -2253,7 +2071,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     if(summary) summary.textContent=month?`${adminMonthLabel(month)} · ${filtered.length} test(s) · Average ${avg}% · Best ${best}%` : '';
     box.innerHTML=filtered.length
       ? filtered.sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))).map(e=>
-        `<div class="score-item"><span>${escapeHtml(e.date)} — ${escapeHtml(e.name||'Test')}: ${escapeHtml(e.score)}/${escapeHtml(e.max)}</span><button class="remove-btn" data-idx="${e.__idx}">Remove</button></div>`
+        `<div class="score-item"><span>${escapeHtml(e.date)} — ${escapeHtml(e.name||'Test')}: ${escapeHtml(e.score)}/${escapeHtml(e.max)}${e.topic?' · '+escapeHtml(e.topic):''}</span><button class="remove-btn" data-idx="${e.__idx}">Remove</button></div>`
       ).join('')
       : '<div class="admin-month-empty">No test scores recorded for this month.</div>';
     box.querySelectorAll('.remove-btn').forEach(btn=>{
@@ -2273,17 +2091,19 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     const dateInput = document.getElementById('f-test-date').value;
     const score = parseFloat(document.getElementById('f-test-score').value);
     const max = parseFloat(document.getElementById('f-test-max').value);
+    const topic = document.getElementById('f-test-topic')?.value.trim() || '';
     if(!name || !dateInput || isNaN(score) || isNaN(max) || max <= 0 || score < 0 || score > max){
       alert('Please enter valid test name, date, score and max marks. Score must be between 0 and the maximum marks.');
       return;
     }
     const dateStr=adminAttendanceDateKey(dateInput);
     currentTestScores=(currentTestScores||[]).filter(s=>!(adminAttendanceDateKey(s.date)===dateStr&&String(s.name||'').trim().toLowerCase()===name.toLowerCase()));
-    currentTestScores.unshift({name,date:dateStr,score,max});
+    currentTestScores.unshift({name,date:dateStr,score,max,topic});
     currentTestScores=normalizeTestScores(currentTestScores);
     document.getElementById('f-test-name').value = '';
     document.getElementById('f-test-score').value = '';
     document.getElementById('f-test-max').value = '';
+    if(document.getElementById('f-test-topic')) document.getElementById('f-test-topic').value = '';
     renderScoresPreview();
   });
 
@@ -2301,7 +2121,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
   document.getElementById('add-attendance-btn').addEventListener('click', () => {
     const status = document.getElementById('f-att-status').value;
     const dateInput = document.getElementById('f-att-date').value;
-    const reason = attReasonInput?.value.trim() || '';
+    const reason = document.getElementById('f-att-reason')?.value.trim() || '';
     if(!dateInput){
       alert('Please pick a date first.');
       return;
@@ -2338,8 +2158,9 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     const feeStatus = document.getElementById('f-fee').value;
     const batch = document.getElementById('f-batch').value.trim();
     const nextTest = document.getElementById('f-next-test').value.trim();
-    const attPct = currentAttendanceLog.length > 0
-      ? Math.round((currentAttendanceLog.filter(e => e.status === 'Present').length / currentAttendanceLog.length) * 100)
+    const countedAttendance = currentAttendanceLog.filter(e => adminAttendanceCounted(e.status));
+    const attPct = countedAttendance.length > 0
+      ? Math.round((countedAttendance.filter(e => e.status === 'Present').length / countedAttendance.length) * 100)
       : 0;
 
     document.getElementById('pr-generated').textContent = 'Generated on ' + new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
@@ -2413,8 +2234,9 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     if(!isValidStudentEmail(email)){ saveMsg.textContent='Please enter a valid student email address.'; saveMsg.className='msg error'; return; }
     currentAttendanceLog=normalizeAttendanceLog(currentAttendanceLog);
     currentTestScores=normalizeTestScores(currentTestScores);
-    const pct = currentAttendanceLog.length > 0
-      ? Math.round((currentAttendanceLog.filter(e => e.status === 'Present').length / currentAttendanceLog.length) * 100)
+    const countedAttendance = currentAttendanceLog.filter(e => adminAttendanceCounted(e.status));
+    const pct = countedAttendance.length > 0
+      ? Math.round((countedAttendance.filter(e => e.status === 'Present').length / countedAttendance.length) * 100)
       : 0;
 
     const studentData = {
@@ -2980,7 +2802,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
         if(!student) return;
         const existingScores=normalizeTestScores(student.data.testScores||[]);
         const merged=existingScores.filter(t=>!(adminAttendanceDateKey(t.date)===adminAttendanceDateKey(dateStr)&&String(t.name||'').trim().toLowerCase()===testName.toLowerCase()));
-        merged.push({name:testName,date:dateStr,score:scoreVal,max:maxMarks});
+        merged.push({name:testName,date:dateStr,score:scoreVal,max:maxMarks,topic:String(document.getElementById('bulk-score-topic')?.value||'').trim()});
         scoreOps.push(wb => wb.set(doc(db,'students',email),{testScores:normalizeTestScores(merged)},{merge:true}));
         savedCount++;
       });
@@ -3000,6 +2822,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       showToast(`Saved scores for ${savedCount} student(s) and updated batch rank!`);
       document.getElementById('bulk-score-rows').innerHTML = '';
       document.getElementById('save-bulk-scores-bar').style.display = 'none';
+      const topicInput=document.getElementById('bulk-score-topic'); if(topicInput) topicInput.value='';
       loadStudentList();
     } catch(err){
       showToast('Error: ' + err.message);
@@ -3568,73 +3391,14 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       const created=a.createdAt?.toDate ? a.createdAt.toDate().toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'}) : 'Date not available';
       const id=a.applicationId || ('MP-'+String(a.id||'').slice(-6).toUpperCase());
       return `<div class="admission-item">
-        <div style="display:flex;gap:10px;align-items:flex-start;min-width:0;">
-          <label style="display:flex;align-items:center;padding-top:2px;cursor:pointer;flex-shrink:0;" title="Select enquiry">
-            <input type="checkbox" class="admission-select" data-id="${escapeHtml(a.id)}" aria-label="Select ${escapeHtml(a.studentName||'enquiry')}">
-          </label>
-          <div><strong>${escapeHtml(a.studentName||'Unnamed Student')}</strong><div class="admission-meta">${escapeHtml(id)} · Class ${escapeHtml(a.className||'—')} · ${escapeHtml(a.programme||'Programme not selected')} · ${escapeHtml(a.parentPhone||'No phone')}<br>Submitted ${escapeHtml(created)}</div></div>
-        </div>
-        <div class="admission-actions"><select class="admission-status" data-status-id="${escapeHtml(a.id)}" ${a.archived?'disabled':''}>${admissionStatusOptions(a.status||'New')}</select><button type="button" class="btn btn-secondary btn-small admission-view" data-id="${escapeHtml(a.id)}">View</button>${a.archived?`<button type="button" class="btn btn-secondary btn-small admission-unarchive" data-id="${escapeHtml(a.id)}">Restore</button>`:`<button type="button" class="btn btn-secondary btn-small admission-archive" data-id="${escapeHtml(a.id)}">Archive</button>`}<button type="button" class="btn btn-small admission-delete" data-id="${escapeHtml(a.id)}" style="background:#f5e5e5;color:#9b2c2c;">Delete</button></div>
+        <div><strong>${escapeHtml(a.studentName||'Unnamed Student')}</strong><div class="admission-meta">${escapeHtml(id)} · Class ${escapeHtml(a.className||'—')} · ${escapeHtml(a.programme||'Programme not selected')} · ${escapeHtml(a.parentPhone||'No phone')}<br>Submitted ${escapeHtml(created)}</div></div>
+        <div class="admission-actions"><select class="admission-status" data-status-id="${escapeHtml(a.id)}" ${a.archived?'disabled':''}>${admissionStatusOptions(a.status||'New')}</select><button type="button" class="btn btn-secondary btn-small admission-view" data-id="${escapeHtml(a.id)}">View</button>${a.archived?`<button type="button" class="btn btn-secondary btn-small admission-unarchive" data-id="${escapeHtml(a.id)}">Restore</button>`:`<button type="button" class="btn btn-secondary btn-small admission-archive" data-id="${escapeHtml(a.id)}">Archive</button>`}</div>
       </div>`;
     }).join('');
     box.querySelectorAll('.admission-view').forEach(btn=>btn.addEventListener('click',()=>showAdmissionDetail(btn.dataset.id)));
     box.querySelectorAll('[data-status-id]').forEach(sel=>sel.addEventListener('change',()=>updateAdmissionStatus(sel.dataset.statusId,sel.value)));
     box.querySelectorAll('.admission-archive').forEach(btn=>btn.addEventListener('click',()=>archiveAdmission(btn.dataset.id)));
     box.querySelectorAll('.admission-unarchive').forEach(btn=>btn.addEventListener('click',()=>restoreAdmission(btn.dataset.id)));
-    box.querySelectorAll('.admission-delete').forEach(btn=>btn.addEventListener('click',()=>deleteAdmission(btn.dataset.id)));
-    box.querySelectorAll('.admission-select').forEach(cb=>cb.addEventListener('change',updateAdmissionBulkControls));
-    updateAdmissionBulkControls();
-  }
-  function updateAdmissionBulkControls(){
-    const checks=[...document.querySelectorAll('#admissions-list .admission-select')];
-    const selected=checks.filter(x=>x.checked).length;
-    const selectAll=document.getElementById('admission-select-all-btn');
-    const bulk=document.getElementById('admission-delete-selected-btn');
-    if(selectAll){
-      selectAll.style.display=checks.length?'inline-flex':'none';
-      selectAll.textContent=checks.length && selected===checks.length?'Clear All':'Select All';
-    }
-    if(bulk){
-      bulk.style.display=selected?'inline-flex':'none';
-      bulk.textContent=selected?`🗑 Delete Selected (${selected})`:'🗑 Delete Selected';
-    }
-  }
-  async function deleteAdmission(id){
-    const item=admissionsCache.find(a=>a.id===id);
-    const name=item?.studentName || 'this enquiry';
-    if(!confirm(`Permanently delete ${name}?\n\nThis will remove the enquiry permanently and cannot be undone.`)) return;
-    try{
-      await deleteDoc(doc(db,'admissions',id));
-      // Keep the separate admin-only teacher/finance record clean as well.
-      try{ await deleteDoc(doc(db,'teacherAssignments',id)); }catch(cleanErr){ console.warn('Teacher assignment cleanup skipped:',cleanErr); }
-      admissionsCache=admissionsCache.filter(a=>a.id!==id);
-      const modal=document.getElementById('admission-detail-modal');
-      if(modal?.dataset.admissionId===id) closeAdmissionDetail();
-      renderAdmissions();
-      showToast('Enquiry permanently deleted.');
-    }catch(err){
-      showToast('Could not delete enquiry: '+(err.message||'Unknown error'));
-    }
-  }
-  async function deleteSelectedAdmissions(){
-    const ids=[...document.querySelectorAll('#admissions-list .admission-select:checked')].map(x=>x.dataset.id).filter(Boolean);
-    if(!ids.length) return;
-    if(!confirm(`Permanently delete ${ids.length} selected ${ids.length===1?'enquiry':'enquiries'}?\n\nThis cannot be undone.`)) return;
-    try{
-      // 2 deletes per enquiry at most (admission + admin-only assignment), kept well below Firestore's 500-write limit.
-      const ops=[];
-      ids.forEach(id=>{
-        ops.push(wb=>wb.delete(doc(db,'admissions',id)));
-        ops.push(wb=>wb.delete(doc(db,'teacherAssignments',id)));
-      });
-      await commitBatchOps(ops);
-      const idSet=new Set(ids);
-      admissionsCache=admissionsCache.filter(a=>!idSet.has(a.id));
-      renderAdmissions();
-      showToast(`${ids.length} ${ids.length===1?'enquiry':'enquiries'} permanently deleted.`);
-    }catch(err){
-      showToast('Could not delete selected enquiries: '+(err.message||'Unknown error'));
-    }
   }
   async function archiveAdmission(id){
     if(!confirm('Archive this enquiry? It will disappear from the active list but remain safely stored in Firebase.')) return;
@@ -3697,15 +3461,16 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
 
   function renderTeachers(){
     const list=document.getElementById('teachers-list'); if(!list)return;
-    const q=String(document.getElementById('teacher-search-input')?.value||'').trim().toLowerCase();
-    const filtered=teachersCache.filter(t=>!q || [t.name,t.phone,t.email,t.subjects,t.areas,t.availability,t.classes,t.boards,t.qualification,t.experience,t.mode,t.address,t.status].some(v=>String(v||'').toLowerCase().includes(q)));
-    const count=document.getElementById('teacher-count-label');
-    if(count) count.textContent=`${teachersCache.length} saved teacher${teachersCache.length===1?'':'s'}`;
-    if(!filtered.length){ list.innerHTML=`<div style="font-size:12px;color:var(--muted);padding:14px 0;">${teachersCache.length?'No teacher matches your search.':'No teachers saved yet. Add your first teacher above.'}</div>`; return; }
-    list.innerHTML=filtered.map(t=>{
+    if(!teachersCache.length){ list.innerHTML='<div style="font-size:12px;color:var(--muted);padding:10px 0;">No teachers saved yet. Add your first teacher above.</div>'; return; }
+    list.innerHTML=teachersCache.map(t=>{
       const badge=t.status==='Inactive'?'teacher-badge inactive':'teacher-badge';
-      const assigned=admissionsCache.filter(a=>String(a.homeTuition?.teacherId||a.homeTuition?.teacherName||'').toLowerCase()===String(t.id).toLowerCase() || String(a.homeTuition?.teacherName||'').toLowerCase()===String(t.name||'').toLowerCase()).filter(a=>!a.archived).length;
-      return `<div class="teacher-row">        <div class="teacher-row-main"><strong>${teacherSafeText(t.name||'Unnamed teacher')}</strong><small>${teacherSafeText(t.phone||'No phone')} · ${teacherSafeText(t.subjects||'Subjects not set')} · ${teacherSafeText(t.classes||'Classes not set')}<br>${teacherSafeText(t.areas||'Areas not set')} · ${teacherSafeText(t.availability||'Availability not set')}${t.experience?' · '+teacherSafeText(t.experience):''}</small></div>        <div><span class="${badge}">${teacherSafeText(t.status||'Active')}</span><div style="font-size:11px;color:var(--muted);margin-top:4px;">${assigned} active assignment${assigned===1?'':'s'}</div></div>        <div><small style="color:var(--muted);font-weight:700;">Default first-month</small><strong>${Number(t.commissionPct||0)}%</strong></div>        <div style="display:flex;gap:6px;flex-wrap:wrap;"><button type="button" class="btn btn-secondary btn-small teacher-edit-btn" data-id="${teacherSafeText(t.id)}">Edit</button><button type="button" class="btn btn-small teacher-delete-btn" data-id="${teacherSafeText(t.id)}" style="background:#f5e5e5;color:#9b2c2c;">Delete</button></div>      </div>`;
+      return `<div class="teacher-row">\
+        <div class="teacher-row-main"><strong>${teacherSafeText(t.name||'Unnamed teacher')}</strong><small>${teacherSafeText(t.phone||'No phone')} · ${teacherSafeText(t.subjects||'Subjects not set')}<br>${teacherSafeText(t.areas||'Areas not set')} · ${teacherSafeText(t.availability||'Availability not set')}</small></div>\
+        <div><span class="${badge}">${teacherSafeText(t.status||'Active')}</span></div>\
+        <div><small style="color:var(--muted);font-weight:700;">Default first-month</small><strong>${Number(t.commissionPct||0)}%</strong></div>\
+        <div><small style="color:var(--muted);">Teacher ID</small><div style="font-size:11px;word-break:break-all;">${teacherSafeText(t.id)}</div></div>\
+        <div style="display:flex;gap:6px;flex-wrap:wrap;"><button type="button" class="btn btn-secondary btn-small teacher-edit-btn" data-id="${teacherSafeText(t.id)}">Edit</button><button type="button" class="btn btn-small teacher-delete-btn" data-id="${teacherSafeText(t.id)}" style="background:#f5e5e5;color:#9b2c2c;">Delete</button></div>\
+      </div>`;
     }).join('');
     list.querySelectorAll('.teacher-edit-btn').forEach(btn=>btn.addEventListener('click',()=>startTeacherEdit(btn.dataset.id)));
     list.querySelectorAll('.teacher-delete-btn').forEach(btn=>btn.addEventListener('click',()=>deleteTeacher(btn.dataset.id)));
@@ -3720,7 +3485,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
 
   function resetTeacherForm(){
     editingTeacherId=null;
-    ['teacher-name-input','teacher-gender-input','teacher-dob-input','teacher-phone-input','teacher-email-input','teacher-alt-phone-input','teacher-subjects-input','teacher-classes-input','teacher-boards-input','teacher-qualification-input','teacher-experience-input','teacher-mode-input','teacher-areas-input','teacher-availability-input','teacher-joining-date-input','teacher-emergency-name-input','teacher-emergency-phone-input','teacher-address-input','teacher-notes-input'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+    ['teacher-name-input','teacher-phone-input','teacher-subjects-input','teacher-areas-input','teacher-availability-input'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
     document.getElementById('teacher-commission-input').value='50';
     document.getElementById('teacher-status-input').value='Active';
     document.getElementById('teacher-save-btn').textContent='+ Add Teacher';
@@ -3732,26 +3497,12 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     const t=teachersCache.find(x=>x.id===id); if(!t)return;
     editingTeacherId=id;
     document.getElementById('teacher-name-input').value=t.name||'';
-    document.getElementById('teacher-gender-input').value=t.gender||'';
-    document.getElementById('teacher-dob-input').value=t.dob||'';
     document.getElementById('teacher-phone-input').value=t.phone||'';
-    document.getElementById('teacher-email-input').value=t.email||'';
-    document.getElementById('teacher-alt-phone-input').value=t.altPhone||'';
     document.getElementById('teacher-subjects-input').value=t.subjects||'';
-    document.getElementById('teacher-classes-input').value=t.classes||'';
-    document.getElementById('teacher-boards-input').value=t.boards||'';
-    document.getElementById('teacher-qualification-input').value=t.qualification||'';
-    document.getElementById('teacher-experience-input').value=t.experience||'';
-    document.getElementById('teacher-mode-input').value=t.mode||'';
     document.getElementById('teacher-areas-input').value=t.areas||'';
     document.getElementById('teacher-availability-input').value=t.availability||'';
-    document.getElementById('teacher-joining-date-input').value=t.joiningDate||'';
-    document.getElementById('teacher-emergency-name-input').value=t.emergencyName||'';
-    document.getElementById('teacher-emergency-phone-input').value=t.emergencyPhone||'';
-    document.getElementById('teacher-address-input').value=t.address||'';
     document.getElementById('teacher-commission-input').value=Number(t.commissionPct||0);
     document.getElementById('teacher-status-input').value=t.status||'Active';
-    document.getElementById('teacher-notes-input').value=t.notes||'';
     document.getElementById('teacher-save-btn').textContent='Update Teacher';
     document.getElementById('teacher-cancel-edit-btn').style.display='inline-block';
     document.getElementById('teacher-management-panel').scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -3759,29 +3510,15 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
 
   async function saveTeacher(){
     const name=document.getElementById('teacher-name-input').value.trim();
-    const gender=document.getElementById('teacher-gender-input').value;
-    const dob=document.getElementById('teacher-dob-input').value;
     const phone=document.getElementById('teacher-phone-input').value.trim();
-    const email=document.getElementById('teacher-email-input').value.trim();
-    const altPhone=document.getElementById('teacher-alt-phone-input').value.trim();
     const subjects=document.getElementById('teacher-subjects-input').value.trim();
-    const classes=document.getElementById('teacher-classes-input').value.trim();
-    const boards=document.getElementById('teacher-boards-input').value.trim();
-    const qualification=document.getElementById('teacher-qualification-input').value.trim();
-    const experience=document.getElementById('teacher-experience-input').value.trim();
-    const mode=document.getElementById('teacher-mode-input').value;
     const areas=document.getElementById('teacher-areas-input').value.trim();
     const availability=document.getElementById('teacher-availability-input').value.trim();
-    const joiningDate=document.getElementById('teacher-joining-date-input').value;
-    const emergencyName=document.getElementById('teacher-emergency-name-input').value.trim();
-    const emergencyPhone=document.getElementById('teacher-emergency-phone-input').value.trim();
-    const address=document.getElementById('teacher-address-input').value.trim();
     const commissionPct=Math.min(100,Math.max(0,Number(document.getElementById('teacher-commission-input').value||0)));
     const status=document.getElementById('teacher-status-input').value;
-    const notes=document.getElementById('teacher-notes-input').value.trim();
     const msg=document.getElementById('teacher-form-msg');
     if(!name){msg.textContent='Teacher name is required.';msg.className='msg error';return;}
-    const payload={name,gender,dob,phone,email,altPhone,subjects,classes,boards,qualification,experience,mode,areas,availability,joiningDate,emergencyName,emergencyPhone,address,commissionPct,status,notes,updatedAt:serverTimestamp()};
+    const payload={name,phone,subjects,areas,availability,commissionPct,status,updatedAt:serverTimestamp()};
     try{
       if(editingTeacherId){
         await updateDoc(doc(db,'teachers',editingTeacherId),payload);
@@ -3800,18 +3537,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
 
   async function deleteTeacher(id){
     const t=teachersCache.find(x=>x.id===id); if(!t)return;
-    const assigned=admissionsCache.filter(a=>!a.archived && (String(a.homeTuition?.teacherId||'')===id || String(a.homeTuition?.teacherName||'').toLowerCase()===String(t.name||'').toLowerCase())).length;
-    if(assigned){
-      if(!confirm(`${t.name||'This teacher'} has ${assigned} active assignment${assigned===1?'':'s'}.
-
-Deactivate this teacher instead? They will remain saved and can be reactivated later.`))return;
-      try{await updateDoc(doc(db,'teachers',id),{status:'Inactive',updatedAt:serverTimestamp()});await loadTeachers();showToast('Teacher deactivated and kept safely in the database.');}
-      catch(err){showToast('Could not deactivate teacher: '+(err.message||'Unknown error'));}
-      return;
-    }
-    if(!confirm(`Delete teacher ${t.name||''}?
-
-This permanently removes the saved teacher profile.`))return;
+    if(!confirm(`Delete teacher ${t.name||''}? Existing Home Tuition assignments will keep their saved teacher details.`))return;
     try{await deleteDoc(doc(db,'teachers',id));if(editingTeacherId===id)resetTeacherForm();await loadTeachers();showToast('Teacher deleted.');}
     catch(err){showToast('Could not delete teacher: '+(err.message||'Unknown error'));}
   }
@@ -3828,10 +3554,9 @@ This permanently removes the saved teacher profile.`))return;
 
   document.getElementById('toggle-teacher-management-btn')?.addEventListener('click',async()=>{
     const panel=document.getElementById('teacher-management-panel'); if(!panel)return;
-    panel.scrollIntoView({behavior:'smooth',block:'start'});
-    try{await loadTeachers();}catch(e){}
+    const open=panel.style.display!=='none'; panel.style.display=open?'none':'block';
+    if(!open){try{await loadTeachers();}catch(e){}}
   });
-  document.getElementById('teacher-search-input')?.addEventListener('input',renderTeachers);
   document.getElementById('teacher-save-btn')?.addEventListener('click',saveTeacher);
   document.getElementById('teacher-refresh-btn')?.addEventListener('click',()=>loadTeachers());
   document.getElementById('teacher-cancel-edit-btn')?.addEventListener('click',resetTeacherForm);
@@ -3858,77 +3583,8 @@ This permanently removes the saved teacher profile.`))return;
     const fee=Number(document.getElementById('ht-monthly-fee').value||0); const pct=Math.min(100,Math.max(0,Number(document.getElementById('ht-commission-pct').value||50)));
     const commission=Math.round(fee*pct/100); const teacherFirst=fee-commission;
     const selectedTeacherId=document.getElementById('ht-teacher-select')?.value||''; const homeTuition={teacherId:selectedTeacherId,teacherName:document.getElementById('ht-teacher-name').value.trim(),teacherPhone:document.getElementById('ht-teacher-phone').value.trim(),subjects:document.getElementById('ht-subjects').value.trim(),schedule:document.getElementById('ht-schedule').value.trim(),startDate:document.getElementById('ht-start-date').value,assignmentStatus:document.getElementById('ht-assignment-status').value,monthlyFee:fee,commissionPct:pct,commissionAmount:commission,teacherFirstMonth:teacherFirst,teacherRecurring:fee,paymentMode:document.getElementById('ht-payment-mode').value,internalNotes:document.getElementById('ht-internal-notes').value.trim(),updatedAt:new Date().toISOString()};
-    try{
-      await updateDoc(doc(db,'admissions',a.id),{homeTuition,updatedAt:serverTimestamp()});
-      const assignmentRef=doc(db,'teacherAssignments',a.id);
-      await setDoc(assignmentRef,{
-        admissionId:a.id, applicationId:a.applicationId||'', studentName:a.studentName||'', className:a.className||'',
-        parentName:a.parentName||'', parentPhone:a.parentPhone||a.whatsapp||'', teacherId:selectedTeacherId,
-        teacherName:homeTuition.teacherName, teacherPhone:homeTuition.teacherPhone, subjects:homeTuition.subjects,
-        area:a.homeArea||a.area||a.locality||'',
-        schedule:homeTuition.schedule, startDate:homeTuition.startDate, assignmentStatus:homeTuition.assignmentStatus,
-        monthlyFee:fee, commissionPct:pct, commissionAmount:commission, teacherFirstMonth:teacherFirst,
-        teacherRecurring:fee, paymentMode:homeTuition.paymentMode, internalNotes:homeTuition.internalNotes,
-        updatedAt:serverTimestamp(), source:'admission-management'
-      },{merge:true});
-      Object.assign(a,{homeTuition});
-      const msg=document.getElementById('ht-msg');msg.textContent='Assignment saved securely. Teacher master + assignment record updated. Parent has not been contacted automatically.';msg.className='msg success show';
-      showToast('Home Tuition assignment saved.');
-      if(typeof loadTeachers==='function') await loadTeachers();
-      if(typeof loadTeacherAssignments==='function') await loadTeacherAssignments();
-    }catch(err){const msg=document.getElementById('ht-msg');msg.textContent='Could not save: '+(err.message||'Unknown error');msg.className='msg error show';}
+    try{await updateDoc(doc(db,'admissions',a.id),{homeTuition,updatedAt:serverTimestamp()});Object.assign(a,{homeTuition});const msg=document.getElementById('ht-msg');msg.textContent='Assignment saved securely. Parent has not been contacted automatically.';msg.className='msg success show';showToast('Home Tuition assignment saved.');}catch(err){const msg=document.getElementById('ht-msg');msg.textContent='Could not save: '+(err.message||'Unknown error');msg.className='msg error show';}
   }
-  async function loadTeacherAssignments(){
-    const box=document.getElementById('teacher-assignments-list'); if(!box)return;
-    box.innerHTML='<div style="font-size:12px;color:var(--muted);"><span class="spinner"></span> Loading assignments...</div>';
-    try{
-      const snap=await getDocs(collection(db,'teacherAssignments'));
-      const rows=[]; snap.forEach(d=>rows.push({id:d.id,...(d.data()||{})}));
-      rows.sort((a,b)=>String(b.startDate||'').localeCompare(String(a.startDate||'')));
-      if(!rows.length){box.innerHTML='<div style="font-size:12px;color:var(--muted);padding:14px 0;">No teacher assignments saved yet. Assign a teacher from a Home Tuition admission.</div>';return;}
-      box.innerHTML=rows.map(r=>{
-        const status=String(r.assignmentStatus||'Pending');
-        const badge=status==='Active'?'teacher-badge':(status==='Completed'?'teacher-badge inactive':'teacher-badge');
-        return `<div class="teacher-row" style="grid-template-columns:1.4fr 1.2fr .8fr .8fr auto;">\
-          <div class="teacher-row-main"><strong>${teacherSafeText(r.teacherName||'Unassigned')}</strong><small>${teacherSafeText(r.teacherPhone||'No teacher phone')} · ${teacherSafeText(r.subjects||'Subject not set')}<br>${teacherSafeText(r.schedule||'Schedule not set')} · Start ${teacherSafeText(r.startDate||'—')}</small></div>\
-          <div><strong>${teacherSafeText(r.studentName||'Student')}</strong><small style="display:block;color:var(--muted);">Class ${teacherSafeText(r.className||'—')} · ${teacherSafeText(r.applicationId||'')}</small></div>\
-          <div><span class="${badge}">${teacherSafeText(status)}</span></div>\
-          <div><small style="color:var(--muted);font-weight:700;">Monthly fee</small><strong>₹${Number(r.monthlyFee||0).toLocaleString('en-IN')}</strong></div>\
-          <div><button type="button" class="btn btn-secondary btn-small assignment-teacher-wa" data-id="${teacherSafeText(r.id)}">📲 Teacher WA</button></div>\
-        </div>`;
-      }).join('');
-      box.querySelectorAll('.assignment-teacher-wa').forEach(btn=>btn.addEventListener('click',()=>prepareTeacherWhatsApp(btn.dataset.id)));
-    }catch(err){
-      console.error('Teacher assignments load error:',err);
-      box.innerHTML=`<div class="msg error">Could not load teacher assignments: ${escapeHtml(err.message||'Unknown error')}</div>`;
-    }
-  }
-
-  async function prepareTeacherWhatsApp(assignmentId){
-    let r=null;
-    try{
-      const snap=await getDoc(doc(db,'teacherAssignments',assignmentId));
-      if(snap.exists()) r={id:snap.id,...(snap.data()||{})};
-    }catch(err){showToast('Could not load assignment: '+(err.message||'Unknown error'));return;}
-    if(!r?.teacherPhone){showToast('Teacher WhatsApp number is missing.');return;}
-    if(!r.teacherName){showToast('Teacher name is missing.');return;}
-    const phone=String(r.teacherPhone).replace(/\D/g,'');
-    if(phone.length<10){showToast('Teacher WhatsApp number is invalid.');return;}
-    const fullPhone=phone.length===10?'91'+phone:phone;
-    const text=`Hello ${r.teacherName},\n\nMaths Pathshala — Home Tuition Assignment\n\nStudent: ${r.studentName||'—'}\nClass: ${r.className||'—'}\nSubject: ${r.subjects||'—'}\nSchedule: ${r.schedule||'As discussed'}\n${r.startDate?'Start Date: '+r.startDate+'\n':''}Area: ${r.area||'As discussed'}\n\nParent: ${r.parentName||'—'}\nParent Contact: ${r.parentPhone||'—'}\n\nPlease coordinate with the parent regarding the first class and let Maths Pathshala know if there is any issue.\n\nRegards,\nMaths Pathshala`;
-    window.open(`https://wa.me/${fullPhone}?text=${encodeURIComponent(text)}`,'_blank','noopener,noreferrer');
-  }
-
-  function prepareTeacherWhatsAppFromCurrent(){
-    const a=currentAdmission(); if(!a)return;
-    const ht=a.homeTuition||{};
-    if(!ht.teacherPhone){showToast('Assign/save a teacher first.');return;}
-    const phone=String(ht.teacherPhone).replace(/\D/g,''); if(phone.length<10){showToast('Teacher WhatsApp number is invalid.');return;}
-    const fullPhone=phone.length===10?'91'+phone:phone;
-    const text=`Hello ${ht.teacherName||'Sir/Ma’am'},\n\nMaths Pathshala — Home Tuition Assignment\n\nStudent: ${a.studentName||'—'}\nClass: ${a.className||'—'}\nSubject: ${ht.subjects||a.homeSubjects||'—'}\nSchedule: ${ht.schedule||'As discussed'}\n${ht.startDate?'Start Date: '+ht.startDate+'\n':''}\nParent: ${a.parentName||'—'}\nParent Contact: ${a.parentPhone||a.whatsapp||'—'}\n\nPlease coordinate with the parent regarding the first class and inform Maths Pathshala if there is any issue.\n\nRegards,\nMaths Pathshala`;
-    window.open(`https://wa.me/${fullPhone}?text=${encodeURIComponent(text)}`,'_blank','noopener,noreferrer');
-  }
-
   function prepareParentWhatsApp(){
     const a=currentAdmission();if(!a)return; const ht=a.homeTuition||{}; const teacher=document.getElementById('ht-teacher-name').value.trim(); const subject=document.getElementById('ht-subjects').value.trim()||a.homeSubjects||'Required subject'; const schedule=document.getElementById('ht-schedule').value.trim()||[a.homeDays,a.homeTiming].filter(Boolean).join(' · ')||'As discussed'; const start=document.getElementById('ht-start-date').value; const phone=(a.whatsapp||a.parentPhone||'').replace(/\D/g,''); if(phone.length<10){showToast('Parent WhatsApp number is missing.');return;} if(!teacher){showToast('Assign a teacher first.');return;} const fullPhone=phone.length===10?'91'+phone:phone; const text=`Hello ${a.parentName||'Parent'},\n\nMaths Pathshala — Home Tuition\n\nStudent: ${a.studentName||'—'}\nClass: ${a.className||'—'}\nSubject: ${subject}\nTeacher: ${teacher}\nSchedule: ${schedule}\n${start?'Start Date: '+start+'\n':''}\nYour child's home tuition arrangement has been confirmed. Please feel free to contact us if you need any help.\n\nRegards,\nMaths Pathshala`; window.open(`https://wa.me/${fullPhone}?text=${encodeURIComponent(text)}`,'_blank','noopener,noreferrer');}
   function callParent(){const a=currentAdmission();if(!a)return;const phone=(a.parentPhone||a.whatsapp||'').replace(/\D/g,'');if(phone.length<10){showToast('Parent phone number is missing.');return;}window.location.href='tel:'+(phone.length===10?'91'+phone:phone);}
@@ -3938,25 +3594,15 @@ function closeAdmissionDetail(){const m=document.getElementById('admission-detai
     const section=document.getElementById('admissions-section'); if(!section)return;
     section.style.display='block'; section.scrollIntoView({behavior:'smooth',block:'start'});
     if(!admissionsLoaded) loadAdmissionsAdminList(); else renderAdmissions();
-    loadTeacherAssignments();
   }
   document.getElementById('admissions-nav-link')?.addEventListener('click',e=>{e.preventDefault();openAdmissions();});
   document.getElementById('close-admissions-btn')?.addEventListener('click',()=>{const s=document.getElementById('admissions-section');if(s)s.style.display='none';});
   document.getElementById('refresh-admissions-btn')?.addEventListener('click',loadAdmissionsAdminList);
   document.getElementById('admission-filter')?.addEventListener('change',renderAdmissions);
-  document.getElementById('admission-select-all-btn')?.addEventListener('click',()=>{
-    const checks=[...document.querySelectorAll('#admissions-list .admission-select')];
-    const allSelected=checks.length && checks.every(x=>x.checked);
-    checks.forEach(x=>x.checked=!allSelected);
-    updateAdmissionBulkControls();
-  });
-  document.getElementById('admission-delete-selected-btn')?.addEventListener('click',deleteSelectedAdmissions);
   document.getElementById('close-admission-modal')?.addEventListener('click',closeAdmissionDetail);
   document.getElementById('admission-detail-modal')?.addEventListener('click',e=>{if(e.target.id==='admission-detail-modal')closeAdmissionDetail();});
   document.getElementById('ht-save-btn')?.addEventListener('click',saveHomeTuitionAssignment);
-  document.getElementById('ht-teacher-whatsapp-btn')?.addEventListener('click',prepareTeacherWhatsAppFromCurrent);
   document.getElementById('ht-whatsapp-btn')?.addEventListener('click',prepareParentWhatsApp);
-  document.getElementById('refresh-teacher-assignments-btn')?.addEventListener('click',loadTeacherAssignments);
   document.getElementById('ht-call-btn')?.addEventListener('click',callParent);
   ['ht-monthly-fee','ht-commission-pct'].forEach(id=>document.getElementById(id)?.addEventListener('input',setHtFinancePreview));
 </script>
