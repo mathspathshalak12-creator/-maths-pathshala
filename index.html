@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Maths Pathshala — Home Tutor for Class 3–12 in Kanpur | Home Tuition &amp; Offline Coaching</title>
 <meta name="description" content="Find the right home tutor for your child. Maths Pathshala provides personalised home tuition for Class 3–8 (all subjects) and Class 9–12 (Mathematics, Physics, Chemistry) across CBSE, ICSE and UP Board in Kanpur, plus small offline coaching batches in Kalyanpur for Class 9–10 PCM and Class 11–12 Mathematics. Taught personally by Vipin Kumar.">
 <meta name="keywords" content="home tutor Kanpur, home tuition class 3 4 5 6 7 8, home tuition class 9 10 11 12, offline coaching Kalyanpur Kanpur, class 9 10 PCM coaching, class 11 12 Mathematics coaching">
@@ -2994,6 +2994,9 @@
     scoresList.innerHTML=latestScore?`<li><span>${latestScore.date||''} — ${latestScore.name||'Latest Test'}</span><span>${latestScore.score}/${latestScore.max} · ${scorePct(latestScore)}% · Rank ${recent.rank&&recent.size?'#'+recent.rank+'/'+recent.size:'—'}</span></li>`:'<li>No test scores yet</li>';
     if(scores.length)renderScoreChart(scores); else if(window.scoreChartInstance)window.scoreChartInstance.destroy();
     renderPhase1Performance(scores, recent);
+    // PHASE 3 — keep Monthly Progress Snapshot connected to the live student record.
+    // This render call was missing, so the panel stayed at its HTML defaults.
+    try{ mpP3Render(data, scores, log); }catch(e){ console.warn('Phase 3 monthly snapshot render failed', e); }
     const notesList=document.getElementById('dash-notes-list');
     const notes=Array.isArray(data.notes)?data.notes:[];
     notesList.innerHTML=notes.length?notes.map(n=>{
