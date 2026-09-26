@@ -370,7 +370,7 @@
 
     <div class="card" id="admissions-section">
       <div class="card-title-row">
-        <div><span class="section-kicker">Private admissions</span><h2>Admission Applications</h2><p>New parent enquiries from the Home Tuition / Offline Small Batch form appear here. Home Tuition enquiries can be matched with a teacher from this panel. The enquiry email also receives a WhatsApp reply link parameter for the EmailJS template.</p></div>
+        <div><span class="section-kicker">Private admissions</span><h2>Admission Applications</h2><p>New applications submitted through the premium admission form appear here. This section stays hidden until you open it.</p></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
           <button class="btn btn-secondary btn-small" id="refresh-admissions-btn" type="button">Refresh</button>
           <button class="btn btn-small" id="toggle-teacher-management-btn" type="button">👨‍🏫 Teacher Management</button>
@@ -396,7 +396,7 @@
           <div><label>Subjects</label><input id="teacher-subjects-input" placeholder="e.g. Mathematics, Science"></div>
           <div><label>Areas / Localities</label><input id="teacher-areas-input" placeholder="e.g. Kalyanpur, Kakadeo"></div>
           <div><label>Availability</label><input id="teacher-availability-input" placeholder="e.g. Mon–Sat, 4–8 PM"></div>
-          <div><label>Default First-Month Commission %</label><input id="teacher-commission-input" type="number" min="0" max="100" step="1" value="40"></div>
+          <div><label>Default First-Month Commission %</label><input id="teacher-commission-input" type="number" min="0" max="100" step="1" value="50"></div>
           <div><label>Status</label><select id="teacher-status-input"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
         </div>
         <div class="ht-actions" style="margin-top:12px;">
@@ -423,14 +423,14 @@
             <div><label>Start Date</label><input id="ht-start-date" type="date"></div>
             <div><label>Assignment Status</label><select id="ht-assignment-status"><option value="Pending">Pending</option><option value="Teacher Assigned">Teacher Assigned</option><option value="Active">Active</option><option value="Completed">Completed</option></select></div>
             <div><label>Monthly Tuition Fee — Parent</label><input id="ht-monthly-fee" type="number" min="0" step="100" placeholder="e.g. 6000"></div>
-            <div><label>First-Month Service Charge %</label><input id="ht-commission-pct" type="number" min="0" max="100" step="1" value="40"></div>
-            <div><label>Payment From Month 2</label><select id="ht-payment-mode"><option value="Direct to Teacher">Direct to Teacher</option><option value="Through Maths Pathshala">Through Maths Pathshala</option></select></div><div class="subcard" style="grid-column:1/-1;padding:12px 14px;"><strong style="font-size:12px;">Month 2 onwards:</strong> <span style="font-size:12px;color:var(--muted);">Commission is automatically <b>0%</b>. No recurring commission is calculated.</span></div>
+            <div><label>First-Month Service Charge %</label><input id="ht-commission-pct" type="number" min="0" max="100" step="1" value="50"></div>
+            <div><label>Payment From Month 2</label><select id="ht-payment-mode"><option value="Direct to Teacher">Direct to Teacher</option><option value="Through Maths Pathshala">Through Maths Pathshala</option></select></div>
             <div><label>Internal Notes</label><textarea id="ht-internal-notes" placeholder="Private notes about teacher matching, follow-up, etc."></textarea></div>
           </div>
           <div class="ht-finance">
             <div><span>Maths Pathshala — Month 1</span><strong id="ht-commission-amount">₹0</strong></div>
             <div><span>Teacher — Month 1</span><strong id="ht-teacher-first-month">₹0</strong></div>
-            <div><span>Teacher — Month 2+ (0% commission)</span><strong id="ht-teacher-recurring">₹0</strong></div>
+            <div><span>Teacher — Month 2+</span><strong id="ht-teacher-recurring">₹0</strong></div>
           </div>
           <div class="ht-actions">
             <button type="button" class="btn btn-small" id="ht-save-btn">Save Assignment</button>
@@ -3274,11 +3274,10 @@
   let admissionsCache = [];
   let admissionsLoaded = false;
   const admissionFields = [
-    ['studentName','Student'],['className','Class'],['subject','Subject'],['serviceMode','Service'],['programme','Programme'],
-    ['parentName','Parent / Guardian'],['parentPhone','Parent WhatsApp'],['parentEmail','Email'],
-    ['area','Area / Locality'],['teachingLocation','Teaching Location'],['preferredDays','Preferred Days'],['preferredTiming','Preferred Timing'],
-    ['schoolName','School Name'],['board','Board'],['previousClass','Previous / Last Completed Class'],['previousMarks','Previous Class Marks'],['academicContext','Academic Context'],['homeSubjects','Subject Required'],['homeArea','Area / Locality'],['homeDays','Preferred Days'],['homeTiming','Preferred Timing'],['teachingLocation','Teaching Location'],['homeRequirement','Additional Requirement'],
-    ['source','Source']
+    ['studentName','Student'],['dob','Date of Birth'],['className','Class'],['serviceMode','Service'],['programme','Programme'],['school','School'],['city','City / Area'],
+    ['parentName','Parent / Guardian'],['relationship','Relationship'],['parentPhone','Parent Mobile'],['whatsapp','WhatsApp'],['parentEmail','Email'],
+    ['preferredBatch','Preferred Batch'],['preferredTiming','Preferred Timing'],['homeSubjects','Home Tuition Subjects'],['homeArea','Home Tuition Area'],['homeDays','Home Tuition Days'],['homeTiming','Home Tuition Timing'],['homeRequirement','Home Tuition Requirement'],['goal','Academic Goal'],['previousResult','Previous Result'],
+    ['previousCoaching','Previous Coaching'],['concern','Academic Concern'],['source','How they heard about us']
   ];
   function admissionStatusOptions(current){
     return ['New','Contacted','Discussion / Demo','Selected','Enrolled','Closed'].map(x=>`<option value="${escapeHtml(x)}" ${x===current?'selected':''}>${escapeHtml(x)}</option>`).join('');
@@ -3350,6 +3349,16 @@
   function currentAdmission(){const id=document.getElementById('admission-detail-modal')?.dataset.admissionId;return id?admissionsCache.find(x=>x.id===id):null;}
   let teachersCache = [];
   let editingTeacherId = null;
+  let currentTeacherAssignment = null;
+
+  // SECURITY: all teacher assignment, fee, commission, payout and internal
+  // notes data is stored separately in an admin-only collection.
+  async function loadTeacherAssignment(admissionId){
+    if(!admissionId) return null;
+    const snap=await getDoc(doc(db,'teacherAssignments',admissionId));
+    currentTeacherAssignment=snap.exists()?{id:snap.id,...(snap.data()||{})}:null;
+    return currentTeacherAssignment;
+  }
 
   function teacherSafeText(value){ return escapeHtml(String(value ?? '').trim()); }
 
@@ -3474,28 +3483,98 @@
   document.getElementById('teacher-cancel-edit-btn')?.addEventListener('click',resetTeacherForm);
   document.getElementById('ht-teacher-select')?.addEventListener('change',e=>fillAssignmentFromTeacher(e.target.value));
 
-  function setHtFinancePreview(){const fee=Number(document.getElementById('ht-monthly-fee')?.value||0);const pct=Math.min(100,Math.max(0,Number(document.getElementById('ht-commission-pct')?.value||0)));const commission=Math.round(fee*pct/100);const teacher=fee-commission;document.getElementById('ht-commission-amount').textContent='₹'+commission.toLocaleString('en-IN');document.getElementById('ht-teacher-first-month').textContent='₹'+teacher.toLocaleString('en-IN');document.getElementById('ht-teacher-recurring').textContent='₹'+fee.toLocaleString('en-IN');}
-  function populateHomeTuitionPanel(a){
+  function setHtFinancePreview(){const fee=Number(document.getElementById('ht-monthly-fee')?.value||0);const pct=Math.min(100,Math.max(0,Number(document.getElementById('ht-commission-pct')?.value||50)));const commission=Math.round(fee*pct/100);const teacher=fee-commission;document.getElementById('ht-commission-amount').textContent='₹'+commission.toLocaleString('en-IN');document.getElementById('ht-teacher-first-month').textContent='₹'+teacher.toLocaleString('en-IN');document.getElementById('ht-teacher-recurring').textContent='₹'+fee.toLocaleString('en-IN');}
+  function populateHomeTuitionPanel(a, assignment=null){
     const panel=document.getElementById('home-tuition-internal'); if(!panel)return;
-    const isHome=String(a.serviceMode||'')==='Home Tuition'; panel.style.display=isHome?'block':'none'; if(!isHome)return;
-    const ht=a.homeTuition||{}; const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v??''};
-    set('ht-teacher-name',ht.teacherName||''); set('ht-teacher-phone',ht.teacherPhone||''); set('ht-subjects',ht.subjects||a.homeSubjects||''); set('ht-schedule',ht.schedule||[a.homeDays,a.homeTiming].filter(Boolean).join(' · ')); set('ht-start-date',ht.startDate||''); set('ht-assignment-status',ht.assignmentStatus||'Pending'); set('ht-monthly-fee',ht.monthlyFee??''); set('ht-commission-pct',ht.commissionPct??40); set('ht-payment-mode',ht.paymentMode||'Direct to Teacher'); set('ht-internal-notes',ht.internalNotes||''); populateTeacherSelect(ht.teacherId||''); setHtFinancePreview();
+    const isHome=String(a.serviceMode||'')==='Home Tuition';
+    panel.style.display=isHome?'block':'none'; if(!isHome)return;
+    const ht=assignment||{}; const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v??''};
+    set('ht-teacher-name',ht.teacherName||'');
+    set('ht-teacher-phone',ht.teacherPhone||'');
+    set('ht-subjects',ht.subjects||a.homeSubjects||'');
+    set('ht-schedule',ht.schedule||[a.homeDays,a.homeTiming].filter(Boolean).join(' · '));
+    set('ht-start-date',ht.startDate||'');
+    set('ht-assignment-status',ht.assignmentStatus||'Pending');
+    set('ht-monthly-fee',ht.monthlyFee??'');
+    set('ht-commission-pct',ht.commissionPct??50);
+    set('ht-payment-mode',ht.paymentMode||'Direct to Teacher');
+    set('ht-internal-notes',ht.internalNotes||'');
+    populateTeacherSelect(ht.teacherId||'');
+    setHtFinancePreview();
   }
-  function showAdmissionDetail(id){
+
+  async function showAdmissionDetail(id){
     const a=admissionsCache.find(x=>x.id===id); if(!a)return;
     const modal=document.getElementById('admission-detail-modal'); if(modal)modal.dataset.admissionId=id;
     const title=document.getElementById('admission-detail-title'); const grid=document.getElementById('admission-detail-grid');
     if(title)title.textContent=(a.studentName||'Admission Application')+' · '+(a.applicationId||'');
     if(grid)grid.innerHTML=admissionFields.map(([key,label])=>`<div class="admission-detail-row"><span>${escapeHtml(label)}</span><strong>${escapeHtml(a[key]||'—')}</strong></div>`).join('')+`<div class="admission-detail-row"><span>Status</span><strong>${escapeHtml(a.status||'New')}</strong></div>`;
-    populateHomeTuitionPanel(a); if(modal)modal.style.display='flex';
+    if(String(a.serviceMode||'')==='Home Tuition'){
+      try{
+        const assignment=await loadTeacherAssignment(a.id);
+        populateHomeTuitionPanel(a,assignment);
+      }catch(err){
+        currentTeacherAssignment=null;
+        populateHomeTuitionPanel(a,null);
+        showToast('Could not load internal assignment. Check admin Firestore rules.');
+      }
+    }else{
+      currentTeacherAssignment=null;
+      populateHomeTuitionPanel(a,null);
+    }
+    if(modal)modal.style.display='flex';
   }
+
   async function saveHomeTuitionAssignment(){
     const a=currentAdmission(); if(!a)return;
     if(String(a.serviceMode||'')!=='Home Tuition'){showToast('This application is not a Home Tuition enquiry.');return;}
-    const fee=Number(document.getElementById('ht-monthly-fee').value||0); const pct=Math.min(100,Math.max(0,Number(document.getElementById('ht-commission-pct').value||50)));
-    const commission=Math.round(fee*pct/100); const teacherFirst=fee-commission;
-    const selectedTeacherId=document.getElementById('ht-teacher-select')?.value||''; const selectedTeacher=teachersCache.find(t=>t.id===selectedTeacherId); const homeTuition={teacherId:selectedTeacherId,teacherName:document.getElementById('ht-teacher-name').value.trim(),teacherPhone:document.getElementById('ht-teacher-phone').value.trim(),subjects:document.getElementById('ht-subjects').value.trim(),schedule:document.getElementById('ht-schedule').value.trim(),startDate:document.getElementById('ht-start-date').value,assignmentStatus:document.getElementById('ht-assignment-status').value,monthlyFee:fee,defaultCommissionPct:selectedTeacher?Number(selectedTeacher.commissionPct||0):null,commissionPct:pct,commissionAmount:commission,teacherFirstMonth:teacherFirst,month2CommissionPct:0,month2CommissionAmount:0,teacherRecurring:fee,paymentMode:document.getElementById('ht-payment-mode').value,internalNotes:document.getElementById('ht-internal-notes').value.trim(),updatedAt:new Date().toISOString()};
-    try{await updateDoc(doc(db,'admissions',a.id),{homeTuition,updatedAt:serverTimestamp()});Object.assign(a,{homeTuition});const msg=document.getElementById('ht-msg');msg.textContent='Assignment saved securely. Parent has not been contacted automatically.';msg.className='msg success show';showToast('Home Tuition assignment saved.');}catch(err){const msg=document.getElementById('ht-msg');msg.textContent='Could not save: '+(err.message||'Unknown error');msg.className='msg error show';}
+    const fee=Math.max(0,Number(document.getElementById('ht-monthly-fee').value||0));
+    const pct=Math.min(100,Math.max(0,Number(document.getElementById('ht-commission-pct').value||0)));
+    const commission=Math.round(fee*pct/100);
+    const teacherFirst=fee-commission;
+    const selectedTeacherId=document.getElementById('ht-teacher-select')?.value||'';
+    const selectedTeacher=teachersCache.find(t=>t.id===selectedTeacherId);
+    const assignment={
+      admissionId:a.id,
+      applicationId:a.applicationId||'',
+      studentName:a.studentName||'',
+      className:a.className||'',
+      parentName:a.parentName||'',
+      parentPhone:a.parentPhone||a.whatsapp||'',
+      teacherId:selectedTeacherId,
+      teacherName:document.getElementById('ht-teacher-name').value.trim(),
+      teacherPhone:document.getElementById('ht-teacher-phone').value.trim(),
+      subjects:document.getElementById('ht-subjects').value.trim(),
+      schedule:document.getElementById('ht-schedule').value.trim(),
+      startDate:document.getElementById('ht-start-date').value,
+      assignmentStatus:document.getElementById('ht-assignment-status').value,
+      monthlyFee:fee,
+      commissionPct:pct,
+      commissionAmount:commission,
+      teacherFirstMonth:teacherFirst,
+      teacherRecurring:fee,
+      month2OnwardCommissionPct:0,
+      paymentMode:document.getElementById('ht-payment-mode').value,
+      internalNotes:document.getElementById('ht-internal-notes').value.trim(),
+      teacherDefaultCommissionPct:selectedTeacher?Number(selectedTeacher.commissionPct||0):null,
+      updatedAt:serverTimestamp(),
+      createdAt:currentTeacherAssignment?.createdAt||serverTimestamp()
+    };
+    try{
+      await setDoc(doc(db,'teacherAssignments',a.id),assignment,{merge:true});
+      // Remove any legacy sensitive payload from the parent admission record.
+      try{ await updateDoc(doc(db,'admissions',a.id),{homeTuition:deleteField(),updatedAt:serverTimestamp()}); }catch(cleanErr){ console.warn('Legacy homeTuition cleanup skipped:',cleanErr); }
+      currentTeacherAssignment={id:a.id,...assignment};
+      delete a.homeTuition;
+      const msg=document.getElementById('ht-msg');
+      msg.textContent='Assignment saved in the admin-only finance record. Parent has not been contacted automatically.';
+      msg.className='msg success show';
+      showToast('Home Tuition assignment saved securely.');
+    }catch(err){
+      const msg=document.getElementById('ht-msg');
+      msg.textContent='Could not save: '+(err.message||'Unknown error');
+      msg.className='msg error show';
+    }
   }
   function prepareParentWhatsApp(){
     const a=currentAdmission();if(!a)return; const ht=a.homeTuition||{}; const teacher=document.getElementById('ht-teacher-name').value.trim(); const subject=document.getElementById('ht-subjects').value.trim()||a.homeSubjects||'Required subject'; const schedule=document.getElementById('ht-schedule').value.trim()||[a.homeDays,a.homeTiming].filter(Boolean).join(' · ')||'As discussed'; const start=document.getElementById('ht-start-date').value; const phone=(a.whatsapp||a.parentPhone||'').replace(/\D/g,''); if(phone.length<10){showToast('Parent WhatsApp number is missing.');return;} if(!teacher){showToast('Assign a teacher first.');return;} const fullPhone=phone.length===10?'91'+phone:phone; const text=`Hello ${a.parentName||'Parent'},\n\nMaths Pathshala — Home Tuition\n\nStudent: ${a.studentName||'—'}\nClass: ${a.className||'—'}\nSubject: ${subject}\nTeacher: ${teacher}\nSchedule: ${schedule}\n${start?'Start Date: '+start+'\n':''}\nYour child's home tuition arrangement has been confirmed. Please feel free to contact us if you need any help.\n\nRegards,\nMaths Pathshala`; window.open(`https://wa.me/${fullPhone}?text=${encodeURIComponent(text)}`,'_blank','noopener,noreferrer');}
