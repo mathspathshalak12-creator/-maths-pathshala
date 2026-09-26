@@ -729,6 +729,10 @@
 @media(max-width:850px){.student-kpi-grid{grid-template-columns:1fr 1fr}.student-main-grid{grid-template-columns:1fr}.student-panel-wide{grid-column:auto}.student-hero-card{align-items:flex-start;flex-direction:column}.student-hero-copy{text-align:left}.student-lms-topbar{padding:0 17px}}
 @media(max-width:560px){.student-kpi-grid{grid-template-columns:1fr 1fr;padding:12px}.student-main-grid{padding:0 12px 12px}.student-hero-card{padding:21px}.student-panel{padding:16px}.performance-summary{grid-template-columns:1fr 1fr}.performance-summary>div:last-child{grid-column:span 2}.report-download-row{flex-direction:column}.report-download-row .btn{width:100%}}
 </style>
+<style id="mp-p3-selective-updates-style">
+#mp-p3-month-select{max-width:170px;}
+@media(max-width:650px){#mp-p3-month-select{max-width:145px;font-size:10px;padding:7px 8px!important;}.student-panel-head{gap:10px;}}
+</style>
 
 <style>
   .daily-attendance-table-wrap{max-height:420px;overflow:auto;border:1px solid #e5e9f0;border-radius:10px;}
@@ -1309,7 +1313,7 @@
           </div>
 
           <div class="student-panel student-panel-wide" id="panel-monthly-report">
-            <div class="student-panel-head"><div><span class="panel-kicker">PHASE 3 · MONTHLY REPORT</span><h3>Monthly Progress Snapshot</h3><p style="margin:4px 0 0;color:var(--muted);font-size:10.5px;">Live summary from attendance, tests and fee status.</p></div><span class="panel-pill">Live</span></div>
+            <div class="student-panel-head"><div><span class="panel-kicker">PHASE 3 · MONTHLY REPORT</span><h3>Monthly Progress Snapshot</h3><p style="margin:4px 0 0;color:var(--muted);font-size:10.5px;">Live summary from attendance, tests and fee status.</p></div><div style="display:flex;align-items:center;gap:8px;"><select id="mp-p3-month-select" aria-label="Select report month" style="border:1px solid #dfe5ee;background:#f7f9fc;color:#13284a;border-radius:10px;padding:8px 10px;font-weight:700;font-size:11px;outline:none;"><option value="">Current month</option></select><span class="panel-pill">Live</span></div></div>
             <div class="mp-p3-report-grid"><div class="mp-p3-report-stat"><span>Attendance</span><strong id="mp-p3-report-attendance">—</strong></div><div class="mp-p3-report-stat"><span>Test Average</span><strong id="mp-p3-report-average">—</strong></div><div class="mp-p3-report-stat"><span>Best Score</span><strong id="mp-p3-report-best">—</strong></div><div class="mp-p3-report-stat"><span>Tests</span><strong id="mp-p3-report-tests">0</strong></div></div>
             <div class="detail-list" style="margin-top:12px;"><div><span>Focus area</span><strong id="mp-p3-report-focus">Keep building consistency</strong></div><div><span>Fee status</span><strong id="mp-p3-report-fee">—</strong></div><div><span>Report month</span><strong id="mp-p3-report-month">—</strong></div></div>
             <div style="margin-top:10px;font-size:10px;color:var(--muted);">Monthly report download is managed by Admin. Your dashboard always shows the latest live snapshot.</div>
@@ -2942,11 +2946,12 @@
     const feeBadge=document.getElementById('dash-fee-badge'); feeBadge.textContent=data.feeStatus||'Due'; feeBadge.className='dash-fee-badge '+(data.feeStatus==='Paid'?'dash-fee-paid':'dash-fee-due');
     document.getElementById('dash-admission-date').textContent=data.admissionDate?new Date(data.admissionDate+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'Not set yet';
     const monthlyFeeList=document.getElementById('dash-monthly-fee-list'); monthlyFeeList.innerHTML=''; const mf=Array.isArray(data.monthlyFees)?data.monthlyFees.slice().sort((a,b)=>(b.monthKey||'').localeCompare(a.monthKey||'')):[]; monthlyFeeList.innerHTML=mf.length?mf.slice(0,6).map(m=>`<li><span>${dashEscapeHtml(m.monthLabel||monthLabel(m.monthKey))}${m.status==='Paid'&&m.paymentDate?`<small style="display:block;font-size:10px;color:#B9C2D6;margin-top:2px;">Paid on ${dashEscapeHtml(m.paymentDate)}</small>`:''}</span><span class="${m.status==='Paid'?'att-present':'att-absent'}">${dashEscapeHtml(m.status)}</span></li>`).join(''):'<li style="color:#B9C2D6">No monthly records yet</li>';
-    document.getElementById('dash-batch-value').textContent=data.batchTiming||'Not assigned yet'; document.getElementById('dash-next-test').textContent=data.nextTest||'None scheduled';
-    if(data.nextTest && auth.currentUser){
-      const signature=auth.currentUser.email.toLowerCase()+'|'+data.nextTest;
+    const syncedNextTest=mpP3NextTest(data);
+    document.getElementById('dash-batch-value').textContent=data.batchTiming||'Not assigned yet'; document.getElementById('dash-next-test').textContent=syncedNextTest.raw||'None scheduled';
+    if(syncedNextTest.raw && auth.currentUser){
+      const signature=auth.currentUser.email.toLowerCase()+'|'+syncedNextTest.raw;
       if(!popupAlreadyShown('test', signature)){
-        document.getElementById('test-popup-title').textContent=data.nextTest;
+        document.getElementById('test-popup-title').textContent=syncedNextTest.raw;
         // Mark before showing so the 10-second dashboard auto-refresh never reopens it.
         markPopupShown('test', signature);
         document.getElementById('test-popup').classList.add('show');
@@ -2996,7 +3001,11 @@
     renderPhase1Performance(scores, recent);
     // PHASE 3 — keep Monthly Progress Snapshot connected to the live student record.
     // This render call was missing, so the panel stayed at its HTML defaults.
-    try{ mpP3Render(data, scores, log); }catch(e){ console.warn('Phase 3 monthly snapshot render failed', e); }
+    try{
+      const today=new Date(),currentMonthKey=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+      mpP3BindMonthSelect(data,scores,log,currentMonthKey);
+      mpP3Render(data,scores,log,currentMonthKey);
+    }catch(e){ console.warn('Phase 3 monthly snapshot render failed', e); }
     const notesList=document.getElementById('dash-notes-list');
     const notes=Array.isArray(data.notes)?data.notes:[];
     notesList.innerHTML=notes.length?notes.map(n=>{
@@ -3108,16 +3117,78 @@
   // =========================
   function mpP3MonthKey(v){const d=parsePortalDate(v);return d?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`:'';}
   function mpP3MonthLabel(k){if(!/^\d{4}-\d{2}$/.test(String(k||'')))return 'Current month';const [y,m]=k.split('-').map(Number);return new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});}
-  function mpP3Render(data,scores,attendance){
+  function mpP3NextTest(data){
+    const list=Array.isArray(data?.upcomingTests)?data.upcomingTests.slice():[];
+    const now=new Date(); now.setHours(0,0,0,0);
+    const upcoming=list.map(t=>({test:t,date:parsePortalDate(t?.date)})).filter(x=>x.date&&!isNaN(x.date.getTime())&&x.date>=now).sort((a,b)=>a.date-b.date);
+    if(upcoming.length){
+      const t=upcoming[0].test,d=upcoming[0].date;
+      const dateLabel=d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+      const parts=[t?.title||'Upcoming Test',dateLabel,t?.time].filter(Boolean);
+      return {raw:parts.join(' · '),test:t,date:d};
+    }
+    return {raw:(!Array.isArray(data?.upcomingTests) && data?.nextTest)?String(data.nextTest):'',test:null,date:null};
+  }
+  function mpP3MonthOptions(scores,attendance){
+    const keys=new Set();
+    const now=new Date();
+    const current=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+    keys.add(current);
+    (Array.isArray(scores)?scores:[]).forEach(x=>{const k=mpP3MonthKey(x.date);if(k)keys.add(k);});
+    (Array.isArray(attendance)?attendance:[]).forEach(x=>{const k=mpP3MonthKey(x.date);if(k)keys.add(k);});
+    // Keep every month between the oldest available record and the current month selectable.
+    const sorted=[...keys].sort();
+    const oldest=sorted[0]||current;
+    const [oy,om]=oldest.split('-').map(Number),[cy,cm]=current.split('-').map(Number);
+    const all=[]; let y=oy,m=om;
+    while(y<cy || (y===cy&&m<=cm)){
+      all.push(`${y}-${String(m).padStart(2,'0')}`);
+      m++; if(m===13){m=1;y++;}
+    }
+    return all.reverse();
+  }
+  function mpP3BindMonthSelect(data,scores,attendance,currentKey){
+    const select=document.getElementById('mp-p3-month-select'); if(!select) return;
+    const options=mpP3MonthOptions(scores,attendance);
+    const selected=options.includes(currentKey)?currentKey:(options[0]||currentKey);
+    select.innerHTML=options.map(k=>`<option value="${k}">${mpP3MonthLabel(k)}</option>`).join('');
+    select.value=selected;
+    window.mpP3SnapshotState={data,scores,attendance};
+    if(select.dataset.bound!=='1'){
+      select.dataset.bound='1';
+      select.addEventListener('change',()=>{
+        const state=window.mpP3SnapshotState;
+        if(state) mpP3Render(state.data,state.scores,state.attendance,select.value);
+      });
+    }
+  }
+  function mpP3Render(data,scores,attendance,selectedKey){
     const top=document.getElementById('mp-p3-top');if(top)top.style.display='grid';const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v||'—';};
-    set('mp-p3-profile-class',data.class?`Class ${data.class}`:'—');set('mp-p3-profile-batch',data.batchName||'Not assigned');set('mp-p3-profile-service',data.serviceMode||'—');set('mp-p3-profile-timing',data.batchTiming||'Not assigned');set('mp-p3-profile-joined',data.admissionDate?new Date(data.admissionDate+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—');set('mp-p3-profile-fee',data.feeStatus||'Due');set('mp-p3-profile-test',data.nextTest||'None scheduled');set('mp-p3-profile-status',data.studentStatus||'Active');
+    const nextTest=mpP3NextTest(data);
+    set('mp-p3-profile-class',data.class?`Class ${data.class}`:'—');set('mp-p3-profile-batch',data.batchName||'Not assigned');set('mp-p3-profile-service',data.serviceMode||'—');set('mp-p3-profile-timing',data.batchTiming||'Not assigned');set('mp-p3-profile-joined',data.admissionDate?new Date(data.admissionDate+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—');set('mp-p3-profile-fee',data.feeStatus||'Due');set('mp-p3-profile-test',nextTest.raw||'None scheduled');set('mp-p3-profile-status',data.studentStatus||'Active');
     const notices=Array.isArray(data?.phase3?.notifications)?data.phase3.notifications.slice(0,6):[];const box=document.getElementById('mp-p3-notifications');if(box)box.innerHTML=notices.length?notices.map(n=>`<div class="mp-p3-notification"><div class="mp-p3-notification-top"><strong>${dashEscapeHtml(n.title||'Update')}</strong><span class="mp-p3-type">${dashEscapeHtml(n.type||'Update')}</span></div><p>${dashEscapeHtml(n.message||'')}</p><small>${n.createdAt?new Date(n.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}):''}</small></div>`).join(''):'<div class="mp-p3-empty">No new updates right now.</div>';
     const comm=data?.phase3?.communication||{};set('mp-p3-student-comm',comm.status&&comm.status!=='Not Contacted'?`${comm.status}${comm.updatedAt?' · '+new Date(comm.updatedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}):''}`:'No recent update');
-    const now=new Date(),key=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`,ma=(Array.isArray(attendance)?attendance:[]).filter(e=>mpP3MonthKey(e.date)===key),counted=ma.filter(e=>e.status==='Present'||e.status==='Absent'),pct=counted.length?Math.round(counted.filter(e=>e.status==='Present').length/counted.length*100):0,ms=(Array.isArray(scores)?scores:[]).filter(x=>mpP3MonthKey(x.date)===key),avg=ms.length?Math.round(ms.reduce((a,x)=>a+scorePct(x),0)/ms.length):0,best=ms.length?Math.max(...ms.map(scorePct)):0;
+    const now=new Date(),currentKey=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`,key=selectedKey||currentKey,ma=(Array.isArray(attendance)?attendance:[]).filter(e=>mpP3MonthKey(e.date)===key),counted=ma.filter(e=>e.status==='Present'||e.status==='Absent'),pct=counted.length?Math.round(counted.filter(e=>e.status==='Present').length/counted.length*100):0,ms=(Array.isArray(scores)?scores:[]).filter(x=>mpP3MonthKey(x.date)===key),avg=ms.length?Math.round(ms.reduce((a,x)=>a+scorePct(x),0)/ms.length):0,best=ms.length?Math.max(...ms.map(scorePct)):0;
     set('mp-p3-report-attendance',counted.length?pct+'%':'—');set('mp-p3-report-average',ms.length?avg+'%':'—');set('mp-p3-report-best',ms.length?best+'%':'—');set('mp-p3-report-tests',String(ms.length));set('mp-p3-report-fee',data.feeStatus||'Due');set('mp-p3-report-month',mpP3MonthLabel(key));
     const tm={};ms.forEach(x=>{const t=String(x.topic||'').trim();if(t)(tm[t]??=[]).push(scorePct(x));});const focus=Object.entries(tm).map(([t,v])=>({t,a:Math.round(v.reduce((a,b)=>a+b,0)/v.length)})).sort((a,b)=>a.a-b.a)[0];set('mp-p3-report-focus',focus?`${focus.t} · ${focus.a}%`:(pct<75?'Improve attendance consistency':ms.length?'Keep strengthening your test performance':'Build a regular practice routine'));
+    const select=document.getElementById('mp-p3-month-select');if(select&&select.value!==key&&[...select.options].some(o=>o.value===key))select.value=key;
   }
-  function mpP3Smart(data,attendance){const items=[],now=new Date(),key=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`,m=(Array.isArray(attendance)?attendance:[]).filter(e=>mpP3MonthKey(e.date)===key&&(e.status==='Present'||e.status==='Absent')),pct=m.length?Math.round(m.filter(e=>e.status==='Present').length/m.length*100):100;if(data.feeStatus==='Due')items.push({title:'Fee reminder',message:'Your current fee status is marked as Due. Please contact Maths Pathshala for payment details.',type:'Reminder'});if(data.nextTest)items.push({title:'Upcoming test',message:`Keep your revision ready for: ${data.nextTest}`,type:'Reminder'});if(m.length&&pct<75)items.push({title:'Attendance focus',message:`Your attendance is ${pct}% this month. Try to maintain regular class attendance.`,type:'Important'});return items;}
+  function mpP3Smart(data,attendance,homeworkItems){
+    const items=[],nextTest=mpP3NextTest(data),now=new Date(),key=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`,m=(Array.isArray(attendance)?attendance:[]).filter(e=>mpP3MonthKey(e.date)===key&&(e.status==='Present'||e.status==='Absent')),pct=m.length?Math.round(m.filter(e=>e.status==='Present').length/m.length*100):100;
+    if(nextTest.raw)items.push({title:'Upcoming test',message:`${nextTest.raw}${nextTest.test?.topic?' · Focus: '+nextTest.test.topic:''}`,type:'Test'});
+    const hw=Array.isArray(homeworkItems)?homeworkItems.filter(h=>{const n=mpP2DayDiff(h.dueDate);return !h.dueDate||n===null||n>=0;}).slice(0,3):[];
+    hw.forEach(h=>items.push({title:'Homework',message:`${h.title||'New homework'}${h.dueDate?' · Due '+h.dueDate:''}`,type:'Homework'}));
+    if(data.feeStatus==='Due')items.push({title:'Fee reminder',message:'Your current fee status is marked as Due. Please contact Maths Pathshala for payment details.',type:'Reminder'});
+    if(m.length&&pct<75)items.push({title:'Attendance focus',message:`Your attendance is ${pct}% this month. Try to maintain regular class attendance.`,type:'Important'});
+    return items.slice(0,6);
+  }
+  function renderMpP3SmartNotifications(data,attendance,homeworkItems){
+    const box=document.getElementById('mp-p3-notifications');if(!box)return;
+    const adminItems=Array.isArray(data?.phase3?.notifications)?data.phase3.notifications.slice(0,4):[];
+    const smartItems=mpP3Smart(data,attendance,homeworkItems);
+    const items=[...smartItems,...adminItems].slice(0,6);
+    box.innerHTML=items.length?items.map(n=>`<div class="mp-p3-notification"><div class="mp-p3-notification-top"><strong>${dashEscapeHtml(n.title||'Update')}</strong><span class="mp-p3-type">${dashEscapeHtml(n.type||'Update')}</span></div><p>${dashEscapeHtml(n.message||'')}</p><small>${n.createdAt?new Date(n.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}):''}</small></div>`).join(''):'<div class="mp-p3-empty">No new updates right now.</div>';
+  }
 
   // PHASE 2 — LEARNING HUB
   // =========================
@@ -3197,6 +3268,7 @@
         homeworkItems=hs.docs.map(d=>d.data()).filter(matchesStudentTarget).sort((a,b)=>(b.createdAt?.toMillis?.()||0)-(a.createdAt?.toMillis?.()||0)).slice(0,8);
       }catch(e){ console.warn('Phase 2 homework snapshot unavailable',e); }
       renderPhase2LearningHub(data,homeworkItems);
+      try{ renderMpP3SmartNotifications(data,normalizeStudentAttendanceLog(data.attendance?.log),homeworkItems); }catch(e){ console.warn('Smart notification refresh failed',e); }
     }catch(err){console.warn('Phase 2 learning hub unavailable',err);}
   }
   window.mpRefreshPhase2LearningHub=refreshPhase2LearningHub;
