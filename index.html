@@ -900,78 +900,6 @@
   body.student-logged-in #student-dashboard { display:block !important; visibility:visible !important; opacity:1 !important; }
 </style>
 
-<style id="student-dashboard-premium-ui">
-  /* Premium Student Dashboard UI — visual layer only */
-  #student-dashboard{background:linear-gradient(180deg,#071a35 0%,#0b2448 48%,#f5f7fb 48%,#f5f7fb 100%);padding:24px 0 42px;}
-  .student-lms-shell{max-width:1180px;margin:0 auto;position:relative;}
-  .student-lms-topbar{background:rgba(8,27,55,.82)!important;border:1px solid rgba(255,255,255,.09)!important;box-shadow:0 18px 50px rgba(2,12,28,.22)!important;backdrop-filter:blur(16px);border-radius:22px!important;padding:14px 18px!important;}
-  .student-brand-mark{width:42px!important;height:42px!important;border-radius:13px!important;background:linear-gradient(135deg,#f5a623,#ffc95c)!important;color:#071a35!important;box-shadow:0 8px 24px rgba(245,166,35,.25);}
-  .student-brand-lockup strong{font-size:15px!important;letter-spacing:-.01em;}
-  .student-brand-lockup span{opacity:.72;}
-  .student-hero-card{margin-top:16px!important;border:1px solid rgba(255,255,255,.10)!important;border-radius:26px!important;background:radial-gradient(circle at 85% 10%,rgba(245,166,35,.20),transparent 32%),linear-gradient(135deg,#102f59,#071a35)!important;box-shadow:0 24px 70px rgba(2,12,28,.28)!important;overflow:hidden!important;position:relative;}
-  .student-hero-card:after{content:'∑  π  √  ∆';position:absolute;right:28px;bottom:-18px;font-size:54px;font-weight:900;letter-spacing:15px;color:rgba(255,255,255,.035);transform:rotate(-7deg);pointer-events:none;}
-  .student-identity,.student-hero-copy{position:relative;z-index:1;}
-  .dash-avatar{box-shadow:0 10px 30px rgba(0,0,0,.18)!important;border:2px solid rgba(255,255,255,.18)!important;}
-  .student-kpi-grid{gap:14px!important;margin:18px 0!important;}
-  .student-kpi{border:1px solid #e7ebf2!important;background:rgba(255,255,255,.94)!important;border-radius:18px!important;box-shadow:0 12px 32px rgba(11,30,61,.07)!important;padding:18px!important;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease!important;}
-  .student-kpi:hover{transform:translateY(-3px);box-shadow:0 18px 42px rgba(11,30,61,.11)!important;border-color:rgba(245,166,35,.45)!important;}
-  .student-kpi strong{font-size:28px!important;letter-spacing:-.04em;}
-  .student-main-grid{gap:16px!important;}
-  .student-panel{border:1px solid #e7ebf2!important;background:rgba(255,255,255,.96)!important;border-radius:20px!important;box-shadow:0 12px 36px rgba(11,30,61,.065)!important;overflow:hidden;}
-  .student-panel-head{padding-bottom:12px!important;border-bottom:1px solid #edf0f5!important;margin-bottom:15px!important;}
-  .panel-kicker{color:#b27613!important;letter-spacing:.12em!important;font-size:10px!important;}
-  .student-panel h3{font-size:20px!important;letter-spacing:-.025em!important;color:#10233f!important;}
-  .panel-pill{background:#fff6df!important;color:#9b650f!important;border:1px solid #f5dfaa!important;}
-  .detail-list>div{padding:11px 0!important;}
-  .rank-card{background:linear-gradient(135deg,#0b2448,#123c70)!important;border-radius:16px!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)!important;}
-  .rank-medal{background:rgba(245,166,35,.16)!important;color:#ffc95c!important;border:1px solid rgba(245,166,35,.22)!important;}
-  .streak-highlight{border:1px solid #f2dfb0!important;background:#fff9ea!important;color:#80570e!important;border-radius:12px!important;}
-  .att-progress-track{height:10px!important;background:#e9edf3!important;box-shadow:none!important;}
-  .monthly-attendance-list,.payment-history-list{border-top:0!important;}
-  .daily-attendance-table-wrap{border:1px solid #edf0f5!important;border-radius:14px!important;overflow:hidden;}
-  .daily-attendance-table th{background:#f7f9fc!important;color:#52627a!important;}
-  .daily-attendance-table td{border-color:#edf0f5!important;}
-  .dash-notes-list li{padding:12px 0!important;border-bottom:1px solid #edf0f5!important;}
-  .dash-notes-list li:last-child{border-bottom:0!important;}
-  .dash-notes-list a{color:#18385f!important;border-color:#dce3ed!important;background:#f7f9fc!important;border-radius:8px!important;}
-  .dash-notes-list a:hover{background:#102f59!important;color:#fff!important;}
-  .student-learning-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
-  .learning-tile{display:flex;align-items:center;gap:13px;padding:15px;border:1px solid #e7ebf2;border-radius:15px;background:linear-gradient(180deg,#fff,#fafbfd);text-decoration:none;color:#10233f;transition:.22s ease;}
-  .learning-tile:hover{transform:translateY(-2px);border-color:#f0cc83;box-shadow:0 10px 24px rgba(11,30,61,.07);}
-  .learning-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#fff5dc;font-size:20px;flex:0 0 auto;}
-  .learning-tile strong{display:block;font-size:14px;margin-bottom:3px;}
-  .learning-tile span{font-size:11px;color:#7b8798;}
-  .student-latest-video{background:linear-gradient(135deg,#081d3a,#103761)!important;color:#fff!important;}
-  .student-latest-video .student-panel-head{border-color:rgba(255,255,255,.11)!important;}
-  .student-latest-video h3,.student-latest-video .panel-kicker{color:#fff!important;}
-  .latest-video-card{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(260px,.85fr);gap:18px;align-items:center;}
-  .latest-video-frame{position:relative;aspect-ratio:16/9;border-radius:15px;overflow:hidden;background:#020b18;box-shadow:0 16px 38px rgba(0,0,0,.25);}
-  .latest-video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
-  .latest-video-copy .video-label{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#ffc95c;}
-  .latest-video-copy h4{font-size:22px;line-height:1.2;margin:7px 0;color:#fff;}
-  .latest-video-copy p{font-size:13px;line-height:1.65;color:#c9d4e4;margin:0 0 14px;}
-  .latest-video-copy a{display:inline-flex;align-items:center;gap:7px;padding:10px 14px;border-radius:10px;background:#f5a623;color:#10233f;font-weight:800;text-decoration:none;}
-  .student-empty-mini{padding:18px;border:1px dashed rgba(255,255,255,.18);border-radius:13px;color:#b8c6d8;font-size:13px;}
-  .student-section-divider{grid-column:1/-1;margin:2px 0 -2px;padding:5px 2px 0;color:#53657e;font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;}
-  @media(max-width:760px){
-    #student-dashboard{padding:12px 0 28px;background:linear-gradient(180deg,#071a35 0%,#0b2448 42%,#f5f7fb 42%,#f5f7fb 100%);}
-    .student-lms-topbar{border-radius:16px!important;}
-    .student-hero-card{border-radius:20px!important;}
-    .student-hero-copy{display:none;}
-    .student-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
-    .student-kpi strong{font-size:23px!important;}
-    .student-main-grid{grid-template-columns:1fr!important;}
-    .student-panel-wide{grid-column:auto!important;}
-    .student-learning-grid{grid-template-columns:1fr;}
-    .latest-video-card{grid-template-columns:1fr;}
-    .latest-video-copy h4{font-size:19px;}
-  }
-  @media(max-width:430px){
-    .student-kpi{padding:14px!important;}
-    .student-kpi span{font-size:10px!important;}
-    .student-kpi small{font-size:9px!important;}
-  }
-</style>
 <style id="youtube-latest-two-style">
   .yt-section{background:linear-gradient(180deg,#f8f6ef 0%,#fff 100%);}
   .yt-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin-top:24px;}
@@ -986,6 +914,13 @@
   @media(max-width:700px){.yt-grid{grid-template-columns:1fr;gap:16px;}.yt-title{font-size:16px;}}
 </style>
 
+
+<style id="mp-student-v2">
+.mp-student-modern-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important}.mp-student-modern-grid .student-panel-wide{grid-column:1/-1}
+.mp-important-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.mp-important-card,.mp-learning-card{display:flex;align-items:center;gap:14px;padding:18px;border:1px solid #e8edf4;border-radius:18px;background:linear-gradient(145deg,#fff,#f8fbff);cursor:pointer;transition:.22s}.mp-important-card:hover,.mp-learning-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(11,30,61,.09)}.mp-card-icon,.mp-learning-icon{width:44px;height:44px;display:grid;place-items:center;border-radius:14px;background:#eef4ff;font-size:21px;flex:0 0 44px}.mp-important-card span,.mp-learning-card span{display:block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#8792a4}.mp-important-card strong,.mp-learning-card strong{display:block;margin-top:4px;font-size:15px;color:#0b1e3d}.mp-important-card small,.mp-learning-card small{display:block;margin-top:4px;color:#6f7d91;font-size:11px}.mp-att-calendar-head{display:flex;justify-content:space-between;align-items:center;margin:10px 0 14px}.mp-att-calendar-head button,.mp-today-btn{border:1px solid #e0e6ef;background:#fff;border-radius:9px;padding:6px 11px;cursor:pointer;font-weight:800;color:#0b1e3d}.mp-calendar-wrap{border:1px solid #e5e9f0;border-radius:14px;overflow:hidden}.mp-calendar-week,.mp-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}.mp-calendar-week{background:#f6f8fb}.mp-calendar-week span{padding:9px 4px;text-align:center;font-size:10px;font-weight:800;color:#748196}.mp-calendar-grid{background:#fff}.mp-day{min-height:70px;padding:8px;border-top:1px solid #edf0f5;border-right:1px solid #edf0f5;position:relative}.mp-day:nth-child(7n){border-right:0}.mp-day-num{font-size:11px;font-weight:800;color:#68778d}.mp-day-dot{position:absolute;left:8px;bottom:8px;width:calc(100% - 16px);height:5px;border-radius:10px;background:#e8edf3}.mp-day.present .mp-day-dot{background:#43a86b}.mp-day.absent .mp-day-dot{background:#d9534f}.mp-day.noclass .mp-day-dot{background:#aab4c2}.mp-day.today{box-shadow:inset 0 0 0 2px #f5a623}.mp-att-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:10px;color:#65748a}.mp-att-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;background:#aab4c2}.mp-att-legend i.present{background:#43a86b}.mp-att-legend i.absent{background:#d9534f}.mp-att-legend i.noclass{background:#aab4c2}.mp-learning-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.mp-video-card{grid-column:1/-1}.mp-video-thumb{width:110px;height:62px;border-radius:12px;background:#0b1e3d center/cover no-repeat;display:grid;place-items:center;color:#fff;font-size:22px;flex:0 0 110px;cursor:pointer}.mp-subhead{display:flex;justify-content:space-between;align-items:center;margin:18px 0 8px;font-size:12px;color:#253550}.mp-subhead span{color:#8792a4;font-size:10px}.mp-notes-list-wrap{border-top:1px solid #edf0f5;margin-top:16px;padding-top:2px}.dash-notes-list li{border-bottom:1px solid #edf0f5;padding:10px 0}.dash-notes-list li em{font-size:11px;color:#9aa4b3}.dash-notes-list a{color:#0b1e3d!important;background:#f4f7fb;border-color:#dfe5ee!important}.dash-notes-list a:hover{background:#0b1e3d!important;color:#fff!important}.mp-learning-card{min-height:92px}
+@media(max-width:900px){.mp-student-modern-grid{grid-template-columns:1fr!important}.mp-important-grid{grid-template-columns:1fr}.mp-learning-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.mp-important-grid{grid-template-columns:1fr}.performance-summary{grid-template-columns:1fr 1fr!important}.student-panel-head{gap:8px;align-items:flex-start}.mp-calendar-wrap{overflow-x:auto}.mp-calendar-week,.mp-calendar-grid{min-width:560px}#student-dashboard{padding-top:10px}.student-lms-shell{border-radius:18px}.student-hero-card{padding:18px!important}.student-kpi-grid{grid-template-columns:repeat(2,1fr)!important;gap:9px!important}.student-kpi{padding:13px!important}.student-kpi strong{font-size:20px!important}.mp-learning-grid{grid-template-columns:1fr}.mp-video-card{grid-column:auto}.mp-day{min-height:54px;padding:6px}.mp-day-dot{left:6px;bottom:6px;width:calc(100% - 12px)}.mp-calendar-week span{font-size:9px}.mp-video-thumb{width:96px;flex-basis:96px;height:58px}.mp-important-card,.mp-learning-card{padding:14px}.mp-important-card strong,.mp-learning-card strong{font-size:13px}}
+</style>
 </head>
 <body>
 
@@ -1027,81 +962,71 @@
           <div class="student-kpi kpi-clickable" data-scroll-target="panel-attendance"><span>This month's attendance</span><strong id="dash-kpi-attendance">—</strong><small id="dash-kpi-attendance-sub">Monthly view below</small></div>
           <div class="student-kpi kpi-clickable" data-scroll-target="panel-attendance"><span>Current streak</span><strong id="dash-kpi-streak">—</strong><small>Consecutive present classes</small></div>
           <div class="student-kpi kpi-clickable" data-scroll-target="panel-position"><span>Recent test rank</span><strong id="dash-kpi-rank">—</strong><small id="dash-kpi-rank-sub">Based on the latest test</small></div>
-          <div class="student-kpi kpi-clickable" data-scroll-target="panel-performance"><span>Latest test score</span><strong id="dash-kpi-latest-score">—</strong><small>Score in the most recent test</small></div>
+          <div class="student-kpi kpi-clickable" data-scroll-target="panel-performance"><span>Latest test score</span><strong id="dash-kpi-latest-score-top">—</strong><small>Score in the most recent test</small></div>
         </div>
 
-        <div class="student-main-grid">
-          <div class="student-panel student-panel-wide" id="panel-schedule">
-            <div class="student-panel-head"><div><span class="panel-kicker">TODAY &amp; SCHEDULE</span><h3>Today's Class</h3></div><span class="panel-pill">Live student view</span></div>
-            <div class="detail-list">
-              <div><span>Class &amp; batch</span><strong id="dash-class-batch">—</strong></div>
-              <div><span>Batch timing</span><strong id="dash-batch-value">—</strong></div>
-              <div><span>Next test</span><strong id="dash-next-test">—</strong></div>
-              <div><span>Joined on</span><strong id="dash-admission-date">—</strong></div>
+        <div class="student-main-grid mp-student-modern-grid">
+          <section class="student-panel student-panel-wide mp-important-panel" id="panel-important">
+            <div class="student-panel-head"><div><span class="panel-kicker">TODAY · IMPORTANT</span><h3>Stay on Track</h3></div><span class="panel-pill">Live</span></div>
+            <div class="mp-important-grid">
+              <article class="mp-important-card mp-class-card" id="today-class-card">
+                <div class="mp-card-icon">🎯</div><div><span>Today's Class</span><strong id="dash-today-class">Nothing scheduled today</strong><small id="dash-today-class-meta">Your schedule will appear here.</small></div>
+              </article>
+              <article class="mp-important-card mp-test-card" id="upcoming-test-card">
+                <div class="mp-card-icon">🧪</div><div><span>Upcoming Test</span><strong id="dash-upcoming-test">No test scheduled</strong><small id="dash-upcoming-test-meta">Add a test from the admin panel.</small></div>
+              </article>
             </div>
-          </div>
+          </section>
 
-          <div class="student-panel" id="panel-position">
-            <div class="student-panel-head"><div><span class="panel-kicker">BATCH PERFORMANCE</span><h3>Your Position</h3></div></div>
-            <div class="rank-card"><div class="rank-medal">#</div><div><strong id="dash-rank-big">—</strong><span id="dash-rank-detail">Batch rank will appear after tests are recorded.</span></div></div>
-            <div class="rank-stats"><div><span>Latest test</span><strong id="dash-latest-test-name">—</strong></div></div>
-          </div>
-
-          <div class="student-panel" id="panel-attendance">
-            <div class="student-panel-head"><div><span class="panel-kicker">ATTENDANCE</span><h3>Monthly Attendance</h3></div></div>
-            <div style="font-size:11px;color:#8792a4;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;" id="dash-attendance-month-label">This month</div>
-            <div class="att-progress-track"><div class="att-progress-fill" id="att-progress-fill" style="width:0%;"></div></div>
-            <div class="streak-highlight" id="dash-streak-highlight">🔥 Keep your attendance streak going</div>
-            <div class="monthly-attendance-list" id="dash-monthly-attendance"><div class="empty-state">No attendance recorded yet.</div></div>
-          </div>
-
-          <div class="student-panel student-panel-wide" id="panel-daily">
-            <div class="student-panel-head"><div><span class="panel-kicker">ATTENDANCE CALENDAR</span><h3>Daily Attendance</h3></div><div style="display:flex;gap:8px;align-items:center;"><select id="attendance-month-select" style="padding:7px 9px;border:1px solid #dfe5ee;border-radius:8px;font-size:12px;color:#253550;"></select></div></div>
+          <section class="student-panel student-panel-wide" id="panel-attendance">
+            <div class="student-panel-head"><div><span class="panel-kicker">ATTENDANCE</span><h3>Monthly Calendar</h3></div><button class="mp-today-btn" id="attendance-today-btn" type="button">Today</button></div>
+            <div class="mp-att-calendar-head"><button type="button" id="attendance-prev-month" aria-label="Previous month">‹</button><strong id="attendance-calendar-title">Month</strong><button type="button" id="attendance-next-month" aria-label="Next month">›</button></div>
             <div class="daily-attendance-summary" id="daily-attendance-summary"></div>
-            <div class="daily-attendance-table-wrap"><table class="daily-attendance-table"><thead><tr><th>Date</th><th>Day</th><th>Status</th></tr></thead><tbody id="daily-attendance-table"></tbody></table></div>
-          </div>
-
-          <div class="student-section-divider">My Learning</div>
-
-          <div class="student-panel" id="panel-homework">
-            <div class="student-panel-head"><div><span class="panel-kicker">ASSIGNED WORK</span><h3>Homework</h3></div><span class="panel-pill">New assignments</span></div>
-            <div id="dash-homework-section"><div class="student-empty-mini" style="color:#6d7c91;border-color:#dce3ed;">No homework assigned yet.</div></div>
-          </div>
-
-          <div class="student-panel" id="panel-notes">
-            <div class="student-panel-head"><div><span class="panel-kicker">ASSIGNED MATERIAL</span><h3>Notes</h3></div></div>
-            <ul class="dash-notes-list student-notes-list" id="dash-notes-list"><li>No notes assigned yet</li></ul>
-          </div>
-
-          <div class="student-panel" id="panel-learning">
-            <div class="student-panel-head"><div><span class="panel-kicker">LEARNING HUB</span><h3>Study Resources</h3></div></div>
-            <div class="student-learning-grid">
-              <a class="learning-tile" href="javascript:void(0)" data-scroll-target="panel-homework"><div class="learning-icon">📝</div><div><strong>Assigned Homework</strong><span>Practice &amp; submissions</span></div></a>
-              <a class="learning-tile" href="javascript:void(0)" data-scroll-target="panel-notes"><div class="learning-icon">📖</div><div><strong>Assigned Notes</strong><span>Chapter-wise learning</span></div></a>
-              <a class="learning-tile" href="javascript:void(0)" data-scroll-target="panel-performance"><div class="learning-icon">🧪</div><div><strong>Tests &amp; Results</strong><span>Scores &amp; performance</span></div></a>
-              <a class="learning-tile" href="#youtube-videos"><div class="learning-icon">🎥</div><div><strong>Classes &amp; Videos</strong><span>Latest Maths Pathshala video</span></div></a>
+            <div class="mp-calendar-wrap">
+              <div class="mp-calendar-week"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+              <div class="mp-calendar-grid" id="student-attendance-calendar"></div>
             </div>
-          </div>
+            <div class="mp-att-legend"><span><i class="present"></i> Present</span><span><i class="absent"></i> Absent</span><span><i class="noclass"></i> No Class</span><span><i class="unmarked"></i> Not Recorded</span></div>
+          </section>
 
-          <div class="student-panel student-panel-wide student-latest-video" id="panel-latest-video">
-            <div class="student-panel-head"><div><span class="panel-kicker">MATHS PATHSHALA • RECENT</span><h3>Latest YouTube Video</h3></div><span class="panel-pill">Auto synced</span></div>
-            <div id="student-latest-video-content"><div class="student-empty-mini">Loading the latest video…</div></div>
-          </div>
+          <section class="student-panel student-panel-wide" id="panel-learning">
+            <div class="student-panel-head"><div><span class="panel-kicker">MY LEARNING</span><h3>Learning Resources</h3></div><span class="panel-pill">Assigned to you</span></div>
+            <div class="mp-learning-grid">
+              <article class="mp-learning-card" id="learning-homework-card"><div class="mp-learning-icon">📝</div><div><span>Homework</span><strong id="learning-homework-count">No pending homework</strong><small id="learning-homework-meta">Stay up to date with assigned work.</small></div></article>
+              <article class="mp-learning-card" id="learning-notes-card"><div class="mp-learning-icon">📖</div><div><span>Assigned Notes</span><strong id="learning-notes-count">No notes assigned</strong><small id="learning-notes-meta">Your assigned notes will appear here.</small></div></article>
+              <article class="mp-learning-card" id="learning-material-card"><div class="mp-learning-icon">📄</div><div><span>Study Material</span><strong id="learning-material-count">Available resources</strong><small>Worksheets, PDFs and DPPs</small></div></article>
+              <article class="mp-learning-card" id="learning-tests-card"><div class="mp-learning-icon">🧪</div><div><span>Tests</span><strong id="learning-tests-count">No tests yet</strong><small>Upcoming and previous tests</small></div></article>
+              <article class="mp-learning-card mp-video-card" id="learning-video-card"><div class="mp-video-thumb" id="dash-latest-video-thumb"><span>▶</span></div><div><span>Latest Maths Pathshala Video</span><strong id="dash-latest-video-title">Loading latest video…</strong><small>Tap to watch on YouTube</small></div></article>
+            </div>
+            <div class="mp-notes-list-wrap"><div class="mp-subhead"><strong>Assigned Notes</strong><span id="dash-notes-count-label">0 notes</span></div><ul class="dash-notes-list student-notes-list" id="dash-notes-list"><li>No notes assigned yet</li></ul></div>
+<div class="mp-notes-list-wrap"><div class="mp-subhead"><strong>Upcoming Tests</strong><span id="dash-upcoming-tests-count">0 tests</span></div><ul class="dash-notes-list student-notes-list" id="dash-upcoming-tests-list"><li>No upcoming tests scheduled</li></ul></div>
+            <div class="mp-notes-list-wrap"><div class="mp-subhead"><strong>Study Material</strong><span id="dash-materials-count">0 resources</span></div><ul class="dash-notes-list student-notes-list" id="dash-materials-list"><li>No study material assigned yet</li></ul></div>
+          </section>
 
-          <div class="student-panel student-panel-wide" id="panel-performance">
-            <div class="student-panel-head"><div><span class="panel-kicker">ACADEMIC PERFORMANCE</span><h3>Test Performance</h3></div><span class="panel-pill">Live records</span></div>
-            <div class="performance-summary" style="grid-template-columns:repeat(2,1fr);"><div><span>Tests attempted</span><strong id="dash-tests-count">0</strong></div><div><span>Latest test highest (batch)</span><strong id="dash-best-score">—</strong></div></div>
+          <section class="student-panel student-panel-wide" id="panel-performance">
+            <div class="student-panel-head"><div><span class="panel-kicker">ACADEMIC PERFORMANCE</span><h3>My Performance</h3></div><span class="panel-pill">Live records</span></div>
+            <div class="performance-summary" style="grid-template-columns:repeat(3,1fr);"><div><span>Tests attempted</span><strong id="dash-tests-count">0</strong></div><div><span>Latest score</span><strong id="dash-kpi-latest-score">—</strong></div><div><span>Batch highest</span><strong id="dash-best-score">—</strong></div></div>
             <div class="score-chart-wrap student-score-chart"><canvas id="score-chart"></canvas></div>
             <ul class="score-list student-score-list" id="dash-scores-list"><li>No test scores yet</li></ul>
-          </div>
+          </section>
 
-          <div class="student-panel" id="panel-fees">
-            <div class="student-panel-head"><div><span class="panel-kicker">ACCOUNT</span><h3>Fee Status</h3></div></div>
-            <span class="dash-fee-badge" id="dash-fee-badge">—</span>
-            <ul class="payment-history-list" id="dash-monthly-fee-list"></ul>
-          </div>
+          <section class="student-panel" id="panel-position">
+            <div class="student-panel-head"><div><span class="panel-kicker">BATCH</span><h3>Your Position</h3></div></div>
+            <div class="rank-card"><div class="rank-medal">#</div><div><strong id="dash-rank-big">—</strong><span id="dash-rank-detail">Batch rank will appear after tests are recorded.</span></div></div>
+            <div class="rank-stats"><div><span>Latest test</span><strong id="dash-latest-test-name">—</strong></div></div>
+          </section>
+
+          <section class="student-panel" id="panel-schedule">
+            <div class="student-panel-head"><div><span class="panel-kicker">YOUR PROFILE</span><h3>Class Details</h3></div></div>
+            <div class="detail-list"><div><span>Class &amp; batch</span><strong id="dash-class-batch">—</strong></div><div><span>Regular timing</span><strong id="dash-batch-value">—</strong></div><div><span>Next test</span><strong id="dash-next-test">—</strong></div><div><span>Joined on</span><strong id="dash-admission-date">—</strong></div></div>
+          </section>
+
+          <section class="student-panel" id="panel-fees">
+            <div class="student-panel-head"><div><span class="panel-kicker">FEES</span><h3>Fee Status</h3></div></div>
+            <span class="dash-fee-badge" id="dash-fee-badge">—</span><ul class="payment-history-list" id="dash-monthly-fee-list"></ul>
+          </section>
         </div>
-      </div>
+      <div id="student-dashboard-legacy-compat" style="display:none!important"><span id="dash-attendance-month-label"></span><span id="att-progress-fill"></span><span id="dash-streak-highlight"></span><span id="dash-monthly-attendance"></span></div>
 
       <div id="dash-not-found-content" style="display:none;">
         <div class="dash-not-found">We couldn't find your student record. <a href="javascript:void(0)" id="dash-not-found-wa" target="_blank">Message us on WhatsApp</a> to get set up.</div>
@@ -2045,11 +1970,11 @@
     if(!grid) return;
     try{
       const snap=await Promise.race([
-        getDoc(doc(db,'siteSettings','youtube')),
+        getDoc(doc(db,'stats','public')),
         new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),7000))
       ]);
       const data=snap.exists()?snap.data():{};
-      const videos=Array.isArray(data.videos)?data.videos.slice(0,2):[];
+      const videos=data.youtubeLatest ? [data.youtubeLatest] : (Array.isArray(data.videos)?data.videos.slice(0,1):[]);
       if(!videos.length){
         grid.innerHTML='<div class="yt-empty">Latest videos will appear here soon.</div>';
         return;
@@ -2292,8 +2217,6 @@
         await loadStudentDashboard(user.email);
         await loadNotices();
         await loadHomework();
-        await loadStudentHomeworkSection();
-        await loadStudentLatestYouTube();
       }catch(err){
         console.error('Student dashboard load error:', err);
         showLoginMsg('Login successful, but the dashboard could not load completely. Please tap Refresh.', 'error');
@@ -2314,8 +2237,6 @@
             await loadStudentDashboard(auth.currentUser.email);
             await loadNotices();
             await loadHomework();
-            await loadStudentHomeworkSection();
-            await loadStudentLatestYouTube();
           }catch(err){
             console.warn('Dashboard auto-refresh failed:', err);
           }finally{
@@ -2341,8 +2262,6 @@
       await loadStudentDashboard(auth.currentUser.email);
       await loadNotices();
       await loadHomework();
-      await loadStudentHomeworkSection();
-      await loadStudentLatestYouTube();
     }catch(err){
       console.warn('Dashboard return refresh failed:', err);
     }
@@ -2354,7 +2273,7 @@
     if(auth.currentUser){
       const btn = document.getElementById('dash-refresh-btn');
       btn.textContent = 'Refreshing...';
-      try{ await loadStudentDashboard(auth.currentUser.email); await loadNotices(); await loadHomework(); await loadStudentHomeworkSection(); await loadStudentLatestYouTube(); }
+      try{ await loadStudentDashboard(auth.currentUser.email); await loadNotices(); await loadHomework(); }
       finally{ btn.textContent = '↻ Refresh'; }
     }
   });
@@ -2497,36 +2416,6 @@
     }
   }
 
-
-  async function loadStudentHomeworkSection(){
-    const section=document.getElementById('dash-homework-section');
-    if(!section || !auth.currentUser) return;
-    try{
-      const email=auth.currentUser.email.toLowerCase();
-      const snap=await getDocs(query(collection(db,'homework'), where('recipientEmails','array-contains',email)));
-      const docs=snap.docs.slice().sort((a,b)=>(b.data().createdAt?.toMillis?.()||0)-(a.data().createdAt?.toMillis?.()||0)).filter(d=>matchesStudentTarget(d.data()));
-      const rows=docs.slice(0,6).map(d=>d.data());
-      section.innerHTML=rows.length?rows.map(h=>`<div class="detail-list" style="margin:0 0 8px;"><div><span>${dashEscapeHtml(h.title||'Homework')}${h.dueDate?`<small style="display:block;color:#8a5a00;margin-top:3px;">Due ${dashEscapeHtml(h.dueDate)}</small>`:''}</span><strong style="max-width:60%;text-align:right;font-size:12px;line-height:1.45;">${dashEscapeHtml(h.details||'Assigned homework')}</strong></div></div>`).join(''):'<div class="student-empty-mini" style="color:#6d7c91;border-color:#dce3ed;">No homework assigned yet.</div>';
-    }catch(e){
-      section.innerHTML='<div class="student-empty-mini" style="color:#6d7c91;border-color:#dce3ed;">Homework will appear here when assigned.</div>';
-    }
-  }
-
-  async function loadStudentLatestYouTube(){
-    const box=document.getElementById('student-latest-video-content');
-    if(!box) return;
-    try{
-      const snap=await getDoc(doc(db,'siteSettings','youtube'));
-      const videos=snap.exists() && Array.isArray(snap.data().videos)?snap.data().videos:[];
-      const v=videos[0];
-      if(!v || !v.videoId){box.innerHTML='<div class="student-empty-mini">Latest video will appear here soon.</div>';return;}
-      const id=String(v.videoId).trim();
-      const title=dashEscapeHtml(v.title||'Latest Maths Pathshala Video');
-      const desc=dashEscapeHtml(v.description||'Watch the latest class or learning video from Maths Pathshala.');
-      box.innerHTML=`<div class="latest-video-card"><div class="latest-video-frame"><iframe src="https://www.youtube.com/embed/${encodeURIComponent(id)}" title="${title}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="latest-video-copy"><div class="video-label">Latest upload</div><h4>${title}</h4><p>${desc}</p><a href="https://www.youtube.com/watch?v=${encodeURIComponent(id)}" target="_blank" rel="noopener">▶ Watch on YouTube</a></div></div>`;
-    }catch(e){box.innerHTML='<div class="student-empty-mini">Latest video could not be loaded right now.</div>';}
-  }
-
   function parsePortalDate(value){
     if(!value) return null;
     if(/^\d{4}-\d{2}-\d{2}$/.test(value)) return new Date(value + 'T00:00:00');
@@ -2573,7 +2462,7 @@
   }
 
   function aggregateAttendance(log){
-    const map={}; (Array.isArray(log)?log:[]).forEach(e=>{ const k=monthKeyForDate(e.date); if(!k)return; if(!map[k])map[k]={present:0,total:0}; map[k].total++; if(e.status==='Present')map[k].present++; });
+    const map={}; (Array.isArray(log)?log:[]).forEach(e=>{ const k=monthKeyForDate(e.date); if(!k)return; if(e.status!=='Present' && e.status!=='Absent')return; if(!map[k])map[k]={present:0,total:0}; map[k].total++; if(e.status==='Present')map[k].present++; });
     return Object.entries(map).sort((a,b)=>b[0].localeCompare(a[0])).map(([key,v])=>({...v,key,label:monthLabel(key),percent:v.total?Math.round(v.present/v.total*100):0}));
   }
 
@@ -2690,6 +2579,72 @@
     return String(value ?? '').replace(/[&<>\'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;',"\"":'&quot;'}[ch]));
   }
 
+  function renderStudentTodayClass(data){
+    const title=document.getElementById('dash-today-class'), meta=document.getElementById('dash-today-class-meta');
+    if(!title||!meta) return;
+    const d=new Date(), key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const day=['sun','mon','tue','wed','thu','fri','sat'][d.getDay()];
+    const schedule=data?.classSchedule||{}; const override=schedule.overrides?.[key];
+    const item=override || schedule.weekly?.[day];
+    if(!item || item.noClass){ title.textContent='Nothing scheduled today'; meta.textContent=item?.reason||'No class scheduled for today.'; return; }
+    title.textContent=item.subject||'Class';
+    meta.textContent=[item.time,item.topic].filter(Boolean).join(' · ')||'Class schedule';
+  }
+  async function renderStudentLatestVideo(){
+    const title=document.getElementById('dash-latest-video-title'), thumb=document.getElementById('dash-latest-video-thumb'), card=document.getElementById('learning-video-card');
+    if(!title||!thumb) return;
+    try{
+      const s=await getDoc(doc(db,'stats','public'));
+      const v=s.exists()?s.data().youtubeLatest:null;
+      const id=extractYouTubeId(v?.videoId||v?.url||'');
+      if(!id){title.textContent='No latest video yet';thumb.style.backgroundImage='';return;}
+      title.textContent=v.title||'Latest Maths Pathshala Video';
+      thumb.style.backgroundImage=`url(https://i.ytimg.com/vi/${encodeURIComponent(id)}/hqdefault.jpg)`;
+      const open=()=>window.open(`https://www.youtube.com/watch?v=${encodeURIComponent(id)}`,'_blank','noopener,noreferrer');
+      thumb.onclick=open; if(card) card.onclick=open;
+    }catch(e){title.textContent='Video unavailable right now';}
+  }
+  function renderLearningCounts(data){
+    const notes=Array.isArray(data?.notes)?data.notes:[];
+    const materials=Array.isArray(data?.studyMaterials)?data.studyMaterials:[];
+    const upcoming=(Array.isArray(data?.upcomingTests)?data.upcomingTests:[]).filter(t=>!t?.date || t.date>=attendanceDateKey(new Date())).sort((a,b)=>String(a.date||'').localeCompare(String(b.date||'')));
+    const n=document.getElementById('learning-notes-count'), nl=document.getElementById('dash-notes-count-label');
+    if(n) n.textContent=notes.length?`${notes.length} assigned note${notes.length>1?'s':''}`:'No notes assigned';
+    if(nl) nl.textContent=`${notes.length} note${notes.length===1?'':'s'}`;
+    const tc=document.getElementById('learning-tests-count'); if(tc) tc.textContent=upcoming.length?`${upcoming.length} upcoming test${upcoming.length>1?'s':''}`:'No upcoming tests';
+    const hc=document.getElementById('learning-homework-count');
+    if(hc && hc.textContent==='No pending homework') hc.textContent='Open assigned homework';
+    const mc=document.getElementById('learning-material-count'); if(mc) mc.textContent=materials.length?`${materials.length} resource${materials.length>1?'s':''}`:'No material assigned';
+    const ul=document.getElementById('dash-upcoming-tests-list'), ml=document.getElementById('dash-materials-list');
+    if(ul) ul.innerHTML=upcoming.length?upcoming.map(t=>`<li><span><b>${dashEscapeHtml(t.name||'Test')}</b><em>${dashEscapeHtml([t.date,t.time,t.topic].filter(Boolean).join(' · '))}</em></span></li>`).join(''):'<li>No upcoming tests scheduled</li>';
+    const uc=document.getElementById('dash-upcoming-tests-count'); if(uc) uc.textContent=`${upcoming.length} test${upcoming.length===1?'':'s'}`;
+    if(ml) ml.innerHTML=materials.length?materials.map(m=>{const u=String(m.url||'').trim();const safe=/^https?:\\/\\//i.test(u)?dashEscapeHtml(u):'#';return `<li><span><b>${dashEscapeHtml(m.title||'Study Material')}</b><em>${dashEscapeHtml(m.type||'Resource')}</em></span><span>${safe!=='#'?`<a href="${safe}" target="_blank" rel="noopener noreferrer">Open</a> <a href="${safe}" target="_blank" rel="noopener noreferrer" download>Download</a>`:'<em>No link</em>'}</span></li>`}).join(''):'<li>No study material assigned yet</li>';
+    const mc2=document.getElementById('dash-materials-count'); if(mc2) mc2.textContent=`${materials.length} resource${materials.length===1?'':'s'}`;
+  }
+
+  function renderStudentCalendar(log){
+    const box=document.getElementById('student-attendance-calendar'); const title=document.getElementById('attendance-calendar-title'); const summary=document.getElementById('daily-attendance-summary'); if(!box||!title)return;
+    const today=new Date(); const todayKey=attendanceDateKey(today); const state=window.mpCalendarState||{year:today.getFullYear(),month:today.getMonth()}; window.mpCalendarState=state;
+    const byDate={}; (Array.isArray(log)?log:[]).forEach(e=>{const k=attendanceDateKey(e?.date);if(k)byDate[k]=e.status;});
+    const first=new Date(state.year,state.month,1), days=new Date(state.year,state.month+1,0).getDate(), offset=(first.getDay()+6)%7;
+    title.textContent=first.toLocaleDateString('en-GB',{month:'long',year:'numeric'}); box.innerHTML='';
+    let present=0,absent=0,noclass=0,unmarked=0;
+    for(let i=0;i<offset;i++)box.insertAdjacentHTML('beforeend','<div class="mp-day empty"></div>');
+    for(let d=1;d<=days;d++){
+      const dt=new Date(state.year,state.month,d), key=attendanceDateKey(dt), status=byDate[key]||'Unmarked', future=key>todayKey;
+      if(status==='Present')present++; else if(status==='Absent')absent++; else if(status==='No Class')noclass++; else if(!future)unmarked++;
+      const cls=status==='Present'?'present':status==='Absent'?'absent':status==='No Class'?'noclass':'';
+      box.insertAdjacentHTML('beforeend',`<div class="mp-day ${cls} ${key===todayKey?'today':''}" title="${key}: ${status}"><span class="mp-day-num">${d}</span><i class="mp-day-dot"></i></div>`);
+    }
+    if(summary)summary.innerHTML=`<span>✓ ${present} Present</span><span>✕ ${absent} Absent</span><span>— ${noclass} No Class</span><span>• ${unmarked} Not recorded</span>`;
+  }
+  document.getElementById('learning-notes-card')?.addEventListener('click',()=>document.getElementById('panel-learning')?.scrollIntoView({behavior:'smooth',block:'start'}));
+  document.getElementById('learning-homework-card')?.addEventListener('click',()=>document.getElementById('dash-homework')?.scrollIntoView({behavior:'smooth',block:'center'}));
+  document.getElementById('learning-tests-card')?.addEventListener('click',()=>document.getElementById('panel-performance')?.scrollIntoView({behavior:'smooth',block:'start'}));
+  document.getElementById('learning-material-card')?.addEventListener('click',()=>document.getElementById('panel-learning')?.scrollIntoView({behavior:'smooth',block:'start'}));
+  document.getElementById('attendance-prev-month')?.addEventListener('click',()=>{const s=window.mpCalendarState||{year:new Date().getFullYear(),month:new Date().getMonth()};s.month--;if(s.month<0){s.month=11;s.year--;}window.mpCalendarState=s;renderStudentCalendar(window.mpAttendanceLog||[]);});
+  document.getElementById('attendance-next-month')?.addEventListener('click',()=>{const s=window.mpCalendarState||{year:new Date().getFullYear(),month:new Date().getMonth()};s.month++;if(s.month>11){s.month=0;s.year++;}window.mpCalendarState=s;renderStudentCalendar(window.mpAttendanceLog||[]);});
+  document.getElementById('attendance-today-btn')?.addEventListener('click',()=>{const d=new Date();window.mpCalendarState={year:d.getFullYear(),month:d.getMonth()};renderStudentCalendar(window.mpAttendanceLog||[]);});
   async function loadStudentDashboard(email){
     document.getElementById('dash-name').innerHTML = '<span class="spinner"></span>Loading...';
     studentDashboard.style.display = 'block';
@@ -2718,6 +2673,7 @@
     document.getElementById('dash-name').textContent=data.name||'Student'; document.getElementById('dash-avatar').textContent=(data.name||'S').trim().charAt(0).toUpperCase();
     currentStudentClass=data.class||null; currentStudentBatchName=data.batchName||null;
     const bh=document.getElementById('dash-batch-highlight'); bh.textContent=data.class&&data.batchName?`🎓 Class ${data.class} · ${data.batchName}`:''; bh.style.display=data.class&&data.batchName?'inline-block':'none';
+    renderStudentTodayClass(data); renderStudentLatestVideo(); renderLearningCounts(data);
     document.getElementById('dash-class-batch').textContent=data.class&&data.batchName?`Class ${data.class} · ${data.batchName}`:'—';
     const feeBadge=document.getElementById('dash-fee-badge'); feeBadge.textContent=data.feeStatus||'Due'; feeBadge.className='dash-fee-badge '+(data.feeStatus==='Paid'?'dash-fee-paid':'dash-fee-due');
     document.getElementById('dash-admission-date').textContent=data.admissionDate?new Date(data.admissionDate+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'Not set yet';
@@ -2734,15 +2690,16 @@
         document.getElementById('test-popup-close').onclick=()=>{ document.getElementById('test-popup').classList.remove('show'); };
       }
     }
-    const log=normalizeStudentAttendanceLog(data.attendance?.log);
+    const log=normalizeStudentAttendanceLog(data.attendance?.log); window.mpAttendanceLog=log; renderStudentCalendar(log);
     const todayForMonth=new Date();
     const currentMonthKey=`${todayForMonth.getFullYear()}-${String(todayForMonth.getMonth()+1).padStart(2,'0')}`;
     const currentMonthLog=log.filter(e=>monthKeyForDate(e.date)===currentMonthKey);
-    const currentMonthPresent=currentMonthLog.filter(e=>e.status==='Present').length;
-    const currentMonthPct=currentMonthLog.length?Math.round(currentMonthPresent/currentMonthLog.length*100):0;
+    const currentMonthCounted=currentMonthLog.filter(e=>e.status==='Present'||e.status==='Absent');
+    const currentMonthPresent=currentMonthCounted.filter(e=>e.status==='Present').length;
+    const currentMonthPct=currentMonthCounted.length?Math.round(currentMonthPresent/currentMonthCounted.length*100):0;
     const streak=calculateStreak(currentMonthLog);
-    animateNumberTo(document.getElementById('dash-kpi-attendance'), currentMonthLog.length?currentMonthPct:0, currentMonthLog.length?'%':'—', !currentMonthLog.length);
-    document.getElementById('dash-kpi-attendance-sub').textContent=currentMonthLog.length?monthLabel(currentMonthKey):'No classes yet this month';
+    animateNumberTo(document.getElementById('dash-kpi-attendance'), currentMonthCounted.length?currentMonthPct:0, currentMonthCounted.length?'%':'—', !currentMonthCounted.length);
+    document.getElementById('dash-kpi-attendance-sub').textContent=currentMonthCounted.length?monthLabel(currentMonthKey):'No recorded classes this month';
     document.getElementById('dash-attendance-month-label').textContent=monthLabel(currentMonthKey)+' so far';
     document.getElementById('dash-kpi-streak').textContent=streak?`🔥 ${streak}`:'—';
     requestAnimationFrame(()=>{ document.getElementById('att-progress-fill').style.width=currentMonthPct+'%'; });
@@ -2764,7 +2721,7 @@
     const latestScore=(recentDateKey && recentName)
       ? (scores.find(s=>attendanceDateKey(s.date)===recentDateKey && String(s.name||'').trim().toLowerCase()===recentName) || null)
       : (scores.slice().sort((a,b)=>(parsePortalDate(b.date)?.getTime()||0)-(parsePortalDate(a.date)?.getTime()||0) || String(b.name||'').localeCompare(String(a.name||'')))[0] || null);
-    if(document.getElementById('dash-kpi-latest-score')) document.getElementById('dash-kpi-latest-score').textContent=latestScore?scorePct(latestScore)+'%':'—';
+    if(document.getElementById('dash-kpi-latest-score')) document.getElementById('dash-kpi-latest-score').textContent=latestScore?scorePct(latestScore)+'%':'—'; if(document.getElementById('dash-kpi-latest-score-top')) document.getElementById('dash-kpi-latest-score-top').textContent=latestScore?scorePct(latestScore)+'%':'—';
     if(document.getElementById('dash-rank-big-secondary')) document.getElementById('dash-rank-big-secondary').textContent=rank;
     if(document.getElementById('dash-latest-test-name')) document.getElementById('dash-latest-test-name').textContent=recent.name||'—';
     document.getElementById('dash-tests-count').textContent=scores.length;
@@ -2774,11 +2731,11 @@
     if(scores.length)renderScoreChart(scores); else if(window.scoreChartInstance)window.scoreChartInstance.destroy();
     const notesList=document.getElementById('dash-notes-list');
     const notes=Array.isArray(data.notes)?data.notes:[];
+    const notesCount=document.getElementById('dash-notes-count-label'); if(notesCount) notesCount.textContent=`${notes.length} note${notes.length===1?'':'s'}`;
     notesList.innerHTML=notes.length?notes.map(n=>{
-      const title=dashEscapeHtml(n?.title || 'Note');
-      const url=String(n?.url || '').trim();
-      const safeUrl=/^(https?:\/\/|\/|\.\/?|[A-Za-z0-9_-]+\/)/i.test(url) ? dashEscapeHtml(url) : '#';
-      return `<li><span>${title}</span><span><a href="${safeUrl}" target="_blank" rel="noopener">View</a> · <a href="${safeUrl}" download>Download</a></span></li>`;
+      const title=dashEscapeHtml(n?.title || 'Note'); const url=String(n?.url || '').trim();
+      const safeUrl=/^https?:\/\//i.test(url)?dashEscapeHtml(url):'#';
+      return `<li><span>${title}</span><span>${safeUrl!=='#'?`<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">Open</a> <a href="${safeUrl}" download>Download</a>`:'<em>No file link</em>'}</span></li>`;
     }).join(''):'<li>No notes assigned yet</li>';
     studentDashboard.style.display='block';
     } catch(err) {
