@@ -961,6 +961,110 @@
   }
 </style>
 
+
+<style id="mp-student-attendance-3d-ui-only">
+  /* VISUAL-ONLY LAYER: attendance calendar 3D polish. No attendance logic is changed. */
+  .mp-att-calendar{
+    position:relative;
+    border:1px solid rgba(226,232,240,.95)!important;
+    border-radius:20px!important;
+    background:linear-gradient(145deg,#ffffff 0%,#f8fafc 100%)!important;
+    box-shadow:0 18px 42px rgba(20,36,62,.10),0 3px 9px rgba(20,36,62,.06),inset 0 1px 0 rgba(255,255,255,.95)!important;
+    transform:translateZ(0);
+    overflow:hidden;
+  }
+  .mp-att-calendar:before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(120deg,rgba(255,255,255,.70),transparent 34%,rgba(245,166,35,.035) 100%);
+  }
+  .mp-att-cal-head{
+    position:relative;z-index:1;
+    padding:14px 15px!important;
+    background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(247,249,252,.92))!important;
+    border-bottom:1px solid #e7ebf1!important;
+    box-shadow:0 4px 12px rgba(20,36,62,.045);
+  }
+  .mp-att-cal-nav{gap:8px!important;}
+  .mp-att-cal-btn{
+    border:1px solid #dce3ec!important;
+    border-radius:10px!important;
+    background:linear-gradient(145deg,#ffffff,#eef2f7)!important;
+    box-shadow:0 4px 8px rgba(22,39,65,.10),inset 0 1px 0 #fff!important;
+    transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+  }
+  .mp-att-cal-btn:hover{transform:translateY(-2px);box-shadow:0 7px 14px rgba(22,39,65,.14),inset 0 1px 0 #fff!important;background:#fff!important;}
+  .mp-att-cal-btn:active{transform:translateY(1px);box-shadow:0 2px 5px rgba(22,39,65,.12)!important;}
+  .mp-att-cal-month{letter-spacing:.01em;text-shadow:0 1px 0 #fff;}
+  .mp-att-today-btn{font-weight:900!important;}
+  .mp-att-weekdays{
+    position:relative;z-index:1;
+    background:linear-gradient(180deg,#f7f9fc,#eef2f6)!important;
+    border-bottom:1px solid #e2e7ee!important;
+  }
+  .mp-att-weekdays span{color:#59687d!important;text-shadow:0 1px 0 #fff;}
+  .mp-att-grid{
+    position:relative;z-index:1;
+    padding:10px!important;
+    gap:7px!important;
+    background:linear-gradient(180deg,#f9fbfd,#f2f5f8)!important;
+  }
+  .mp-att-day{
+    min-height:74px!important;
+    border:1px solid #e3e8ef!important;
+    border-radius:13px!important;
+    background:linear-gradient(145deg,#ffffff,#f4f7fa)!important;
+    box-shadow:4px 5px 10px rgba(26,43,67,.075),-2px -2px 6px rgba(255,255,255,.92),inset 0 1px 0 rgba(255,255,255,.9)!important;
+    transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+  }
+  .mp-att-day:not(.empty):hover{
+    transform:translateY(-3px);
+    box-shadow:6px 9px 17px rgba(26,43,67,.12),-2px -2px 7px rgba(255,255,255,.95),inset 0 1px 0 #fff!important;
+  }
+  .mp-att-day.empty{box-shadow:none!important;background:transparent!important;}
+  .mp-att-day.present{
+    background:linear-gradient(145deg,#ffffff,#edf9f2)!important;
+    border-color:#c7e6d3!important;
+    box-shadow:4px 6px 12px rgba(36,130,76,.11),-2px -2px 6px rgba(255,255,255,.95),inset 0 1px 0 #fff!important;
+  }
+  .mp-att-day.absent{
+    background:linear-gradient(145deg,#ffffff,#fff0ef)!important;
+    border-color:#efd0cc!important;
+    box-shadow:4px 6px 12px rgba(190,57,45,.10),-2px -2px 6px rgba(255,255,255,.95),inset 0 1px 0 #fff!important;
+  }
+  .mp-att-day.no-class{background:linear-gradient(145deg,#ffffff,#f0f2f5)!important;}
+  .mp-att-day.today{box-shadow:0 0 0 2px rgba(245,166,35,.78),4px 7px 14px rgba(26,43,67,.11)!important;}
+  .mp-att-date{font-weight:900!important;}
+  .mp-att-status{
+    border:1px solid rgba(255,255,255,.72);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 2px 4px rgba(24,40,62,.06);
+  }
+  .mp-att-summary{
+    position:relative;z-index:1;
+    padding:13px 14px!important;
+    background:linear-gradient(180deg,#f6f8fb,#eef2f6)!important;
+    border-top:1px solid #e1e6ed!important;
+  }
+  .mp-att-summary span{
+    background:linear-gradient(145deg,#fff,#f2f5f8)!important;
+    border-color:#dfe5ed!important;
+    border-radius:10px!important;
+    box-shadow:3px 4px 8px rgba(26,43,67,.07),inset 0 1px 0 #fff!important;
+  }
+  .mp-att-legend{position:relative;z-index:1;background:#eef2f6!important;}
+  .mp-att-legend span{background:rgba(255,255,255,.58);padding:5px 8px;border-radius:8px;box-shadow:inset 0 1px 0 #fff;}
+  @media(max-width:600px){
+    .mp-att-calendar{border-radius:16px!important;box-shadow:0 12px 28px rgba(20,36,62,.09),0 2px 7px rgba(20,36,62,.05)!important;}
+    .mp-att-grid{padding:7px!important;gap:5px!important;}
+    .mp-att-day{min-height:60px!important;border-radius:10px!important;box-shadow:3px 4px 8px rgba(26,43,67,.065),inset 0 1px 0 #fff!important;}
+    .mp-att-day:not(.empty):hover{transform:none;}
+    .mp-att-cal-head{padding:11px 9px!important;}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .mp-att-cal-btn,.mp-att-day{transition:none!important;}
+    .mp-att-day:not(.empty):hover{transform:none!important;}
+  }
+</style>
+
 </head>
 <body>
 
@@ -2801,4 +2905,3 @@
 
 </body>
 </html>
-  
