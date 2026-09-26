@@ -71,6 +71,38 @@
   .att-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:18px;}
   .att-date-picker{display:flex;align-items:center;gap:10px;}
   .att-date-picker input{width:auto;padding:9px 12px;}
+  .att-calendar-wrap{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.9fr);gap:18px;align-items:start;}
+  .att-calendar{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;}
+  .att-calendar-head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,#f8fbff,#fffaf0);}
+  .att-month-title{font-weight:800;color:var(--navy);font-size:17px;}
+  .att-nav{display:flex;gap:6px;}
+  .att-nav button{width:34px;height:34px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--navy);font-weight:800;cursor:pointer;}
+  .att-weekdays,.att-days{display:grid;grid-template-columns:repeat(7,1fr);}
+  .att-weekdays div{padding:9px 4px;text-align:center;font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;}
+  .att-day{min-height:66px;border:0;border-top:1px solid rgba(11,30,61,.07);border-right:1px solid rgba(11,30,61,.07);background:#fff;text-align:left;padding:7px;cursor:pointer;position:relative;transition:.15s ease;}
+  .att-day:hover{background:#f7faff;}
+  .att-day:nth-child(7n){border-right:0;}
+  .att-day.muted{opacity:.35;}
+  .att-day.selected{box-shadow:inset 0 0 0 2px var(--navy);background:#f5f8ff;}
+  .att-day.today .att-day-num{background:var(--navy);color:#fff;}
+  .att-day-num{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:50%;font-size:12px;font-weight:800;}
+  .att-day-meta{display:block;margin-top:5px;font-size:9px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .att-day.meta-present .att-day-meta{color:#1E7A46;}
+  .att-day.meta-absent .att-day-meta{color:#C0392B;}
+  .att-day.meta-noclass .att-day-meta{color:#a66a00;}
+  .att-day.meta-mixed .att-day-meta{color:#315b92;}
+  .att-detail{border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff;min-width:0;}
+  .att-detail h3{margin:0 0 4px;color:var(--navy);}
+  .att-detail-date{font-size:12px;color:var(--muted);margin-bottom:14px;}
+  .att-class-status{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px;}
+  .att-class-status button{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:10px;font-weight:800;color:var(--muted);cursor:pointer;}
+  .att-class-status button.active-held{border-color:#1E7A46;background:#F3FBF6;color:#1E7A46;}
+  .att-class-status button.active-none{border-color:#d79b28;background:#fff8e8;color:#9a6500;}
+  .att-reason{display:none;margin-bottom:12px;}
+  .att-reason.show{display:block;}
+  .att-detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+  .att-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:11px;color:var(--muted);}
+  .att-legend span{display:inline-flex;align-items:center;gap:5px;}
   .att-summary{display:flex;gap:16px;font-size:13px;font-weight:600;}
   .att-summary span{display:flex;align-items:center;gap:6px;}
   .att-dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
@@ -711,18 +743,38 @@
 
     <div class="card">
       <div class="att-header">
-        <h2 style="margin:0;">Attendance Management</h2>
+        <div>
+          <h2 style="margin:0;">Attendance Calendar</h2>
+          <p style="margin:5px 0 0;font-size:12px;color:var(--muted);">Record class days, attendance, and why a class was not held.</p>
+        </div>
         <div class="att-date-picker">
-          <label style="margin:0;">Date:</label>
+          <label style="margin:0;">Jump to:</label>
           <input type="date" id="bulk-att-date">
         </div>
       </div>
-      <div class="att-summary" id="att-summary">
+      <div class="att-calendar-wrap">
+        <div class="att-calendar">
+          <div class="att-calendar-head">
+            <div class="att-month-title" id="att-month-title">Loading…</div>
+            <div class="att-nav"><button type="button" id="att-prev-month" aria-label="Previous month">‹</button><button type="button" id="att-today-btn">Today</button><button type="button" id="att-next-month" aria-label="Next month">›</button></div>
+          </div>
+          <div class="att-weekdays"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
+          <div class="att-days" id="att-calendar-days"></div>
+        </div>
+        <div class="att-detail" id="att-detail-panel">
+          <h3>Select a date</h3>
+          <div class="att-detail-date">Choose any date from the calendar.</div>
+        </div>
+      </div>
+      <div class="att-legend">
+        <span>🟢 Class held / attendance recorded</span><span>🔴 Absence recorded</span><span>🟠 No class</span><span>⚪ Not recorded</span>
+      </div>
+      <div class="att-summary" id="att-summary" style="margin-top:14px;">
         <span><span class="att-dot present"></span>0 Present</span>
         <span><span class="att-dot absent"></span>0 Absent</span>
-        <span><span class="att-dot unmarked"></span>0 Unmarked</span>
+        <span><span class="att-dot unmarked"></span>0 Not Recorded</span>
       </div>
-      <div id="att-rows-container" style="margin-top:16px;"><div style="color:var(--muted);font-size:13px;">Loading students...</div></div>
+      <div id="att-rows-container" style="margin-top:16px;"></div>
       <div class="save-attendance-bar" id="save-attendance-bar" style="display:none;">
         <span id="save-bar-text">Ready to save</span>
         <button class="btn" id="save-bulk-attendance-btn" style="margin:0;">Save Attendance</button>
@@ -1184,133 +1236,166 @@
     return `https://wa.me/${digits}?text=${text}`;
   }
 
-  async function loadBulkAttendanceRows(){
-    const container = document.getElementById('att-rows-container');
-    container.innerHTML = '<div class="loading-row"><span class="spinner"></span>Loading students...</div>';
-    // Reuse the main student cache instead of downloading every student a second time.
-    if(allStudentsCache.length){
-      bulkStudentsCache = allStudentsCache.map(student => ({ id: student.id, data: student.data }));
-    } else {
-      const snap = await getDocs(collection(db, "students"));
-      bulkStudentsCache = [];
-      snap.forEach(docSnap => bulkStudentsCache.push({ id: docSnap.id, data: docSnap.data() }));
-    }
+  let attendanceCalendarDate = new Date();
+  let attendanceSelectedDate = '';
 
-    if(bulkStudentsCache.length === 0){
-      container.innerHTML = '<div style="color:var(--muted);font-size:13px;">No students yet.</div>';
-      return;
-    }
-
-    const dateLabel = dateInputToLabel(document.getElementById('bulk-att-date').value);
-    container.innerHTML = '';
-    bulkStudentsCache.forEach(student => {
-      const existingLog = normalizeAttendanceLog(student.data.attendance?.log || []);
-      const targetKey = adminAttendanceDateKey(dateLabel);
-      const existingEntry = existingLog.find(e => adminAttendanceDateKey(e.date) === targetKey);
-      const currentStatus = existingEntry ? existingEntry.status : null;
-
-      const row = document.createElement('div');
-      row.className = 'att-row' + (currentStatus === 'Present' ? ' marked-present' : currentStatus === 'Absent' ? ' marked-absent' : '');
-      row.dataset.email = student.id;
-      row.dataset.status = currentStatus || '';
-      row.dataset.parentPhone = student.data.parentPhone || '';
-      row.dataset.studentName = student.data.name || 'Student';
-      row.innerHTML = `
-        <div>
-          <div class="att-row-name">${student.data.name || 'Unnamed'}</div>
-          <div class="att-row-email">${student.id}</div>
-        </div>
-        <div class="att-row-actions">
-          <div class="att-toggle-group">
-            <button class="att-toggle-btn present ${currentStatus === 'Present' ? 'active' : ''}" data-status="Present">Present</button>
-            <button class="att-toggle-btn absent ${currentStatus === 'Absent' ? 'active' : ''}" data-status="Absent">Absent</button>
-          </div>
-          <span class="wa-slot"></span>
-        </div>
-      `;
-      row.querySelectorAll('.att-toggle-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const status = btn.dataset.status;
-          row.dataset.status = status;
-          row.querySelectorAll('.att-toggle-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          row.classList.remove('marked-present', 'marked-absent');
-          row.classList.add(status === 'Present' ? 'marked-present' : 'marked-absent');
-          const slot = row.querySelector('.wa-slot');
-          const phone = row.dataset.parentPhone || '';
-          if(slot){
-            slot.innerHTML = (status === 'Absent' && parentWaLink(phone,row.dataset.studentName,dateLabel))
-              ? `<a class="wa-parent-btn" href="${parentWaLink(phone,row.dataset.studentName,dateLabel)}" target="_blank" rel="noopener">💬 Parent</a>`
-              : '';
-          }
-          updateAttendanceSummary();
-        });
-      });
-      container.appendChild(row);
-    });
-
-    document.getElementById('save-attendance-bar').style.display = 'flex';
-    updateAttendanceSummary();
+  function attendanceDateObj(key){
+    return new Date(String(key)+'T00:00:00');
   }
-
-  function updateAttendanceSummary(){
-    const rows = document.querySelectorAll('.att-row');
-    let present = 0, absent = 0, unmarked = 0;
-    rows.forEach(r => {
-      if(r.dataset.status === 'Present'){ present++; }
-      else if(r.dataset.status === 'Absent'){ absent++; }
-      else { unmarked++; }
-    });
-    document.getElementById('att-summary').innerHTML = `
-      <span><span class="att-dot present"></span>${present} Present</span>
-      <span><span class="att-dot absent"></span>${absent} Absent</span>
-      <span><span class="att-dot unmarked"></span>${unmarked} Unmarked</span>
-    `;
-    document.getElementById('save-bar-text').textContent = `${present + absent} of ${rows.length} students marked`;
+  function attendanceIsoDate(d){
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   }
-
-  document.getElementById('bulk-att-date').addEventListener('change', loadBulkAttendanceRows);
-
-  document.getElementById('save-bulk-attendance-btn').addEventListener('click', async () => {
-    const btn = document.getElementById('save-bulk-attendance-btn');
-    const dateLabel = dateInputToLabel(document.getElementById('bulk-att-date').value);
-    const rows = document.querySelectorAll('.att-row');
-    const toSave = Array.from(rows).filter(r => r.dataset.status);
-
-    if(toSave.length === 0){
-      showToast('Mark at least one student first.');
-      return;
+  function attendanceMonthLabel(d){
+    return d.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+  }
+  function getAttendanceForDate(dateKey){
+    const rows=[];
+    bulkStudentsCache.forEach(student=>{
+      const log=normalizeAttendanceLog(student.data.attendance?.log||[]);
+      const entry=log.find(e=>e.date===dateKey);
+      rows.push({student,entry});
+    });
+    return rows;
+  }
+  function getAttendanceDayState(dateKey){
+    const entries=getAttendanceForDate(dateKey).map(x=>x.entry).filter(Boolean);
+    if(!entries.length) return {type:'none',label:'Not Recorded'};
+    const noClass=entries.find(e=>e.status==='No Class');
+    if(noClass && entries.every(e=>e.status==='No Class')) return {type:'noclass',label:'No Class',reason:noClass.reason||''};
+    const present=entries.filter(e=>e.status==='Present').length;
+    const absent=entries.filter(e=>e.status==='Absent').length;
+    if(present && !absent) return {type:'present',label:`${present} Present`};
+    if(absent && !present) return {type:'absent',label:`${absent} Absent`};
+    return {type:'mixed',label:`${present} P · ${absent} A`};
+  }
+  function renderAttendanceCalendar(){
+    const title=document.getElementById('att-month-title');
+    const grid=document.getElementById('att-calendar-days');
+    if(!title||!grid) return;
+    title.textContent=attendanceMonthLabel(attendanceCalendarDate);
+    const y=attendanceCalendarDate.getFullYear(), m=attendanceCalendarDate.getMonth();
+    const first=new Date(y,m,1), last=new Date(y,m+1,0);
+    const prevLast=new Date(y,m,0).getDate();
+    const cells=[];
+    const startOffset=first.getDay();
+    for(let i=0;i<42;i++){
+      const dayNum=i-startOffset+1;
+      let d, muted=false;
+      if(dayNum<1){d=new Date(y,m-1,prevLast+dayNum);muted=true;}
+      else if(dayNum>last.getDate()){d=new Date(y,m+1,dayNum-last.getDate());muted=true;}
+      else d=new Date(y,m,dayNum);
+      const key=attendanceIsoDate(d);
+      const state=getAttendanceDayState(key);
+      const today=key===attendanceIsoDate(new Date());
+      const selected=key===attendanceSelectedDate;
+      cells.push(`<button type="button" class="att-day ${muted?'muted':''} ${today?'today':''} ${selected?'selected':''} meta-${state.type}" data-date="${key}"><span class="att-day-num">${d.getDate()}</span><span class="att-day-meta">${state.label}</span></button>`);
     }
-
-    btn.disabled = true; btn.textContent = 'Saving...';
-
+    grid.innerHTML=cells.join('');
+    grid.querySelectorAll('.att-day').forEach(btn=>btn.addEventListener('click',()=>selectAttendanceDate(btn.dataset.date)));
+  }
+  function renderAttendanceSummary(dateKey){
+    const summary=document.getElementById('att-summary');
+    if(!summary) return;
+    const rows=getAttendanceForDate(dateKey);
+    let present=0,absent=0,unmarked=0,noclass=0;
+    rows.forEach(({entry})=>{if(entry?.status==='Present')present++;else if(entry?.status==='Absent')absent++;else if(entry?.status==='No Class')noclass++;else unmarked++;});
+    summary.innerHTML=`<span><span class="att-dot present"></span>${present} Present</span><span><span class="att-dot absent"></span>${absent} Absent</span><span><span class="att-dot unmarked"></span>${unmarked} Not Recorded</span>${noclass?`<span>🟠 ${noclass} No Class</span>`:''}`;
+  }
+  function renderAttendanceStudentRows(dateKey){
+    const container=document.getElementById('att-rows-container');
+    if(!container) return;
+    const rows=getAttendanceForDate(dateKey);
+    container.innerHTML=rows.map(({student,entry})=>{
+      const status=entry?.status||'';
+      return `<div class="att-row ${status==='Present'?'marked-present':status==='Absent'?'marked-absent':''}" data-email="${escapeHtml(student.id)}" data-status="${escapeHtml(status)}" data-parent-phone="${escapeHtml(student.data.parentPhone||'')}" data-student-name="${escapeHtml(student.data.name||'Student')}">\n        <div><div class="att-row-name">${escapeHtml(student.data.name||'Unnamed')}</div><div class="att-row-email">${escapeHtml(student.data.batchName||student.id)}</div></div>\n        <div class="att-row-actions"><div class="att-toggle-group"><button class="att-toggle-btn present ${status==='Present'?'active':''}" data-status="Present">Present</button><button class="att-toggle-btn absent ${status==='Absent'?'active':''}" data-status="Absent">Absent</button><button class="att-toggle-btn ${status==='No Class'?'active':''}" data-status="No Class" style="border-color:#d79b28;">No Class</button></div><span class="wa-slot"></span></div>\n      </div>`;
+    }).join('');
+    container.querySelectorAll('.att-row').forEach(row=>{
+      row.querySelectorAll('.att-toggle-btn').forEach(btn=>btn.addEventListener('click',()=>{
+        const status=btn.dataset.status;
+        row.dataset.status=status;
+        row.querySelectorAll('.att-toggle-btn').forEach(b=>b.classList.remove('active','active-none'));
+        btn.classList.add('active');
+        row.classList.remove('marked-present','marked-absent');
+        if(status==='Present') row.classList.add('marked-present');
+        if(status==='Absent') row.classList.add('marked-absent');
+        const phone=row.dataset.parentPhone||'';
+        const slot=row.querySelector('.wa-slot');
+        slot.innerHTML=(status==='Absent'&&parentWaLink(phone,row.dataset.studentName,dateInputToLabel(dateKey)))?`<a class="wa-parent-btn" href="${parentWaLink(phone,row.dataset.studentName,dateInputToLabel(dateKey))}" target="_blank" rel="noopener">💬 Parent</a>`:'';
+        renderAttendanceSummary(dateKey);
+      }));
+    });
+  }
+  function selectAttendanceDate(dateKey){
+    attendanceSelectedDate=dateKey;
+    const d=attendanceDateObj(dateKey);
+    document.getElementById('bulk-att-date').value=dateKey;
+    const state=getAttendanceDayState(dateKey);
+    const detail=document.getElementById('att-detail-panel');
+    const reason=state.reason||'';
+    detail.innerHTML=`<h3>${d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</h3><div class="att-detail-date">${state.type==='none'?'No record exists for this date yet.':state.type==='noclass'?'The class was not held.':'Attendance can be edited below.'}</div>\n      <div class="att-class-status"><button type="button" id="att-class-held" class="${state.type!=='noclass'?'active-held':''}">🟢 Class Held</button><button type="button" id="att-class-none" class="${state.type==='noclass'?'active-none':''}">🟠 No Class</button></div>\n      <div class="att-reason ${state.type==='noclass'?'show':''}" id="att-no-class-reason"><label>Why was class not held?</label><input type="text" id="att-reason-input" value="${escapeHtml(reason)}" placeholder="e.g. Heavy rain / Holiday / Teacher unavailable"></div>\n      <div id="att-detail-msg" class="msg"></div>\n      <div class="att-detail-actions"><button class="btn btn-secondary btn-small" id="att-mark-all-present" type="button">Mark All Present</button><button class="btn btn-small" id="att-save-day" type="button">Save Date</button></div>`;
+    const held=document.getElementById('att-class-held'), none=document.getElementById('att-class-none'), reasonBox=document.getElementById('att-no-class-reason');
+    held.onclick=()=>{held.classList.add('active-held');none.classList.remove('active-none');reasonBox.classList.remove('show');document.getElementById('att-detail-msg').textContent='Class marked as held. Now mark students Present/Absent below.';};
+    none.onclick=()=>{none.classList.add('active-none');held.classList.remove('active-held');reasonBox.classList.add('show');document.getElementById('att-detail-msg').textContent='Save this date as No Class. It will not reduce attendance percentage.';};
+    document.getElementById('att-mark-all-present').onclick=()=>{document.querySelectorAll('#att-rows-container .att-row').forEach(r=>{r.dataset.status='Present';r.querySelectorAll('.att-toggle-btn').forEach(b=>b.classList.toggle('active',b.dataset.status==='Present'));r.classList.add('marked-present');r.classList.remove('marked-absent');});renderAttendanceSummary(dateKey);};
+    document.getElementById('att-save-day').onclick=()=>saveAttendanceDay(dateKey);
+    renderAttendanceCalendar();
+    renderAttendanceStudentRows(dateKey);
+    renderAttendanceSummary(dateKey);
+  }
+  async function saveAttendanceDay(dateKey){
+    const noClass=document.getElementById('att-class-none')?.classList.contains('active-none');
+    const reason=document.getElementById('att-reason-input')?.value.trim()||'';
+    if(noClass&&!reason){showToast('Please enter why the class was not held.');return;}
+    const rows=Array.from(document.querySelectorAll('#att-rows-container .att-row'));
+    if(!rows.length){showToast('No students found.');return;}
+    const ops=[];
+    rows.forEach(row=>{
+      const email=canonicalStudentId(row.dataset.email);
+      const student=bulkStudentsCache.find(s=>canonicalStudentId(s.id)===email);
+      if(!student)return;
+      let log=normalizeAttendanceLog(student.data.attendance?.log||[]);
+      log=log.filter(e=>e.date!==dateKey);
+      if(noClass){
+        log.unshift({date:dateKey,status:'No Class',reason});
+      }else{
+        const status=row.dataset.status;
+        if(status==='Present'||status==='Absent') log.unshift({date:dateKey,status});
+      }
+      log=normalizeAttendanceLog(log);
+      const counted=log.filter(e=>e.status==='Present'||e.status==='Absent');
+      const presentCount=counted.filter(e=>e.status==='Present').length;
+      const percent=counted.length?Math.round(presentCount/counted.length*100):0;
+      ops.push(wb=>wb.set(doc(db,'students',email),{attendance:{percent,log}},{merge:true}));
+    });
     try{
-      const attendanceOps=[];
-      toSave.forEach(row => {
-        const email = canonicalStudentId(row.dataset.email);
-        const status = row.dataset.status;
-        const student = bulkStudentsCache.find(s => canonicalStudentId(s.id) === email);
-        if(!student) return;
-        let log=normalizeAttendanceLog(student.data.attendance?.log||[]);
-        const targetKey=adminAttendanceDateKey(dateLabel);
-        log=log.filter(e=>e.date!==targetKey);
-        log.unshift({date:targetKey,status});
-        log=normalizeAttendanceLog(log);
-        const presentCount=log.filter(e=>e.status==='Present').length;
-        const counted=log.filter(e=>adminAttendanceCounted(e.status));
-        const percent=counted.length?Math.round(presentCount/counted.length*100):0;
-        attendanceOps.push(wb => wb.set(doc(db,'students',email),{attendance:{percent,log}},{merge:true}));
-      });
-      await commitBatchOps(attendanceOps);
-      showToast(`Saved attendance for ${toSave.length} student(s)!`);
+      const btn=document.getElementById('att-save-day');btn.disabled=true;btn.textContent='Saving…';
+      await commitBatchOps(ops);
+      showToast(noClass?`No Class saved for ${dateInputToLabel(dateKey)}.`:`Attendance saved for ${dateInputToLabel(dateKey)}.`);
       await loadStudentList();
       await loadBulkAttendanceRows();
-    } catch(err){
-      showToast('Error: ' + err.message);
-    } finally {
-      btn.disabled = false; btn.textContent = 'Save Attendance';
-    }
-  });
+    }catch(err){showToast('Error: '+(err?.message||'Could not save attendance.'));}
+    finally{const btn=document.getElementById('att-save-day');if(btn){btn.disabled=false;btn.textContent='Save Date';}}
+  }
+  async function loadBulkAttendanceRows(){
+    const container=document.getElementById('att-rows-container');
+    if(container) container.innerHTML='<div class="loading-row"><span class="spinner"></span>Loading students...</div>';
+    if(allStudentsCache.length) bulkStudentsCache=allStudentsCache.map(student=>({id:student.id,data:student.data}));
+    else {const snap=await getDocs(collection(db,'students'));bulkStudentsCache=[];snap.forEach(docSnap=>bulkStudentsCache.push({id:docSnap.id,data:docSnap.data()}));}
+    if(!bulkStudentsCache.length){if(container)container.innerHTML='<div style="color:var(--muted);font-size:13px;">No students yet.</div>';return;}
+    const initial=document.getElementById('bulk-att-date')?.value||attendanceIsoDate(new Date());
+    attendanceSelectedDate=initial;
+    attendanceCalendarDate=attendanceDateObj(initial);
+    renderAttendanceCalendar();
+    selectAttendanceDate(initial);
+    const bar=document.getElementById('save-attendance-bar');if(bar)bar.style.display='none';
+  }
+
+  document.getElementById('bulk-att-date').addEventListener('change',e=>selectAttendanceDate(e.target.value));
+  document.getElementById('att-prev-month').addEventListener('click',()=>{attendanceCalendarDate=new Date(attendanceCalendarDate.getFullYear(),attendanceCalendarDate.getMonth()-1,1);renderAttendanceCalendar();});
+  document.getElementById('att-next-month').addEventListener('click',()=>{attendanceCalendarDate=new Date(attendanceCalendarDate.getFullYear(),attendanceCalendarDate.getMonth()+1,1);renderAttendanceCalendar();});
+  document.getElementById('att-today-btn').addEventListener('click',()=>{const k=attendanceIsoDate(new Date());attendanceCalendarDate=attendanceDateObj(k);selectAttendanceDate(k);});
+
+
 
   let allStudentsCache = [];
 
