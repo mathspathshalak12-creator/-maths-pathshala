@@ -900,6 +900,78 @@
   body.student-logged-in #student-dashboard { display:block !important; visibility:visible !important; opacity:1 !important; }
 </style>
 
+<style id="student-dashboard-premium-ui">
+  /* Premium Student Dashboard UI — visual layer only */
+  #student-dashboard{background:linear-gradient(180deg,#071a35 0%,#0b2448 48%,#f5f7fb 48%,#f5f7fb 100%);padding:24px 0 42px;}
+  .student-lms-shell{max-width:1180px;margin:0 auto;position:relative;}
+  .student-lms-topbar{background:rgba(8,27,55,.82)!important;border:1px solid rgba(255,255,255,.09)!important;box-shadow:0 18px 50px rgba(2,12,28,.22)!important;backdrop-filter:blur(16px);border-radius:22px!important;padding:14px 18px!important;}
+  .student-brand-mark{width:42px!important;height:42px!important;border-radius:13px!important;background:linear-gradient(135deg,#f5a623,#ffc95c)!important;color:#071a35!important;box-shadow:0 8px 24px rgba(245,166,35,.25);}
+  .student-brand-lockup strong{font-size:15px!important;letter-spacing:-.01em;}
+  .student-brand-lockup span{opacity:.72;}
+  .student-hero-card{margin-top:16px!important;border:1px solid rgba(255,255,255,.10)!important;border-radius:26px!important;background:radial-gradient(circle at 85% 10%,rgba(245,166,35,.20),transparent 32%),linear-gradient(135deg,#102f59,#071a35)!important;box-shadow:0 24px 70px rgba(2,12,28,.28)!important;overflow:hidden!important;position:relative;}
+  .student-hero-card:after{content:'∑  π  √  ∆';position:absolute;right:28px;bottom:-18px;font-size:54px;font-weight:900;letter-spacing:15px;color:rgba(255,255,255,.035);transform:rotate(-7deg);pointer-events:none;}
+  .student-identity,.student-hero-copy{position:relative;z-index:1;}
+  .dash-avatar{box-shadow:0 10px 30px rgba(0,0,0,.18)!important;border:2px solid rgba(255,255,255,.18)!important;}
+  .student-kpi-grid{gap:14px!important;margin:18px 0!important;}
+  .student-kpi{border:1px solid #e7ebf2!important;background:rgba(255,255,255,.94)!important;border-radius:18px!important;box-shadow:0 12px 32px rgba(11,30,61,.07)!important;padding:18px!important;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease!important;}
+  .student-kpi:hover{transform:translateY(-3px);box-shadow:0 18px 42px rgba(11,30,61,.11)!important;border-color:rgba(245,166,35,.45)!important;}
+  .student-kpi strong{font-size:28px!important;letter-spacing:-.04em;}
+  .student-main-grid{gap:16px!important;}
+  .student-panel{border:1px solid #e7ebf2!important;background:rgba(255,255,255,.96)!important;border-radius:20px!important;box-shadow:0 12px 36px rgba(11,30,61,.065)!important;overflow:hidden;}
+  .student-panel-head{padding-bottom:12px!important;border-bottom:1px solid #edf0f5!important;margin-bottom:15px!important;}
+  .panel-kicker{color:#b27613!important;letter-spacing:.12em!important;font-size:10px!important;}
+  .student-panel h3{font-size:20px!important;letter-spacing:-.025em!important;color:#10233f!important;}
+  .panel-pill{background:#fff6df!important;color:#9b650f!important;border:1px solid #f5dfaa!important;}
+  .detail-list>div{padding:11px 0!important;}
+  .rank-card{background:linear-gradient(135deg,#0b2448,#123c70)!important;border-radius:16px!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)!important;}
+  .rank-medal{background:rgba(245,166,35,.16)!important;color:#ffc95c!important;border:1px solid rgba(245,166,35,.22)!important;}
+  .streak-highlight{border:1px solid #f2dfb0!important;background:#fff9ea!important;color:#80570e!important;border-radius:12px!important;}
+  .att-progress-track{height:10px!important;background:#e9edf3!important;box-shadow:none!important;}
+  .monthly-attendance-list,.payment-history-list{border-top:0!important;}
+  .daily-attendance-table-wrap{border:1px solid #edf0f5!important;border-radius:14px!important;overflow:hidden;}
+  .daily-attendance-table th{background:#f7f9fc!important;color:#52627a!important;}
+  .daily-attendance-table td{border-color:#edf0f5!important;}
+  .dash-notes-list li{padding:12px 0!important;border-bottom:1px solid #edf0f5!important;}
+  .dash-notes-list li:last-child{border-bottom:0!important;}
+  .dash-notes-list a{color:#18385f!important;border-color:#dce3ed!important;background:#f7f9fc!important;border-radius:8px!important;}
+  .dash-notes-list a:hover{background:#102f59!important;color:#fff!important;}
+  .student-learning-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+  .learning-tile{display:flex;align-items:center;gap:13px;padding:15px;border:1px solid #e7ebf2;border-radius:15px;background:linear-gradient(180deg,#fff,#fafbfd);text-decoration:none;color:#10233f;transition:.22s ease;}
+  .learning-tile:hover{transform:translateY(-2px);border-color:#f0cc83;box-shadow:0 10px 24px rgba(11,30,61,.07);}
+  .learning-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#fff5dc;font-size:20px;flex:0 0 auto;}
+  .learning-tile strong{display:block;font-size:14px;margin-bottom:3px;}
+  .learning-tile span{font-size:11px;color:#7b8798;}
+  .student-latest-video{background:linear-gradient(135deg,#081d3a,#103761)!important;color:#fff!important;}
+  .student-latest-video .student-panel-head{border-color:rgba(255,255,255,.11)!important;}
+  .student-latest-video h3,.student-latest-video .panel-kicker{color:#fff!important;}
+  .latest-video-card{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(260px,.85fr);gap:18px;align-items:center;}
+  .latest-video-frame{position:relative;aspect-ratio:16/9;border-radius:15px;overflow:hidden;background:#020b18;box-shadow:0 16px 38px rgba(0,0,0,.25);}
+  .latest-video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .latest-video-copy .video-label{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#ffc95c;}
+  .latest-video-copy h4{font-size:22px;line-height:1.2;margin:7px 0;color:#fff;}
+  .latest-video-copy p{font-size:13px;line-height:1.65;color:#c9d4e4;margin:0 0 14px;}
+  .latest-video-copy a{display:inline-flex;align-items:center;gap:7px;padding:10px 14px;border-radius:10px;background:#f5a623;color:#10233f;font-weight:800;text-decoration:none;}
+  .student-empty-mini{padding:18px;border:1px dashed rgba(255,255,255,.18);border-radius:13px;color:#b8c6d8;font-size:13px;}
+  .student-section-divider{grid-column:1/-1;margin:2px 0 -2px;padding:5px 2px 0;color:#53657e;font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;}
+  @media(max-width:760px){
+    #student-dashboard{padding:12px 0 28px;background:linear-gradient(180deg,#071a35 0%,#0b2448 42%,#f5f7fb 42%,#f5f7fb 100%);}
+    .student-lms-topbar{border-radius:16px!important;}
+    .student-hero-card{border-radius:20px!important;}
+    .student-hero-copy{display:none;}
+    .student-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+    .student-kpi strong{font-size:23px!important;}
+    .student-main-grid{grid-template-columns:1fr!important;}
+    .student-panel-wide{grid-column:auto!important;}
+    .student-learning-grid{grid-template-columns:1fr;}
+    .latest-video-card{grid-template-columns:1fr;}
+    .latest-video-copy h4{font-size:19px;}
+  }
+  @media(max-width:430px){
+    .student-kpi{padding:14px!important;}
+    .student-kpi span{font-size:10px!important;}
+    .student-kpi small{font-size:9px!important;}
+  }
+</style>
 <style id="youtube-latest-two-style">
   .yt-section{background:linear-gradient(180deg,#f8f6ef 0%,#fff 100%);}
   .yt-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin-top:24px;}
@@ -960,7 +1032,7 @@
 
         <div class="student-main-grid">
           <div class="student-panel student-panel-wide" id="panel-schedule">
-            <div class="student-panel-head"><div><span class="panel-kicker">CLASS DETAILS</span><h3>Your Schedule</h3></div></div>
+            <div class="student-panel-head"><div><span class="panel-kicker">TODAY &amp; SCHEDULE</span><h3>Today's Class</h3></div><span class="panel-pill">Live student view</span></div>
             <div class="detail-list">
               <div><span>Class &amp; batch</span><strong id="dash-class-batch">—</strong></div>
               <div><span>Batch timing</span><strong id="dash-batch-value">—</strong></div>
@@ -969,18 +1041,8 @@
             </div>
           </div>
 
-          <div class="student-panel student-panel-wide" id="panel-performance">
-            <div class="student-panel-head"><div><span class="panel-kicker">ACADEMIC PERFORMANCE</span><h3>Test Performance</h3></div><span class="panel-pill">Live records</span></div>
-            <div class="performance-summary" style="grid-template-columns:repeat(2,1fr);">
-              <div><span>Tests attempted</span><strong id="dash-tests-count">0</strong></div>
-              <div><span>Latest test highest (batch)</span><strong id="dash-best-score">—</strong></div>
-            </div>
-            <div class="score-chart-wrap student-score-chart"><canvas id="score-chart"></canvas></div>
-            <ul class="score-list student-score-list" id="dash-scores-list"><li>No test scores yet</li></ul>
-          </div>
-
           <div class="student-panel" id="panel-position">
-            <div class="student-panel-head"><div><span class="panel-kicker">BATCH</span><h3>Your Position</h3></div></div>
+            <div class="student-panel-head"><div><span class="panel-kicker">BATCH PERFORMANCE</span><h3>Your Position</h3></div></div>
             <div class="rank-card"><div class="rank-medal">#</div><div><strong id="dash-rank-big">—</strong><span id="dash-rank-detail">Batch rank will appear after tests are recorded.</span></div></div>
             <div class="rank-stats"><div><span>Latest test</span><strong id="dash-latest-test-name">—</strong></div></div>
           </div>
@@ -994,32 +1056,49 @@
           </div>
 
           <div class="student-panel student-panel-wide" id="panel-daily">
-            <div class="student-panel-head">
-              <div><span class="panel-kicker">ATTENDANCE CALENDAR</span><h3>Daily Attendance</h3></div>
-              <div style="display:flex;gap:8px;align-items:center;">
-                <select id="attendance-month-select" style="padding:7px 9px;border:1px solid #dfe5ee;border-radius:8px;font-size:12px;color:#253550;"></select>
-              </div>
-            </div>
+            <div class="student-panel-head"><div><span class="panel-kicker">ATTENDANCE CALENDAR</span><h3>Daily Attendance</h3></div><div style="display:flex;gap:8px;align-items:center;"><select id="attendance-month-select" style="padding:7px 9px;border:1px solid #dfe5ee;border-radius:8px;font-size:12px;color:#253550;"></select></div></div>
             <div class="daily-attendance-summary" id="daily-attendance-summary"></div>
-            <div class="daily-attendance-table-wrap">
-              <table class="daily-attendance-table">
-                <thead>
-                  <tr><th>Date</th><th>Day</th><th>Status</th></tr>
-                </thead>
-                <tbody id="daily-attendance-table"></tbody>
-              </table>
+            <div class="daily-attendance-table-wrap"><table class="daily-attendance-table"><thead><tr><th>Date</th><th>Day</th><th>Status</th></tr></thead><tbody id="daily-attendance-table"></tbody></table></div>
+          </div>
+
+          <div class="student-section-divider">My Learning</div>
+
+          <div class="student-panel" id="panel-homework">
+            <div class="student-panel-head"><div><span class="panel-kicker">ASSIGNED WORK</span><h3>Homework</h3></div><span class="panel-pill">New assignments</span></div>
+            <div id="dash-homework-section"><div class="student-empty-mini" style="color:#6d7c91;border-color:#dce3ed;">No homework assigned yet.</div></div>
+          </div>
+
+          <div class="student-panel" id="panel-notes">
+            <div class="student-panel-head"><div><span class="panel-kicker">ASSIGNED MATERIAL</span><h3>Notes</h3></div></div>
+            <ul class="dash-notes-list student-notes-list" id="dash-notes-list"><li>No notes assigned yet</li></ul>
+          </div>
+
+          <div class="student-panel" id="panel-learning">
+            <div class="student-panel-head"><div><span class="panel-kicker">LEARNING HUB</span><h3>Study Resources</h3></div></div>
+            <div class="student-learning-grid">
+              <a class="learning-tile" href="javascript:void(0)" data-scroll-target="panel-homework"><div class="learning-icon">📝</div><div><strong>Assigned Homework</strong><span>Practice &amp; submissions</span></div></a>
+              <a class="learning-tile" href="javascript:void(0)" data-scroll-target="panel-notes"><div class="learning-icon">📖</div><div><strong>Assigned Notes</strong><span>Chapter-wise learning</span></div></a>
+              <a class="learning-tile" href="javascript:void(0)" data-scroll-target="panel-performance"><div class="learning-icon">🧪</div><div><strong>Tests &amp; Results</strong><span>Scores &amp; performance</span></div></a>
+              <a class="learning-tile" href="#youtube-videos"><div class="learning-icon">🎥</div><div><strong>Classes &amp; Videos</strong><span>Latest Maths Pathshala video</span></div></a>
             </div>
+          </div>
+
+          <div class="student-panel student-panel-wide student-latest-video" id="panel-latest-video">
+            <div class="student-panel-head"><div><span class="panel-kicker">MATHS PATHSHALA • RECENT</span><h3>Latest YouTube Video</h3></div><span class="panel-pill">Auto synced</span></div>
+            <div id="student-latest-video-content"><div class="student-empty-mini">Loading the latest video…</div></div>
+          </div>
+
+          <div class="student-panel student-panel-wide" id="panel-performance">
+            <div class="student-panel-head"><div><span class="panel-kicker">ACADEMIC PERFORMANCE</span><h3>Test Performance</h3></div><span class="panel-pill">Live records</span></div>
+            <div class="performance-summary" style="grid-template-columns:repeat(2,1fr);"><div><span>Tests attempted</span><strong id="dash-tests-count">0</strong></div><div><span>Latest test highest (batch)</span><strong id="dash-best-score">—</strong></div></div>
+            <div class="score-chart-wrap student-score-chart"><canvas id="score-chart"></canvas></div>
+            <ul class="score-list student-score-list" id="dash-scores-list"><li>No test scores yet</li></ul>
           </div>
 
           <div class="student-panel" id="panel-fees">
-            <div class="student-panel-head"><div><span class="panel-kicker">FEES</span><h3>Fee Status</h3></div></div>
+            <div class="student-panel-head"><div><span class="panel-kicker">ACCOUNT</span><h3>Fee Status</h3></div></div>
             <span class="dash-fee-badge" id="dash-fee-badge">—</span>
             <ul class="payment-history-list" id="dash-monthly-fee-list"></ul>
-          </div>
-
-          <div class="student-panel student-panel-wide" id="panel-notes">
-            <div class="student-panel-head"><div><span class="panel-kicker">LEARNING MATERIAL</span><h3>Your Notes</h3></div></div>
-            <ul class="dash-notes-list student-notes-list" id="dash-notes-list"><li>No notes assigned yet</li></ul>
           </div>
         </div>
       </div>
@@ -2213,6 +2292,8 @@
         await loadStudentDashboard(user.email);
         await loadNotices();
         await loadHomework();
+        await loadStudentHomeworkSection();
+        await loadStudentLatestYouTube();
       }catch(err){
         console.error('Student dashboard load error:', err);
         showLoginMsg('Login successful, but the dashboard could not load completely. Please tap Refresh.', 'error');
@@ -2233,6 +2314,8 @@
             await loadStudentDashboard(auth.currentUser.email);
             await loadNotices();
             await loadHomework();
+            await loadStudentHomeworkSection();
+            await loadStudentLatestYouTube();
           }catch(err){
             console.warn('Dashboard auto-refresh failed:', err);
           }finally{
@@ -2258,6 +2341,8 @@
       await loadStudentDashboard(auth.currentUser.email);
       await loadNotices();
       await loadHomework();
+      await loadStudentHomeworkSection();
+      await loadStudentLatestYouTube();
     }catch(err){
       console.warn('Dashboard return refresh failed:', err);
     }
@@ -2269,7 +2354,7 @@
     if(auth.currentUser){
       const btn = document.getElementById('dash-refresh-btn');
       btn.textContent = 'Refreshing...';
-      try{ await loadStudentDashboard(auth.currentUser.email); await loadNotices(); await loadHomework(); }
+      try{ await loadStudentDashboard(auth.currentUser.email); await loadNotices(); await loadHomework(); await loadStudentHomeworkSection(); await loadStudentLatestYouTube(); }
       finally{ btn.textContent = '↻ Refresh'; }
     }
   });
@@ -2410,6 +2495,36 @@
     } catch(err){
       box.innerHTML = '';
     }
+  }
+
+
+  async function loadStudentHomeworkSection(){
+    const section=document.getElementById('dash-homework-section');
+    if(!section || !auth.currentUser) return;
+    try{
+      const email=auth.currentUser.email.toLowerCase();
+      const snap=await getDocs(query(collection(db,'homework'), where('recipientEmails','array-contains',email)));
+      const docs=snap.docs.slice().sort((a,b)=>(b.data().createdAt?.toMillis?.()||0)-(a.data().createdAt?.toMillis?.()||0)).filter(d=>matchesStudentTarget(d.data()));
+      const rows=docs.slice(0,6).map(d=>d.data());
+      section.innerHTML=rows.length?rows.map(h=>`<div class="detail-list" style="margin:0 0 8px;"><div><span>${dashEscapeHtml(h.title||'Homework')}${h.dueDate?`<small style="display:block;color:#8a5a00;margin-top:3px;">Due ${dashEscapeHtml(h.dueDate)}</small>`:''}</span><strong style="max-width:60%;text-align:right;font-size:12px;line-height:1.45;">${dashEscapeHtml(h.details||'Assigned homework')}</strong></div></div>`).join(''):'<div class="student-empty-mini" style="color:#6d7c91;border-color:#dce3ed;">No homework assigned yet.</div>';
+    }catch(e){
+      section.innerHTML='<div class="student-empty-mini" style="color:#6d7c91;border-color:#dce3ed;">Homework will appear here when assigned.</div>';
+    }
+  }
+
+  async function loadStudentLatestYouTube(){
+    const box=document.getElementById('student-latest-video-content');
+    if(!box) return;
+    try{
+      const snap=await getDoc(doc(db,'siteSettings','youtube'));
+      const videos=snap.exists() && Array.isArray(snap.data().videos)?snap.data().videos:[];
+      const v=videos[0];
+      if(!v || !v.videoId){box.innerHTML='<div class="student-empty-mini">Latest video will appear here soon.</div>';return;}
+      const id=String(v.videoId).trim();
+      const title=dashEscapeHtml(v.title||'Latest Maths Pathshala Video');
+      const desc=dashEscapeHtml(v.description||'Watch the latest class or learning video from Maths Pathshala.');
+      box.innerHTML=`<div class="latest-video-card"><div class="latest-video-frame"><iframe src="https://www.youtube.com/embed/${encodeURIComponent(id)}" title="${title}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="latest-video-copy"><div class="video-label">Latest upload</div><h4>${title}</h4><p>${desc}</p><a href="https://www.youtube.com/watch?v=${encodeURIComponent(id)}" target="_blank" rel="noopener">▶ Watch on YouTube</a></div></div>`;
+    }catch(e){box.innerHTML='<div class="student-empty-mini">Latest video could not be loaded right now.</div>';}
   }
 
   function parsePortalDate(value){
