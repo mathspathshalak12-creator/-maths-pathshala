@@ -237,6 +237,28 @@
 
 /* ===== PREMIUM ACADEMIC COMMAND CENTER ===== */
 .admin-layout{background:#f4f6fa!important}.admin-sidebar{background:linear-gradient(180deg,#06162f,#0c2850)!important;color:#fff!important}.admin-brand{padding:22px 18px!important}.admin-nav a{border-radius:10px!important;margin:3px 8px!important}.admin-nav a:hover{background:rgba(255,255,255,.08)!important}.admin-main{background:#f4f6fa!important}.top-bar{background:#fff!important;border:1px solid #e2e7ef!important;border-radius:16px!important;box-shadow:0 8px 25px rgba(11,30,61,.05)!important}.card{border:1px solid #e2e7ef!important;border-radius:18px!important;box-shadow:0 8px 25px rgba(11,30,61,.045)!important}.card h2{color:#0b1e3d!important}.section-kicker{color:#b5760f!important;font-weight:800!important;letter-spacing:.1em!important}.stat-card{border:1px solid #e2e7ef!important;border-radius:15px!important;background:#fff!important}.stat-num{color:#0b1e3d!important}.btn{border-radius:10px!important}.student-insight-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0}.student-insight-strip>div{background:#f7f9fc;border:1px solid #e4e9f1;border-radius:12px;padding:11px}.student-insight-strip span{display:block;font-size:9px;text-transform:uppercase;color:#8490a2;letter-spacing:.06em;font-weight:700}.student-insight-strip strong{display:block;font-size:17px;color:#0b1e3d;margin-top:4px}.monthly-report-tools{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-top:12px}.monthly-report-tools .btn{margin:0}.report-help{font-size:11px;color:#78859a;margin-top:7px}@media(max-width:800px){.student-insight-strip{grid-template-columns:1fr 1fr}.monthly-report-tools{grid-template-columns:1fr}}
+
+/* WORKSPACE SYSTEM */
+.workspace-chooser{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(5,18,38,.78);backdrop-filter:blur(14px)}
+.workspace-chooser-card{width:min(920px,100%);background:linear-gradient(145deg,#fff,#fbf8f0);border:1px solid rgba(255,255,255,.35);border-radius:28px;padding:34px;box-shadow:0 30px 90px rgba(0,0,0,.28)}
+.workspace-eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--amber-dark);margin-bottom:8px}
+.workspace-chooser h2{font-size:30px;margin-bottom:8px}.workspace-chooser p{color:var(--muted);font-size:14px;margin-bottom:24px}
+.workspace-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.workspace-card{position:relative;text-align:left;border:1px solid rgba(11,30,61,.10);border-radius:22px;padding:24px;background:#fff;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;overflow:hidden}
+.workspace-card:after{content:'';position:absolute;right:-45px;bottom:-55px;width:150px;height:150px;border-radius:50%;background:rgba(245,166,35,.10)}
+.workspace-card:hover{transform:translateY(-5px);box-shadow:0 18px 42px rgba(11,30,61,.14);border-color:rgba(245,166,35,.65)}
+.workspace-icon{width:52px;height:52px;display:grid;place-items:center;border-radius:16px;background:linear-gradient(135deg,#0B1E3D,#1b477f);color:#fff;font-size:25px;margin-bottom:18px;box-shadow:0 10px 22px rgba(11,30,61,.18)}
+.workspace-card:nth-child(2) .workspace-icon{background:linear-gradient(135deg,#F5A623,#d88b0d);color:#0B1E3D}
+.workspace-card h3{font:700 21px 'Space Grotesk',sans-serif;margin-bottom:7px}.workspace-card p{margin:0 0 18px;font-size:12px;line-height:1.6}.workspace-open{font-size:12px;font-weight:800;color:var(--amber-dark)}
+.workspace-switcher{display:flex;align-items:center;gap:8px;margin-right:auto;margin-left:18px;position:relative}
+.workspace-switch-btn{border:1px solid rgba(11,30,61,.12);background:#fff;border-radius:12px;padding:8px 12px;font:700 12px 'Inter',sans-serif;color:var(--navy);cursor:pointer;box-shadow:0 5px 14px rgba(11,30,61,.06)}
+.workspace-switch-menu{display:none;position:absolute;top:43px;left:0;min-width:220px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px;box-shadow:0 18px 40px rgba(11,30,61,.16);z-index:1000}
+.workspace-switch-menu button{width:100%;border:0;background:transparent;text-align:left;padding:11px 12px;border-radius:9px;cursor:pointer;font:600 12px 'Inter',sans-serif;color:var(--navy)}.workspace-switch-menu button:hover{background:#f7f2e8}
+.workspace-mode-admission .student-workspace-item{display:none!important}.workspace-mode-student .admission-workspace-item{display:none!important}
+.workspace-mode-admission #admissions-section{display:block!important}.workspace-mode-admission .admission-workspace-only{display:block!important}
+@media(max-width:700px){.workspace-grid{grid-template-columns:1fr}.workspace-chooser-card{padding:24px}.workspace-chooser h2{font-size:25px}.workspace-switcher{margin-left:8px}.workspace-switch-btn{font-size:11px;padding:7px 9px}}
+
+.workspace-mode-student .admission-nav-item{display:none!important}.workspace-mode-admission .student-nav-item{display:none!important}.workspace-mode-admission > .admin-main > .stats-grid{display:none!important}.workspace-mode-admission > .admin-main > .card:not(#admissions-section),.workspace-mode-admission > .admin-main > .card[id="batches-section"]{display:none!important}
 </style>
 <style>
 /* Maths Pathshala Academic Command Center — premium cleanup */
@@ -376,26 +398,53 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     <div class="msg" id="login-msg"></div>
   </div>
 
+  <div id="workspace-chooser" class="workspace-chooser" aria-modal="true" role="dialog">
+    <div class="workspace-chooser-card">
+      <div class="workspace-eyebrow">Maths Pathshala · Admin Workspace</div>
+      <h2>What would you like to manage?</h2>
+      <p>Choose your workspace. You can switch between them anytime without logging out.</p>
+      <div class="workspace-grid">
+        <button type="button" class="workspace-card" data-workspace="student">
+          <span class="workspace-icon">👨‍🎓</span><h3>Student Management</h3>
+          <p>Students, batches, attendance, tests, scores, notices, fees and complete academic management.</p>
+          <span class="workspace-open">Open Student Management →</span>
+        </button>
+        <button type="button" class="workspace-card" data-workspace="admission">
+          <span class="workspace-icon">📝</span><h3>Admission Management</h3>
+          <p>Admissions, home tuition enquiries, teacher assignment, follow-ups and admission records.</p>
+          <span class="workspace-open">Open Admission Management →</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div id="admin-screen" class="admin-layout">
     <aside class="admin-sidebar">
       <div class="admin-brand"><span>∑</span><div>Maths <b>Pathshala</b><small>ACADEMIC COMMAND CENTER</small></div></div>
       <nav class="admin-nav">
         <a href="#overview">Dashboard</a>
-        <a href="#batches-section">Batches</a>
+        <a href="#batches-section" class="student-nav-item">Batches</a>
         <a href="#admissions-section" id="admissions-nav-link">🎓 Admissions <em id="admission-new-count" style="display:none">0</em></a>
-        <a href="#students-section">Students</a>
-        <a href="#attendance-section">Attendance</a>
-        <a href="#fees-section">Fees</a>
-        <a href="#communication-section">Student Updates</a>
-        <a href="#homework-section">Homework</a>
-        <a href="#branding-section">Branding</a>
-        <a href="#youtube-section">YouTube Videos</a>
+        <a href="#students-section" class="student-nav-item">Students</a>
+        <a href="#attendance-section" class="student-nav-item">Attendance</a>
+        <a href="#fees-section" class="student-nav-item">Fees</a>
+        <a href="#communication-section" class="student-nav-item">Student Updates</a>
+        <a href="#homework-section" class="student-nav-item">Homework</a>
+        <a href="#branding-section" class="student-nav-item">Branding</a>
+        <a href="#youtube-section" class="student-nav-item">YouTube Videos</a>
       </nav>
       <div class="sidebar-note">Primary focus: <b>Offline coaching</b><br>Class 9–10: PCM · Class 11–12: Mathematics<br>Home tuition: Class 3–8 all subjects · Class 9–12 Mathematics</div>
     </aside>
     <main class="admin-main">
     <div class="top-bar" id="overview">
       <h1 style="font-size:24px;">Maths Pathshala — Admin Panel</h1>
+      <div class="workspace-switcher">
+        <button type="button" class="workspace-switch-btn" id="workspace-switch-btn">👨‍🎓 Student Management ▾</button>
+        <div class="workspace-switch-menu" id="workspace-switch-menu">
+          <button type="button" data-workspace="student">👨‍🎓 Student Management</button>
+          <button type="button" data-workspace="admission">📝 Admission Management</button>
+        </div>
+      </div>
       <span class="logout-link" id="admin-logout">Logout</span>
     </div>
 
@@ -418,7 +467,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       </div>
     </div>
 
-    <div class="card" id="fees-section">
+    <div class="card" class="student-workspace-item" id="fees-section">
       <div class="card-title-row"><div><span class="section-kicker">Private finance</span><h2>Finance Overview</h2><p>Fee amounts stay hidden by default. Reveal them only when you need the actual figures.</p></div><button class="btn btn-secondary btn-small" id="toggle-finance-amounts">Show amounts</button></div>
       <div class="stats-grid" style="margin-top:14px;margin-bottom:0;">
         <div class="stat-card good">
@@ -448,7 +497,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     </div>
 
 
-    <div class="card" id="admissions-section">
+    <div class="card admission-workspace-item" id="admissions-section">
       <div class="card-title-row">
         <div><span class="section-kicker">Private admissions</span><h2>Admission Applications</h2><p>New applications submitted through the premium admission form appear here. This section stays hidden until you open it.</p></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
@@ -488,7 +537,11 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
           <button type="button" class="btn btn-secondary btn-small" id="teacher-refresh-btn">Refresh Teachers</button>
         </div>
         <div class="msg" id="teacher-form-msg"></div>
-        <div id="teachers-list" style="margin-top:14px;"><div style="font-size:12px;color:var(--muted);">No teachers loaded yet.</div></div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:14px;">
+          <input id="teacher-search-input" placeholder="Search saved teachers by name, subject or area…" style="flex:1;min-width:220px;">
+          <span id="teacher-count-label" style="font-size:12px;color:var(--muted);font-weight:700;"></span>
+        </div>
+        <div id="teachers-list" style="margin-top:10px;"><div style="font-size:12px;color:var(--muted);">No teachers loaded yet.</div></div>
       </div>
     </div>
 
@@ -526,7 +579,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       </div>
     </div>
 
-    <div class="card" id="branding-section">
+    <div class="card" class="student-workspace-item" id="branding-section">
       <div style="margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--cream);">
         <div style="font-weight:800;color:var(--navy);margin-bottom:6px;">Public Contact & Socials</div>
         <div style="font-size:12px;color:var(--muted);line-height:1.9;">📞 9506054813 · ✉️ mathspathshala.k12@gmail.com<br>📸 Instagram: @pathshalamaths · ▶️ YouTube: Maths Pathshala K12<br>CBSE · ICSE · UP Board · Kalyanpur, Kanpur</div>
@@ -537,7 +590,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     </div>
 
 
-    <div class="card" id="youtube-section">
+    <div class="card" class="student-workspace-item" id="youtube-section">
       <div class="card-title-row"><div><span class="section-kicker">Content automation</span><h2>YouTube Video Manager</h2><p>Add a new YouTube video here. The newest video becomes Video 1, the previous one becomes Video 2, and anything older is automatically removed from the public site.</p></div></div>
       <div class="yt-admin-grid" style="margin-top:14px;">
         <input type="text" id="yt-url-input" placeholder="YouTube video link or video ID">
@@ -549,7 +602,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       <div id="yt-admin-list" class="yt-admin-preview"></div>
     </div>
 
-    <div class="card" id="batches-section">
+    <div class="card" class="student-workspace-item" id="batches-section">
       <h2>Manage Batches</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Create named batches per class (e.g. "Rankers" for Class 9). Students get enrolled into these.</p>
       <div id="batch-edit-banner" style="display:none;align-items:center;justify-content:space-between;gap:10px;background:#FDF0DA;color:#9b6512;padding:10px 14px;border-radius:8px;margin-bottom:14px;font-size:13px;font-weight:600;">
@@ -595,7 +648,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       <div id="batches-list" style="margin-top:18px;"></div>
     </div>
 
-    <div class="card" id="communication-section">
+    <div class="card" class="student-workspace-item" id="communication-section">
       <h2>Parent Communication — Manual Only</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">No automatic messages are sent. Select a student, prepare the message, review it yourself, then choose Copy or Open WhatsApp and send it manually.</p>
       <div class="row2">
@@ -619,7 +672,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       <div class="msg" id="manual-comm-msg"></div>
     </div>
 
-    <div class="card" id="attendance-section">
+    <div class="card" class="student-workspace-item" id="attendance-section">
       <h2>Test Results &amp; Batch Scoring</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Pick a batch and enter scores for the whole class at once — no need to open each student separately.</p>
       <div class="row2">
@@ -648,7 +701,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       </div>
     </div>
 
-    <div class="card" id="students-section">
+    <div class="card" class="student-workspace-item" id="students-section">
       <h2>Post a Notice</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Choose who should see this — everyone, or just one batch.</p>
       <label>Send to</label>
@@ -673,7 +726,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     </div>
 
     <!-- NOTES MANAGEMENT: works independently, just like the Notice manager. No student profile needs to be opened. -->
-    <div class="card" id="notes-management-section">
+    <div class="card" class="student-workspace-item" id="notes-management-section">
       <h2>Notes Management</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Assign one common note to every student in a selected class and batch — without opening any student profile.</p>
       <div class="row2">
@@ -712,7 +765,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       </div>
     </div>
 
-<div class="card" id="homework-section">
+<div class="card" class="student-workspace-item" id="homework-section">
       <div class="card-title-row"><div><span class="section-kicker">Student work</span><h2>Homework Management</h2><p>Post homework to one class, one batch, or all students.</p></div></div>
       <div class="row2" style="margin-top:14px;">
         <div><label>Homework title</label><input type="text" id="homework-title" placeholder="e.g. Quadratic Equations — Exercise 4.2"></div>
@@ -1029,6 +1082,27 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
   const loginMsg = document.getElementById('login-msg');
   const saveMsg = document.getElementById('save-msg');
 
+  let currentWorkspace = 'student';
+  const workspaceChooser = document.getElementById('workspace-chooser');
+  const workspaceSwitchBtn = document.getElementById('workspace-switch-btn');
+  const workspaceSwitchMenu = document.getElementById('workspace-switch-menu');
+  function applyWorkspace(mode, showChooser=false){
+    currentWorkspace = mode === 'admission' ? 'admission' : 'student';
+    adminScreen.classList.toggle('workspace-mode-admission', currentWorkspace === 'admission');
+    adminScreen.classList.toggle('workspace-mode-student', currentWorkspace === 'student');
+    if(workspaceSwitchBtn) workspaceSwitchBtn.textContent = currentWorkspace === 'admission' ? '📝 Admission Management ▾' : '👨‍🎓 Student Management ▾';
+    if(workspaceChooser) workspaceChooser.style.display = showChooser ? 'flex' : 'none';
+    if(workspaceSwitchMenu) workspaceSwitchMenu.style.display = 'none';
+    localStorage.setItem('mpAdminWorkspace', currentWorkspace);
+    if(currentWorkspace === 'admission'){
+      document.getElementById('admissions-section')?.scrollIntoView({behavior:'smooth',block:'start'});
+    } else {
+      document.getElementById('overview')?.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  }
+  document.querySelectorAll('[data-workspace]').forEach(btn=>btn.addEventListener('click',()=>applyWorkspace(btn.dataset.workspace)));
+  workspaceSwitchBtn?.addEventListener('click',()=>{ if(workspaceSwitchMenu) workspaceSwitchMenu.style.display = workspaceSwitchMenu.style.display === 'block' ? 'none' : 'block'; });
+  document.addEventListener('click',(e)=>{ if(workspaceSwitchMenu && !e.target.closest('.workspace-switcher')) workspaceSwitchMenu.style.display='none'; });
   let currentAttendanceLog = [];
   let currentNotes = [];
   let currentTestScores = [];
@@ -1138,6 +1212,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
       await signOut(auth);
       loginScreen.style.display = 'block';
       adminScreen.style.display = 'none';
+      if(workspaceChooser) workspaceChooser.style.display = 'none';
       const signedInEmail = String(user?.email || '').trim();
       loginMsg.textContent = signedInEmail
         ? `Access denied — Firebase signed you in as ${signedInEmail}, which is not the admin account.`
@@ -1148,6 +1223,8 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     if(user && authorized){
       loginScreen.style.display = 'none';
       adminScreen.style.display = 'grid';
+      const savedWorkspace = localStorage.getItem('mpAdminWorkspace');
+      applyWorkspace(savedWorkspace === 'admission' ? 'admission' : 'student', !savedWorkspace);
       const todayStr = new Date().toISOString().split('T')[0];
       document.getElementById('f-att-date').value = todayStr;
       document.getElementById('f-test-date').value = todayStr;
@@ -3574,16 +3651,15 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
 
   function renderTeachers(){
     const list=document.getElementById('teachers-list'); if(!list)return;
-    if(!teachersCache.length){ list.innerHTML='<div style="font-size:12px;color:var(--muted);padding:10px 0;">No teachers saved yet. Add your first teacher above.</div>'; return; }
-    list.innerHTML=teachersCache.map(t=>{
+    const q=String(document.getElementById('teacher-search-input')?.value||'').trim().toLowerCase();
+    const filtered=teachersCache.filter(t=>!q || [t.name,t.phone,t.subjects,t.areas,t.availability,t.status].some(v=>String(v||'').toLowerCase().includes(q)));
+    const count=document.getElementById('teacher-count-label');
+    if(count) count.textContent=`${teachersCache.length} saved teacher${teachersCache.length===1?'':'s'}`;
+    if(!filtered.length){ list.innerHTML=`<div style="font-size:12px;color:var(--muted);padding:14px 0;">${teachersCache.length?'No teacher matches your search.':'No teachers saved yet. Add your first teacher above.'}</div>`; return; }
+    list.innerHTML=filtered.map(t=>{
       const badge=t.status==='Inactive'?'teacher-badge inactive':'teacher-badge';
-      return `<div class="teacher-row">\
-        <div class="teacher-row-main"><strong>${teacherSafeText(t.name||'Unnamed teacher')}</strong><small>${teacherSafeText(t.phone||'No phone')} · ${teacherSafeText(t.subjects||'Subjects not set')}<br>${teacherSafeText(t.areas||'Areas not set')} · ${teacherSafeText(t.availability||'Availability not set')}</small></div>\
-        <div><span class="${badge}">${teacherSafeText(t.status||'Active')}</span></div>\
-        <div><small style="color:var(--muted);font-weight:700;">Default first-month</small><strong>${Number(t.commissionPct||0)}%</strong></div>\
-        <div><small style="color:var(--muted);">Teacher ID</small><div style="font-size:11px;word-break:break-all;">${teacherSafeText(t.id)}</div></div>\
-        <div style="display:flex;gap:6px;flex-wrap:wrap;"><button type="button" class="btn btn-secondary btn-small teacher-edit-btn" data-id="${teacherSafeText(t.id)}">Edit</button><button type="button" class="btn btn-small teacher-delete-btn" data-id="${teacherSafeText(t.id)}" style="background:#f5e5e5;color:#9b2c2c;">Delete</button></div>\
-      </div>`;
+      const assigned=admissionsCache.filter(a=>String(a.homeTuition?.teacherId||a.homeTuition?.teacherName||'').toLowerCase()===String(t.id).toLowerCase() || String(a.homeTuition?.teacherName||'').toLowerCase()===String(t.name||'').toLowerCase()).filter(a=>!a.archived).length;
+      return `<div class="teacher-row">        <div class="teacher-row-main"><strong>${teacherSafeText(t.name||'Unnamed teacher')}</strong><small>${teacherSafeText(t.phone||'No phone')} · ${teacherSafeText(t.subjects||'Subjects not set')}<br>${teacherSafeText(t.areas||'Areas not set')} · ${teacherSafeText(t.availability||'Availability not set')}</small></div>        <div><span class="${badge}">${teacherSafeText(t.status||'Active')}</span><div style="font-size:11px;color:var(--muted);margin-top:4px;">${assigned} active assignment${assigned===1?'':'s'}</div></div>        <div><small style="color:var(--muted);font-weight:700;">Default first-month</small><strong>${Number(t.commissionPct||0)}%</strong></div>        <div style="display:flex;gap:6px;flex-wrap:wrap;"><button type="button" class="btn btn-secondary btn-small teacher-edit-btn" data-id="${teacherSafeText(t.id)}">Edit</button><button type="button" class="btn btn-small teacher-delete-btn" data-id="${teacherSafeText(t.id)}" style="background:#f5e5e5;color:#9b2c2c;">Delete</button></div>      </div>`;
     }).join('');
     list.querySelectorAll('.teacher-edit-btn').forEach(btn=>btn.addEventListener('click',()=>startTeacherEdit(btn.dataset.id)));
     list.querySelectorAll('.teacher-delete-btn').forEach(btn=>btn.addEventListener('click',()=>deleteTeacher(btn.dataset.id)));
@@ -3650,7 +3726,18 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
 
   async function deleteTeacher(id){
     const t=teachersCache.find(x=>x.id===id); if(!t)return;
-    if(!confirm(`Delete teacher ${t.name||''}? Existing Home Tuition assignments will keep their saved teacher details.`))return;
+    const assigned=admissionsCache.filter(a=>!a.archived && (String(a.homeTuition?.teacherId||'')===id || String(a.homeTuition?.teacherName||'').toLowerCase()===String(t.name||'').toLowerCase())).length;
+    if(assigned){
+      if(!confirm(`${t.name||'This teacher'} has ${assigned} active assignment${assigned===1?'':'s'}.
+
+Deactivate this teacher instead? They will remain saved and can be reactivated later.`))return;
+      try{await updateDoc(doc(db,'teachers',id),{status:'Inactive',updatedAt:serverTimestamp()});await loadTeachers();showToast('Teacher deactivated and kept safely in the database.');}
+      catch(err){showToast('Could not deactivate teacher: '+(err.message||'Unknown error'));}
+      return;
+    }
+    if(!confirm(`Delete teacher ${t.name||''}?
+
+This permanently removes the saved teacher profile.`))return;
     try{await deleteDoc(doc(db,'teachers',id));if(editingTeacherId===id)resetTeacherForm();await loadTeachers();showToast('Teacher deleted.');}
     catch(err){showToast('Could not delete teacher: '+(err.message||'Unknown error'));}
   }
@@ -3670,6 +3757,7 @@ input:focus,select:focus,textarea:focus{background:#fff!important;border-color:#
     const open=panel.style.display!=='none'; panel.style.display=open?'none':'block';
     if(!open){try{await loadTeachers();}catch(e){}}
   });
+  document.getElementById('teacher-search-input')?.addEventListener('input',renderTeachers);
   document.getElementById('teacher-save-btn')?.addEventListener('click',saveTeacher);
   document.getElementById('teacher-refresh-btn')?.addEventListener('click',()=>loadTeachers());
   document.getElementById('teacher-cancel-edit-btn')?.addEventListener('click',resetTeacherForm);
