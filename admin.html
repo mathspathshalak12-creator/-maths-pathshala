@@ -297,6 +297,19 @@
   @media(max-width:650px){.mp-admin-p1-metrics{grid-template-columns:1fr 1fr}}
 </style>
 
+
+<style id="mp-phase2-admin-learning-ui">
+  .mp-p2-admin-card{border:1px solid #e0e6ef!important;background:linear-gradient(145deg,#fff,#f7f9fc)!important;box-shadow:0 12px 30px rgba(11,30,61,.06);}
+  .mp-p2-admin-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+  .mp-p2-admin-help{font-size:11px;color:var(--muted);line-height:1.55;margin:5px 0 0;}
+  .mp-p2-test-list{margin-top:16px;padding-top:16px;border-top:1px solid var(--line);}
+  .mp-p2-admin-test-row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-top:1px solid #edf0f5;align-items:flex-start;}
+  .mp-p2-admin-test-row:first-child{border-top:0;}
+  .mp-p2-admin-test-row strong{color:var(--navy);font-size:12px;}
+  .mp-p2-admin-test-row span{display:block;color:var(--muted);font-size:10.5px;margin-top:3px;line-height:1.5;}
+  @media(max-width:760px){.mp-p2-admin-grid{grid-template-columns:1fr}.mp-p2-admin-test-row{flex-direction:column}}
+</style>
+
 </head>
 <body>
 <div class="mp-admin-brandline">
@@ -650,6 +663,28 @@
         <div id="assigned-notes-list"><div style="font-size:13px;color:var(--muted);padding:10px 0;">Loading assigned notes…</div></div>
       </div>
     </div>
+
+
+<div class="card mp-p2-admin-card" id="phase2-tests-section">
+  <div class="card-title-row"><div><span class="section-kicker">PHASE 2 · LEARNING SYSTEM</span><h2>Upcoming Tests</h2><p>Publish a test to an entire class, a specific batch, or all students in that class. The same data appears on student dashboards.</p></div><span class="ht-private">CONNECTED</span></div>
+  <div class="mp-p2-admin-grid" style="margin-top:14px;">
+    <div><label>Test title</label><input id="mp-p2-test-title" type="text" placeholder="e.g. Unit Test 3 — Trigonometry"></div>
+    <div><label>Subject</label><input id="mp-p2-test-subject" type="text" placeholder="Mathematics"></div>
+    <div><label>Test date</label><input id="mp-p2-test-date" type="date"></div>
+    <div><label>Test time (optional)</label><input id="mp-p2-test-time" type="time"></div>
+    <div><label>Topic / Chapter</label><input id="mp-p2-test-topic" type="text" placeholder="e.g. Trigonometric Functions"></div>
+    <div><label>Maximum marks (optional)</label><input id="mp-p2-test-max" type="number" min="1" placeholder="50"></div>
+    <div><label>Class</label><select id="mp-p2-test-class"><option value="">All classes</option><option value="9">Class 9</option><option value="10">Class 10</option><option value="11">Class 11</option><option value="12">Class 12</option></select></div>
+    <div><label>Batch</label><select id="mp-p2-test-batch"><option value="">All batches</option></select></div>
+  </div>
+  <label style="margin-top:12px;">Instructions (optional)</label>
+  <textarea id="mp-p2-test-instructions" rows="3" placeholder="Syllabus, reporting time, chapters to revise, etc."></textarea>
+  <p class="mp-p2-admin-help">Publishing updates each matching student document. Students can see the test in their own dashboard without exposing another student's data.</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;"><button class="btn" id="mp-p2-publish-test">+ Publish Upcoming Test</button><button class="btn btn-secondary" id="mp-p2-clear-test" type="button">Clear</button></div>
+  <div class="msg" id="mp-p2-test-msg"></div>
+  <div class="mp-p2-test-list"><h3 style="margin:0 0 7px;color:var(--navy);">Recent published tests</h3><div id="mp-p2-admin-test-list"><div style="font-size:13px;color:var(--muted);">Loading…</div></div></div>
+</div>
+
 
 <div class="card" id="homework-section">
       <div class="card-title-row"><div><span class="section-kicker">Student work</span><h2>Homework Management</h2><p>Post homework to one class, one batch, or all students.</p></div></div>
@@ -3605,6 +3640,81 @@ function closeAdmissionDetail(){const m=document.getElementById('admission-detai
   document.getElementById('ht-whatsapp-btn')?.addEventListener('click',prepareParentWhatsApp);
   document.getElementById('ht-call-btn')?.addEventListener('click',callParent);
   ['ht-monthly-fee','ht-commission-pct'].forEach(id=>document.getElementById(id)?.addEventListener('input',setHtFinancePreview));
+
+  // =========================
+  // PHASE 2 — UPCOMING TEST PUBLISHER
+  // =========================
+  function mpP2AdminDateLabel(v){
+    if(!v) return '';
+    const d=new Date(String(v)+'T00:00:00');
+    return isNaN(d.getTime())?String(v):d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  }
+  function mpP2AdminTestKey(t){return [t.title,t.date,t.time,t.targetClass,t.targetBatch].map(x=>String(x||'').trim().toLowerCase()).join('|');}
+  async function mpP2AdminLoadTests(){
+    const box=document.getElementById('mp-p2-admin-test-list'); if(!box)return;
+    try{
+      const students=Array.isArray(allStudentsCache)&&allStudentsCache.length?allStudentsCache:[];
+      const map=new Map();
+      students.forEach(s=>{
+        const arr=Array.isArray(s.data?.upcomingTests)?s.data.upcomingTests:[];
+        arr.forEach(t=>{const key=mpP2AdminTestKey(t);if(!key)return;if(!map.has(key))map.set(key,{...t,_count:0});map.get(key)._count++;});
+      });
+      const list=[...map.values()].sort((a,b)=>String(a.date||'').localeCompare(String(b.date||''))).slice(0,12);
+      box.innerHTML=list.length?list.map(t=>`<div class="mp-p2-admin-test-row"><div><strong>🧪 ${escapeHtml(t.title||'Upcoming Test')}</strong><span>${escapeHtml(mpP2AdminDateLabel(t.date))}${t.time?' · '+escapeHtml(t.time):''}${t.subject?' · '+escapeHtml(t.subject):''}${t.topic?' · '+escapeHtml(t.topic):''} · ${t._count} student${t._count===1?'':'s'}</span></div><button type="button" class="btn btn-secondary btn-small mp-p2-delete-test" data-key="${escapeHtml(mpP2AdminTestKey(t))}">Remove</button></div>`).join(''):'<div style="font-size:13px;color:var(--muted);">No upcoming tests published yet.</div>';
+      box.querySelectorAll('.mp-p2-delete-test').forEach(btn=>btn.addEventListener('click',()=>mpP2AdminRemoveTest(btn.dataset.key)));
+    }catch(err){box.innerHTML='<div class="msg error">Could not load upcoming tests.</div>';}
+  }
+  async function mpP2AdminRemoveTest(key){
+    if(!key)return;
+    if(!confirm('Remove this upcoming test from all students in its target group?'))return;
+    try{
+      const ops=[];
+      allStudentsCache.forEach(s=>{
+        const arr=Array.isArray(s.data?.upcomingTests)?s.data.upcomingTests:[];
+        const next=arr.filter(t=>mpP2AdminTestKey(t)!==key);
+        if(next.length!==arr.length) ops.push(wb=>wb.set(doc(db,'students',s.id),{upcomingTests:next},{merge:true}));
+      });
+      if(ops.length) await commitBatchOps(ops);
+      await loadStudentList(); await mpP2AdminLoadTests(); showToast('Upcoming test removed.');
+    }catch(err){showToast('Could not remove test: '+(err?.message||'Unknown error'));}
+  }
+  async function mpP2AdminPublishTest(){
+    const title=document.getElementById('mp-p2-test-title')?.value.trim();
+    const subject=document.getElementById('mp-p2-test-subject')?.value.trim();
+    const date=document.getElementById('mp-p2-test-date')?.value;
+    const time=document.getElementById('mp-p2-test-time')?.value;
+    const topic=document.getElementById('mp-p2-test-topic')?.value.trim();
+    const maxMarks=Number(document.getElementById('mp-p2-test-max')?.value||0);
+    const targetClass=document.getElementById('mp-p2-test-class')?.value||'';
+    const targetBatch=document.getElementById('mp-p2-test-batch')?.value||'';
+    const instructions=document.getElementById('mp-p2-test-instructions')?.value.trim();
+    const msg=document.getElementById('mp-p2-test-msg'); const btn=document.getElementById('mp-p2-publish-test');
+    if(!title||!date){msg.textContent='Test title and date are required.';msg.className='msg error';return;}
+    if(targetClass&&targetBatch&&!batchesCache.some(b=>normalizeClassValue(b.class)===normalizeClassValue(targetClass)&&normalizeBatchName(b.name)===normalizeBatchName(targetBatch))){msg.textContent='Selected batch is not available for this class.';msg.className='msg error';return;}
+    const recipients=getTargetEmails(targetClass,targetBatch).map(e=>String(e).toLowerCase());
+    if(!recipients.length){msg.textContent='No students match the selected class/batch.';msg.className='msg error';return;}
+    btn.disabled=true;btn.textContent='Publishing...';
+    try{
+      const test={title,subject,date,time,topic,maxMarks:maxMarks>0?maxMarks:null,instructions,targetClass,targetBatch,publishedAt:new Date().toISOString()};
+      const ops=recipients.map(email=>{
+        const student=allStudentsCache.find(s=>String(s.id).toLowerCase()===email);
+        const arr=Array.isArray(student?.data?.upcomingTests)?student.data.upcomingTests:[];
+        const next=[test,...arr.filter(t=>mpP2AdminTestKey(t)!==mpP2AdminTestKey(test))].slice(0,12);
+        return wb=>wb.set(doc(db,'students',email),{upcomingTests:next},{merge:true});
+      });
+      await commitBatchOps(ops);
+      msg.textContent=`Published to ${recipients.length} student${recipients.length===1?'':'s'}.`;msg.className='msg success';
+      ['mp-p2-test-title','mp-p2-test-subject','mp-p2-test-date','mp-p2-test-time','mp-p2-test-topic','mp-p2-test-max','mp-p2-test-instructions'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+      await loadStudentList(); await mpP2AdminLoadTests(); showToast('Upcoming test published.');
+    }catch(err){msg.textContent='Error publishing test: '+(err?.message||'Unknown error');msg.className='msg error';}
+    finally{btn.disabled=false;btn.textContent='+ Publish Upcoming Test';}
+  }
+  document.getElementById('mp-p2-test-class')?.addEventListener('change',()=>populateTargetBatchSelect('mp-p2-test-class','mp-p2-test-batch'));
+  document.getElementById('mp-p2-publish-test')?.addEventListener('click',mpP2AdminPublishTest);
+  document.getElementById('mp-p2-clear-test')?.addEventListener('click',()=>['mp-p2-test-title','mp-p2-test-subject','mp-p2-test-date','mp-p2-test-time','mp-p2-test-topic','mp-p2-test-max','mp-p2-test-instructions'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';}));
+  // Reuse the existing batch cache and student cache; no new Firestore collection is required.
+  setTimeout(()=>{try{populateTargetBatchSelect('mp-p2-test-class','mp-p2-test-batch');mpP2AdminLoadTests();}catch(e){}},1200);
+
 </script>
 
 <script>
