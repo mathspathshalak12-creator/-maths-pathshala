@@ -2038,21 +2038,212 @@
   </div>
 </section>
 
-<!-- FORM PLACEMENT 4 — FINAL ADMISSION SECTION: opens admission.html -->
+<!-- FORM PLACEMENT 4 — PREMIUM FINAL ADMISSION SECTION -->
+
+<style>
+  /* Premium Admission CTA — isolated to #register */
+  #register .register-box {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    padding: 48px 42px;
+    border-radius: 28px;
+    border: 1px solid rgba(255,255,255,.16);
+    background:
+      radial-gradient(circle at 90% 10%, rgba(255,193,7,.14), transparent 32%),
+      radial-gradient(circle at 10% 90%, rgba(255,255,255,.07), transparent 30%),
+      linear-gradient(135deg, rgba(255,255,255,.09), rgba(255,255,255,.035));
+    box-shadow:
+      0 24px 70px rgba(0,0,0,.18),
+      inset 0 1px 0 rgba(255,255,255,.12);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  #register .register-box::before {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    right: -90px;
+    top: -100px;
+    border-radius: 50%;
+    background: rgba(255,193,7,.10);
+    filter: blur(4px);
+    z-index: -1;
+  }
+
+  #register .register-box::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,193,7,.85),
+      transparent
+    );
+    opacity: .8;
+  }
+
+  #register .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,193,7,.28);
+    background: rgba(255,193,7,.08);
+    color: var(--amber-dark, #f59e0b);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  #register .section-tag::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 12px currentColor;
+  }
+
+  #register .register-box h2 {
+    max-width: 760px;
+    margin-bottom: 14px;
+    letter-spacing: -.025em;
+  }
+
+  #register .register-box > p:not(.note) {
+    max-width: 720px;
+    line-height: 1.75;
+    opacity: .86;
+  }
+
+  #register .register-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 26px;
+  }
+
+  #register .register-ctas .btn {
+    min-height: 50px;
+    transition:
+      transform .25s ease,
+      box-shadow .25s ease,
+      border-color .25s ease;
+  }
+
+  #register .register-ctas .btn:hover {
+    transform: translateY(-3px);
+  }
+
+  #register .register-ctas .btn-primary {
+    box-shadow: 0 12px 28px rgba(245,158,11,.18);
+  }
+
+  #register .register-trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    margin-top: 22px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,.09);
+  }
+
+  #register .register-trust span {
+    font-size: 12px;
+    font-weight: 800;
+    opacity: .82;
+  }
+
+  #register .register-trust span::first-letter {
+    color: var(--amber-dark, #f59e0b);
+  }
+
+  #register .register-box .note {
+    max-width: 720px;
+    margin-top: 20px;
+    font-size: 12px;
+    line-height: 1.65;
+    opacity: .62;
+  }
+
+  @media (max-width: 640px) {
+    #register .register-box {
+      padding: 34px 22px;
+      border-radius: 22px;
+    }
+
+    #register .register-ctas {
+      flex-direction: column;
+    }
+
+    #register .register-ctas .btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    #register .register-trust {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+  }
+
+  @media (max-width: 390px) {
+    #register .register-trust {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
 <section id="register">
   <div class="wrap">
     <div class="register-box">
+
+      <div class="section-tag">Admission Enquiry</div>
+
       <h2>Let’s find the right learning plan for your child.</h2>
-      <p>Submit a quick admission enquiry. We’ll understand your child’s requirement, check availability and help you choose the right home-tuition option or offline batch.</p>
+
+      <p>
+        Tell us a little about your child’s requirements. We’ll understand
+        their class, subjects and learning needs, check availability and
+        guide you towards the right home-tuition option or offline batch.
+      </p>
+
       <div class="register-ctas">
-        <a id="form-btn" href="admission.html" class="btn btn-primary">Enquire for Admission</a>
-        <a id="register-wa" href="#" target="_blank" class="btn btn-outline">Talk to Us on WhatsApp</a>
+        <a id="form-btn" href="admission.html" class="btn btn-primary">
+          Enquire for Admission <span>→</span>
+        </a>
+
+        <a id="register-wa" href="#" target="_blank" class="btn btn-outline">
+          Talk to Us on WhatsApp
+        </a>
       </div>
-      <p class="note">We keep batches small to maintain personal attention. Final admission is confirmed after a short conversation about your child’s requirements, timing and learning goals.</p>
+
+      <div class="register-trust">
+        <span>✓ Personal Attention</span>
+        <span>✓ Small Batches</span>
+        <span>✓ Flexible Guidance</span>
+      </div>
+
+      <p class="note">
+        We keep batches small to maintain personal attention. Final admission
+        is confirmed after a short conversation about your child’s requirements,
+        timing and learning goals.
+      </p>
+
     </div>
   </div>
 </section>
-
 
 <footer>
   <div class="wrap">
