@@ -2422,6 +2422,54 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
 </div>
 </div>
 </section>
+<section id="learning-roadmap" class="mp-roadmap-section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">Your learning journey</div>
+      <h2>A clear roadmap for every class.</h2>
+      <p>See the academic focus for Classes 9–12 and understand how learning builds year by year.</p>
+    </div>
+    <div class="mp-roadmap-grid">
+      <article class="mp-roadmap-card mp-roadmap-c9">
+        <div class="mp-roadmap-top"><span class="mp-roadmap-class">CLASS 09</span><span class="mp-roadmap-symbol">x²</span></div>
+        <h3>Build strong foundations</h3>
+        <p>Develop confidence in core concepts before moving to advanced topics.</p>
+        <div class="mp-roadmap-subjects"><span>Mathematics</span><span>Physics</span><span>Chemistry</span></div>
+        <small>Number systems · Algebra · Geometry · Motion · Matter</small>
+      </article>
+      <article class="mp-roadmap-card mp-roadmap-c10">
+        <div class="mp-roadmap-top"><span class="mp-roadmap-class">CLASS 10</span><span class="mp-roadmap-symbol">√</span></div>
+        <h3>Prepare for board exams</h3>
+        <p>Strengthen application, accuracy and confidence with exam-oriented practice.</p>
+        <div class="mp-roadmap-subjects"><span>Mathematics</span><span>Physics</span><span>Chemistry</span></div>
+        <small>Quadratics · Trigonometry · Electricity · Chemical reactions</small>
+      </article>
+      <article class="mp-roadmap-card mp-roadmap-c11">
+        <div class="mp-roadmap-top"><span class="mp-roadmap-class">CLASS 11</span><span class="mp-roadmap-symbol">∑</span></div>
+        <h3>Develop deeper reasoning</h3>
+        <p>Build the mathematical base needed for higher-level concepts in Class 12.</p>
+        <div class="mp-roadmap-subjects"><span>Mathematics</span></div>
+        <small>Functions · Trigonometry · Sequences · Coordinate geometry · Calculus basics</small>
+      </article>
+      <article class="mp-roadmap-card mp-roadmap-c12">
+        <div class="mp-roadmap-top"><span class="mp-roadmap-class">CLASS 12</span><span class="mp-roadmap-symbol">∫</span></div>
+        <h3>Focus on board readiness</h3>
+        <p>Bring concepts together through revision, timed practice and board-pattern tests.</p>
+        <div class="mp-roadmap-subjects"><span>Mathematics</span></div>
+        <small>Calculus · Matrices · Vectors · 3D geometry · Probability</small>
+      </article>
+    </div>
+    <div class="mp-progress-highlight">
+      <div class="mp-progress-mark" aria-hidden="true">↗</div>
+      <div class="mp-progress-copy">
+        <span class="mp-progress-kicker">STUDENT PROGRESS</span>
+        <h3>Progress you can follow, not just feel.</h3>
+        <p>The student portal helps enrolled students and parents keep track of attendance, test performance and monthly progress records.</p>
+      </div>
+      <a class="btn btn-primary" href="admission.html">Explore Admission <span>→</span></a>
+    </div>
+  </div>
+</section>
 <section id="notes">
 <div class="wrap">
 <div class="section-head">
@@ -3037,10 +3085,23 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
   // Batch-launch popup is opened by loadSeatsDisplay() when an active launch exists.
   var popup = document.getElementById('seats-popup');
   document.getElementById('popup-wa').href = waLink;
-  function closePopup(){ popup.classList.remove('show'); }
-  document.getElementById('popup-close').addEventListener('click', closePopup);
+  function closePopup(event){
+    if(event){ event.preventDefault(); event.stopPropagation(); }
+    if(!popup) return;
+    // Persist the dismissal for this visit so refreshes never reopen the same launch popup.
+    var signature = popup.dataset.popupSignature || '';
+    if(signature && typeof markPopupShown === 'function') markPopupShown('launch', signature);
+    popup.classList.remove('show');
+    popup.setAttribute('aria-hidden','true');
+  }
+  var popupCloseButton = document.getElementById('popup-close');
+  if(popupCloseButton){
+    popupCloseButton.type = 'button';
+    popupCloseButton.addEventListener('click', closePopup, {capture:true});
+  }
   document.getElementById('popup-register').addEventListener('click', closePopup);
-  popup.addEventListener('click', function(e){ if(e.target === popup){ closePopup(); } });
+  popup.addEventListener('click', function(e){ if(e.target === popup) closePopup(e); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && popup.classList.contains('show')) closePopup(e); });
 
   // ---- Subtle 3D math-hero parallax (desktop mouse move only) ----
   (function(){
@@ -3116,10 +3177,18 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
     return String(value ?? '').replace(/[&<>\"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[ch]));
   }
 
-  // Popup policy:
-  // - A popup appears at most once per app/page session.
-  // - Dashboard refreshes must NOT reopen the same popup.
-  // - A fresh APK/WebView session may show it again.
+  // Popup policy: one display per website visit; a browser refresh must not count as a new visit.
+  // A fresh navigation back to the site clears the prior visit marker, while reload keeps it.
+  (function resetPopupMarkersForFreshVisit(){
+    try{
+      var navEntry = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+      var navType = navEntry && navEntry.type;
+      if(navType && navType !== 'reload'){
+        Object.keys(sessionStorage).filter(function(key){ return key.indexOf('mp_popup_seen_') === 0; })
+          .forEach(function(key){ sessionStorage.removeItem(key); });
+      }
+    }catch(err){ console.warn('Popup visit state could not be refreshed:', err); }
+  })();
   function popupSessionKey(type, signature){
     return 'mp_popup_seen_' + type + '_' + encodeURIComponent(String(signature || ''));
   }
@@ -3139,6 +3208,7 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
       const launch=batchStats.find(b=>b.launchActive);
       const launchSignature=[launch?.class||'',launch?.name||'',launch?.launchTitle||'',launch?.launchPrice||launch?.baseFee||''].join('|');
       if(!launch || popupAlreadyShown('launch', launchSignature)) return;
+      popup.dataset.popupSignature = launchSignature;
       document.getElementById('popup-batch-class').textContent=`CLASS ${launch.class||''} · ${launch.name||''}`;
       document.getElementById('popup-batch-title').textContent=launch.launchTitle||`${launch.name||'New Batch'} — Admissions Open`;
       document.getElementById('popup-batch-subtitle').textContent=launch.launchSubtitle||launch.intro||'A focused Maths batch for serious students.';
@@ -3150,10 +3220,11 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
       }else{ priceEl.textContent='Special launch admission'; offerEl.textContent='Limited launch offer · Contact us for details'; }
       const launchWa=`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(`Hi, I want details for the ${launch.name||'new batch'} batch (Class ${launch.class||''}).`)}`;
       document.getElementById('popup-wa').href=launchWa;
+      // Mark immediately before the delayed open, preventing duplicate async calls and reload repeats.
+      markPopupShown('launch', launchSignature);
       setTimeout(()=>{
-        // Mark BEFORE opening so a refresh/second auth callback cannot reopen it.
-        markPopupShown('launch', launchSignature);
         popup.classList.add('show');
+        popup.setAttribute('aria-hidden','false');
       }, 1400);
     }catch(err){ console.warn('Site popup load failed:',err); }
   }
@@ -5194,5 +5265,205 @@ header #student-login-btn,header #mobile-login-btn{
 }
 
 </style>
+
+<style id="mp-roadmap-progress-styles">
+/* Class roadmap + honest student-progress feature block */
+#learning-roadmap{position:relative;overflow:hidden;padding:clamp(64px,7vw,100px) 0;background:linear-gradient(145deg,#f7f9fc 0%,#eef3f8 55%,#fbf8f1 100%)}
+#learning-roadmap:before{content:"";position:absolute;width:420px;height:420px;border-radius:50%;right:-180px;top:-210px;background:radial-gradient(circle,rgba(243,173,50,.16),transparent 68%);pointer-events:none}
+#learning-roadmap .wrap{position:relative;z-index:1}
+#learning-roadmap .section-head{max-width:760px;margin:0 auto 34px;text-align:center}
+#learning-roadmap .section-tag{color:#9b6813;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+#learning-roadmap .section-head h2{color:#0a1b35}
+#learning-roadmap .section-head p{color:#43536b}
+.mp-roadmap-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-items:stretch}
+.mp-roadmap-card{min-width:0;position:relative;display:flex;flex-direction:column;padding:24px 22px 23px;border:1px solid rgba(10,27,53,.1);border-radius:22px;background:rgba(255,255,255,.94);box-shadow:0 14px 34px rgba(7,26,53,.07);transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+.mp-roadmap-card:hover{transform:translateY(-5px);box-shadow:0 22px 44px rgba(7,26,53,.12);border-color:rgba(18,59,112,.25)}
+.mp-roadmap-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.mp-roadmap-class{display:inline-flex;align-items:center;padding:7px 11px;border-radius:999px;background:#eaf0f8;color:#123b70;font-size:11px;font-weight:900;letter-spacing:.1em}
+.mp-roadmap-symbol{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:#fff3d9;color:#87570c;font-size:23px;font-weight:800}
+.mp-roadmap-c10 .mp-roadmap-symbol{background:#e8f5f0;color:#16735b}.mp-roadmap-c11 .mp-roadmap-symbol{background:#fcece8;color:#a94f3e}.mp-roadmap-c12 .mp-roadmap-symbol{background:#ecebfb;color:#514c9a}
+.mp-roadmap-card h3{margin:0 0 9px;color:#0a1b35;font-size:19px;line-height:1.28}
+.mp-roadmap-card p{margin:0 0 16px;color:#43536b;font-size:14px;line-height:1.65}
+.mp-roadmap-subjects{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;margin-bottom:13px}
+.mp-roadmap-subjects span{padding:6px 9px;border-radius:999px;background:#f0f4f8;color:#243a56;font-size:11px;font-weight:750}
+.mp-roadmap-card small{display:block;padding-top:12px;border-top:1px solid rgba(10,27,53,.09);color:#5a687b;font-size:12px;line-height:1.55}
+.mp-progress-highlight{display:flex;align-items:center;gap:20px;margin-top:26px;padding:25px 28px;border-radius:22px;background:linear-gradient(110deg,#071a35,#123b70);box-shadow:0 20px 44px rgba(7,26,53,.17)}
+.mp-progress-mark{flex:0 0 54px;width:54px;height:54px;display:grid;place-items:center;border-radius:17px;background:rgba(243,173,50,.16);color:#f3ad32;font-size:29px;font-weight:800}
+.mp-progress-copy{flex:1;min-width:0}
+.mp-progress-kicker{color:#f3c66d;font-size:10px;font-weight:900;letter-spacing:.15em}
+.mp-progress-copy h3{margin:4px 0 5px;color:#fff;font-size:21px;line-height:1.3}
+.mp-progress-copy p{margin:0;color:#e1e9f3;font-size:14px;line-height:1.6}
+.mp-progress-highlight .btn{flex:0 0 auto;white-space:nowrap}
+@media(max-width:980px){.mp-roadmap-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){#learning-roadmap{padding:56px 0}.mp-roadmap-grid{grid-template-columns:1fr;gap:13px}.mp-roadmap-card{padding:21px;border-radius:18px}.mp-progress-highlight{align-items:flex-start;flex-wrap:wrap;padding:21px;gap:13px}.mp-progress-mark{width:46px;height:46px;flex-basis:46px}.mp-progress-copy{flex:1 1 calc(100% - 60px)}.mp-progress-copy h3{font-size:18px}.mp-progress-highlight .btn{width:100%;justify-content:center}}
+@media(prefers-reduced-motion:reduce){.mp-roadmap-card{transition:none}.mp-roadmap-card:hover{transform:none}}
+</style>
+
+
+<style id="mp-v8-online-contrast-and-progress-visibility">
+/* v8: explicit high-contrast typography for Online Live Classes heading */
+html body #online-classes.online-learning-section .wrap > .section-head,
+html body #online-classes.online-learning-section .wrap > .section-head .section-tag,
+html body #online-classes.online-learning-section .wrap > .section-head h2,
+html body #online-classes.online-learning-section .wrap > .section-head p{
+  display:block!important; visibility:visible!important; opacity:1!important;
+  position:relative!important; z-index:10!important; clip:auto!important;
+  -webkit-text-fill-color:initial!important; mix-blend-mode:normal!important;
+}
+html body #online-classes.online-learning-section .wrap > .section-head .section-tag{
+  display:inline-flex!important; align-items:center!important; width:auto!important;
+  padding:8px 13px!important; margin:0 0 14px!important; border-radius:999px!important;
+  color:#ffe0d5!important; background:rgba(255,255,255,.14)!important;
+  border:1px solid rgba(255,224,213,.58)!important; font-size:12px!important;
+  font-weight:850!important; letter-spacing:.09em!important; text-shadow:none!important;
+}
+html body #online-classes.online-learning-section .wrap > .section-head h2{
+  color:#ffffff!important; font-size:clamp(30px,4vw,46px)!important;
+  line-height:1.16!important; font-weight:900!important; letter-spacing:-.025em!important;
+  margin:0 0 13px!important; text-shadow:0 2px 18px rgba(0,0,0,.28)!important;
+}
+html body #online-classes.online-learning-section .wrap > .section-head p{
+  color:#f3f7fc!important; opacity:1!important; max-width:760px!important;
+  font-size:clamp(15px,1.35vw,18px)!important; line-height:1.8!important;
+  font-weight:550!important; margin:0 auto!important; text-shadow:0 1px 10px rgba(0,0,0,.22)!important;
+}
+/* Ensure the roadmap and its progress highlight occupy normal visible layout space. */
+html body #learning-roadmap.mp-roadmap-section{
+  display:block!important; position:relative!important; visibility:visible!important;
+  opacity:1!important; height:auto!important; max-height:none!important; overflow:visible!important;
+  content-visibility:visible!important;
+}
+html body #learning-roadmap .mp-roadmap-grid{display:grid!important; visibility:visible!important; opacity:1!important}
+html body #learning-roadmap .mp-progress-highlight{
+  display:flex!important; visibility:visible!important; opacity:1!important;
+  position:relative!important; z-index:2!important; min-height:112px!important;
+  background:linear-gradient(110deg,#071a35 0%,#123b70 58%,#176f66 100%)!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+}
+html body #learning-roadmap .mp-progress-copy,
+html body #learning-roadmap .mp-progress-copy .mp-progress-kicker,
+html body #learning-roadmap .mp-progress-copy h3,
+html body #learning-roadmap .mp-progress-copy p{
+  display:block!important; visibility:visible!important; opacity:1!important;
+  color:#fff!important; -webkit-text-fill-color:#fff!important;
+}
+html body #learning-roadmap .mp-progress-copy .mp-progress-kicker{color:#ffe0a0!important;-webkit-text-fill-color:#ffe0a0!important}
+html body #learning-roadmap .mp-progress-highlight .btn{visibility:visible!important;opacity:1!important}
+@media(max-width:640px){
+ html body #learning-roadmap .mp-progress-highlight{display:flex!important;flex-wrap:wrap!important}
+ html body #online-classes.online-learning-section .wrap > .section-head{text-align:center!important}
+}
+</style>
+
 </body>
 </html>
+
+<style id="mp-v9-online-heading-highlight">
+/* Focused v9 fix: make only the Online Live Classes headline unmistakably visible. */
+html body #online-classes.online-learning-section .wrap > .section-head h2{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+  background:linear-gradient(100deg,rgba(255,255,255,.13),rgba(255,255,255,.045))!important;
+  border:1px solid rgba(255,255,255,.22)!important;
+  border-left:5px solid #f4b544!important;
+  border-radius:16px!important;
+  padding:17px 20px!important;
+  margin:0 auto 15px!important;
+  width:fit-content!important;
+  max-width:100%!important;
+  font-size:clamp(30px,4.2vw,48px)!important;
+  font-weight:950!important;
+  line-height:1.18!important;
+  letter-spacing:-.025em!important;
+  text-shadow:0 3px 18px rgba(0,0,0,.42)!important;
+  box-shadow:0 12px 28px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.12)!important;
+}
+html body #online-classes.online-learning-section .wrap > .section-head .section-tag{
+  color:#ffe2a1!important;
+  background:rgba(244,181,68,.16)!important;
+  border-color:rgba(244,181,68,.65)!important;
+  font-weight:900!important;
+  text-shadow:0 1px 8px rgba(0,0,0,.28)!important;
+}
+@media(max-width:640px){
+  html body #online-classes.online-learning-section .wrap > .section-head h2{
+    width:100%!important;padding:15px 14px!important;font-size:clamp(26px,7vw,34px)!important;
+  }
+}
+</style>
+
+<style id="mp-v10-cards-trust-popup-finish">
+/* Course cards: consistent premium hierarchy while preserving the existing slider and content. */
+#services .service-slide{border-color:#e3e9e4!important;box-shadow:0 15px 36px rgba(24,63,59,.075),0 2px 6px rgba(24,63,59,.035)!important}
+#services .service-slide:hover{box-shadow:0 22px 44px rgba(24,63,59,.12)!important;border-color:#b8d1c4!important}
+#services .service-slide h3{letter-spacing:-.03em!important}
+#services .service-detail-block{background:linear-gradient(145deg,#fbfcf8,#f5f8f3)!important;border-color:#e2ebe3!important}
+#services .service-subject-chips span{border-color:#dce8df!important;color:#315c50!important}
+#services .service-admission-link{display:inline-flex;align-items:center;gap:5px;padding:10px 14px;border-radius:10px;background:#edf5ef;color:#176456!important;transition:background .2s ease,transform .2s ease}
+#services .service-admission-link:hover{background:#dcece1;transform:translateY(-1px)}
+/* Trust strip: compact credential chips with clear contrast and responsive wrapping. */
+.trust-strip{padding:17px 0!important;background:linear-gradient(90deg,#f4f7f1,#fffdf8,#f4f7f1)!important;border-top:1px solid #e2e9df!important;border-bottom:1px solid #e2e9df!important}
+.trust-strip .wrap{display:flex;align-items:center;justify-content:center;gap:12px 24px;flex-wrap:wrap}
+.trust-strip .wrap>span{display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border:1px solid #e2e9df;border-radius:999px;background:rgba(255,255,255,.86);color:#385b51!important;font-size:12px;font-weight:700;box-shadow:0 4px 12px rgba(24,63,59,.035)}
+.trust-strip .dot{width:7px;height:7px;border-radius:50%;background:#b8872e;box-shadow:0 0 0 3px rgba(184,135,46,.13);flex:0 0 7px}
+/* Reliable popup close target, including touch devices and keyboard focus. */
+#seats-popup .popup-card{isolation:isolate}
+#seats-popup .popup-close{z-index:5;width:38px;height:38px;top:9px;right:9px;display:grid;place-items:center;border-radius:50%;background:#f1f4f2;color:#183f3b;font-size:19px;line-height:1;cursor:pointer;pointer-events:auto;touch-action:manipulation}
+#seats-popup .popup-close:hover,#seats-popup .popup-close:focus-visible{background:#e1eee5;outline:2px solid #b8872e;outline-offset:2px}
+@media(max-width:600px){
+ .trust-strip .wrap{gap:8px}
+ .trust-strip .wrap>span{font-size:11px;padding:8px 10px}
+ #services .service-slide{min-height:0}
+ #seats-popup{padding:14px}
+ #seats-popup .popup-card{max-height:90vh;overflow-y:auto}
+}
+</style>
+
+
+<!-- Focused final fix: make the batch popup close control reliably clickable on desktop and touch devices. -->
+<style id="mp-final-popup-close-fix">
+  #seats-popup .popup-card{position:relative!important}
+  #seats-popup #popup-close{
+    position:absolute!important;top:8px!important;right:8px!important;z-index:9999!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;
+    padding:0!important;margin:0!important;border:0!important;border-radius:50%!important;
+    background:#eef3ef!important;color:#183f3b!important;font-size:22px!important;
+    line-height:1!important;cursor:pointer!important;pointer-events:auto!important;
+    touch-action:manipulation!important;-webkit-tap-highlight-color:transparent;
+  }
+  #seats-popup #popup-close::before,#seats-popup #popup-close::after{pointer-events:none!important}
+</style>
+<script id="mp-final-popup-close-handler">
+(function(){
+  // Delegated capture handler is deliberately independent of the existing popup script.
+  // It guarantees the close control works even if another popup listener interferes.
+  function closeLaunchPopup(event){
+    var target = event.target;
+    var closeButton = target && target.closest ? target.closest('#seats-popup #popup-close') : null;
+    if(!closeButton) return;
+    if(event.cancelable) event.preventDefault();
+    event.stopPropagation();
+    if(typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+    var overlay = document.getElementById('seats-popup');
+    if(!overlay) return;
+    var signature = overlay.dataset.popupSignature || '';
+    try{
+      if(signature && typeof markPopupShown === 'function') markPopupShown('launch', signature);
+      else if(signature) sessionStorage.setItem('mp_popup_seen_launch_' + encodeURIComponent(signature), '1');
+    }catch(storageError){ /* Closing must still work if storage is unavailable. */ }
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden','true');
+    closeButton.blur && closeButton.blur();
+  }
+  document.addEventListener('click', closeLaunchPopup, true);
+  document.addEventListener('pointerup', function(event){
+    // Fallback for touch/pointer devices where a click may be suppressed by an overlay.
+    var target = event.target;
+    if(target && target.closest && target.closest('#seats-popup #popup-close')) closeLaunchPopup(event);
+  }, true);
+})();
+</script>
