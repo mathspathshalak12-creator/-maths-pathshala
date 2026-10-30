@@ -463,6 +463,11 @@
     }
   }
 </style>
+
+<style id="mp-exam-studio-style">
+.mp-exam-builder-card{border:1px solid #e1e7f5!important;background:linear-gradient(135deg,#fff,#f6f5ff)!important}.mp-exam-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}.mp-exam-builder-card label{display:grid;gap:6px;font-size:12px;font-weight:800;color:#465170}.mp-exam-builder-card input,.mp-exam-builder-card select,.mp-exam-builder-card textarea{width:100%;min-width:0;padding:11px 12px;border:1px solid #dce2f0;border-radius:10px;background:#fff;font:inherit;color:#253052}.mp-exam-question-editor{margin-top:18px;padding:18px;border-radius:16px;background:#fff;border:1px solid #e5e9f5;display:grid;gap:12px}.mp-exam-editor-head,.mp-exam-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.mp-exam-editor-head h3{margin:0;color:#263153}.mp-exam-editor-head span{font-size:11px;color:#7258d8;font-weight:800}.mp-exam-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.mp-exam-question-list{display:grid;gap:8px}.mp-exam-qrow{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e7eaf4;border-radius:11px}.mp-exam-qrow>span{background:#eeeaff;color:#7054d9;border-radius:8px;padding:7px 9px;font-weight:900}.mp-exam-qrow>div{flex:1;min-width:0}.mp-exam-qrow b,.mp-exam-qrow small{display:block;overflow-wrap:anywhere}.mp-exam-qrow small{color:#7a849e;font-size:11px;margin-top:3px}.mp-exam-qrow button{border:0;background:#fff0f1;color:#c1445c;border-radius:8px;padding:8px}.mp-exam-actions{margin-top:16px}@media(max-width:650px){.mp-exam-grid,.mp-exam-options{grid-template-columns:1fr}.mp-exam-question-editor{padding:13px}.mp-exam-qrow{align-items:flex-start}.mp-exam-qrow button{font-size:11px}}
+</style>
+
 </head>
 <body>
 <div class="mp-admin-brandline">
@@ -865,6 +870,27 @@
   <div class="mp-p2-test-list"><h3 style="margin:0 0 7px;color:var(--navy);">Recent published tests</h3><div id="mp-p2-admin-test-list"><div style="font-size:13px;color:var(--muted);">Loading…</div></div></div>
 </div>
 
+
+
+<div class="card mp-exam-builder-card" id="mp-exam-builder" style="margin-top:18px;">
+ <div class="card-title-row"><div><span class="section-kicker">MATHS PATHSHALA · EXAM STUDIO</span><h2>Online Test & Paper Builder</h2><p>Create MCQ or image-based papers, set timers and publish to a class or batch.</p></div><span class="ht-private">ADMIN ONLY</span></div>
+ <div class="mp-exam-grid">
+  <label>Test title<input id="mp-exam-title" placeholder="e.g. Chapter Test — Quadratic Equations"></label><label>Subject<input id="mp-exam-subject" placeholder="Mathematics"></label>
+  <label>Test date<input id="mp-exam-date" type="date"></label><label>Start time<input id="mp-exam-time" type="time"></label>
+  <label>Total duration (minutes)<input id="mp-exam-duration" type="number" min="1" value="30"></label><label>Per-question timer (seconds, 0 = off)<input id="mp-exam-qtime" type="number" min="0" value="0"></label>
+  <label>Target class<select id="mp-exam-class"><option value="">Select class</option></select></label><label>Target batch<select id="mp-exam-batch"><option value="">All batches</option></select></label>
+ </div>
+ <div class="mp-exam-question-editor"><div class="mp-exam-editor-head"><h3>Question editor</h3><span id="mp-exam-question-count">0 questions added</span></div>
+  <label>Question type<select id="mp-exam-qtype"><option value="mcq">MCQ question</option><option value="image">Image + MCQ question</option></select></label>
+  <label>Question text<textarea id="mp-exam-qtext" rows="3" placeholder="Type your question here..."></textarea></label>
+  <label>Question image URL (optional)<input id="mp-exam-image" type="url" placeholder="https://... (direct image URL)"></label>
+  <div class="mp-exam-options"><label>Option A<input id="mp-exam-opt0" placeholder="Option A"></label><label>Option B<input id="mp-exam-opt1" placeholder="Option B"></label><label>Option C<input id="mp-exam-opt2" placeholder="Option C"></label><label>Option D<input id="mp-exam-opt3" placeholder="Option D"></label></div>
+  <div class="mp-exam-grid"><label>Correct option<select id="mp-exam-correct"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select></label><label>Marks<input id="mp-exam-marks" type="number" min="1" value="1"></label></div>
+  <button class="btn btn-secondary" id="mp-exam-add-question" type="button">+ Add question to paper</button>
+  <div id="mp-exam-question-list" class="mp-exam-question-list"><p>No questions added yet.</p></div>
+ </div>
+ <div class="mp-exam-actions"><button class="btn" id="mp-exam-publish" type="button">Publish Test to Students</button><span id="mp-exam-msg" class="msg"></span></div>
+</div>
 
 <div class="card" id="homework-section">
       <div class="card-title-row"><div><span class="section-kicker">Student work</span><h2>Homework Management</h2><p>Post homework to one class, one batch, or all students.</p></div></div>
@@ -4004,6 +4030,18 @@ function closeAdmissionDetail(){const m=document.getElementById('admission-detai
   document.getElementById('mp-p2-clear-test')?.addEventListener('click',()=>['mp-p2-test-title','mp-p2-test-subject','mp-p2-test-date','mp-p2-test-time','mp-p2-test-topic','mp-p2-test-max','mp-p2-test-instructions'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';}));
   // Reuse the existing batch cache and student cache; no new Firestore collection is required.
   setTimeout(()=>{try{populateTargetBatchSelect('mp-p2-test-class','mp-p2-test-batch');mpP2AdminLoadTests();}catch(e){}},1200);
+
+
+  // Online Exam Studio: publish the full paper into each targeted student's own document.
+  const mpExamQuestions=[];
+  const mpExamById=id=>document.getElementById(id);
+  function mpExamMsg(t,ok=false){const m=mpExamById('mp-exam-msg');if(m){m.textContent=t;m.className='msg '+(ok?'success':'error');}}
+  function mpExamRenderQuestions(){const box=mpExamById('mp-exam-question-list');mpExamById('mp-exam-question-count').textContent=mpExamQuestions.length+' questions added';box.innerHTML=mpExamQuestions.length?mpExamQuestions.map((q,i)=>`<div class="mp-exam-qrow"><span>Q${i+1}</span><div><b>${String(q.text).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</b><small>${q.imageUrl?'Image attached · ':''}Correct: ${'ABCD'[q.correctIndex]} · ${q.marks} mark(s)</small></div><button type="button" data-mp-exam-remove="${i}">Remove</button></div>`).join(''):'<p>No questions added yet.</p>';box.querySelectorAll('[data-mp-exam-remove]').forEach(b=>b.onclick=()=>{mpExamQuestions.splice(Number(b.dataset.mpExamRemove),1);mpExamRenderQuestions();});}
+  mpExamById('mp-exam-add-question')?.addEventListener('click',()=>{const text=mpExamById('mp-exam-qtext').value.trim(),opts=[0,1,2,3].map(i=>mpExamById('mp-exam-opt'+i).value.trim()),imageUrl=mpExamById('mp-exam-image').value.trim();if(!text){mpExamMsg('Please enter the question text.');return;}if(opts.some(x=>!x)){mpExamMsg('Please fill all four MCQ options.');return;}if(mpExamById('mp-exam-qtype').value==='image'&&!imageUrl){mpExamMsg('Please add an image URL for this image-based question.');return;}mpExamQuestions.push({type:mpExamById('mp-exam-qtype').value,text,options:opts,imageUrl,correctIndex:Number(mpExamById('mp-exam-correct').value),marks:Math.max(1,Number(mpExamById('mp-exam-marks').value)||1)});['mp-exam-qtext','mp-exam-image','mp-exam-opt0','mp-exam-opt1','mp-exam-opt2','mp-exam-opt3'].forEach(id=>mpExamById(id).value='');mpExamMsg('Question added to paper.',true);mpExamRenderQuestions();});
+  mpExamById('mp-exam-class')?.addEventListener('change',()=>{const cls=mpExamById('mp-exam-class').value,sel=mpExamById('mp-exam-batch');const opts=batchesCache.filter(b=>!cls||normalizeClassValue(b.class)===normalizeClassValue(cls));sel.innerHTML='<option value="">All batches</option>'+opts.map(b=>`<option value="${String(b.name).replace(/"/g,'&quot;')}">${String(b.name).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</option>`).join('');});
+  function mpExamPopulateClasses(){const sel=mpExamById('mp-exam-class');if(!sel)return;const classes=[...new Set(batchesCache.map(b=>String(b.class||'').trim()).filter(Boolean))];sel.innerHTML='<option value="">Select class</option>'+classes.map(c=>`<option value="${c.replace(/"/g,'&quot;')}">${c}</option>`).join('');}
+  mpExamById('mp-exam-publish')?.addEventListener('click',async()=>{const title=mpExamById('mp-exam-title').value.trim(),date=mpExamById('mp-exam-date').value,targetClass=mpExamById('mp-exam-class').value,targetBatch=mpExamById('mp-exam-batch').value;if(!title||!date){mpExamMsg('Test title and date are required.');return;}if(!mpExamQuestions.length){mpExamMsg('Add at least one question before publishing.');return;}const recipients=getTargetEmails(targetClass,targetBatch).map(e=>String(e).toLowerCase());if(!recipients.length){mpExamMsg('No students match the selected class/batch.');return;}const btn=mpExamById('mp-exam-publish');btn.disabled=true;btn.textContent='Publishing…';try{const test={id:'exam_'+Date.now(),title,subject:mpExamById('mp-exam-subject').value.trim(),date,time:mpExamById('mp-exam-time').value,durationMinutes:Math.max(1,Number(mpExamById('mp-exam-duration').value)||30),perQuestionSeconds:Math.max(0,Number(mpExamById('mp-exam-qtime').value)||0),targetClass,targetBatch,questions:mpExamQuestions.map(q=>({type:q.type,text:q.text,options:q.options,imageUrl:q.imageUrl,marks:q.marks})),publishedAt:new Date().toISOString(),status:'published'};const ops=recipients.map(email=>{const st=allStudentsCache.find(x=>String(x.id).toLowerCase()===email),old=Array.isArray(st?.data?.assignedTests)?st.data.assignedTests:[];return wb=>wb.set(doc(db,'students',email),{assignedTests:[test,...old.filter(x=>x.id!==test.id)].slice(0,20)},{merge:true});});await commitBatchOps(ops);mpExamMsg(`Published successfully to ${recipients.length} students.`,true);mpExamQuestions.length=0;mpExamRenderQuestions();await loadStudentList();}catch(e){mpExamMsg('Publish failed: '+(e?.message||'Unknown error'));}finally{btn.disabled=false;btn.textContent='Publish Test to Students';}});
+  setTimeout(()=>{try{mpExamPopulateClasses();}catch(e){}},1400);
 
 </script>
 
