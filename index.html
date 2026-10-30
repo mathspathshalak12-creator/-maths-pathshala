@@ -2072,6 +2072,30 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
 .mp-test-list{display:grid;gap:12px}.mp-test-card{display:flex;align-items:center;gap:14px;min-width:0;padding:16px;border:1px solid #e5e9f7;border-radius:18px;background:#fff;box-shadow:0 7px 22px #27345b0b}.mp-test-card-icon{width:46px;height:46px;flex:0 0 46px;border-radius:14px;display:grid;place-items:center;font-size:21px;color:#fff;background:linear-gradient(135deg,#ff8a54,#ee5e91)}.mp-test-card-info{flex:1;min-width:0}.mp-test-chip{display:inline-block;padding:4px 8px;border-radius:20px;background:#eeeaff;color:#7054d9;font-size:9px;font-weight:900;text-transform:uppercase}.mp-test-card h3{font-size:16px;color:#1d2850;margin:6px 0 3px;overflow-wrap:anywhere}.mp-test-card p,.mp-test-card small{margin:0;color:#717b97;font-size:11px}.mp-test-start{border:0;border-radius:12px;padding:11px 14px;background:linear-gradient(110deg,#7357e8,#4c78e8);color:#fff;font-weight:800;white-space:nowrap;cursor:pointer}.mp-test-empty{padding:22px;border:1px dashed #cbd2e9;border-radius:16px;text-align:center;color:#717b97;background:#ffffffa8;font-size:13px}
 .mp-test-stage[hidden]{display:none!important}.mp-test-livebar{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#17224a;color:#fff;padding:13px 16px;border-radius:15px;margin-bottom:14px;font-size:12px}.mp-test-livebar button{border:0;background:#ffffff20;color:#fff;padding:8px 10px;border-radius:9px}.mp-test-live-layout{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:14px}.mp-test-question-card,.mp-test-palette{background:#fff;border:1px solid #e4e8f5;border-radius:18px;padding:clamp(14px,2vw,22px);min-width:0}.mp-test-qmeta{display:flex;justify-content:space-between;color:#7054d9;font-size:10px;font-weight:900;letter-spacing:.08em}.mp-test-question-card h3{font-size:clamp(17px,2.4vw,22px);line-height:1.5;color:#20294c;margin:18px 0}.mp-test-question-image{max-width:100%;max-height:340px;object-fit:contain;display:block;margin:12px auto;border-radius:12px}.mp-test-options{display:grid;gap:9px}.mp-test-option{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid #e3e7f3;border-radius:12px;color:#3a4568;font-size:13px;cursor:pointer}.mp-test-option input{accent-color:#7054d9}.mp-test-option>span{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:#f0edff;color:#7054d9;font-weight:900}.mp-test-option.selected{border-color:#8066e8;background:#f5f2ff}.mp-test-controls{display:flex;justify-content:space-between;gap:10px;margin-top:22px}.mp-test-controls button,.mp-test-result button{border:0;border-radius:11px;padding:11px 18px;font-weight:800;background:#edf0fa;color:#344064}.mp-test-controls button:last-child,.mp-test-result button{background:linear-gradient(110deg,#7357e8,#398fdc);color:white}.mp-test-controls button:disabled{opacity:.4}.mp-test-palette h4{margin:0 0 13px;color:#20294c}.mp-test-palette>div{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.mp-test-palette button{border:1px solid #e1e5f1;background:#f7f8fc;border-radius:8px;padding:9px 0;color:#47516f;font-weight:800}.mp-test-palette button.current{outline:2px solid #7458e8}.mp-test-palette button.answered{background:#dff7ef;color:#087a59;border-color:#a9e8d2}.mp-test-palette small{display:block;margin-top:14px;color:#75809a}.mp-test-clocks{display:flex;gap:15px;flex-wrap:wrap;color:#7b849e;font-size:11px}.mp-test-clocks b{color:#e15e68}.mp-test-result{text-align:center;padding:35px 18px;background:white;border-radius:18px}.mp-test-result-icon{margin:auto auto 12px;width:56px;height:56px;display:grid;place-items:center;border-radius:50%;background:#dff8ed;color:#079b70;font-size:28px}.mp-test-result>span{font-size:10px;font-weight:900;letter-spacing:.15em;color:#7054d9}.mp-test-result h2{color:#1d2850}.mp-test-score{font-size:46px;font-weight:950;color:#7054d9}.mp-test-score small{font-size:20px;color:#8490aa}.mp-test-result p{color:#6e7894;font-size:13px}.mp-student-logout{background:#fff0f1!important;color:#c23f59!important;border:1px solid #ffd5dc!important}
 @media(max-width:760px){.mp-test-card{align-items:flex-start;flex-wrap:wrap}.mp-test-card-info{width:calc(100% - 62px)}.mp-test-start{margin-left:60px}.mp-test-live-layout{grid-template-columns:1fr}.mp-test-palette{order:-1}.mp-test-palette>div{grid-template-columns:repeat(8,1fr)}.mp-test-livebar{flex-wrap:wrap}.mp-test-livebar strong{order:3;width:100%}.mp-test-clocks{font-size:10px}}
+
+/* Premium student experience enhancements — additive overrides only */
+#student-dashboard .student-hero-card{background:linear-gradient(112deg,#3568df 0%,#6b66ed 48%,#b58be9 100%)!important;border:1px solid rgba(255,255,255,.42)!important;box-shadow:0 18px 42px rgba(69,91,190,.20)!important;color:#fff!important}
+#student-dashboard .student-hero-card .dash-welcome,#student-dashboard .student-hero-card .student-hero-copy strong,#student-dashboard .student-hero-card .student-hero-copy small,#student-dashboard .student-hero-card .student-hero-copy>span{color:#fff!important}
+#student-dashboard .student-hero-card .dash-email{color:rgba(255,255,255,.82)!important}
+#student-dashboard .student-hero-card .dash-member-badge{background:rgba(255,255,255,.18)!important;color:#fff!important;border:1px solid rgba(255,255,255,.28)}
+#student-dashboard .student-kpi-grid{gap:14px!important}
+#student-dashboard .student-kpi{border:1px solid #e4eafa!important;border-radius:18px!important;background:linear-gradient(155deg,#fff,#f7f9ff)!important;box-shadow:0 10px 26px rgba(35,57,115,.065)!important;transition:transform .2s ease,box-shadow .2s ease}
+#student-dashboard .student-kpi:hover{transform:translateY(-2px);box-shadow:0 15px 30px rgba(35,57,115,.10)!important}
+#student-dashboard .student-panel{border:1px solid #e5eaf6!important;border-radius:19px!important;box-shadow:0 10px 28px rgba(35,57,115,.055)!important}
+#student-dashboard .mp-phase1-performance-intel{background:linear-gradient(135deg,#fff 0%,#f7f8ff 60%,#fff8f1 100%)!important}
+#student-dashboard .mp-p1-box{border:1px solid #e6eafa!important;border-radius:16px!important;background:#fff!important;box-shadow:0 8px 22px rgba(40,55,110,.045)}
+#student-dashboard .mp-p1-badge{display:inline-flex!important;align-items:center;gap:7px;padding:9px 12px!important;border-radius:13px!important;background:linear-gradient(135deg,#f0edff,#e9f5ff)!important;border:1px solid #dce5ff!important;color:#394f9c!important;font-weight:800!important;box-shadow:0 5px 14px rgba(83,101,190,.08)}
+#student-dashboard .mp-p3-student-panel{background:linear-gradient(145deg,#263d70,#4059a1)!important;border:1px solid rgba(255,255,255,.16)!important;box-shadow:0 16px 35px rgba(38,61,112,.15)!important}
+#student-dashboard .mp-p3-student-panel:after{background:rgba(255,255,255,.09)!important}
+#student-dashboard .mp-p3-profile-item{background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.16)!important}
+#student-dashboard .mp-p3-profile-item span{color:#d9e3ff!important}
+#student-dashboard .mp-p3-profile-item strong{color:#fff!important}
+#student-dashboard .mp-p2-card{border-radius:16px!important;border:1px solid #e6eafa!important;box-shadow:0 8px 22px rgba(40,55,110,.045)!important}
+#student-dashboard .mp-p2-test{border-radius:13px!important;background:linear-gradient(110deg,#f4f5ff,#f4fbff)!important;border:1px solid #e2e8ff!important}
+#student-dashboard .mp-p2-countdown{border-radius:99px!important}
+#student-dashboard .mp-test-result{box-shadow:0 14px 36px rgba(35,48,100,.08)}
+@media(max-width:760px){#student-dashboard .student-hero-card{padding:18px!important}#student-dashboard .student-kpi{min-width:0}#student-dashboard .mp-p1-badge{font-size:10px}}
+
 </style>
 
 </head>
@@ -2114,9 +2138,9 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
 </div>
 </div>
 <div class="student-hero-copy">
-<span>YOUR ACADEMIC SNAPSHOT</span>
+<span id="mp-personal-greeting">YOUR ACADEMIC SNAPSHOT</span>
 <strong>BUILDING STRONG FOUNDATION IN MATHEMATICS</strong>
-<small>Concepts that last. Confidence that grows. Progress you can see.</small>
+<small id="mp-personal-subtitle">Concepts that last. Confidence that grows. Progress you can see.</small>
 </div>
 </div>
 <div class="dash-notices" id="dash-notices"></div>
@@ -3983,8 +4007,9 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
       const name = String(s?.name || 'Test').trim();
       const score = Number(s?.score), max = Number(s?.max);
       if(d && Number.isFinite(score) && Number.isFinite(max) && max > 0){
-        const key = d + '__' + name.toLowerCase();
-        if(!byKey.has(key)) byKey.set(key, {name, date:d, score, max, topic:String(s?.topic||'').trim()});
+        const testId = String(s?.testId || '').trim();
+        const key = testId ? 'id__' + testId : d + '__' + name.toLowerCase();
+        if(!byKey.has(key)) byKey.set(key, {name, date:d, score, max, topic:String(s?.topic||'').trim(), testId});
       }
     });
     return [...byKey.values()].sort((a,b)=>b.date.localeCompare(a.date)||a.name.localeCompare(b.name));
@@ -4169,10 +4194,13 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
     }
 
     const data=docSnap.data();
-    mpRenderAssignedTests(data.assignedTests||[]);
+    mpRenderAssignedTests(data.assignedTests||[],data.testScores||[]);
     foundContent.style.display='block';
     notFoundContent.style.display='none';
     document.getElementById('dash-name').textContent=data.name||'Student'; document.getElementById('dash-avatar').textContent=(data.name||'S').trim().charAt(0).toUpperCase();
+    const greetEl=document.getElementById('mp-personal-greeting'); if(greetEl){const hr=new Date().getHours();greetEl.textContent=(hr<12?'GOOD MORNING':hr<17?'GOOD AFTERNOON':'GOOD EVENING')+', '+String((data.name||'STUDENT').split(/\s+/)[0]).toUpperCase();}
+    const personalSub=document.getElementById('mp-personal-subtitle'); if(personalSub) personalSub.textContent=`Class ${data.class||'—'} · ${data.batchName||'Your learning journey'} · Keep learning, keep growing.`;
+    const avatar=document.getElementById('dash-avatar'); if(avatar&&data.photoURL){avatar.innerHTML=`<img src="${dashEscapeHtml(data.photoURL)}" alt="Student profile" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">`; }
     currentStudentClass=data.class||null; currentStudentBatchName=data.batchName||null;
     const bh=document.getElementById('dash-batch-highlight'); bh.textContent=data.class&&data.batchName?`🎓 Class ${data.class} · ${data.batchName}`:''; bh.style.display=data.class&&data.batchName?'inline-block':'none';
     document.getElementById('dash-class-batch').textContent=data.class&&data.batchName?`Class ${data.class} · ${data.batchName}`:'—';
@@ -4520,12 +4548,12 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
     const panel=document.createElement('section');panel.id='mp-test-centre';panel.className='mp-student-test-centre';panel.innerHTML=`<div class="mp-test-head"><div><span class="mp-test-kicker">MATHS PATHSHALA · ASSESSMENTS</span><h2>Test Centre</h2><p>Attempt your assigned tests in a focused, distraction-free space.</p></div><div class="mp-test-head-icon">✦</div></div><div id="mp-test-list" class="mp-test-list"><div class="mp-test-empty">Your assigned tests will appear here.</div></div><div id="mp-test-stage" class="mp-test-stage" hidden></div>`;
     const anchor=main.querySelector('#dash-found-content'); if(anchor)anchor.after(panel);else main.appendChild(panel);
   }
-  function mpRenderAssignedTests(tests){
+  function mpRenderAssignedTests(tests, scores=[]){
     mpEnsureTestCentre(); const list=document.getElementById('mp-test-list'); if(!list)return;
     const items=Array.isArray(tests)?tests:[];
     if(!items.length){list.innerHTML='<div class="mp-test-empty">No online tests assigned yet. Your teacher will publish them here.</div>';return;}
-    list.innerHTML=items.map((t,i)=>{const count=Array.isArray(t.questions)?t.questions.length:0;const done=!!(t.attempted);return `<article class="mp-test-card"><div class="mp-test-card-icon">${t.questionMode==='image'?'▧':'✎'}</div><div class="mp-test-card-info"><span class="mp-test-chip">${mpTestEsc(t.subject||'Assessment')}</span><h3>${mpTestEsc(t.title||'Online Test')}</h3><p>${mpTestEsc(t.topic||'Practice assessment')} · ${count} questions · ${Number(t.durationMinutes)||30} min</p><small>${mpTestEsc(t.date||'Flexible attempt')} ${t.time?'· '+mpTestEsc(t.time):''}</small></div><button type="button" class="mp-test-start" data-mp-start-test="${i}">${done?'Review':'Start Test'} <span>→</span></button></article>`;}).join('');
-    list.querySelectorAll('[data-mp-start-test]').forEach(b=>b.addEventListener('click',()=>mpStartTest(items[Number(b.dataset.mpStartTest)])));
+    list.innerHTML=items.map((t,i)=>{const count=Array.isArray(t.questions)?t.questions.length:0;const result=(Array.isArray(scores)?scores:[]).find(x=>x.testId===t.id);const done=!!(t.attempted||result);return `<article class="mp-test-card"><div class="mp-test-card-icon">${t.questionMode==='image'?'▧':'✎'}</div><div class="mp-test-card-info"><span class="mp-test-chip">${mpTestEsc(t.subject||'Assessment')}</span><h3>${mpTestEsc(t.title||'Online Test')}</h3><p>${mpTestEsc(t.topic||'Practice assessment')} · ${count} questions · ${Number(t.durationMinutes)||30} min</p><small>${mpTestEsc(t.date||'Flexible attempt')} ${t.time?'· '+mpTestEsc(t.time):''}</small></div><button type="button" class="mp-test-start" data-mp-start-test="${i}">${done?'View Result':'Start Test'} <span>→</span></button></article>`;}).join('');
+    list.querySelectorAll('[data-mp-start-test]').forEach(b=>b.addEventListener('click',()=>{const t=items[Number(b.dataset.mpStartTest)],r=(Array.isArray(scores)?scores:[]).find(x=>x.testId===t.id);if(r){const stage=document.getElementById('mp-test-stage');stage.hidden=false;list.hidden=true;stage.innerHTML=`<div class="mp-test-result"><div class="mp-test-result-icon">✓</div><span>RESULT PUBLISHED</span><h2>${mpTestEsc(t.title||'Test')}</h2><div class="mp-test-score">${Number(r.score)||0}<small> / ${Number(r.max)||0}</small></div><p>${Number(r.max)>0?Math.round(Number(r.score)/Number(r.max)*100):0}% · ${mpTestEsc(r.date||'')}</p><button type="button" id="mp-test-back">Back to Test Centre</button></div>`;stage.querySelector('#mp-test-back').onclick=()=>{stage.hidden=true;list.hidden=false;};}else mpStartTest(t);}));
   }
   function mpStartTest(test){
     if(!test||!Array.isArray(test.questions)||!test.questions.length){alert('This test does not contain questions yet. Please contact your teacher.');return;}
@@ -4546,11 +4574,19 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
     stage.querySelector('#mp-test-exit').onclick=()=>{if(confirm('Exit this test? Your current answers will be cleared.'))mpAbortTest();};
     stage.querySelectorAll('[data-mp-q]').forEach(b=>b.onclick=()=>{mpTestIndex=Number(b.dataset.mpQ);mpRenderQuestion();});
   }
-  function mpFinishTest(auto){
+  async function mpFinishTest(auto){
+    if(!mpActiveTest||mpActiveTest._submitting)return;mpActiveTest._submitting=true;
     if(mpTestTick)clearInterval(mpTestTick);mpTestTick=null;
-    const qs=mpActiveTest.questions;const answered=Object.keys(mpTestAnswers).length;
-    const stage=document.getElementById('mp-test-stage');stage.innerHTML=`<div class="mp-test-result"><div class="mp-test-result-icon">✓</div><span>TEST ${auto?'AUTO-SUBMITTED':'SUBMITTED'}</span><h2>Test completed</h2><p>${answered} of ${qs.length} questions answered. Secure answer evaluation and result storage are not connected yet.</p><button type="button" id="mp-test-back">Back to Test Centre</button></div>`;
-    stage.querySelector('#mp-test-back').onclick=()=>{stage.hidden=true;document.getElementById('mp-test-list').hidden=false;};
+    const qs=mpActiveTest.questions,answered=Object.keys(mpTestAnswers).length,stage=document.getElementById('mp-test-stage');
+    stage.innerHTML=`<div class="mp-test-result"><div class="mp-test-result-icon">✓</div><span>TEST ${auto?'AUTO-SUBMITTED':'SUBMITTED'}</span><h2>Submitting your answers…</h2><p>Your answers are being sent for secure evaluation. Your score will appear in your performance graph after processing.</p></div>`;
+    try{
+      const user=auth.currentUser;if(!user)throw new Error('Please sign in again to submit this test.');
+      const submissionId=String(mpActiveTest.id||'test')+'_'+user.uid;
+      await setDoc(doc(db,'testSubmissions',submissionId),{testId:String(mpActiveTest.id||''),studentUid:user.uid,studentEmail:String(user.email||'').toLowerCase(),answers:mpTestAnswers,answeredCount:answered,totalQuestions:qs.length,autoSubmitted:!!auto,submittedAt:new Date().toISOString(),status:'submitted'});
+      stage.innerHTML=`<div class="mp-test-result"><div class="mp-test-result-icon">✓</div><span>ANSWERS RECEIVED</span><h2>Test submitted successfully</h2><p>Your result is being calculated securely. It will automatically appear in your Test Performance graph and achievements once processing is complete.</p><button type="button" id="mp-test-back">Back to Dashboard</button></div>`;
+      stage.querySelector('#mp-test-back').onclick=async()=>{stage.hidden=true;document.getElementById('mp-test-list').hidden=false;try{await loadStudentDashboard(user.email);}catch(e){console.warn('Post-test refresh:',e);}};
+      setTimeout(async()=>{try{if(auth.currentUser?.email)await loadStudentDashboard(auth.currentUser.email);}catch(e){console.warn('Result refresh:',e);}},5000);
+    }catch(err){console.error('Test submission failed:',err);mpActiveTest._submitting=false;stage.innerHTML=`<div class="mp-test-result"><h2>Submission could not be confirmed</h2><p>${mpTestEsc(err?.message||'Please check your connection and try again.')}</p><button type="button" id="mp-test-retry">Try submission again</button></div>`;stage.querySelector('#mp-test-retry').onclick=()=>mpFinishTest(auto);}
   }
   function mpAbortTest(){if(mpTestTick)clearInterval(mpTestTick);mpTestTick=null;mpActiveTest=null;const stage=document.getElementById('mp-test-stage');stage.hidden=true;document.getElementById('mp-test-list').hidden=false;}
   document.getElementById('mp-student-logout')?.addEventListener('click',()=>signOut(auth));
