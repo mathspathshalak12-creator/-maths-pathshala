@@ -2098,6 +2098,79 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
 
 </style>
 
+<style id="mp-student-dashboard-hybrid-v13">
+/* HYBRID VISUAL POLISH — dashboard-only presentation layer; no HTML, data, auth or feature logic changed. */
+#student-dashboard{position:relative;isolation:isolate;overflow:hidden;background:radial-gradient(ellipse at 12% 4%,rgba(246,190,91,.13),transparent 28%),radial-gradient(ellipse at 92% 18%,rgba(40,116,190,.12),transparent 30%),linear-gradient(145deg,#f4f7fc 0%,#f8f9fd 52%,#f1f5fb 100%)!important;color:#172b49}
+#student-dashboard:before,#student-dashboard:after{content:"";position:absolute;z-index:-1;pointer-events:none;border-radius:50%;filter:blur(2px);opacity:.48;animation:mpDashFloat 17s ease-in-out infinite alternate}
+#student-dashboard:before{width:310px;height:310px;top:7%;right:-115px;background:radial-gradient(circle,rgba(246,183,75,.22),rgba(246,183,75,0) 68%)}
+#student-dashboard:after{width:380px;height:380px;left:-175px;bottom:4%;background:radial-gradient(circle,rgba(37,112,190,.16),rgba(37,112,190,0) 70%);animation-delay:-7s}
+#student-dashboard .mp-premium-dashboard-shell{position:relative;border:1px solid rgba(210,222,240,.9);border-radius:26px;background:rgba(248,250,255,.94);box-shadow:0 26px 75px rgba(12,35,70,.14),0 3px 10px rgba(12,35,70,.04);backdrop-filter:blur(14px)}
+#student-dashboard .mp-dash-sidebar{position:relative;overflow:hidden;background:linear-gradient(160deg,#071a35 0%,#0b2b52 48%,#123e6c 100%);box-shadow:inset -1px 0 rgba(255,255,255,.08)}
+#student-dashboard .mp-dash-sidebar:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 12% 12%,rgba(246,183,75,.17),transparent 26%),radial-gradient(circle at 95% 72%,rgba(63,154,220,.19),transparent 32%)}
+#student-dashboard .mp-dash-brand,#student-dashboard .mp-dash-side-links,#student-dashboard .mp-dash-sidebar-quote{position:relative;z-index:1}
+#student-dashboard .mp-dash-brand-icon{background:linear-gradient(145deg,#fff0c8 0%,#f4c36e 52%,#eaa43a 100%);box-shadow:0 8px 24px rgba(238,174,73,.25),inset 0 1px rgba(255,255,255,.75)}
+#student-dashboard .mp-dash-side-links button{border:1px solid transparent;transition:transform .22s ease,background .22s ease,border-color .22s ease,box-shadow .22s ease}
+#student-dashboard .mp-dash-side-links button:hover{transform:translateX(3px);border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.09)}
+#student-dashboard .mp-dash-side-links button.is-active{background:linear-gradient(105deg,rgba(37,105,173,.88),rgba(20,83,145,.76));border-color:rgba(255,213,139,.22);box-shadow:inset 3px 0 #f4bd62,0 7px 18px rgba(0,0,0,.12)}
+#student-dashboard .mp-dash-sidebar-quote{border-color:rgba(255,255,255,.14);color:#e0eaf8}
+#student-dashboard .mp-dash-main{background:linear-gradient(180deg,rgba(249,251,255,.98),rgba(244,247,252,.96))}
+#student-dashboard .student-lms-topbar{background:rgba(255,255,255,.88);border-bottom-color:#e4ebf5;backdrop-filter:blur(12px)}
+#student-dashboard .student-lms-topbar:before{color:#102c50;letter-spacing:-.35px}
+#student-dashboard .dash-logout{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+#student-dashboard .dash-logout:hover{transform:translateY(-1px);border-color:#c9d9ed!important;box-shadow:0 7px 16px rgba(16,53,94,.09)!important}
+#student-dashboard .student-hero-card{position:relative;isolation:isolate;overflow:hidden;border:1px solid rgba(255,255,255,.15);background:linear-gradient(112deg,#081d3d 0%,#103d70 48%,#08769a 100%);box-shadow:0 18px 38px rgba(7,43,83,.2),inset 0 1px rgba(255,255,255,.13)}
+#student-dashboard .student-hero-card:before{content:"";position:absolute;z-index:-1;inset:-60%;background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.075) 49%,transparent 60%);transform:translateX(-30%) rotate(8deg);animation:mpDashSheen 13s ease-in-out infinite}
+#student-dashboard .student-hero-card:after{content:"";position:absolute;z-index:-1;width:280px;height:280px;right:-65px;top:-170px;border:1px solid rgba(255,255,255,.14);border-radius:50%;box-shadow:0 0 0 25px rgba(255,255,255,.025),0 0 0 52px rgba(255,255,255,.02)}
+#student-dashboard .dash-avatar{border-color:rgba(255,255,255,.7);box-shadow:0 0 0 5px rgba(255,255,255,.09),0 8px 22px rgba(0,0,0,.17)}
+#student-dashboard .dash-welcome{line-height:1.2;text-wrap:balance}
+#student-dashboard .student-hero-copy{background:rgba(255,255,255,.105);border-color:rgba(255,255,255,.22);box-shadow:inset 0 1px rgba(255,255,255,.12);backdrop-filter:blur(9px)}
+#student-dashboard .student-kpi{overflow:hidden;border-color:#e3eaf4;background:linear-gradient(150deg,#fff 0%,#fbfcff 100%);box-shadow:0 7px 22px rgba(15,45,83,.055);transition:transform .24s ease,box-shadow .24s ease,border-color .24s ease}
+#student-dashboard .student-kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#f2c36f,#d99a38);opacity:.9}
+#student-dashboard .student-kpi:hover{transform:translateY(-4px);border-color:#d3e0f0;box-shadow:0 15px 30px rgba(15,45,83,.10)}
+#student-dashboard .student-kpi strong{letter-spacing:-1.1px;color:#102d54}
+#student-dashboard .student-panel,#student-dashboard .mp-p3-student-panel{border:1px solid #e3eaf4;border-radius:17px;background:linear-gradient(155deg,#fff 0%,#fcfdff 100%);box-shadow:0 7px 24px rgba(18,47,83,.052);transition:box-shadow .22s ease,border-color .22s ease}
+#student-dashboard .student-panel:hover,#student-dashboard .mp-p3-student-panel:hover{border-color:#d8e3f1;box-shadow:0 12px 30px rgba(18,47,83,.075)}
+#student-dashboard .student-panel-head h3,#student-dashboard .mp-p2-head h4{color:#102e55;letter-spacing:-.4px}
+#student-dashboard .panel-kicker{color:#9a7134;letter-spacing:.14em}
+#student-dashboard .panel-pill,#student-dashboard .mp-p2-pill{border:1px solid #f0dfbd;background:#fff8e9;color:#80591e}
+#student-dashboard .performance-summary>div{border:1px solid #e7edf5;background:linear-gradient(140deg,#f7faff,#fff);box-shadow:inset 0 1px #fff}
+#student-dashboard .score-chart-wrap{position:relative;min-height:245px;margin:16px 0 10px;padding:15px 14px 10px;border:1px solid #e5ebf4;border-radius:15px;background:radial-gradient(ellipse at 85% 0%,rgba(246,190,91,.10),transparent 38%),linear-gradient(145deg,#fbfcff,#f4f8fd);box-shadow:inset 0 1px #fff}
+#student-dashboard .student-score-chart{height:260px;max-width:100%}
+#student-dashboard #score-chart{max-width:100%}
+#student-dashboard .student-score-list{padding:0 4px}
+#student-dashboard .student-score-list li{color:#435873;border-bottom-color:#edf1f7}
+#student-dashboard .rank-card{border:1px solid rgba(255,255,255,.13);background:linear-gradient(120deg,#0a2346,#164d7d 72%,#146c83);box-shadow:0 12px 26px rgba(8,43,78,.14);color:#fff}
+#student-dashboard .rank-card strong{color:#fff}
+#student-dashboard .rank-medal{background:linear-gradient(145deg,#fff0c6,#efb84f);box-shadow:0 6px 15px rgba(235,174,70,.24)}
+#student-dashboard .mp-p2-card,#student-dashboard .mp-p1-box{border-color:#e5ebf4;background:linear-gradient(145deg,#fbfcff,#f6f9fd);box-shadow:inset 0 1px #fff}
+#student-dashboard .mp-p1-metrics>div,#student-dashboard .mp-p3-report-stat{border-color:#e4ebf5;background:linear-gradient(145deg,#f9fbff,#fff)}
+#student-dashboard .mp-p1-metrics strong{color:#12385f}
+#student-dashboard .mp-modern-quick-actions{border:1px solid #e4eaf3;border-radius:17px;background:linear-gradient(115deg,#fff,#f8fbff);box-shadow:0 7px 22px rgba(15,45,83,.05)}
+#student-dashboard .mp-modern-action-grid button{border:1px solid #e5ebf4;background:rgba(255,255,255,.86);transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+#student-dashboard .mp-modern-action-grid button:hover{transform:translateY(-3px);border-color:#d4e1f0;box-shadow:0 10px 22px rgba(17,54,92,.08)}
+#student-dashboard a:focus-visible,#student-dashboard button:focus-visible{outline:3px solid rgba(226,166,69,.62)!important;outline-offset:3px}
+@keyframes mpDashFloat{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(-26px,22px,0) scale(1.08)}}
+@keyframes mpDashSheen{0%,58%,100%{transform:translateX(-42%) rotate(8deg)}78%{transform:translateX(42%) rotate(8deg)}}
+@media(max-width:820px){
+ #student-dashboard .mp-premium-dashboard-shell{border-radius:20px}
+ #student-dashboard .mp-dash-sidebar{background:linear-gradient(110deg,#071a35,#103b68)}
+ #student-dashboard .student-hero-card{box-shadow:0 12px 27px rgba(7,43,83,.17)}
+ #student-dashboard .student-score-chart{height:230px;min-height:210px}
+ #student-dashboard .score-chart-wrap{padding:10px 8px 7px}
+}
+@media(max-width:600px){
+ #student-dashboard .student-kpi{min-height:100px;padding:14px 12px}
+ #student-dashboard .student-kpi strong{font-size:25px}
+ #student-dashboard .student-panel{padding:15px}
+ #student-dashboard .student-score-chart{height:215px;min-height:195px}
+ #student-dashboard .student-hero-copy{width:100%;max-width:none}
+}
+@media(prefers-reduced-motion:reduce){
+ #student-dashboard:before,#student-dashboard:after,#student-dashboard .student-hero-card:before{animation:none!important}
+ #student-dashboard *,#student-dashboard *:before,#student-dashboard *:after{scroll-behavior:auto!important;transition-duration:.01ms!important}
+}
+</style>
+
 </head>
 <body>
 <!-- Student dashboard: shown at the TOP after student login; public website remains visible underneath. -->
