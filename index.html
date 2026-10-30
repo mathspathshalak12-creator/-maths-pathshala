@@ -1912,12 +1912,178 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
 @media(prefers-reduced-motion:reduce){.mp-premium-hero .btn,.mp-floating-card{transition:none!important}}
 </style>
 
+
+<style id="mp-premium-student-dashboard-v12">
+/* Premium EdTech refresh — intentionally scoped to the student dashboard only. */
+#student-dashboard{padding:22px 0 34px!important;background:#f4f7fc;min-height:100vh}
+#student-dashboard>.wrap{width:min(1600px,calc(100% - 28px));max-width:1600px;margin:0 auto}
+#student-dashboard .mp-premium-dashboard-shell{display:grid;grid-template-columns:238px minmax(0,1fr);align-items:stretch;overflow:hidden;border:1px solid #e4ebf5;border-radius:24px;background:#f7f9fd;box-shadow:0 22px 65px rgba(13,38,76,.12);margin:0;min-width:0}
+#student-dashboard .mp-dash-sidebar{grid-column:1;grid-row:1;display:flex;flex-direction:column;gap:25px;padding:25px 15px 22px;background:linear-gradient(180deg,#071b39 0%,#0b2b56 100%);color:#fff;min-width:0}
+#student-dashboard .mp-dash-brand{display:flex;align-items:center;gap:11px;padding:0 6px 19px;border-bottom:1px solid rgba(255,255,255,.12)}
+#student-dashboard .mp-dash-brand-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(145deg,#ffe2a3,#f4ad37);color:#09244a;font-size:25px;font-weight:900;box-shadow:0 7px 20px rgba(245,166,35,.18)}
+#student-dashboard .mp-dash-brand strong{display:block;color:#fff;font-size:16px;letter-spacing:-.35px;white-space:nowrap}
+#student-dashboard .mp-dash-brand strong span{color:#ffc45e}
+#student-dashboard .mp-dash-brand small{display:block;color:#aebed5;font-size:9px;letter-spacing:.11em;text-transform:uppercase;margin-top:4px}
+#student-dashboard .mp-dash-side-links{display:grid;gap:6px}
+#student-dashboard .mp-dash-side-links button{display:flex;align-items:center;gap:12px;width:100%;border:0;border-radius:11px;padding:11px 12px;background:transparent;color:#dce7f7;text-align:left;font-size:12px;line-height:1.25;font-family:inherit;font-weight:600;cursor:pointer;transition:background .18s ease,color .18s ease,transform .18s ease}
+#student-dashboard .mp-dash-side-links button span{width:20px;flex:0 0 20px;text-align:center;font-size:18px;color:#b9d0f1}
+#student-dashboard .mp-dash-side-links button:hover,#student-dashboard .mp-dash-side-links button.is-active{background:linear-gradient(100deg,#164f91,#1763b4);color:#fff}
+#student-dashboard .mp-dash-side-links button.is-active span{color:#fff}
+#student-dashboard .mp-dash-sidebar-quote{margin-top:auto;padding:17px 10px 0;border-top:1px solid rgba(255,255,255,.12);font-size:12px;line-height:1.7;color:#d8e5f6}
+#student-dashboard .mp-dash-sidebar-quote small{display:block;text-align:right;color:#9eb2ce;margin-top:8px;font-size:10px}
+#student-dashboard .mp-dash-main{grid-column:2;grid-row:1;min-width:0;padding:0 0 22px;background:#f7f9fd}
+#student-dashboard .student-lms-topbar{height:72px;padding:0 26px;background:#fff;color:#10294d;border-bottom:1px solid #e8eef7;display:flex;align-items:center;justify-content:space-between}
+#student-dashboard .student-brand-lockup{display:none!important}
+#student-dashboard .student-lms-topbar:before{content:'Student Learning Dashboard';font-size:14px;font-weight:800;letter-spacing:-.2px;color:#122e55}
+#student-dashboard .dash-logout{border:1px solid #dce7f5!important;border-radius:10px!important;background:#f6f9fe!important;color:#173c6b!important;padding:9px 14px!important;font-weight:750!important;font-size:11px!important;box-shadow:none!important}
+#student-dashboard .student-hero-card{margin:20px 22px 14px;padding:24px 26px;border:0;border-radius:18px;background:linear-gradient(112deg,#09234a 0%,#0c4a88 68%,#087ba7 100%);box-shadow:0 12px 28px rgba(10,62,116,.16);color:#fff;gap:18px;min-height:122px}
+#student-dashboard .student-hero-card:before{color:rgba(255,255,255,.045)}
+#student-dashboard .student-identity{gap:15px;min-width:0}
+#student-dashboard .dash-avatar{width:62px;height:62px;flex:0 0 62px;border:3px solid rgba(255,255,255,.4);background:#fff;color:#1456a0;font-size:23px;box-shadow:0 5px 16px rgba(0,0,0,.12)}
+#student-dashboard .dash-member-badge{display:inline-flex;margin-bottom:5px;color:#bfe9ff;font-size:9px;letter-spacing:.09em}
+#student-dashboard .dash-welcome{font-size:23px;font-weight:850;letter-spacing:-.6px;color:#fff}
+#student-dashboard .dash-email{margin-top:4px;color:#d5e8fb;font-size:11px;overflow-wrap:anywhere}
+#student-dashboard .batch-highlight{display:inline-flex;margin-top:7px;padding:5px 9px;border:1px solid rgba(255,255,255,.22);border-radius:20px;background:rgba(255,255,255,.1);color:#fff;font-size:10px}
+#student-dashboard .student-hero-copy{max-width:310px;padding:14px 16px;border:1px solid rgba(255,255,255,.17);border-radius:13px;background:rgba(255,255,255,.09);text-align:left}
+#student-dashboard .student-hero-copy span{color:#bfe8ff;font-size:9px;letter-spacing:.12em}
+#student-dashboard .student-hero-copy strong{display:block;margin:5px 0;color:#fff;font-size:13px;line-height:1.4}
+#student-dashboard .student-hero-copy small{color:#d6e9fa;font-size:10px;line-height:1.45}
+#student-dashboard .dash-notices{margin:0 22px 12px!important;padding:0!important}
+#student-dashboard #dash-homework{margin:0 22px}
+#student-dashboard .mp-p3-student-grid{margin:12px 22px 0!important;gap:13px!important}
+#student-dashboard .student-kpi-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:0 22px 14px}
+#student-dashboard .student-kpi{position:relative;min-width:0;min-height:112px;padding:17px 16px;border:1px solid #e2ebf6;border-radius:15px;background:#fff;box-shadow:0 5px 18px rgba(20,54,96,.045);transition:transform .18s ease,box-shadow .18s ease}
+#student-dashboard .student-kpi:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(20,54,96,.09)}
+#student-dashboard .student-kpi span{display:block;color:#60728c;font-size:10px;font-weight:750;line-height:1.4}
+#student-dashboard .student-kpi strong{display:block;margin-top:8px;color:#102f59;font-size:28px;line-height:1;font-weight:850;letter-spacing:-.8px}
+#student-dashboard .student-kpi small{display:block;margin-top:8px;color:#8493a8;font-size:9px;line-height:1.35}
+#student-dashboard .student-main-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:0 22px 14px}
+#student-dashboard .student-panel{min-width:0;padding:20px;border:1px solid #e2eaf5;border-radius:16px;background:#fff;box-shadow:0 5px 18px rgba(20,54,96,.045)}
+#student-dashboard .student-panel-wide{grid-column:span 2}
+#student-dashboard .student-panel-head{align-items:center;margin-bottom:15px}
+#student-dashboard .student-panel-head h3{font-size:16px;font-weight:850;letter-spacing:-.3px;color:#112f58}
+#student-dashboard .panel-kicker{color:#6d8aaf;font-size:9px;font-weight:800;letter-spacing:.12em}
+#student-dashboard .panel-pill{border:1px solid #e4edf8;background:#f2f7fd;color:#37618f}
+#student-dashboard .performance-summary>div,#student-dashboard .mp-p2-card,#student-dashboard .mp-p1-box{border:1px solid #e8eef7;background:#f8faff;border-radius:13px}
+#student-dashboard .rank-card{border:1px solid #e8eef7;border-radius:14px;background:linear-gradient(145deg,#f7faff,#fff);padding:17px}
+#student-dashboard .rank-card strong{color:#123a6b;font-size:27px}
+#student-dashboard .att-progress-track{background:#e9eff7;border-radius:30px;overflow:hidden}
+#student-dashboard .att-progress-fill{border-radius:30px;background:linear-gradient(90deg,#16a56b,#54d6a0)}
+#student-dashboard .mp-att-calendar{border:1px solid #edf1f7;border-radius:13px;padding:14px;background:#fbfcff}
+#student-dashboard .mp-att-day{border-radius:50%;font-weight:750}
+#student-dashboard .mp-p2-learning-grid{gap:12px}
+#student-dashboard .mp-p2-card{padding:15px}
+#student-dashboard .mp-p2-head h4{font-size:13px;color:#17365f}
+#student-dashboard .mp-p1-metrics>div{border:1px solid #e6edf7;border-radius:12px;background:#f8faff;padding:14px}
+#student-dashboard .mp-p1-metrics strong{color:#123a6b}
+#student-dashboard .mp-p3-report-grid{gap:10px}
+#student-dashboard .mp-p3-report-stat{border:1px solid #e6edf7;border-radius:12px;background:#f8faff}
+#student-dashboard .dash-notes-list li,#student-dashboard .payment-history-list li{border-bottom:1px solid #edf1f7}
+#student-dashboard .mp-dash-mobile-nav{display:none}
+#student-dashboard .dash-not-found{margin:20px 22px;padding:24px;border:1px solid #e4ebf5;border-radius:15px;background:#fff;color:#17365f}
+@media(max-width:1120px){
+ #student-dashboard>.wrap{width:calc(100% - 20px)}
+ #student-dashboard .mp-premium-dashboard-shell{grid-template-columns:205px minmax(0,1fr)}
+ #student-dashboard .mp-dash-sidebar{padding:21px 11px}
+ #student-dashboard .student-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #student-dashboard .student-hero-card{margin-left:16px;margin-right:16px}
+ #student-dashboard .student-kpi-grid,#student-dashboard .student-main-grid{padding-left:16px;padding-right:16px}
+}
+@media(max-width:820px){
+ #student-dashboard .mp-premium-dashboard-shell{grid-template-columns:1fr}
+ #student-dashboard .mp-dash-sidebar{grid-column:1;grid-row:1;display:block;padding:13px 15px 10px;overflow:hidden}
+ #student-dashboard .mp-dash-brand{padding:0 4px 11px;border-bottom:0}
+ #student-dashboard .mp-dash-brand-icon{width:34px;height:34px;font-size:20px}
+ #student-dashboard .mp-dash-brand strong{font-size:14px}
+ #student-dashboard .mp-dash-side-links{display:flex;gap:7px;overflow-x:auto;padding:1px 0 5px;scrollbar-width:thin}
+ #student-dashboard .mp-dash-side-links button{flex:0 0 auto;width:auto;white-space:nowrap;padding:8px 11px;font-size:10px}
+ #student-dashboard .mp-dash-side-links button span{font-size:14px;width:auto;flex-basis:auto}
+ #student-dashboard .mp-dash-sidebar-quote{display:none}
+ #student-dashboard .mp-dash-main{grid-column:1;grid-row:2}
+ #student-dashboard .student-lms-topbar{height:58px;padding:0 17px}
+ #student-dashboard .student-lms-topbar:before{font-size:12px}
+ #student-dashboard .student-hero-card{flex-direction:row;align-items:center;padding:19px;margin:15px 15px 12px}
+ #student-dashboard .student-hero-copy{max-width:260px}
+ #student-dashboard .student-main-grid{gap:11px}
+}
+@media(max-width:600px){
+ #student-dashboard{padding:8px 0 16px!important}
+ #student-dashboard>.wrap{width:100%;padding:0 7px}
+ #student-dashboard .mp-premium-dashboard-shell{border-radius:17px;border-left:0;border-right:0;box-shadow:0 8px 28px rgba(13,38,76,.08)}
+ #student-dashboard .mp-dash-sidebar{padding:11px 12px 7px}
+ #student-dashboard .mp-dash-brand{padding-bottom:8px}
+ #student-dashboard .mp-dash-side-links{display:none}
+ #student-dashboard .mp-dash-main{padding-bottom:82px}
+ #student-dashboard .student-lms-topbar{height:53px;padding:0 13px}
+ #student-dashboard .student-lms-topbar:before{content:'My Dashboard';font-size:12px}
+ #student-dashboard .dash-logout{padding:7px 10px!important;font-size:10px!important}
+ #student-dashboard .student-hero-card{margin:11px 10px 10px;padding:16px 14px;gap:12px;align-items:flex-start;flex-direction:column;border-radius:15px}
+ #student-dashboard .student-identity{gap:11px}
+ #student-dashboard .dash-avatar{width:48px;height:48px;flex-basis:48px;font-size:18px}
+ #student-dashboard .dash-welcome{font-size:18px;line-height:1.25}
+ #student-dashboard .dash-email{font-size:10px;max-width:230px}
+ #student-dashboard .student-hero-copy{width:100%;max-width:none;padding:10px 12px}
+ #student-dashboard .student-hero-copy strong{font-size:11px}
+ #student-dashboard .dash-notices{margin:0 10px 10px!important}
+ #student-dashboard #dash-homework{margin:0 10px}
+ #student-dashboard .mp-p3-student-grid{margin:10px 10px 0!important;grid-template-columns:1fr!important}
+ #student-dashboard .student-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:0 10px 10px}
+ #student-dashboard .student-kpi{min-height:94px;padding:12px 11px;border-radius:12px}
+ #student-dashboard .student-kpi span{font-size:9px}
+ #student-dashboard .student-kpi strong{font-size:23px;margin-top:7px}
+ #student-dashboard .student-kpi small{font-size:8px;margin-top:6px}
+ #student-dashboard .student-main-grid{grid-template-columns:minmax(0,1fr);gap:10px;padding:0 10px 12px}
+ #student-dashboard .student-panel,#student-dashboard .student-panel-wide{grid-column:1;padding:14px;border-radius:13px}
+ #student-dashboard .student-panel-head{margin-bottom:12px}
+ #student-dashboard .student-panel-head h3{font-size:15px}
+ #student-dashboard .performance-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #student-dashboard .performance-summary>div:last-child{grid-column:auto}
+ #student-dashboard .student-score-chart{height:190px}
+ #student-dashboard .mp-p1-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #student-dashboard .mp-p1-grid{grid-template-columns:1fr!important}
+ #student-dashboard .mp-p3-profile-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #student-dashboard .mp-p2-learning-grid{grid-template-columns:1fr!important}
+ #student-dashboard .mp-p3-report-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #student-dashboard .mp-att-grid{gap:4px!important}
+ #student-dashboard .mp-att-day{min-height:40px!important;font-size:10px!important}
+ #student-dashboard .mp-att-weekdays span{font-size:9px}
+ #student-dashboard .mp-att-legend{flex-wrap:wrap;gap:8px 12px}
+ #student-dashboard .mp-p1-history-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+ #student-dashboard .mp-p1-history{min-width:560px}
+ #student-dashboard .detail-list>div{gap:10px}
+ #student-dashboard .detail-list strong{text-align:right;overflow-wrap:anywhere}
+ #student-dashboard .mp-dash-mobile-nav{position:fixed;z-index:9998;left:7px;right:7px;bottom:max(7px,env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px;padding:7px 5px calc(7px + env(safe-area-inset-bottom));border:1px solid #dce7f5;border-radius:16px;background:rgba(255,255,255,.96);box-shadow:0 8px 28px rgba(6,30,65,.2);backdrop-filter:blur(14px)}
+ #student-dashboard .mp-dash-mobile-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;border:0;border-radius:10px;background:transparent;color:#6c7d95;padding:5px 2px;cursor:pointer}
+ #student-dashboard .mp-dash-mobile-nav button span{font-size:18px;line-height:1.1}
+ #student-dashboard .mp-dash-mobile-nav button small{font-size:9px;font-weight:750;white-space:nowrap}
+ #student-dashboard .mp-dash-mobile-nav button.is-active{background:#edf5ff;color:#1262b4}
+ #student-dashboard .dash-not-found{margin:12px 10px}
+}
+@media(prefers-reduced-motion:reduce){#student-dashboard *,#student-dashboard *:before,#student-dashboard *:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+
 </head>
 <body>
 <!-- Student dashboard: shown at the TOP after student login; public website remains visible underneath. -->
 <div id="student-dashboard">
 <div class="wrap">
-<div class="student-lms-shell">
+<div class="student-lms-shell mp-premium-dashboard-shell">
+<aside class="mp-dash-sidebar" aria-label="Student dashboard navigation">
+  <div class="mp-dash-brand"><div class="mp-dash-brand-icon">∑</div><div><strong>Maths <span>Pathshala</span></strong><small>Learn · Practice · Grow</small></div></div>
+  <nav class="mp-dash-side-links">
+    <button type="button" class="is-active" data-dash-target="dash-found-content"><span>⌂</span>Dashboard</button>
+    <button type="button" data-dash-target="panel-daily"><span>▦</span>Attendance</button>
+    <button type="button" data-dash-target="panel-performance"><span>▥</span>Test Performance</button>
+    <button type="button" data-dash-target="panel-position"><span>♜</span>Batch Rank</button>
+    <button type="button" data-dash-target="panel-learning-hub"><span>▤</span>Homework &amp; Learning</button>
+    <button type="button" data-dash-target="panel-notes"><span>▧</span>Notes &amp; Study Material</button>
+    <button type="button" data-dash-target="dash-notices"><span>♧</span>Notices</button>
+    <button type="button" data-dash-target="panel-fees"><span>₹</span>Fees &amp; Payments</button>
+    <button type="button" data-dash-target="mp-p3-top"><span>⚙</span>Profile &amp; Updates</button>
+  </nav>
+  <div class="mp-dash-sidebar-quote">“Small steps every day<br>lead to big results.”<small>— Maths Pathshala</small></div>
+</aside>
+<div class="mp-dash-main">
 <div class="student-lms-topbar">
 <div class="student-brand-lockup">
 <div class="student-brand-mark">∑</div>
@@ -2082,6 +2248,14 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
 <div class="dash-not-found">We couldn't find your student record. <a href="javascript:void(0)" id="dash-not-found-wa" target="_blank">Message us on WhatsApp</a> to get set up.</div>
 </div>
 </div>
+</div>
+<nav class="mp-dash-mobile-nav" aria-label="Mobile dashboard navigation">
+  <button type="button" class="is-active" data-dash-target="dash-found-content"><span>⌂</span><small>Home</small></button>
+  <button type="button" data-dash-target="panel-daily"><span>▦</span><small>Attendance</small></button>
+  <button type="button" data-dash-target="panel-performance"><span>▥</span><small>Tests</small></button>
+  <button type="button" data-dash-target="panel-learning-hub"><span>▤</span><small>Learning</small></button>
+  <button type="button" data-dash-target="panel-fees"><span>⋯</span><small>More</small></button>
+</nav>
 </div>
 </div>
 <header>
@@ -5354,6 +5528,24 @@ html body #learning-roadmap .mp-progress-highlight .btn{visibility:visible!impor
  html body #online-classes.online-learning-section .wrap > .section-head{text-align:center!important}
 }
 </style>
+
+
+<script id="mp-premium-dashboard-navigation">
+(function(){
+  const root=document.getElementById('student-dashboard');
+  if(!root || root.dataset.premiumNavReady==='1') return;
+  root.dataset.premiumNavReady='1';
+  root.addEventListener('click',function(event){
+    const button=event.target.closest('[data-dash-target]');
+    if(!button || !root.contains(button)) return;
+    const targetId=button.getAttribute('data-dash-target');
+    const target=document.getElementById(targetId);
+    if(!target) return;
+    target.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+    root.querySelectorAll('.mp-dash-side-links button,.mp-dash-mobile-nav button').forEach(item=>item.classList.toggle('is-active',item.getAttribute('data-dash-target')===targetId));
+  });
+})();
+</script>
 
 </body>
 </html>
