@@ -5659,3 +5659,206 @@ html body #online-classes.online-learning-section .wrap > .section-head .section
   }, true);
 })();
 </script>
+
+
+<!-- MP MOBILE + TABLET RESPONSIVE FINISH: layout-only overrides; existing features/scripts are preserved. -->
+<style id="mp-mobile-tablet-responsive-finish">
+  /* Prevent the page itself from becoming wider than the device. */
+  html,body{width:100%;max-width:100%;overflow-x:clip}
+  #main-site,header,footer,section{max-width:100%}
+  img,video,canvas,iframe{max-width:100%}
+  .wrap{width:100%;max-width:1080px;margin-left:auto;margin-right:auto}
+  .wrap>*{min-width:0}
+  h1,h2,h3,h4,p,a,button,span,small,strong{overflow-wrap:break-word}
+  button,a{-webkit-tap-highlight-color:transparent}
+
+  /* Tablet navigation: retain a visible, readable login action. */
+  @media (min-width:761px) and (max-width:1024px){
+    nav{gap:12px;padding-left:18px!important;padding-right:18px!important}
+    .logo{font-size:17px!important;white-space:nowrap}
+    .navlinks{gap:13px!important;font-size:13px!important}
+    .nav-cta{padding:10px 13px!important;font-size:12px!important;white-space:nowrap}
+    header #student-login-btn{display:inline-flex!important;align-items:center;justify-content:center;min-height:42px}
+    .hero{padding-left:20px!important;padding-right:20px!important}
+    .mp-hero-layout{gap:22px!important}
+    #hero .mp-hero-visual{max-width:100%;min-width:0}
+  }
+
+  /* Phone header: logo, login and menu stay on one clean line. */
+  @media (max-width:760px){
+    header{width:100%;overflow:visible}
+    header nav{
+      width:100%;max-width:none;min-height:66px;
+      display:flex!important;flex-wrap:nowrap!important;
+      align-items:center!important;justify-content:space-between!important;
+      gap:8px!important;padding:10px 14px!important;
+    }
+    header .logo{flex:1 1 auto;min-width:0;font-size:clamp(14px,4vw,18px)!important;gap:7px!important;white-space:nowrap}
+    header .logo:before{width:28px;height:28px;flex:0 0 28px;font-size:18px}
+    header .navlinks{display:none!important}
+    header nav>.nav-cta{display:none!important}
+    header #student-login-btn{
+      display:inline-flex!important;flex:0 0 auto!important;
+      align-items:center!important;justify-content:center!important;
+      width:auto!important;min-width:0!important;max-width:none!important;
+      min-height:40px!important;margin:0 0 0 auto!important;
+      padding:9px 12px!important;border-radius:999px!important;
+      font-size:12px!important;line-height:1.2!important;font-weight:800!important;
+      letter-spacing:0!important;white-space:nowrap!important;
+      text-indent:0!important;overflow:visible!important;
+    }
+    header .hamburger-btn{
+      display:grid!important;place-items:center!important;flex:0 0 40px!important;
+      width:40px!important;height:40px!important;padding:0!important;
+      font-size:23px!important;border-radius:11px!important;
+      background:rgba(255,255,255,.1)!important;
+    }
+    header .mobile-menu.show{
+      left:0!important;right:0!important;top:100%!important;
+      width:100%!important;max-width:100%!important;
+      padding:10px 16px 18px!important;box-sizing:border-box!important;
+      max-height:calc(100dvh - 72px);overflow-y:auto!important;
+      overscroll-behavior:contain;
+    }
+    header .mobile-menu a{
+      display:block!important;width:100%!important;min-width:0!important;
+      padding:12px 4px!important;font-size:14px!important;line-height:1.4!important;
+      white-space:normal!important;overflow:visible!important;
+      overflow-wrap:anywhere!important;letter-spacing:0!important;
+    }
+    header .mobile-menu a.nav-cta,
+    header .mobile-menu #mobile-login-btn{
+      display:flex!important;align-items:center!important;justify-content:center!important;
+      width:100%!important;min-height:46px!important;margin:10px 0 0!important;
+      padding:12px 16px!important;border:0!important;border-radius:12px!important;
+      font-size:14px!important;line-height:1.25!important;font-weight:850!important;
+      white-space:normal!important;overflow:visible!important;text-indent:0!important;
+      text-align:center!important;letter-spacing:0!important;
+      color:#183b3b!important;background:linear-gradient(135deg,#f1ad9a,#e98972)!important;
+    }
+
+    /* Remove side gutters and keep every section inside the phone viewport. */
+    .wrap{padding-left:16px!important;padding-right:16px!important}
+    section{padding-top:58px!important;padding-bottom:58px!important}
+    .hero{min-height:0!important;padding:48px 16px 42px!important}
+    .hero-inner{width:100%!important;max-width:100%!important}
+    .hero h1{font-size:clamp(32px,9vw,46px)!important;line-height:1.1!important;letter-spacing:-.035em!important;max-width:100%!important;overflow-wrap:normal!important}
+    .hero p.sub{font-size:15px!important;line-height:1.7!important;margin-top:16px!important}
+    .eyebrow{font-size:10px!important;line-height:1.5!important;padding:6px 10px!important;letter-spacing:.025em!important;white-space:normal!important}
+    .hero-ctas{display:grid!important;grid-template-columns:1fr!important;gap:10px!important;margin-top:23px!important}
+    .hero-ctas .btn{width:100%!important;justify-content:center!important}
+    .hero-meta{width:100%!important;max-width:100%!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;margin-top:28px!important}
+    .hero-meta div{min-width:0!important;padding:11px 8px!important}
+    .hero-meta .num{font-size:clamp(17px,5vw,23px)!important;line-height:1.2}
+    .hero-meta .lbl{font-size:10px!important;line-height:1.35}
+    .section-head{margin-bottom:28px!important}
+    .section-head h2{font-size:clamp(27px,7.5vw,35px)!important;line-height:1.18!important;overflow-wrap:normal!important}
+    .section-head p{font-size:14px!important;line-height:1.7!important}
+    .tutor-card,.prog-card,.service-card,.price-card,.t-card,.note-card{padding:21px!important}
+    .tutor-card{gap:16px!important}
+    .tutor-info{min-width:0;flex:1 1 180px}
+    .tutor-tags{gap:7px!important}
+    .tag{font-size:11px!important;white-space:normal}
+    .class-detail summary{padding:15px!important;align-items:flex-start!important}
+    .class-detail-head{gap:9px!important;min-width:0}
+    .class-detail-name{font-size:15px!important}
+    .class-detail-sub{font-size:12px!important}
+    .class-detail-body{padding:0 16px 18px!important}
+    .batch-card-body{padding:17px!important}
+    .batch-card-ctas{flex-wrap:wrap}
+    .register-box{padding:28px 18px!important}
+    .register-ctas{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
+    .register-ctas .btn{width:100%;justify-content:center}
+    .footer-top,.footer-contact{gap:14px!important}
+    .footer-contact{flex-direction:column!important}
+    .wa-float{width:50px!important;height:50px!important;right:13px!important;bottom:14px!important}
+    .app-float{left:13px!important;bottom:14px!important}
+    .popup-overlay{padding:12px!important}
+    .popup-card{max-height:90dvh!important;overflow-y:auto!important;padding:28px 20px!important}
+    .mp-roadmap-grid{grid-template-columns:1fr!important}
+    .mp-progress-highlight{align-items:flex-start!important;flex-wrap:wrap!important}
+  }
+
+  /* Founder / educator hero card: readable caption and no floating labels off-screen. */
+  @media (max-width:760px){
+    #hero .mp-hero-visual{
+      width:100%!important;max-width:100%!important;min-width:0!important;
+      min-height:620px!important;height:auto!important;
+      padding-left:7px!important;padding-right:7px!important;
+      overflow:hidden!important;box-sizing:border-box!important;
+    }
+    #hero .mp-hero-educator-card{
+      max-width:calc(100% - 34px)!important;
+      width:min(245px,76vw)!important;
+      height:350px!important;left:50%!important;right:auto!important;
+      transform:translateX(-50%)!important;overflow:hidden!important;
+    }
+    #hero .mp-educator-caption{
+      left:0!important;right:0!important;bottom:0!important;
+      width:100%!important;min-height:112px!important;
+      padding:27px 12px 15px!important;box-sizing:border-box!important;
+      display:flex!important;flex-direction:column!important;
+      align-items:center!important;justify-content:flex-end!important;
+      text-align:center!important;overflow:visible!important;
+    }
+    #hero .mp-educator-caption span{
+      display:block!important;font-size:9px!important;line-height:1.35!important;
+      letter-spacing:.09em!important;white-space:normal!important;
+    }
+    #hero .mp-educator-caption strong{
+      display:block!important;width:100%!important;max-width:100%!important;
+      font-size:clamp(19px,5.8vw,23px)!important;line-height:1.2!important;
+      white-space:normal!important;overflow-wrap:normal!important;
+      word-break:normal!important;text-align:center!important;
+    }
+    #hero .mp-educator-caption small{
+      display:block!important;max-width:100%!important;
+      font-size:10px!important;line-height:1.45!important;
+      white-space:normal!important;text-align:center!important;
+    }
+    #hero .mp-floating-card{
+      min-width:0!important;width:46%!important;max-width:160px!important;
+      padding:9px 8px!important;gap:6px!important;box-sizing:border-box!important;
+      border-radius:13px!important;
+    }
+    #hero .mp-floating-card strong{font-size:10px!important;line-height:1.25!important}
+    #hero .mp-floating-card small{font-size:9px!important;line-height:1.3!important}
+    #hero .mp-float-live{left:0!important;right:auto!important;top:12px!important}
+    #hero .mp-float-guidance{right:0!important;left:auto!important;top:44%!important}
+    #hero .mp-float-progress{left:0!important;right:auto!important;bottom:0!important;top:auto!important}
+    #hero .mp-hero-credential{right:0!important;left:auto!important;bottom:0!important;max-width:48%!important}
+  }
+
+  /* Student portal controls remain legible after login on touch screens. */
+  @media(max-width:760px){
+    .student-lms-shell{border-radius:17px!important;margin-left:0!important;margin-right:0!important}
+    .student-lms-topbar{height:auto!important;min-height:64px!important;padding:12px 14px!important;gap:10px!important}
+    .student-brand-lockup{min-width:0!important;gap:8px!important}
+    .student-brand-lockup strong{font-size:13px!important}
+    .student-brand-lockup span{font-size:9px!important;letter-spacing:.04em!important}
+    .dash-logout{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;min-height:40px!important;padding:9px 13px!important;font-size:12px!important;line-height:1.2!important;white-space:nowrap!important;visibility:visible!important;opacity:1!important}
+    .student-hero-card{flex-wrap:wrap!important;padding:19px!important;gap:14px!important}
+    .student-identity{min-width:0!important;max-width:100%!important}
+    .student-hero-copy{max-width:none!important;width:100%!important;text-align:left!important}
+    .student-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;padding:13px!important;gap:9px!important}
+    .student-kpi{min-width:0!important;padding:13px!important}
+    .student-kpi strong{font-size:22px!important}
+    .student-main-grid{grid-template-columns:minmax(0,1fr)!important;padding:0 13px 16px!important}
+    .student-panel-wide{grid-column:auto!important}
+    .performance-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+    .student-panel{min-width:0!important;padding:16px!important}
+    .mp-dash-mobile-nav{left:6px!important;right:6px!important}
+    #student-dashboard{padding-bottom:84px!important}
+  }
+  @media(max-width:380px){
+    header nav{padding-left:10px!important;padding-right:10px!important;gap:6px!important}
+    header #student-login-btn{padding:8px 9px!important;font-size:11px!important}
+    header .logo{font-size:13px!important}
+    .wrap{padding-left:13px!important;padding-right:13px!important}
+    #hero .mp-hero-visual{min-height:650px!important}
+    #hero .mp-hero-educator-card{width:min(218px,74vw)!important;height:320px!important}
+    #hero .mp-floating-card{width:45%!important;padding:8px 6px!important}
+    .student-brand-lockup span{display:none!important}
+    .dash-logout{padding:8px 10px!important;font-size:11px!important}
+  }
+</style>
