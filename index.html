@@ -2181,6 +2181,7 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
   <div class="mp-dash-brand"><div class="mp-dash-brand-icon">∑</div><div><strong>Maths <span>Pathshala</span></strong><small>Learn · Practice · Grow</small></div></div>
   <nav class="mp-dash-side-links">
     <button type="button" class="is-active" data-dash-target="dash-found-content"><span>⌂</span>Dashboard</button>
+    <button type="button" data-dash-target="panel-schedule"><span>◷</span>Upcoming</button>
     <button type="button" data-dash-target="panel-daily"><span>▦</span>Attendance</button>
     <button type="button" data-dash-target="panel-performance"><span>▥</span>Test Performance</button>
     <button type="button" data-dash-target="panel-position"><span>♜</span>Batch Rank</button>
@@ -2239,7 +2240,7 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
 </div>
 <div class="student-main-grid">
 <div class="student-panel student-panel-wide" id="panel-schedule">
-<div class="student-panel-head"><div><span class="panel-kicker">CLASS DETAILS</span><h3>Your Schedule</h3></div></div>
+<div class="student-panel-head"><div><span class="panel-kicker">UPCOMING ACTIVITIES</span><h3>Your Schedule &amp; Next Steps</h3></div></div>
 <div class="detail-list">
 <div><span>Class &amp; batch</span><strong id="dash-class-batch">—</strong></div>
 <div><span>Batch timing</span><strong id="dash-batch-value">—</strong></div>
@@ -3422,7 +3423,7 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB3fzWzwiTxHJi1M3OQI3hgZJpi6lq-eww",
@@ -4267,14 +4268,7 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
     }
 
     const data=docSnap.data();
-    await mpLoadPublishedCatalog();
-    const catalogueTests=mpCatalogForStudent(data);
-    const assigned=Array.isArray(data.assignedTests)?data.assignedTests:[];
-    const combined=[...assigned];
-    const seen=new Set(combined.map(t=>String(t.id||'')));
-    catalogueTests.forEach(t=>{if(!seen.has(String(t.id))){combined.push(t);seen.add(String(t.id));}});
-    mpRenderAssignedTests(combined,data.testScores||[]);
-    mpSubscribeStudentResults(canonicalEmail);
+    mpRenderAssignedTests(data.assignedTests||[],data.testScores||[]);
     foundContent.style.display='block';
     notFoundContent.style.display='none';
     document.getElementById('dash-name').textContent=data.name||'Student'; document.getElementById('dash-avatar').textContent=(data.name||'S').trim().charAt(0).toUpperCase();
@@ -4618,34 +4612,6 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
 
   // Maths Pathshala Test Centre — reads only the signed-in student's assignedTests.
   let mpActiveTest=null, mpTestIndex=0, mpTestAnswers={}, mpTestTick=null, mpTotalRemaining=0, mpQuestionRemaining=0;
-  let mpPublishedCatalog=[], mpCatalogLoadPromise=null, mpStudentLiveUnsub=null, mpStudentLiveEmail='';
-  async function mpLoadPublishedCatalog(){
-    if(mpCatalogLoadPromise)return mpCatalogLoadPromise;
-    mpCatalogLoadPromise=(async()=>{try{const res=await fetch('./published-tests.json',{cache:'no-store'});if(!res.ok)throw new Error('Catalogue not found');const payload=await res.json();mpPublishedCatalog=Array.isArray(payload.tests)?payload.tests:[];}catch(e){mpPublishedCatalog=[];console.info('Published test catalogue is not available yet:',e.message);}return mpPublishedCatalog;})();
-    return mpCatalogLoadPromise;
-  }
-  function mpCatalogForStudent(data){
-    const now=Date.now(),cls=String(data.class||'').trim().toLowerCase(),batch=String(data.batchName||'').trim().toLowerCase();
-    return mpPublishedCatalog.filter(t=>{
-      if(t.status!=='published')return false;
-      if(t.start&&new Date(t.start).getTime()>now)return false;
-      if(t.end&&new Date(t.end).getTime()<now)return false;
-      const a=t.audience||{type:'all'};if(a.type!=='batches')return true;
-      const targets=String(a.batches||'').split(',').map(x=>x.trim().toLowerCase()).filter(Boolean);
-      const identities=[cls,`class ${cls}`,batch,`class ${cls} ${batch}`].filter(Boolean);
-      return targets.some(x=>identities.some(v=>v===x||v.includes(x)||x.includes(v)));
-    }).map(t=>({...t,title:t.title||t.name,durationMinutes:Number(t.durationMinutes||t.duration)||30,questions:(t.questions||[]).map(q=>({...q,imageUrl:q.imageUrl||q.image?.data||''}))}));
-  }
-  function mpSubscribeStudentResults(email){
-    const canonical=String(email||'').trim().toLowerCase();if(!canonical||mpStudentLiveEmail===canonical)return;
-    if(mpStudentLiveUnsub){try{mpStudentLiveUnsub();}catch(e){}}
-    mpStudentLiveEmail=canonical;
-    mpStudentLiveUnsub=onSnapshot(doc(db,'students',canonical),snap=>{
-      if(!snap.exists()||String(auth.currentUser?.email||'').toLowerCase()!==canonical)return;
-      // A result update by Admin immediately refreshes the score graph, history, achievements and rank widgets.
-      loadStudentDashboard(canonical);
-    },err=>console.warn('Live student result updates unavailable:',err));
-  }
   function mpTestEsc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   function mpEnsureTestCentre(){
     const root=document.getElementById('student-dashboard'); if(!root||document.getElementById('mp-test-centre'))return;
@@ -4653,76 +4619,51 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
     if(nav){const b=document.createElement('button');b.type='button';b.dataset.dashTarget='mp-test-centre';b.innerHTML='<span>✎</span> Test Centre';nav.insertBefore(b,nav.children[2]||null);}
     const mobile=root.querySelector('.mp-dash-mobile-nav'); if(mobile){const b=document.createElement('button');b.type='button';b.dataset.dashTarget='mp-test-centre';b.textContent='✎ Tests';mobile.appendChild(b);}
     const main=root.querySelector('.mp-dash-main'); if(!main)return;
-    const panel=document.createElement('section');panel.id='mp-test-centre';panel.className='mp-student-test-centre';panel.innerHTML=`<div class="mp-test-head"><div><span class="mp-test-kicker">MATHS PATHSHALA · ASSESSMENTS</span><h2>Test Centre</h2><p>Published and assigned tests for your class and batch appear here. Results refresh automatically when Admin publishes marks.</p></div><div class="mp-test-head-icon">✦</div></div><div id="mp-test-list" class="mp-test-list"><div class="mp-test-empty">Your assigned tests will appear here.</div></div><div id="mp-test-stage" class="mp-test-stage" hidden></div>`;
+    const panel=document.createElement('section');panel.id='mp-test-centre';panel.className='mp-student-test-centre';panel.innerHTML=`<div class="mp-test-head"><div><span class="mp-test-kicker">MATHS PATHSHALA · ASSESSMENTS</span><h2>Test Centre</h2><p>Attempt your assigned tests in a focused, distraction-free space.</p></div><div class="mp-test-head-icon">✦</div></div><div id="mp-test-list" class="mp-test-list"><div class="mp-test-empty">Your assigned tests will appear here.</div></div><div id="mp-test-stage" class="mp-test-stage" hidden></div>`;
     const anchor=main.querySelector('#dash-found-content'); if(anchor)anchor.after(panel);else main.appendChild(panel);
   }
   function mpRenderAssignedTests(tests, scores=[]){
     mpEnsureTestCentre(); const list=document.getElementById('mp-test-list'); if(!list)return;
     const items=Array.isArray(tests)?tests:[];
     if(!items.length){list.innerHTML='<div class="mp-test-empty">No online tests assigned yet. Your teacher will publish them here.</div>';return;}
-    list.innerHTML=items.map((t,i)=>{const count=Array.isArray(t.questions)?t.questions.length:0;const result=(Array.isArray(scores)?scores:[]).find(x=>x.testId===t.id);const done=!!(t.attempted||result);return `<article class="mp-test-card"><div class="mp-test-card-icon">${t.mode==='paper'?'▤':(t.questionMode==='image'?'▧':'✎')}</div><div class="mp-test-card-info"><span class="mp-test-chip">${mpTestEsc(t.subject||'Assessment')}</span><h3>${mpTestEsc(t.title||'Online Test')}</h3><p>${mpTestEsc(t.topic||'Practice assessment')} · ${t.mode==='paper'?'Full paper':count+' questions'} · ${Number(t.durationMinutes)||30} min</p><small>${mpTestEsc(t.date||'Flexible attempt')} ${t.time?'· '+mpTestEsc(t.time):''}</small></div><button type="button" class="mp-test-start" data-mp-start-test="${i}">${done?'View Result':'Start Test'} <span>→</span></button></article>`;}).join('');
+    list.innerHTML=items.map((t,i)=>{const count=Array.isArray(t.questions)?t.questions.length:0;const result=(Array.isArray(scores)?scores:[]).find(x=>x.testId===t.id);const done=!!(t.attempted||result);return `<article class="mp-test-card"><div class="mp-test-card-icon">${t.questionMode==='image'?'▧':'✎'}</div><div class="mp-test-card-info"><span class="mp-test-chip">${mpTestEsc(t.subject||'Assessment')}</span><h3>${mpTestEsc(t.title||'Online Test')}</h3><p>${mpTestEsc(t.topic||'Practice assessment')} · ${count} questions · ${Number(t.durationMinutes)||30} min</p><small>${mpTestEsc(t.date||'Flexible attempt')} ${t.time?'· '+mpTestEsc(t.time):''}</small></div><button type="button" class="mp-test-start" data-mp-start-test="${i}">${done?'View Result':'Start Test'} <span>→</span></button></article>`;}).join('');
     list.querySelectorAll('[data-mp-start-test]').forEach(b=>b.addEventListener('click',()=>{const t=items[Number(b.dataset.mpStartTest)],r=(Array.isArray(scores)?scores:[]).find(x=>x.testId===t.id);if(r){const stage=document.getElementById('mp-test-stage');stage.hidden=false;list.hidden=true;stage.innerHTML=`<div class="mp-test-result"><div class="mp-test-result-icon">✓</div><span>RESULT PUBLISHED</span><h2>${mpTestEsc(t.title||'Test')}</h2><div class="mp-test-score">${Number(r.score)||0}<small> / ${Number(r.max)||0}</small></div><p>${Number(r.max)>0?Math.round(Number(r.score)/Number(r.max)*100):0}% · ${mpTestEsc(r.date||'')}</p><button type="button" id="mp-test-back">Back to Test Centre</button></div>`;stage.querySelector('#mp-test-back').onclick=()=>{stage.hidden=true;list.hidden=false;};}else mpStartTest(t);}));
   }
   function mpStartTest(test){
-    if(!test){return;}
-    if(test.mode==='paper'){
-      mpActiveTest=test;mpTestIndex=0;mpTestAnswers={};mpTotalRemaining=Math.max(1,Number(test.durationMinutes)||30)*60;mpQuestionRemaining=0;
-      const stage=document.getElementById('mp-test-stage');stage.hidden=false;document.getElementById('mp-test-list').hidden=true;mpRenderPaperTest();
-    }else{
-      if(!Array.isArray(test.questions)||!test.questions.length){alert('This test does not contain questions yet. Please contact your teacher.');return;}
-      mpActiveTest=test;mpTestIndex=0;mpTestAnswers={};mpTotalRemaining=Math.max(1,Number(test.durationMinutes)||30)*60;mpQuestionRemaining=0;
-      const stage=document.getElementById('mp-test-stage');stage.hidden=false;document.getElementById('mp-test-list').hidden=true;mpRenderQuestion();
-    }
-    if(mpTestTick)clearInterval(mpTestTick);mpTestTick=setInterval(()=>{mpTotalRemaining--;if(mpQuestionRemaining>0)mpQuestionRemaining--;if(mpTotalRemaining<=0){mpFinishTest(true);return;}if(mpQuestionRemaining===0&&Number(mpActiveTest?.questions?.[mpTestIndex]?.timerSeconds||mpActiveTest?.questions?.[mpTestIndex]?.timer)>0&&mpActiveTest?.mode!=='paper'){if(mpTestIndex<mpActiveTest.questions.length-1){mpTestIndex++;mpRenderQuestion();}else{mpFinishTest(true);return;}}mpUpdateClocks();},1000);
+    if(!test||!Array.isArray(test.questions)||!test.questions.length){alert('This test does not contain questions yet. Please contact your teacher.');return;}
+    mpActiveTest=test;mpTestIndex=0;mpTestAnswers={};mpTotalRemaining=Math.max(1,Number(test.durationMinutes)||30)*60;mpQuestionRemaining=0;
+    const stage=document.getElementById('mp-test-stage');stage.hidden=false;document.getElementById('mp-test-list').hidden=true;
+    mpRenderQuestion(); if(mpTestTick)clearInterval(mpTestTick);mpTestTick=setInterval(()=>{mpTotalRemaining--;if(mpQuestionRemaining>0)mpQuestionRemaining--;if(mpTotalRemaining<=0){mpFinishTest(true);return;}if(mpQuestionRemaining===0&&mpActiveTest?.perQuestionSeconds){if(mpTestIndex<mpActiveTest.questions.length-1){mpTestIndex++;mpRenderQuestion();}else{mpFinishTest(true);return;}}mpUpdateClocks();},1000);
     stage.scrollIntoView({behavior:'smooth',block:'start'});
   }
-  function mpRenderPaperTest(){
-    const stage=document.getElementById('mp-test-stage'),files=Array.isArray(mpActiveTest.paperFiles)?mpActiveTest.paperFiles:[];
-    const paper=files.map(f=>f.type==='application/pdf'?`<iframe title="Question paper" src="${mpTestEsc(f.data)}" style="width:100%;height:70vh;border:1px solid #dce3ed;border-radius:12px"></iframe>`:`<img src="${mpTestEsc(f.data)}" alt="Question paper page" style="width:100%;height:auto;border-radius:10px;margin:8px 0">`).join('');
-    stage.innerHTML=`<div class="mp-test-livebar"><button type="button" id="mp-test-exit">← Exit test</button><strong>${mpTestEsc(mpActiveTest.title||'Full Paper')}</strong><div>Time <b id="mp-test-total-clock">${mpFmtTime(mpTotalRemaining)}</b></div></div><main class="mp-test-question-card"><h2>${mpTestEsc(mpActiveTest.title||'Full Paper')}</h2><p>${mpTestEsc(mpActiveTest.instructions||mpActiveTest.paperNotes||'Read the paper carefully and submit your response before time ends.')}</p>${paper}<div class="field"><label>Your written response</label><textarea id="mp-paper-response" rows="10" placeholder="Enter your answer / working here…">${mpTestEsc(mpTestAnswers.response||'')}</textarea></div><div class="notice">For PDF/image answer-sheet uploads, secure Storage connection will be enabled with the separate Firebase setup. This temporary GitHub bridge supports written responses.</div><div class="mp-test-controls"><button type="button" id="mp-paper-submit">Submit Test</button></div></main>`;
-    mpUpdateClocks();stage.querySelector('#mp-test-exit').onclick=()=>{if(confirm('Exit this test? Your current response will be cleared.'))mpAbortTest();};stage.querySelector('#mp-paper-response').addEventListener('input',e=>{mpTestAnswers.response=e.target.value;});stage.querySelector('#mp-paper-submit').onclick=()=>mpFinishTest(false);
-  }
   function mpFmtTime(n){return `${String(Math.floor(n/60)).padStart(2,'0')}:${String(n%60).padStart(2,'0')}`;}
-  function mpUpdateClocks(){const total=document.getElementById('mp-test-total-clock');if(total)total.textContent=mpFmtTime(mpTotalRemaining);const mobile=document.getElementById('mp-test-total-clock-mobile');if(mobile)mobile.textContent=mpFmtTime(mpTotalRemaining);const q=document.getElementById('mp-test-question-clock');if(q)q.textContent=(Number(mpActiveTest?.questions?.[mpTestIndex]?.timerSeconds||mpActiveTest?.questions?.[mpTestIndex]?.timer)>0)?mpFmtTime(mpQuestionRemaining):'—';}
+  function mpUpdateClocks(){const total=document.getElementById('mp-test-total-clock');if(total)total.textContent=mpFmtTime(mpTotalRemaining);const mobile=document.getElementById('mp-test-total-clock-mobile');if(mobile)mobile.textContent=mpFmtTime(mpTotalRemaining);const q=document.getElementById('mp-test-question-clock');if(q)q.textContent=mpActiveTest.perQuestionSeconds?mpFmtTime(mpQuestionRemaining):'—';}
   function mpRenderQuestion(){
-    const q=mpActiveTest.questions[mpTestIndex],stage=document.getElementById('mp-test-stage');mpQuestionRemaining=Math.max(0,Number(q.timerSeconds||q.timer)||0);
-    const opts=Array.isArray(q.options)?q.options:[],type=String(q.type||'MCQ').toLowerCase(),selected=mpTestAnswers[mpTestIndex];
-    const image=q.imageUrl?`<img class="mp-test-question-image" src="${mpTestEsc(q.imageUrl)}" alt="Question image" loading="lazy">`:'';
-    let answerUI='';
-    if(type==='descriptive')answerUI=`<textarea id="mp-test-descriptive" rows="7" placeholder="Write your answer here…">${mpTestEsc(selected||'')}</textarea>`;
-    else answerUI=`<div class="mp-test-options">${opts.map((o,i)=>{const checked=type==='msq'?Array.isArray(selected)&&selected.includes(i):selected===i;return `<label class="mp-test-option ${checked?'selected':''}"><input type="${type==='msq'?'checkbox':'radio'}" name="mp-test-answer" value="${i}" ${checked?'checked':''}><span>${String.fromCharCode(65+i)}</span>${mpTestEsc(o)}</label>`;}).join('')}</div>`;
-    stage.innerHTML=`<div class="mp-test-livebar"><button type="button" id="mp-test-exit">← Exit test</button><strong>${mpTestEsc(mpActiveTest.title||'Test')}</strong><div>Test <b id="mp-test-total-clock">${mpFmtTime(mpTotalRemaining)}</b></div></div><div class="mp-test-live-layout"><main class="mp-test-question-card"><div class="mp-test-qmeta"><span>QUESTION ${mpTestIndex+1} / ${mpActiveTest.questions.length}</span><span>${Number(q.marks)||1} MARKS</span></div><div class="mp-test-clocks">Total time <b id="mp-test-total-clock-mobile">${mpFmtTime(mpTotalRemaining)}</b> <span>Question time <b id="mp-test-question-clock">${Number(q.timerSeconds||q.timer)>0?mpFmtTime(mpQuestionRemaining):'—'}</b></span></div><h3>${mpTestEsc(q.text||'Question')}</h3>${image}${answerUI}<div class="mp-test-controls"><button type="button" id="mp-test-prev" ${mpTestIndex===0?'disabled':''}>Previous</button><button type="button" id="mp-test-next">${mpTestIndex===mpActiveTest.questions.length-1?'Submit Test':'Save & Next'}</button></div></main><aside class="mp-test-palette"><h4>Question Palette</h4><div>${mpActiveTest.questions.map((_,i)=>`<button type="button" class="${i===mpTestIndex?'current':''} ${mpTestAnswers[i]!==undefined?'answered':''}" data-mp-q="${i}">${i+1}</button>`).join('')}</div><small>${Object.keys(mpTestAnswers).filter(k=>k!=='response').length} answered · ${mpActiveTest.questions.length} total</small></aside></div>`;
-    const saveCurrent=()=>{
-      if(type==='descriptive'){mpTestAnswers[mpTestIndex]=stage.querySelector('#mp-test-descriptive')?.value||'';}
-      else if(type==='msq'){mpTestAnswers[mpTestIndex]=Array.from(stage.querySelectorAll('input[name="mp-test-answer"]:checked')).map(x=>Number(x.value));}
-      else {const checked=stage.querySelector('input[name="mp-test-answer"]:checked');if(checked)mpTestAnswers[mpTestIndex]=Number(checked.value);}
-      stage.querySelectorAll('.mp-test-option').forEach(el=>{const input=el.querySelector('input');el.classList.toggle('selected',!!input?.checked);});
-      stage.querySelectorAll('[data-mp-q]').forEach((el,i)=>el.classList.toggle('answered',mpTestAnswers[i]!==undefined&&mpTestAnswers[i]!==''));
-      const summary=stage.querySelector('.mp-test-palette small');if(summary)summary.textContent=Object.keys(mpTestAnswers).filter(k=>k!=='response').length+' answered · '+mpActiveTest.questions.length+' total';
-    };
-    stage.querySelectorAll('input[name="mp-test-answer"]').forEach(input=>input.addEventListener('change',saveCurrent));
-    stage.querySelector('#mp-test-descriptive')?.addEventListener('input',saveCurrent);
-    stage.querySelector('#mp-test-prev').onclick=()=>{saveCurrent();if(mpTestIndex>0){mpTestIndex--;mpRenderQuestion();}};
-    stage.querySelector('#mp-test-next').onclick=()=>{saveCurrent();if(mpTestIndex===mpActiveTest.questions.length-1)mpFinishTest(false);else{mpTestIndex++;mpRenderQuestion();}};
-    stage.querySelector('#mp-test-exit').onclick=()=>{saveCurrent();if(confirm('Exit this test? Your current answers will be cleared.'))mpAbortTest();};
-    stage.querySelectorAll('[data-mp-q]').forEach(b=>b.onclick=()=>{saveCurrent();mpTestIndex=Number(b.dataset.mpQ);mpRenderQuestion();});
+    const q=mpActiveTest.questions[mpTestIndex],stage=document.getElementById('mp-test-stage');mpQuestionRemaining=Math.max(0,Number(mpActiveTest.perQuestionSeconds)||0);
+    const opts=Array.isArray(q.options)?q.options:[];const selected=mpTestAnswers[mpTestIndex];
+    stage.innerHTML=`<div class="mp-test-livebar"><button type="button" id="mp-test-exit">← Exit test</button><strong>${mpTestEsc(mpActiveTest.title)}</strong><div>Test <b id="mp-test-total-clock">${mpFmtTime(mpTotalRemaining)}</b></div></div><div class="mp-test-live-layout"><main class="mp-test-question-card"><div class="mp-test-qmeta"><span>QUESTION ${mpTestIndex+1} / ${mpActiveTest.questions.length}</span><span>${Number(q.marks)||1} MARKS</span></div><div class="mp-test-clocks">Total time <b id="mp-test-total-clock-mobile">${mpFmtTime(mpTotalRemaining)}</b> <span>Question time <b id="mp-test-question-clock">${mpActiveTest.perQuestionSeconds?mpFmtTime(mpQuestionRemaining):'—'}</b></span></div><h3>${mpTestEsc(q.text||'Question')}</h3>${q.imageUrl?`<img class="mp-test-question-image" src="${mpTestEsc(q.imageUrl)}" alt="Question image" loading="lazy">`:''}<div class="mp-test-options">${opts.map((o,i)=>`<label class="mp-test-option ${selected===i?'selected':''}"><input type="radio" name="mp-test-answer" value="${i}" ${selected===i?'checked':''}><span>${String.fromCharCode(65+i)}</span>${mpTestEsc(o)}</label>`).join('')}</div><div class="mp-test-controls"><button type="button" id="mp-test-prev" ${mpTestIndex===0?'disabled':''}>Previous</button><button type="button" id="mp-test-next">${mpTestIndex===mpActiveTest.questions.length-1?'Submit Test':'Save & Next'}</button></div></main><aside class="mp-test-palette"><h4>Question Palette</h4><div>${mpActiveTest.questions.map((_,i)=>`<button type="button" class="${i===mpTestIndex?'current':''} ${mpTestAnswers[i]!==undefined?'answered':''}" data-mp-q="${i}">${i+1}</button>`).join('')}</div><small>${Object.keys(mpTestAnswers).length} answered · ${mpActiveTest.questions.length} total</small></aside></div>`;
+    mpUpdateClocks();stage.querySelectorAll('input[name="mp-test-answer"]').forEach(input=>input.addEventListener('change',()=>{mpTestAnswers[mpTestIndex]=Number(input.value);stage.querySelectorAll('.mp-test-option').forEach((el,i)=>el.classList.toggle('selected',i===mpTestAnswers[mpTestIndex]));stage.querySelectorAll('[data-mp-q]').forEach((el,i)=>el.classList.toggle('answered',mpTestAnswers[i]!==undefined));const summary=stage.querySelector('.mp-test-palette small');if(summary)summary.textContent=Object.keys(mpTestAnswers).length+' answered · '+mpActiveTest.questions.length+' total';}));
+    stage.querySelector('#mp-test-prev').onclick=()=>{if(mpTestIndex>0){mpTestIndex--;mpRenderQuestion();}};
+    stage.querySelector('#mp-test-next').onclick=()=>{if(mpTestIndex===mpActiveTest.questions.length-1)mpFinishTest(false);else{mpTestIndex++;mpRenderQuestion();}};
+    stage.querySelector('#mp-test-exit').onclick=()=>{if(confirm('Exit this test? Your current answers will be cleared.'))mpAbortTest();};
+    stage.querySelectorAll('[data-mp-q]').forEach(b=>b.onclick=()=>{mpTestIndex=Number(b.dataset.mpQ);mpRenderQuestion();});
   }
   async function mpFinishTest(auto){
     if(!mpActiveTest||mpActiveTest._submitting)return;mpActiveTest._submitting=true;
     if(mpTestTick)clearInterval(mpTestTick);mpTestTick=null;
-    const qs=Array.isArray(mpActiveTest.questions)?mpActiveTest.questions:[],answered=Object.keys(mpTestAnswers).length,stage=document.getElementById('mp-test-stage');
+    const qs=mpActiveTest.questions,answered=Object.keys(mpTestAnswers).length,stage=document.getElementById('mp-test-stage');
     stage.innerHTML=`<div class="mp-test-result"><div class="mp-test-result-icon">✓</div><span>TEST ${auto?'AUTO-SUBMITTED':'SUBMITTED'}</span><h2>Submitting your answers…</h2><p>Your answers are being sent for secure evaluation. Your score will appear in your performance graph after processing.</p></div>`;
     try{
       const user=auth.currentUser;if(!user)throw new Error('Please sign in again to submit this test.');
       const submissionId=String(mpActiveTest.id||'test')+'_'+user.uid;
-      await setDoc(doc(db,'testSubmissions',submissionId),{testId:String(mpActiveTest.id||''),testName:String(mpActiveTest.title||''),mode:String(mpActiveTest.mode||'question'),studentUid:user.uid,studentEmail:String(user.email||'').toLowerCase(),answers:mpTestAnswers,answeredCount:answered,totalQuestions:qs.length,autoSubmitted:!!auto,submittedAt:new Date().toISOString(),status:'submitted',resultStatus:'pending_review'});
-      stage.innerHTML=`<div class="mp-test-result"><div class="mp-test-result-icon">✓</div><span>ANSWERS RECEIVED</span><h2>Test submitted successfully</h2><p>Your answers are saved. Once your teacher publishes the evaluated score, your Test Performance graph, test count and achievements will update automatically.</p><button type="button" id="mp-test-back">Back to Dashboard</button></div>`;
+      await setDoc(doc(db,'testSubmissions',submissionId),{testId:String(mpActiveTest.id||''),studentUid:user.uid,studentEmail:String(user.email||'').toLowerCase(),answers:mpTestAnswers,answeredCount:answered,totalQuestions:qs.length,autoSubmitted:!!auto,submittedAt:new Date().toISOString(),status:'submitted'});
+      stage.innerHTML=`<div class="mp-test-result"><div class="mp-test-result-icon">✓</div><span>ANSWERS RECEIVED</span><h2>Test submitted successfully</h2><p>Your result is being calculated securely. It will automatically appear in your Test Performance graph and achievements once processing is complete.</p><button type="button" id="mp-test-back">Back to Dashboard</button></div>`;
       stage.querySelector('#mp-test-back').onclick=async()=>{stage.hidden=true;document.getElementById('mp-test-list').hidden=false;try{await loadStudentDashboard(user.email);}catch(e){console.warn('Post-test refresh:',e);}};
       setTimeout(async()=>{try{if(auth.currentUser?.email)await loadStudentDashboard(auth.currentUser.email);}catch(e){console.warn('Result refresh:',e);}},5000);
     }catch(err){console.error('Test submission failed:',err);mpActiveTest._submitting=false;stage.innerHTML=`<div class="mp-test-result"><h2>Submission could not be confirmed</h2><p>${mpTestEsc(err?.message||'Please check your connection and try again.')}</p><button type="button" id="mp-test-retry">Try submission again</button></div>`;stage.querySelector('#mp-test-retry').onclick=()=>mpFinishTest(auto);}
   }
   function mpAbortTest(){if(mpTestTick)clearInterval(mpTestTick);mpTestTick=null;mpActiveTest=null;const stage=document.getElementById('mp-test-stage');stage.hidden=true;document.getElementById('mp-test-list').hidden=false;}
-  document.getElementById('mp-student-logout')?.addEventListener('click',()=>{if(mpStudentLiveUnsub){mpStudentLiveUnsub();mpStudentLiveUnsub=null;}mpStudentLiveEmail='';signOut(auth);});
+  document.getElementById('mp-student-logout')?.addEventListener('click',()=>signOut(auth));
 
 </script>
 <script>
@@ -5784,155 +5725,366 @@ html body #learning-roadmap .mp-progress-highlight .btn{visibility:visible!impor
 
 
 <style id="mp-modern-dashboard-redesign">
-/* Maths Pathshala — clean, colourful, responsive student workspace. Visual layer only. */
-:root{--mp-ink:#102b66;--mp-muted:#64748b;--mp-line:#e5ebf6;--mp-bg:#f3f7ff;--mp-blue:#4169f5;--mp-violet:#7048ee;}
-body.student-logged-in{background:#f3f7ff!important;color:var(--mp-ink)!important;}
-body.student-logged-in #student-dashboard{padding:0!important;background:linear-gradient(135deg,#f5f8ff 0%,#eef4ff 52%,#f8f6ff 100%)!important;min-height:100vh!important;}
-body.student-logged-in #student-dashboard>.wrap{width:100%!important;max-width:none!important;margin:0!important;padding:0!important;}
-body.student-logged-in #student-dashboard .student-lms-shell.mp-premium-dashboard-shell{display:grid!important;grid-template-columns:246px minmax(0,1fr)!important;gap:0!important;width:100%!important;max-width:none!important;min-height:100vh!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important;}
-body.student-logged-in #student-dashboard .mp-dash-sidebar{position:sticky!important;top:0!important;height:100vh!important;min-height:100vh!important;align-self:start!important;display:flex!important;flex-direction:column!important;padding:28px 16px 22px!important;background:linear-gradient(180deg,#102b62 0%,#0b1f49 100%)!important;border:0!important;border-radius:0!important;box-shadow:12px 0 36px rgba(19,43,91,.10)!important;z-index:10!important;}
-body.student-logged-in #student-dashboard .mp-dash-brand{padding:0 8px 28px!important;border:0!important;}
-body.student-logged-in #student-dashboard .mp-dash-brand-icon{width:48px!important;height:48px!important;border-radius:15px!important;background:linear-gradient(135deg,#5b8cff,#7150ef)!important;color:#fff!important;font-size:24px!important;box-shadow:0 9px 24px rgba(82,111,245,.35)!important;}
-body.student-logged-in #student-dashboard .mp-dash-brand strong{font-size:17px!important;color:#fff!important;letter-spacing:-.3px!important;}
-body.student-logged-in #student-dashboard .mp-dash-brand strong span{color:#9fc2ff!important;}
-body.student-logged-in #student-dashboard .mp-dash-brand small{color:#b9c9e9!important;font-size:10px!important;letter-spacing:.06em!important;}
-body.student-logged-in #student-dashboard .mp-dash-side-links{display:flex!important;flex-direction:column!important;gap:7px!important;overflow:visible!important;padding:0!important;}
-body.student-logged-in #student-dashboard .mp-dash-side-links button{width:100%!important;min-height:46px!important;display:flex!important;align-items:center!important;gap:13px!important;padding:10px 13px!important;border:1px solid transparent!important;border-radius:13px!important;background:transparent!important;color:#dce7ff!important;font-size:12px!important;font-weight:650!important;text-align:left!important;transition:background .2s ease,transform .2s ease!important;}
-body.student-logged-in #student-dashboard .mp-dash-side-links button span{width:22px!important;flex:0 0 22px!important;font-size:18px!important;color:#c4d6ff!important;text-align:center!important;}
-body.student-logged-in #student-dashboard .mp-dash-side-links button:hover{background:rgba(255,255,255,.10)!important;transform:translateX(2px)!important;}
-body.student-logged-in #student-dashboard .mp-dash-side-links button.is-active{background:linear-gradient(100deg,#4d75fa,#7052ef)!important;color:#fff!important;box-shadow:0 10px 22px rgba(64,92,221,.28)!important;}
-body.student-logged-in #student-dashboard .mp-dash-side-links button.is-active span{color:#fff!important;}
-body.student-logged-in #student-dashboard .mp-dash-sidebar-quote{display:block!important;margin-top:auto!important;padding:16px 13px!important;border:1px solid rgba(255,255,255,.14)!important;border-radius:14px!important;background:rgba(255,255,255,.06)!important;color:#d7e5ff!important;font-size:11px!important;line-height:1.7!important;}
-body.student-logged-in #student-dashboard .mp-dash-sidebar-quote small{color:#9db8eb!important;}
-body.student-logged-in #student-dashboard .mp-dash-main{grid-column:2!important;grid-row:1!important;min-width:0!important;width:100%!important;padding:0 28px 38px!important;background:transparent!important;}
-body.student-logged-in #student-dashboard .student-lms-topbar{position:relative!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px!important;min-height:88px!important;margin:0 -28px 22px!important;padding:16px 30px!important;border:0!important;border-bottom:1px solid #e7edf8!important;border-radius:0!important;background:rgba(255,255,255,.88)!important;box-shadow:0 5px 22px rgba(39,69,130,.04)!important;backdrop-filter:blur(14px)!important;}
-body.student-logged-in #student-dashboard .student-brand-mark{width:38px!important;height:38px!important;border-radius:12px!important;background:linear-gradient(135deg,#4e7bff,#7751ef)!important;color:#fff!important;box-shadow:0 7px 16px rgba(78,108,239,.22)!important;}
-body.student-logged-in #student-dashboard .student-brand-lockup strong{color:#102b66!important;font-size:14px!important;}
-body.student-logged-in #student-dashboard .student-brand-lockup span{color:#7a8baa!important;font-size:10px!important;}
-body.student-logged-in #student-dashboard .dash-logout{min-height:38px!important;padding:9px 14px!important;border:1px solid #e1e8f6!important;border-radius:11px!important;background:#f5f8ff!important;color:#3154c9!important;font-size:11px!important;font-weight:750!important;box-shadow:none!important;}
-body.student-logged-in #student-dashboard .dash-logout:hover{background:#eaf0ff!important;border-color:#cbd8ff!important;}
-body.student-logged-in #student-dashboard .mp-student-logout{background:#fff!important;color:#5d6c86!important;}
-body.student-logged-in #student-dashboard .student-hero-card{position:relative!important;display:grid!important;grid-template-columns:minmax(240px,.9fr) minmax(300px,1.1fr)!important;align-items:center!important;gap:24px!important;min-height:190px!important;margin:0 0 20px!important;padding:27px 32px!important;overflow:hidden!important;border:1px solid rgba(255,255,255,.75)!important;border-radius:22px!important;background:linear-gradient(112deg,#5a83f5 0%,#8797fb 42%,#d7c5ff 76%,#f3e7ff 100%)!important;box-shadow:0 18px 42px rgba(87,112,219,.17)!important;color:#fff!important;}
-body.student-logged-in #student-dashboard .student-hero-card:after{content:""!important;position:absolute!important;width:300px!important;height:300px!important;right:-80px!important;top:-130px!important;border-radius:50%!important;background:rgba(255,255,255,.18)!important;pointer-events:none!important;}
-body.student-logged-in #student-dashboard .student-identity{position:relative!important;z-index:1!important;align-items:center!important;gap:14px!important;}
-body.student-logged-in #student-dashboard .dash-avatar{width:56px!important;height:56px!important;flex:0 0 56px!important;border:3px solid rgba(255,255,255,.75)!important;background:linear-gradient(145deg,#fff,#e7edff)!important;color:#3c5fd1!important;box-shadow:0 7px 18px rgba(34,57,143,.16)!important;}
-body.student-logged-in #student-dashboard .dash-member-badge{display:inline-flex!important;padding:5px 9px!important;border-radius:20px!important;background:rgba(255,255,255,.2)!important;color:#fff!important;font-size:9px!important;letter-spacing:.04em!important;}
-body.student-logged-in #student-dashboard .dash-welcome{margin:8px 0 4px!important;color:#fff!important;font-size:clamp(20px,2.1vw,27px)!important;font-weight:850!important;letter-spacing:-.6px!important;}
-body.student-logged-in #student-dashboard .dash-email{color:rgba(255,255,255,.84)!important;font-size:11px!important;}
-body.student-logged-in #student-dashboard .batch-highlight{color:#fff!important;background:rgba(255,255,255,.18)!important;border-color:rgba(255,255,255,.25)!important;}
-body.student-logged-in #student-dashboard .student-hero-copy{position:relative!important;z-index:1!important;max-width:none!important;padding:8px 0 8px 25px!important;border-left:1px solid rgba(255,255,255,.38)!important;text-align:left!important;}
-body.student-logged-in #student-dashboard .student-hero-copy span{color:#f1f4ff!important;font-size:10px!important;letter-spacing:.15em!important;font-weight:850!important;}
-body.student-logged-in #student-dashboard .student-hero-copy strong{display:block!important;margin:9px 0 7px!important;color:#fff!important;font-size:clamp(22px,2.8vw,36px)!important;line-height:1.05!important;letter-spacing:-.8px!important;}
-body.student-logged-in #student-dashboard .student-hero-copy small{color:#f8f7ff!important;font-size:13px!important;}
-body.student-logged-in #student-dashboard .dash-notices,body.student-logged-in #student-dashboard #dash-homework{margin:0 0 12px!important;}
-body.student-logged-in #student-dashboard #mp-p3-top{margin:0 0 18px!important;}
-body.student-logged-in #student-dashboard .student-kpi-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:13px!important;margin:0 0 16px!important;padding:0!important;}
-body.student-logged-in #student-dashboard .student-kpi{min-width:0!important;min-height:112px!important;padding:17px 18px!important;border:1px solid #e6ecf8!important;border-radius:17px!important;background:rgba(255,255,255,.94)!important;box-shadow:0 8px 22px rgba(38,67,126,.055)!important;color:#102b66!important;}
-body.student-logged-in #student-dashboard .student-kpi:before{display:none!important;}
-body.student-logged-in #student-dashboard .student-kpi span{color:#60749b!important;font-size:10px!important;font-weight:750!important;}
-body.student-logged-in #student-dashboard .student-kpi strong{display:block!important;margin:9px 0 4px!important;color:#102b66!important;font-size:27px!important;font-weight:900!important;}
-body.student-logged-in #student-dashboard .student-kpi small{color:#7183a4!important;font-size:10px!important;}
-body.student-logged-in #student-dashboard .student-kpi:nth-child(1){border-top:3px solid #39bd8c!important;}
-body.student-logged-in #student-dashboard .student-kpi:nth-child(2){border-top:3px solid #4c83ff!important;}
-body.student-logged-in #student-dashboard .student-kpi:nth-child(3){border-top:3px solid #ffad38!important;}
-body.student-logged-in #student-dashboard .student-kpi:nth-child(4){border-top:3px solid #d84eb7!important;}
-body.student-logged-in #student-dashboard .mp-modern-quick-actions{display:grid!important;grid-template-columns:190px minmax(0,1fr)!important;align-items:center!important;gap:18px!important;margin:0 0 17px!important;padding:15px 18px!important;border:1px solid #e6ecf8!important;border-radius:17px!important;background:rgba(255,255,255,.94)!important;box-shadow:0 8px 22px rgba(38,67,126,.045)!important;}
-body.student-logged-in #student-dashboard .mp-modern-quick-head h3{margin:4px 0 0!important;color:#102b66!important;font-size:17px!important;}
-body.student-logged-in #student-dashboard .mp-modern-live-dot{display:inline-block;margin-top:8px;color:#21a779!important;font-size:10px!important;font-weight:800!important;}
-body.student-logged-in #student-dashboard .mp-modern-action-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important;}
-body.student-logged-in #student-dashboard .mp-modern-action-grid button{display:flex!important;align-items:center!important;gap:10px!important;min-width:0!important;padding:11px 12px!important;border:1px solid #e9edfa!important;border-radius:13px!important;background:#f9fbff!important;color:#102b66!important;text-align:left!important;cursor:pointer!important;}
-body.student-logged-in #student-dashboard .mp-modern-action-grid button:hover{transform:translateY(-2px)!important;box-shadow:0 8px 18px rgba(45,75,150,.10)!important;}
-body.student-logged-in #student-dashboard .mp-modern-action-grid button>span:nth-child(2){display:grid!important;gap:3px!important;min-width:0!important;}
-body.student-logged-in #student-dashboard .mp-modern-action-grid strong{font-size:11px!important;color:#17336e!important;}
-body.student-logged-in #student-dashboard .mp-modern-action-grid small{font-size:9px!important;color:#8190ad!important;white-space:normal!important;}
-body.student-logged-in #student-dashboard .mp-modern-action-grid button>b{margin-left:auto!important;color:#7b8ee6!important;font-size:17px!important;}
-body.student-logged-in #student-dashboard .mp-action-icon{display:grid!important;place-items:center!important;width:35px!important;height:35px!important;flex:0 0 35px!important;border-radius:11px!important;color:#fff!important;font-size:17px!important;}
-body.student-logged-in #student-dashboard .action-test{background:linear-gradient(135deg,#6358f6,#8c5cf4)!important;}
-body.student-logged-in #student-dashboard .action-study{background:linear-gradient(135deg,#13a6aa,#42c7a3)!important;}
-body.student-logged-in #student-dashboard .action-homework{background:linear-gradient(135deg,#ee4b91,#ff6c83)!important;}
-body.student-logged-in #student-dashboard .student-main-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important;margin:0!important;padding:0!important;align-items:start!important;}
-body.student-logged-in #student-dashboard .student-panel{min-width:0!important;margin:0!important;padding:19px!important;border:1px solid #e6ecf8!important;border-radius:17px!important;background:rgba(255,255,255,.96)!important;box-shadow:0 8px 24px rgba(38,67,126,.05)!important;color:#102b66!important;}
-body.student-logged-in #student-dashboard .student-panel-head{margin:0 0 14px!important;padding:0 0 11px!important;border-bottom:1px solid #edf1fa!important;}
-body.student-logged-in #student-dashboard .student-panel-head h3{margin:3px 0 0!important;color:#102b66!important;font-size:17px!important;letter-spacing:-.25px!important;}
-body.student-logged-in #student-dashboard .panel-kicker{color:#7a8caf!important;font-size:9px!important;letter-spacing:.13em!important;font-weight:850!important;}
-body.student-logged-in #student-dashboard .panel-pill{border:1px solid #e5ebfa!important;border-radius:20px!important;background:#f5f7ff!important;color:#536bba!important;font-size:9px!important;}
-body.student-logged-in #student-dashboard #panel-schedule{display:none!important;}
-body.student-logged-in #student-dashboard #panel-performance{grid-column:1/-1!important;}
-body.student-logged-in #student-dashboard .performance-summary>div,body.student-logged-in #student-dashboard .mp-p1-metrics>div{border:1px solid #e9eef8!important;border-radius:12px!important;background:#f8faff!important;padding:12px!important;}
-body.student-logged-in #student-dashboard .performance-summary strong,body.student-logged-in #student-dashboard .mp-p1-metrics strong{color:#2449b7!important;}
-body.student-logged-in #student-dashboard .score-chart-wrap{min-height:210px!important;}
-body.student-logged-in #student-dashboard .score-list li{border-bottom:1px solid #eef2f8!important;color:#526687!important;}
-body.student-logged-in #student-dashboard #panel-learning-hub{grid-column:1/-1!important;}
-body.student-logged-in #student-dashboard .mp-p2-learning-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;min-width:0!important;}
-body.student-logged-in #student-dashboard .mp-p2-card{min-width:0!important;padding:14px!important;border:1px solid #e8eef9!important;border-radius:13px!important;background:#fbfcff!important;}
-body.student-logged-in #student-dashboard .mp-p2-head h4{color:#17336e!important;font-size:12px!important;}
-body.student-logged-in #student-dashboard .mp-p2-head p{color:#8290aa!important;font-size:9px!important;}
-body.student-logged-in #student-dashboard .mp-p2-pill{background:#edf2ff!important;color:#536cbd!important;}
-body.student-logged-in #student-dashboard .mp-p2-learning-grid>.mp-p2-card:has(#mp-p2-study-plan){display:none!important;}
-body.student-logged-in #student-dashboard #panel-performance-intel{grid-column:1/-1!important;}
-body.student-logged-in #student-dashboard #panel-position{grid-column:1!important;}
-body.student-logged-in #student-dashboard #panel-attendance{grid-column:2!important;}
-body.student-logged-in #student-dashboard #panel-daily{grid-column:1/-1!important;}
-body.student-logged-in #student-dashboard #panel-fees{grid-column:1!important;}
-body.student-logged-in #student-dashboard #panel-monthly-report{grid-column:1/-1!important;}
-body.student-logged-in #student-dashboard #panel-notes{grid-column:1/-1!important;}
-body.student-logged-in #student-dashboard .detail-list>div{border-bottom:1px solid #edf1f8!important;}
-body.student-logged-in #student-dashboard .detail-list span{color:#7182a0!important;}
-body.student-logged-in #student-dashboard .detail-list strong{color:#18366f!important;}
-body.student-logged-in #student-dashboard .rank-card{border:1px solid #e6ecf8!important;border-radius:13px!important;background:linear-gradient(120deg,#f4f7ff,#f8f5ff)!important;}
-body.student-logged-in #student-dashboard .rank-card strong{color:#4e62d7!important;}
-body.student-logged-in #student-dashboard .mp-att-calendar{border:1px solid #e6ecf8!important;border-radius:14px!important;box-shadow:none!important;}
-body.student-logged-in #student-dashboard .mp-att-cal-head{background:#f8faff!important;}
-body.student-logged-in #student-dashboard .mp-att-grid{background:#fff!important;}
-body.student-logged-in #student-dashboard .mp-att-day{box-shadow:none!important;}
-body.student-logged-in #student-dashboard .mp-dash-mobile-nav{display:none!important;}
-body.student-logged-in #student-dashboard .mp-test-centre-panel{border-radius:18px!important;}
+/* Maths Pathshala Hybrid Student Dashboard — presentation only, scoped to the logged-in student portal. */
+body.student-logged-in #student-dashboard{
+  padding:0!important;min-height:100vh!important;position:relative!important;isolation:isolate!important;
+  overflow-x:clip!important;background:
+    radial-gradient(ellipse at 88% 3%,rgba(220,169,76,.13),transparent 28rem),
+    radial-gradient(ellipse at 4% 30%,rgba(55,112,177,.08),transparent 30rem),
+    linear-gradient(145deg,#f5f7fb 0%,#f8f9fc 54%,#f2f5fa 100%)!important;color:#142b49!important;
+}
+body.student-logged-in #student-dashboard>.wrap{
+  width:100%!important;max-width:none!important;margin:0!important;padding:0!important;
+}
+body.student-logged-in #student-dashboard .student-lms-shell.mp-premium-dashboard-shell{
+  display:grid!important;grid-template-columns:248px minmax(0,1fr)!important;gap:0!important;
+  width:100%!important;max-width:none!important;min-height:100vh!important;margin:0!important;
+  border:0!important;border-radius:0!important;background:transparent!important;
+  box-shadow:none!important;overflow:visible!important;
+}
+body.student-logged-in #student-dashboard .mp-dash-sidebar{
+  position:sticky!important;top:0!important;height:100vh!important;min-height:620px!important;
+  align-self:start!important;display:flex!important;flex-direction:column!important;
+  padding:27px 16px 22px!important;overflow-y:auto!important;
+  background:linear-gradient(160deg,#071a35 0%,#0b2b52 52%,#123e6c 100%)!important;
+  border:0!important;border-radius:0!important;box-shadow:12px 0 34px rgba(7,26,53,.10)!important;z-index:10!important;
+}
+body.student-logged-in #student-dashboard .mp-dash-brand{
+  display:flex!important;align-items:center!important;gap:11px!important;
+  padding:0 7px 22px!important;border-bottom:1px solid rgba(255,255,255,.13)!important;
+}
+body.student-logged-in #student-dashboard .mp-dash-brand-icon{
+  width:44px!important;height:44px!important;border-radius:14px!important;display:grid!important;place-items:center!important;
+  background:linear-gradient(145deg,#fff0c8,#f4c36e 58%,#eaa43a)!important;color:#09244a!important;
+  font-size:24px!important;box-shadow:0 8px 22px rgba(238,174,73,.24)!important;
+}
+body.student-logged-in #student-dashboard .mp-dash-brand strong{color:#fff!important;font-size:16px!important;letter-spacing:-.3px!important}
+body.student-logged-in #student-dashboard .mp-dash-brand strong span{color:#f4c36e!important}
+body.student-logged-in #student-dashboard .mp-dash-brand small{color:#aebed5!important;font-size:9px!important;letter-spacing:.1em!important}
+body.student-logged-in #student-dashboard .mp-dash-side-links{
+  display:flex!important;flex-direction:column!important;gap:6px!important;overflow:visible!important;padding:18px 0 0!important;
+}
+body.student-logged-in #student-dashboard .mp-dash-side-links button{
+  display:flex!important;align-items:center!important;gap:12px!important;width:100%!important;min-height:43px!important;
+  padding:10px 12px!important;border:1px solid transparent!important;border-radius:11px!important;
+  background:transparent!important;color:#dce7f7!important;text-align:left!important;
+  font:650 11px/1.25 'Inter',sans-serif!important;cursor:pointer!important;
+  transition:transform .2s ease,background .2s ease,border-color .2s ease,box-shadow .2s ease!important;
+}
+body.student-logged-in #student-dashboard .mp-dash-side-links button span{
+  width:21px!important;flex:0 0 21px!important;text-align:center!important;font-size:17px!important;color:#c3d4eb!important;
+}
+body.student-logged-in #student-dashboard .mp-dash-side-links button:hover{
+  transform:translateX(3px)!important;background:rgba(255,255,255,.085)!important;border-color:rgba(255,255,255,.12)!important;
+}
+body.student-logged-in #student-dashboard .mp-dash-side-links button.is-active{
+  color:#fff!important;background:linear-gradient(105deg,rgba(31,91,151,.95),rgba(20,75,126,.9))!important;
+  border-color:rgba(244,195,110,.25)!important;box-shadow:inset 3px 0 #f4c36e,0 7px 18px rgba(0,0,0,.12)!important;
+}
+body.student-logged-in #student-dashboard .mp-dash-side-links button.is-active span{color:#f7d58e!important}
+body.student-logged-in #student-dashboard .mp-dash-sidebar-quote{
+  display:block!important;margin-top:auto!important;padding:16px 11px 0!important;
+  border-top:1px solid rgba(255,255,255,.14)!important;color:#dce7f7!important;
+  font-size:11px!important;line-height:1.7!important;
+}
+body.student-logged-in #student-dashboard .mp-dash-sidebar-quote small{color:#aebed5!important}
+body.student-logged-in #student-dashboard .mp-dash-main{
+  grid-column:2!important;grid-row:1!important;min-width:0!important;width:100%!important;
+  padding:0 30px 42px!important;background:transparent!important;
+}
+body.student-logged-in #student-dashboard .student-lms-topbar{
+  position:relative!important;display:flex!important;align-items:center!important;justify-content:space-between!important;
+  gap:14px!important;min-height:76px!important;margin:0 -30px 22px!important;padding:13px 30px!important;
+  border:0!important;border-bottom:1px solid #e5eaf1!important;border-radius:0!important;
+  background:rgba(255,255,255,.88)!important;box-shadow:0 5px 22px rgba(18,43,73,.035)!important;
+  backdrop-filter:blur(14px)!important;
+}
+body.student-logged-in #student-dashboard .student-lms-topbar:before{content:none!important}
+body.student-logged-in #student-dashboard .student-brand-lockup{display:flex!important;align-items:center!important;gap:10px!important}
+body.student-logged-in #student-dashboard .student-brand-mark{
+  width:38px!important;height:38px!important;border-radius:12px!important;
+  background:linear-gradient(145deg,#0b2348,#174a79)!important;color:#f4c36e!important;
+  box-shadow:0 7px 16px rgba(11,35,72,.16)!important;
+}
+body.student-logged-in #student-dashboard .student-brand-lockup strong{color:#102b4c!important;font-size:14px!important}
+body.student-logged-in #student-dashboard .student-brand-lockup span{color:#75849a!important;font-size:9px!important;letter-spacing:.08em!important}
+body.student-logged-in #student-dashboard .dash-logout{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:38px!important;
+  padding:9px 13px!important;border:1px solid #dfe6ef!important;border-radius:10px!important;
+  background:#fff!important;color:#173b61!important;font-size:11px!important;font-weight:750!important;
+  box-shadow:0 3px 10px rgba(16,43,76,.035)!important;transition:transform .2s ease,box-shadow .2s ease!important;
+}
+body.student-logged-in #student-dashboard .dash-logout:hover{transform:translateY(-1px)!important;box-shadow:0 8px 17px rgba(16,43,76,.09)!important}
+body.student-logged-in #student-dashboard .mp-student-logout{background:#fff8f5!important;color:#9b4c3c!important;border-color:#f0ded6!important}
+body.student-logged-in #student-dashboard .student-hero-card{
+  position:relative!important;isolation:isolate!important;display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(260px,.85fr)!important;align-items:center!important;gap:22px!important;
+  min-height:176px!important;margin:0 0 18px!important;padding:27px 30px!important;overflow:hidden!important;
+  border:1px solid rgba(255,255,255,.16)!important;border-radius:22px!important;
+  background:linear-gradient(115deg,#071b38 0%,#0d345e 53%,#145779 100%)!important;
+  box-shadow:0 18px 40px rgba(7,35,66,.18),inset 0 1px rgba(255,255,255,.10)!important;color:#fff!important;
+}
+body.student-logged-in #student-dashboard .student-hero-card:before{
+  content:""!important;position:absolute!important;z-index:-1!important;inset:-55%!important;pointer-events:none!important;
+  background:linear-gradient(115deg,transparent 39%,rgba(255,255,255,.075) 50%,transparent 61%)!important;
+  transform:translateX(-35%) rotate(8deg)!important;animation:mpHybridSheen 12s ease-in-out infinite!important;
+}
+body.student-logged-in #student-dashboard .student-hero-card:after{
+  content:""!important;position:absolute!important;z-index:-1!important;right:-85px!important;top:-170px!important;
+  width:330px!important;height:330px!important;border:1px solid rgba(244,195,110,.28)!important;border-radius:50%!important;
+  box-shadow:0 0 0 25px rgba(244,195,110,.035),0 0 0 55px rgba(244,195,110,.025)!important;
+}
+body.student-logged-in #student-dashboard .student-identity{position:relative!important;z-index:1!important;display:flex!important;align-items:center!important;gap:15px!important;min-width:0!important}
+body.student-logged-in #student-dashboard .dash-avatar{
+  width:60px!important;height:60px!important;flex:0 0 60px!important;border:3px solid rgba(255,255,255,.65)!important;
+  background:linear-gradient(145deg,#fff0c8,#e7ae4d)!important;color:#09244a!important;
+  box-shadow:0 0 0 5px rgba(255,255,255,.08),0 8px 22px rgba(0,0,0,.16)!important;
+}
+body.student-logged-in #student-dashboard .dash-member-badge{
+  display:inline-flex!important;margin-bottom:7px!important;padding:4px 9px!important;border-radius:20px!important;
+  background:rgba(244,195,110,.14)!important;border:1px solid rgba(244,195,110,.35)!important;
+  color:#f7d58e!important;font-size:9px!important;letter-spacing:.09em!important;
+}
+body.student-logged-in #student-dashboard .dash-welcome{margin:3px 0!important;color:#fff!important;font-size:clamp(20px,2.1vw,27px)!important;font-weight:850!important;letter-spacing:-.55px!important;line-height:1.2!important}
+body.student-logged-in #student-dashboard .dash-welcome span{color:#f4c36e!important}
+body.student-logged-in #student-dashboard .dash-email{margin-top:4px!important;color:#c7d7e9!important;font-size:11px!important;overflow-wrap:anywhere!important}
+body.student-logged-in #student-dashboard .batch-highlight{
+  display:inline-flex!important;margin-top:8px!important;padding:5px 10px!important;border:1px solid rgba(244,195,110,.32)!important;
+  border-radius:20px!important;background:rgba(244,195,110,.12)!important;color:#ffe0a0!important;font-size:10px!important;
+}
+body.student-logged-in #student-dashboard .student-hero-copy{
+  position:relative!important;z-index:1!important;max-width:none!important;padding:13px 16px!important;
+  border:1px solid rgba(255,255,255,.16)!important;border-radius:15px!important;
+  background:rgba(255,255,255,.075)!important;text-align:left!important;backdrop-filter:blur(8px)!important;
+}
+body.student-logged-in #student-dashboard .student-hero-copy span{color:#f4c36e!important;font-size:9px!important;font-weight:850!important;letter-spacing:.14em!important}
+body.student-logged-in #student-dashboard .student-hero-copy strong{display:block!important;margin:7px 0!important;color:#fff!important;font-size:clamp(17px,2vw,23px)!important;line-height:1.22!important;letter-spacing:-.35px!important}
+body.student-logged-in #student-dashboard .student-hero-copy small{color:#d4e0ed!important;font-size:11px!important;line-height:1.55!important}
+body.student-logged-in #student-dashboard .dash-notices,
+body.student-logged-in #student-dashboard #dash-homework{margin:0 0 12px!important}
+body.student-logged-in #student-dashboard #mp-p3-top{margin:0 0 17px!important}
+body.student-logged-in #student-dashboard .mp-p3-student-panel{
+  border:1px solid #e3eaf2!important;border-radius:17px!important;
+  background:linear-gradient(145deg,#102e50,#17456b)!important;box-shadow:0 12px 28px rgba(16,46,80,.12)!important;
+}
+body.student-logged-in #student-dashboard .mp-p3-student-panel h3,
+body.student-logged-in #student-dashboard .mp-p3-student-panel .mp-p3-student-kicker{color:#fff!important}
+body.student-logged-in #student-dashboard .mp-p3-student-sub{color:#c7d6e6!important}
+body.student-logged-in #student-dashboard .mp-p3-profile-item{background:rgba(255,255,255,.09)!important;border-color:rgba(255,255,255,.14)!important}
+body.student-logged-in #student-dashboard .mp-p3-profile-item span{color:#c7d6e6!important}
+body.student-logged-in #student-dashboard .mp-p3-profile-item strong{color:#fff!important}
+body.student-logged-in #student-dashboard .student-kpi-grid{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:13px!important;margin:0 0 16px!important;padding:0!important;
+}
+body.student-logged-in #student-dashboard .student-kpi{
+  position:relative!important;min-width:0!important;min-height:112px!important;padding:17px 17px 15px!important;
+  overflow:hidden!important;border:1px solid #e3e9f1!important;border-radius:16px!important;
+  background:linear-gradient(150deg,#fff 0%,#fbfcfe 100%)!important;
+  box-shadow:0 8px 22px rgba(16,43,76,.055)!important;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease!important;
+}
+body.student-logged-in #student-dashboard .student-kpi:before{content:""!important;display:block!important;position:absolute!important;left:0!important;top:0!important;bottom:0!important;width:4px!important;background:linear-gradient(180deg,#f3d28d,#b8872e)!important}
+body.student-logged-in #student-dashboard .student-kpi:hover{transform:translateY(-3px)!important;border-color:#d6c18f!important;box-shadow:0 14px 28px rgba(16,43,76,.09)!important}
+body.student-logged-in #student-dashboard .student-kpi span{color:#6c7d91!important;font-size:10px!important;font-weight:750!important;line-height:1.4!important}
+body.student-logged-in #student-dashboard .student-kpi strong{display:block!important;margin:9px 0 4px!important;color:#102f53!important;font-size:27px!important;font-weight:900!important;letter-spacing:-.8px!important;line-height:1!important}
+body.student-logged-in #student-dashboard .student-kpi small{color:#8996a8!important;font-size:9px!important}
+body.student-logged-in #student-dashboard .mp-modern-quick-actions{
+  display:grid!important;grid-template-columns:180px minmax(0,1fr)!important;align-items:center!important;gap:16px!important;
+  margin:0 0 17px!important;padding:15px 17px!important;border:1px solid #e3e9f1!important;border-radius:17px!important;
+  background:linear-gradient(110deg,#fff,#f8fafc)!important;box-shadow:0 7px 22px rgba(16,43,76,.045)!important;
+}
+body.student-logged-in #student-dashboard .mp-modern-quick-head h3{margin:4px 0 0!important;color:#102f53!important;font-size:16px!important}
+body.student-logged-in #student-dashboard .mp-modern-live-dot{display:inline-block;margin-top:7px;color:#27845e!important;font-size:9px!important;font-weight:850!important}
+body.student-logged-in #student-dashboard .mp-modern-action-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important}
+body.student-logged-in #student-dashboard .mp-modern-action-grid button{
+  display:flex!important;align-items:center!important;gap:9px!important;min-width:0!important;padding:10px!important;
+  border:1px solid #e5eaf0!important;border-radius:12px!important;background:#fff!important;color:#163858!important;
+  text-align:left!important;cursor:pointer!important;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease!important;
+}
+body.student-logged-in #student-dashboard .mp-modern-action-grid button:hover{transform:translateY(-2px)!important;border-color:#dfc58d!important;box-shadow:0 9px 19px rgba(16,43,76,.08)!important}
+body.student-logged-in #student-dashboard .mp-modern-action-grid button>span:nth-child(2){display:grid!important;gap:3px!important;min-width:0!important}
+body.student-logged-in #student-dashboard .mp-modern-action-grid strong{color:#173958!important;font-size:10px!important}
+body.student-logged-in #student-dashboard .mp-modern-action-grid small{color:#8190a2!important;font-size:9px!important;white-space:normal!important}
+body.student-logged-in #student-dashboard .mp-modern-action-grid button>b{margin-left:auto!important;color:#a47a35!important;font-size:16px!important}
+body.student-logged-in #student-dashboard .mp-action-icon{display:grid!important;place-items:center!important;width:34px!important;height:34px!important;flex:0 0 34px!important;border-radius:10px!important;color:#fff!important;font-size:16px!important}
+body.student-logged-in #student-dashboard .action-test{background:linear-gradient(135deg,#174b7a,#267aa0)!important}
+body.student-logged-in #student-dashboard .action-study{background:linear-gradient(135deg,#238a79,#50b69a)!important}
+body.student-logged-in #student-dashboard .action-homework{background:linear-gradient(135deg,#b8872e,#e3b85f)!important}
+body.student-logged-in #student-dashboard .student-main-grid{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:15px!important;
+  margin:0!important;padding:0!important;align-items:start!important;
+}
+body.student-logged-in #student-dashboard .student-panel{
+  min-width:0!important;margin:0!important;padding:19px!important;
+  border:1px solid #e3e9f1!important;border-radius:17px!important;
+  background:linear-gradient(155deg,#fff 0%,#fcfdff 100%)!important;
+  box-shadow:0 8px 23px rgba(16,43,76,.05)!important;color:#17334f!important;
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease!important;
+}
+body.student-logged-in #student-dashboard .student-panel:hover{border-color:#dfd0ac!important;box-shadow:0 12px 28px rgba(16,43,76,.075)!important}
+body.student-logged-in #student-dashboard .student-panel-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;margin:0 0 14px!important;padding:0 0 11px!important;border-bottom:1px solid #edf0f4!important}
+body.student-logged-in #student-dashboard .student-panel-head h3{margin:3px 0 0!important;color:#102f53!important;font-size:16px!important;font-weight:850!important;letter-spacing:-.25px!important}
+body.student-logged-in #student-dashboard .student-panel-head p{color:#7b899a!important}
+body.student-logged-in #student-dashboard .panel-kicker{color:#a27a37!important;font-size:9px!important;font-weight:850!important;letter-spacing:.13em!important}
+body.student-logged-in #student-dashboard .panel-pill,
+body.student-logged-in #student-dashboard .mp-p2-pill{
+  border:1px solid #ecdfc5!important;border-radius:20px!important;background:#fff9ed!important;color:#846126!important;font-size:9px!important;font-weight:800!important;
+}
+body.student-logged-in #student-dashboard #panel-schedule{
+  display:block!important;grid-column:1/-1!important;
+  background:linear-gradient(115deg,#fff 0%,#fffdf8 100%)!important;border-color:#eadfc9!important;
+}
+body.student-logged-in #student-dashboard #panel-schedule .detail-list{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:9px!important}
+body.student-logged-in #student-dashboard #panel-schedule .detail-list>div{
+  display:block!important;padding:13px!important;border:1px solid #eee8dc!important;border-radius:12px!important;background:#fbfaf6!important;
+}
+body.student-logged-in #student-dashboard .detail-list span{color:#8b806c!important;font-size:9px!important}
+body.student-logged-in #student-dashboard .detail-list strong{display:block!important;margin-top:6px!important;color:#183957!important;font-size:12px!important;overflow-wrap:anywhere!important}
+body.student-logged-in #student-dashboard #panel-performance,
+body.student-logged-in #student-dashboard #panel-learning-hub,
+body.student-logged-in #student-dashboard #panel-performance-intel,
+body.student-logged-in #student-dashboard #panel-daily,
+body.student-logged-in #student-dashboard #panel-monthly-report,
+body.student-logged-in #student-dashboard #panel-notes{grid-column:1/-1!important}
+body.student-logged-in #student-dashboard .performance-summary>div,
+body.student-logged-in #student-dashboard .mp-p1-metrics>div{
+  border:1px solid #e8edf3!important;border-radius:12px!important;background:linear-gradient(145deg,#f8fafc,#fff)!important;padding:12px!important;
+}
+body.student-logged-in #student-dashboard .performance-summary span,
+body.student-logged-in #student-dashboard .mp-p1-metrics span{color:#8390a0!important}
+body.student-logged-in #student-dashboard .performance-summary strong,
+body.student-logged-in #student-dashboard .mp-p1-metrics strong{color:#153b60!important}
+body.student-logged-in #student-dashboard .score-chart-wrap{
+  min-height:220px!important;margin:14px 0 10px!important;padding:12px!important;
+  border:1px solid #e6ebf1!important;border-radius:14px!important;
+  background:radial-gradient(ellipse at 90% 0%,rgba(226,184,95,.10),transparent 40%),linear-gradient(145deg,#fcfdff,#f6f9fc)!important;
+}
+body.student-logged-in #student-dashboard .student-score-chart{height:245px!important;max-width:100%!important}
+body.student-logged-in #student-dashboard .score-list li{border-bottom:1px solid #edf1f5!important;color:#52677d!important}
+body.student-logged-in #student-dashboard .mp-p1-box,
+body.student-logged-in #student-dashboard .mp-p2-card{
+  min-width:0!important;border:1px solid #e6ebf1!important;border-radius:14px!important;
+  background:linear-gradient(145deg,#fbfcfe,#f7f9fc)!important;box-shadow:inset 0 1px #fff!important;
+}
+body.student-logged-in #student-dashboard .mp-p1-badge{
+  border:1px solid #eadbb9!important;background:linear-gradient(135deg,#fff9eb,#fff)!important;color:#795b26!important;
+}
+body.student-logged-in #student-dashboard .mp-p1-history-wrap{max-width:100%!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch!important}
+body.student-logged-in #student-dashboard .mp-p1-history th{background:#f5f7fa!important;color:#65758a!important}
+body.student-logged-in #student-dashboard .mp-p1-history td{color:#344c66!important}
+body.student-logged-in #student-dashboard .rank-card{
+  border:1px solid rgba(244,195,110,.28)!important;border-radius:14px!important;
+  background:linear-gradient(120deg,#092344,#124b73 78%,#17627b)!important;color:#fff!important;
+  box-shadow:0 11px 24px rgba(9,35,68,.12)!important;
+}
+body.student-logged-in #student-dashboard .rank-card strong{color:#fff!important}
+body.student-logged-in #student-dashboard .rank-medal{
+  background:linear-gradient(145deg,#fff0c8,#e9b24f)!important;color:#09244a!important;
+  box-shadow:0 6px 15px rgba(235,174,70,.22)!important;
+}
+body.student-logged-in #student-dashboard .rank-stats>div{border:1px solid #e8edf3!important;border-radius:11px!important;background:#f8fafc!important}
+body.student-logged-in #student-dashboard .att-progress-track{background:#e9eef4!important}
+body.student-logged-in #student-dashboard .att-progress-fill{background:linear-gradient(90deg,#238a65,#69c69a)!important}
+body.student-logged-in #student-dashboard .mp-att-calendar{border:1px solid #e6ebf1!important;border-radius:14px!important;background:#fbfcfe!important}
+body.student-logged-in #student-dashboard .mp-att-cal-head{background:#f4f7fa!important}
+body.student-logged-in #student-dashboard .mp-att-day{box-shadow:none!important}
+body.student-logged-in #student-dashboard .mp-p2-learning-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}
+body.student-logged-in #student-dashboard .mp-p2-card{padding:14px!important}
+body.student-logged-in #student-dashboard .mp-p2-head h4{color:#173958!important;font-size:12px!important}
+body.student-logged-in #student-dashboard .mp-p2-head p{color:#8190a2!important;font-size:9px!important}
+body.student-logged-in #student-dashboard .mp-p2-test{border:1px solid #e7ebf1!important;border-radius:12px!important;background:#f8fafc!important}
+body.student-logged-in #student-dashboard .mp-p2-countdown{border-radius:99px!important}
+body.student-logged-in #student-dashboard .dash-notes-list li,
+body.student-logged-in #student-dashboard .payment-history-list li{border-bottom:1px solid #edf1f5!important}
+body.student-logged-in #student-dashboard .mp-test-centre-panel{border:1px solid #e5e9f0!important;border-radius:18px!important;box-shadow:0 12px 30px rgba(16,43,76,.07)!important}
+body.student-logged-in #student-dashboard a:focus-visible,
+body.student-logged-in #student-dashboard button:focus-visible{outline:3px solid rgba(184,135,46,.55)!important;outline-offset:3px!important}
+@keyframes mpHybridSheen{0%,62%,100%{transform:translateX(-38%) rotate(8deg)}80%{transform:translateX(38%) rotate(8deg)}}
 @media(max-width:1180px){
- body.student-logged-in #student-dashboard .student-lms-shell.mp-premium-dashboard-shell{grid-template-columns:210px minmax(0,1fr)!important;}
- body.student-logged-in #student-dashboard .mp-dash-main{padding:0 20px 30px!important;}
- body.student-logged-in #student-dashboard .student-lms-topbar{margin-left:-20px!important;margin-right:-20px!important;padding-left:22px!important;padding-right:22px!important;}
- body.student-logged-in #student-dashboard .student-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+  body.student-logged-in #student-dashboard .student-lms-shell.mp-premium-dashboard-shell{grid-template-columns:218px minmax(0,1fr)!important}
+  body.student-logged-in #student-dashboard .mp-dash-main{padding:0 20px 32px!important}
+  body.student-logged-in #student-dashboard .student-lms-topbar{margin-left:-20px!important;margin-right:-20px!important;padding-left:22px!important;padding-right:22px!important}
+  body.student-logged-in #student-dashboard .student-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media(max-width:820px){
- body.student-logged-in #student-dashboard .student-lms-shell.mp-premium-dashboard-shell{display:block!important;min-height:100vh!important;}
- body.student-logged-in #student-dashboard .mp-dash-sidebar{position:relative!important;top:auto!important;height:auto!important;min-height:0!important;padding:12px 14px 10px!important;}
- body.student-logged-in #student-dashboard .mp-dash-brand{padding:0 4px 9px!important;}
- body.student-logged-in #student-dashboard .mp-dash-brand-icon{width:36px!important;height:36px!important;font-size:18px!important;}
- body.student-logged-in #student-dashboard .mp-dash-brand strong{font-size:14px!important;}
- body.student-logged-in #student-dashboard .mp-dash-sidebar-quote{display:none!important;}
- body.student-logged-in #student-dashboard .mp-dash-side-links{display:flex!important;flex-direction:row!important;gap:6px!important;overflow-x:auto!important;padding:0 0 3px!important;scrollbar-width:thin!important;}
- body.student-logged-in #student-dashboard .mp-dash-side-links button{flex:0 0 auto!important;width:auto!important;min-height:37px!important;padding:8px 10px!important;font-size:10px!important;}
- body.student-logged-in #student-dashboard .mp-dash-side-links button span{font-size:14px!important;}
- body.student-logged-in #student-dashboard .mp-dash-main{padding:0 14px 25px!important;}
- body.student-logged-in #student-dashboard .student-lms-topbar{min-height:62px!important;margin:0 -14px 14px!important;padding:10px 14px!important;}
- body.student-logged-in #student-dashboard .student-brand-lockup span{display:none!important;}
- body.student-logged-in #student-dashboard .student-hero-card{grid-template-columns:1fr!important;gap:13px!important;min-height:0!important;padding:20px!important;border-radius:17px!important;}
- body.student-logged-in #student-dashboard .student-hero-copy{padding:12px 0 0!important;border-left:0!important;border-top:1px solid rgba(255,255,255,.35)!important;}
- body.student-logged-in #student-dashboard .student-hero-copy strong{font-size:25px!important;}
- body.student-logged-in #student-dashboard .student-kpi-grid{gap:9px!important;margin-bottom:12px!important;}
- body.student-logged-in #student-dashboard .student-kpi{min-height:95px!important;padding:13px!important;border-radius:13px!important;}
- body.student-logged-in #student-dashboard .student-kpi strong{font-size:23px!important;}
- body.student-logged-in #student-dashboard .mp-modern-quick-actions{grid-template-columns:1fr!important;gap:10px!important;padding:13px!important;}
- body.student-logged-in #student-dashboard .mp-modern-action-grid{grid-template-columns:1fr!important;}
- body.student-logged-in #student-dashboard .mp-modern-action-grid button{padding:10px!important;}
- body.student-logged-in #student-dashboard .student-main-grid{grid-template-columns:1fr!important;gap:12px!important;}
- body.student-logged-in #student-dashboard .student-main-grid>.student-panel{grid-column:1!important;padding:15px!important;}
- body.student-logged-in #student-dashboard .mp-p2-learning-grid{grid-template-columns:1fr!important;}
- body.student-logged-in #student-dashboard .mp-p1-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
- body.student-logged-in #student-dashboard .mp-dash-mobile-nav{display:flex!important;}
+  body.student-logged-in #student-dashboard .student-lms-shell.mp-premium-dashboard-shell{display:block!important;min-height:100vh!important}
+  body.student-logged-in #student-dashboard .mp-dash-sidebar{position:relative!important;top:auto!important;height:auto!important;min-height:0!important;padding:12px 14px 9px!important;overflow:hidden!important}
+  body.student-logged-in #student-dashboard .mp-dash-brand{padding:0 4px 9px!important;border:0!important}
+  body.student-logged-in #student-dashboard .mp-dash-brand-icon{width:35px!important;height:35px!important;font-size:19px!important}
+  body.student-logged-in #student-dashboard .mp-dash-side-links{display:flex!important;flex-direction:row!important;gap:6px!important;overflow-x:auto!important;padding:0 0 4px!important;scrollbar-width:thin!important}
+  body.student-logged-in #student-dashboard .mp-dash-side-links button{flex:0 0 auto!important;width:auto!important;min-height:36px!important;padding:8px 10px!important;font-size:10px!important}
+  body.student-logged-in #student-dashboard .mp-dash-sidebar-quote{display:none!important}
+  body.student-logged-in #student-dashboard .mp-dash-main{padding:0 16px 28px!important}
+  body.student-logged-in #student-dashboard .student-lms-topbar{min-height:62px!important;margin:0 -16px 15px!important;padding:10px 16px!important}
+  body.student-logged-in #student-dashboard .student-hero-card{grid-template-columns:1fr!important;gap:13px!important;min-height:0!important;padding:20px!important;border-radius:17px!important}
+  body.student-logged-in #student-dashboard .student-hero-copy{padding:12px 14px!important}
+  body.student-logged-in #student-dashboard .student-hero-copy strong{font-size:21px!important}
+  body.student-logged-in #student-dashboard .mp-modern-quick-actions{grid-template-columns:1fr!important;gap:10px!important;padding:13px!important}
+  body.student-logged-in #student-dashboard .student-main-grid{grid-template-columns:1fr!important;gap:12px!important}
+  body.student-logged-in #student-dashboard .student-main-grid>.student-panel{grid-column:1!important}
+  body.student-logged-in #student-dashboard #panel-schedule .detail-list{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  body.student-logged-in #student-dashboard .mp-p2-learning-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  body.student-logged-in #student-dashboard .mp-dash-mobile-nav{display:flex!important}
 }
-@media(max-width:480px){
- body.student-logged-in #student-dashboard .student-lms-topbar{gap:8px!important;}
- body.student-logged-in #student-dashboard .student-brand-mark{width:32px!important;height:32px!important;}
- body.student-logged-in #student-dashboard .student-brand-lockup strong{font-size:11px!important;}
- body.student-logged-in #student-dashboard .dash-logout{min-height:33px!important;padding:7px 9px!important;font-size:9px!important;}
- body.student-logged-in #student-dashboard .student-kpi span{font-size:9px!important;}
- body.student-logged-in #student-dashboard .student-kpi strong{font-size:20px!important;}
- body.student-logged-in #student-dashboard .student-kpi small{font-size:8px!important;}
- body.student-logged-in #student-dashboard .student-hero-copy strong{font-size:21px!important;}
- body.student-logged-in #student-dashboard .mp-p3-report-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+@media(max-width:600px){
+  body.student-logged-in #student-dashboard{padding:0 0 12px!important}
+  body.student-logged-in #student-dashboard .mp-dash-main{padding:0 10px 88px!important}
+  body.student-logged-in #student-dashboard .student-lms-topbar{min-height:56px!important;margin:0 -10px 12px!important;padding:9px 12px!important}
+  body.student-logged-in #student-dashboard .student-brand-lockup span{display:none!important}
+  body.student-logged-in #student-dashboard .student-brand-lockup strong{font-size:12px!important}
+  body.student-logged-in #student-dashboard .student-brand-mark{width:32px!important;height:32px!important}
+  body.student-logged-in #student-dashboard .dash-logout{min-height:34px!important;padding:7px 9px!important;font-size:9px!important}
+  body.student-logged-in #student-dashboard .student-hero-card{margin-bottom:12px!important;padding:16px!important;gap:12px!important}
+  body.student-logged-in #student-dashboard .student-identity{gap:10px!important}
+  body.student-logged-in #student-dashboard .dash-avatar{width:47px!important;height:47px!important;flex-basis:47px!important}
+  body.student-logged-in #student-dashboard .dash-welcome{font-size:18px!important}
+  body.student-logged-in #student-dashboard .dash-email{font-size:9px!important}
+  body.student-logged-in #student-dashboard .student-hero-copy strong{font-size:17px!important}
+  body.student-logged-in #student-dashboard .student-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;margin-bottom:11px!important}
+  body.student-logged-in #student-dashboard .student-kpi{min-height:91px!important;padding:12px!important;border-radius:12px!important}
+  body.student-logged-in #student-dashboard .student-kpi span{font-size:9px!important}
+  body.student-logged-in #student-dashboard .student-kpi strong{font-size:22px!important}
+  body.student-logged-in #student-dashboard .student-kpi small{font-size:8px!important}
+  body.student-logged-in #student-dashboard .mp-modern-action-grid{grid-template-columns:1fr!important}
+  body.student-logged-in #student-dashboard .mp-modern-action-grid button{padding:10px!important}
+  body.student-logged-in #student-dashboard .student-panel{padding:14px!important;border-radius:13px!important}
+  body.student-logged-in #student-dashboard .student-panel-head h3{font-size:15px!important}
+  body.student-logged-in #student-dashboard #panel-schedule .detail-list{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  body.student-logged-in #student-dashboard .mp-p2-learning-grid,
+  body.student-logged-in #student-dashboard .mp-p1-grid{grid-template-columns:1fr!important}
+  body.student-logged-in #student-dashboard .mp-p1-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  body.student-logged-in #student-dashboard .mp-p3-profile-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  body.student-logged-in #student-dashboard .mp-p1-history-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch!important}
+  body.student-logged-in #student-dashboard .mp-p1-history{min-width:540px!important}
+  body.student-logged-in #student-dashboard .student-score-chart{height:195px!important;min-height:180px!important}
+  body.student-logged-in #student-dashboard .mp-att-grid{gap:4px!important}
+  body.student-logged-in #student-dashboard .mp-att-day{min-height:39px!important;font-size:10px!important}
+  body.student-logged-in #student-dashboard .mp-dash-mobile-nav{
+    position:fixed!important;z-index:9998!important;left:7px!important;right:7px!important;
+    bottom:max(7px,env(safe-area-inset-bottom))!important;display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:2px!important;
+    padding:7px 5px calc(7px + env(safe-area-inset-bottom))!important;
+    border:1px solid #dce5ef!important;border-radius:16px!important;background:rgba(255,255,255,.97)!important;
+    box-shadow:0 8px 28px rgba(6,30,65,.18)!important;backdrop-filter:blur(14px)!important;
+  }
+  body.student-logged-in #student-dashboard .mp-dash-mobile-nav button{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;min-width:0!important;padding:5px 2px!important;border:0!important;border-radius:10px!important;background:transparent!important;color:#718096!important}
+  body.student-logged-in #student-dashboard .mp-dash-mobile-nav button span{font-size:17px!important;line-height:1.1!important}
+  body.student-logged-in #student-dashboard .mp-dash-mobile-nav button small{font-size:9px!important;font-weight:800!important;white-space:nowrap!important}
+  body.student-logged-in #student-dashboard .mp-dash-mobile-nav button.is-active{background:#f8f1e3!important;color:#805d25!important}
 }
-@media(prefers-reduced-motion:reduce){body.student-logged-in #student-dashboard *{scroll-behavior:auto!important;transition:none!important;animation:none!important;}}
+@media(max-width:380px){
+  body.student-logged-in #student-dashboard .mp-dash-main{padding-left:8px!important;padding-right:8px!important}
+  body.student-logged-in #student-dashboard .student-kpi{padding:10px!important}
+  body.student-logged-in #student-dashboard .student-kpi strong{font-size:20px!important}
+  body.student-logged-in #student-dashboard .student-hero-card{padding:13px!important}
+  body.student-logged-in #student-dashboard .dash-logout{padding:6px 8px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  body.student-logged-in #student-dashboard .student-hero-card:before{animation:none!important}
+  body.student-logged-in #student-dashboard *,
+  body.student-logged-in #student-dashboard *:before,
+  body.student-logged-in #student-dashboard *:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
 </style>
 
 </body>
