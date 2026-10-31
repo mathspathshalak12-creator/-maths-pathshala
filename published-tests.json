@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-31T09:42:05.191Z",
+  "source": "Maths Pathshala Test Studio",
+  "tests": [
+    {
+      "id": "test_1793439669102_t377",
+      "title": "polynomials",
+      "subject": "Mathematics",
+      "topic": "polynomials",
+      "className": "Class 10",
+      "durationMinutes": 20,
+      "mode": "question",
+      "questionMode": "question",
+      "maxMarks": 20,
+      "instructions": "",
+      "date": "31/10/2026",
+      "time": "15:13",
+      "start": "2026-10-31T15:13",
+      "end": "2026-10-31T16:09",
+      "publishedAt": "2026-10-31T09:41:23.332Z",
+      "status": "published",
+      "audience": {
+        "type": "all",
+        "batches": "",
+        "label": "All students"
+      },
+      "questions": [
+        {
+          "id": "qa8hvo0s",
+          "type": "MCQ",
+          "text": "how are you",
+          "imageUrl": "",
+          "options": [
+            "fine",
+            "not fine",
+            "happy",
+            "not happy"
+          ],
+          "marks": 1,
+          "timerSeconds": 10,
+          "negativeMarking": false,
+          "penalty": 0
+        },
+        {
+          "id": "qyvzrbzu",
+          "type": "MCQ",
+          "text": "good",
+          "imageUrl": "",
+          "options": [
+            "givb",
+            "hjv",
+            "hu",
+            ".bh"
+          ],
+          "marks": 1,
+          "timerSeconds": 30,
+          "negativeMarking": false,
+          "penalty": 0
+        }
+      ],
+      "paperFiles": [],
+      "paperAnswer": "file",
+      "paperNotes": ""
+    }
+  ]
+}
