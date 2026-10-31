@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>Maths Pathshala | Offline Coaching &amp; Online Mathematics Classes in Kanpur</title>
 <meta content="Maths Pathshala in Kalyanpur, Kanpur offers offline Class 9–10 PCM coaching, Class 11–12 Mathematics, online Mathematics classes for Classes 9–12, and personalised home tuition." name="description"/>
 <meta content="offline coaching Kalyanpur Kanpur, online live classes mathematics, class 9 10 PCM coaching, class 11 12 mathematics coaching, Maths Pathshala, home tuition Kanpur" name="keywords"/>
@@ -6023,8 +6023,7 @@ body.student-logged-in #student-dashboard .action-homework{background:linear-gra
  body.student-logged-in #student-dashboard .mp-modern-action-grid button{min-height:60px!important}
 }
 </style>
-</body>
-</html>
+
 
 <style id="mp-v9-online-heading-highlight">
 /* Focused v9 fix: make only the Online Live Classes headline unmistakably visible. */
@@ -6338,3 +6337,125 @@ html body #online-classes.online-learning-section .wrap > .section-head .section
     .dash-logout{padding:8px 10px!important;font-size:11px!important}
   }
 </style>
+
+<style id="mp-android-webview-dashboard-fit">
+/* Android APK / WebView fit: keep the logged-in dashboard inside the real phone viewport. */
+html,body{width:100%;max-width:100%;min-width:0;overflow-x:hidden;}
+@supports (overflow:clip){html,body{overflow-x:clip;}}
+body.student-logged-in{width:100%;min-width:0;overflow-x:hidden!important;}
+@media screen and (max-width:820px){
+  body.student-logged-in #student-dashboard,
+  body.student-logged-in #student-dashboard>.wrap,
+  body.student-logged-in #student-dashboard .mp-premium-dashboard-shell,
+  body.student-logged-in #student-dashboard .mp-dash-main{
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    box-sizing:border-box!important;
+  }
+  body.student-logged-in #student-dashboard{padding:0 0 calc(94px + env(safe-area-inset-bottom))!important;overflow-x:hidden!important;}
+  body.student-logged-in #student-dashboard>.wrap{margin:0!important;padding:0!important;}
+  body.student-logged-in #student-dashboard .mp-premium-dashboard-shell{
+    display:block!important;grid-template-columns:minmax(0,1fr)!important;
+    min-height:0!important;height:auto!important;margin:0!important;
+    border-radius:0!important;overflow:visible!important;
+  }
+  body.student-logged-in #student-dashboard .mp-dash-sidebar{
+    position:relative!important;top:auto!important;left:auto!important;
+    display:block!important;width:100%!important;height:auto!important;min-height:0!important;
+    padding:12px 13px 9px!important;overflow:hidden!important;box-sizing:border-box!important;
+  }
+  body.student-logged-in #student-dashboard .mp-dash-brand{display:flex!important;align-items:center!important;min-width:0!important;padding:0 3px 9px!important;}
+  body.student-logged-in #student-dashboard .mp-dash-side-links{
+    display:flex!important;flex-direction:row!important;width:100%!important;max-width:100%!important;
+    gap:6px!important;overflow-x:auto!important;overflow-y:hidden!important;
+    -webkit-overflow-scrolling:touch!important;scrollbar-width:none!important;
+  }
+  body.student-logged-in #student-dashboard .mp-dash-side-links::-webkit-scrollbar{display:none!important;}
+  body.student-logged-in #student-dashboard .mp-dash-side-links button{flex:0 0 auto!important;width:auto!important;max-width:none!important;white-space:nowrap!important;}
+  body.student-logged-in #student-dashboard .mp-dash-sidebar-quote{display:none!important;}
+  body.student-logged-in #student-dashboard .mp-dash-main{
+    display:block!important;grid-column:1!important;grid-row:auto!important;
+    padding:0 12px 26px!important;margin:0!important;overflow:visible!important;
+  }
+  body.student-logged-in #student-dashboard .student-lms-topbar{
+    position:relative!important;top:auto!important;left:auto!important;right:auto!important;
+    display:flex!important;flex-wrap:wrap!important;align-items:center!important;
+    justify-content:space-between!important;gap:8px!important;
+    width:calc(100% + 24px)!important;min-width:0!important;min-height:60px!important;
+    height:auto!important;margin:0 -12px 13px!important;padding:9px 12px!important;
+    box-sizing:border-box!important;
+  }
+  body.student-logged-in #student-dashboard .student-brand-lockup{flex:1 1 130px!important;min-width:0!important;}
+  body.student-logged-in #student-dashboard .student-brand-lockup strong{font-size:clamp(11px,3.2vw,14px)!important;white-space:normal!important;}
+  body.student-logged-in #student-dashboard .student-lms-topbar>div:last-child{display:flex!important;flex:0 1 auto!important;flex-wrap:wrap!important;gap:6px!important;min-width:0!important;}
+  body.student-logged-in #student-dashboard .dash-logout{min-height:36px!important;padding:8px 10px!important;font-size:10px!important;white-space:nowrap!important;}
+  body.student-logged-in #student-dashboard .student-hero-card{
+    display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+    width:100%!important;min-width:0!important;min-height:0!important;
+    margin:0 0 13px!important;padding:17px 15px!important;gap:13px!important;
+    box-sizing:border-box!important;border-radius:17px!important;
+  }
+  body.student-logged-in #student-dashboard .student-identity{display:flex!important;align-items:center!important;gap:11px!important;min-width:0!important;max-width:100%!important;flex-wrap:nowrap!important;}
+  body.student-logged-in #student-dashboard .student-identity>div:last-child{min-width:0!important;max-width:100%!important;}
+  body.student-logged-in #student-dashboard .dash-welcome{font-size:clamp(17px,5vw,22px)!important;line-height:1.25!important;overflow-wrap:anywhere!important;}
+  body.student-logged-in #student-dashboard .dash-email{max-width:100%!important;overflow-wrap:anywhere!important;}
+  body.student-logged-in #student-dashboard .student-hero-copy{width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important;padding:12px 0 0!important;border-left:0!important;border-top:1px solid rgba(245,211,151,.25)!important;box-sizing:border-box!important;}
+  body.student-logged-in #student-dashboard .student-hero-copy strong{font-size:clamp(18px,5vw,24px)!important;line-height:1.2!important;overflow-wrap:anywhere!important;}
+  body.student-logged-in #student-dashboard .student-kpi-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;width:100%!important;margin:0 0 12px!important;padding:0!important;box-sizing:border-box!important;}
+  body.student-logged-in #student-dashboard .student-kpi{min-width:0!important;min-height:92px!important;padding:12px 10px!important;box-sizing:border-box!important;}
+  body.student-logged-in #student-dashboard .student-kpi span{font-size:9px!important;line-height:1.35!important;}
+  body.student-logged-in #student-dashboard .student-kpi strong{font-size:clamp(18px,5vw,22px)!important;overflow-wrap:anywhere!important;}
+  body.student-logged-in #student-dashboard .mp-modern-quick-actions{
+    display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:11px!important;
+    width:100%!important;min-width:0!important;margin:0 0 13px!important;
+    padding:14px!important;box-sizing:border-box!important;
+  }
+  body.student-logged-in #student-dashboard .mp-modern-action-grid{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:8px!important;width:100%!important;min-width:0!important;}
+  body.student-logged-in #student-dashboard .mp-modern-action-grid button{display:flex!important;width:100%!important;min-width:0!important;min-height:58px!important;padding:10px 11px!important;box-sizing:border-box!important;}
+  body.student-logged-in #student-dashboard .mp-modern-action-grid button>span:nth-child(2){min-width:0!important;flex:1 1 auto!important;}
+  body.student-logged-in #student-dashboard .mp-modern-action-grid strong,
+  body.student-logged-in #student-dashboard .mp-modern-action-grid small{white-space:normal!important;overflow-wrap:anywhere!important;}
+  body.student-logged-in #student-dashboard .student-main-grid{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:11px!important;width:100%!important;min-width:0!important;margin:0!important;padding:0!important;}
+  body.student-logged-in #student-dashboard .student-main-grid>.student-panel,
+  body.student-logged-in #student-dashboard .student-panel{grid-column:1!important;width:100%!important;max-width:100%!important;min-width:0!important;padding:14px!important;box-sizing:border-box!important;}
+  body.student-logged-in #student-dashboard .mp-p3-student-grid{display:grid!important;grid-template-columns:minmax(0,1fr)!important;width:100%!important;min-width:0!important;margin:0 0 12px!important;}
+  body.student-logged-in #student-dashboard .mp-p3-student-panel{width:100%!important;min-width:0!important;box-sizing:border-box!important;}
+  body.student-logged-in #student-dashboard .mp-p3-profile-grid,
+  body.student-logged-in #student-dashboard .mp-p3-report-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+  body.student-logged-in #student-dashboard .performance-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+  body.student-logged-in #student-dashboard .performance-summary>div{min-width:0!important;}
+  body.student-logged-in #student-dashboard .student-score-chart,
+  body.student-logged-in #student-dashboard canvas,
+  body.student-logged-in #student-dashboard svg{max-width:100%!important;}
+  body.student-logged-in #student-dashboard .mp-p1-history-wrap,
+  body.student-logged-in #student-dashboard .table-wrap,
+  body.student-logged-in #student-dashboard .mp-att-calendar{max-width:100%!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch!important;}
+  body.student-logged-in #student-dashboard .mp-dash-mobile-nav{
+    position:fixed!important;left:7px!important;right:7px!important;
+    bottom:max(6px,env(safe-area-inset-bottom))!important;z-index:9998!important;
+    width:auto!important;max-width:none!important;
+  }
+  body.student-logged-in #student-dashboard *{min-width:0;}
+  body.student-logged-in #student-dashboard img,
+  body.student-logged-in #student-dashboard video,
+  body.student-logged-in #student-dashboard iframe{max-width:100%!important;}
+}
+@media screen and (max-width:420px){
+  body.student-logged-in #student-dashboard .mp-dash-main{padding-left:10px!important;padding-right:10px!important;}
+  body.student-logged-in #student-dashboard .student-lms-topbar{width:calc(100% + 20px)!important;margin-left:-10px!important;margin-right:-10px!important;padding-left:10px!important;padding-right:10px!important;}
+  body.student-logged-in #student-dashboard .student-brand-mark{width:34px!important;height:34px!important;flex:0 0 34px!important;}
+  body.student-logged-in #student-dashboard .student-brand-lockup span{display:none!important;}
+  body.student-logged-in #student-dashboard .dash-logout{padding:7px 8px!important;font-size:9px!important;}
+  body.student-logged-in #student-dashboard .student-kpi{padding:10px 8px!important;}
+  body.student-logged-in #student-dashboard .student-kpi strong{font-size:18px!important;}
+  body.student-logged-in #student-dashboard .mp-modern-quick-actions{padding:12px!important;}
+  body.student-logged-in #student-dashboard .student-panel-head{flex-wrap:wrap!important;}
+}
+@media (orientation:landscape) and (max-height:500px) and (max-width:900px){
+  body.student-logged-in #student-dashboard .mp-dash-sidebar{padding-top:8px!important;padding-bottom:7px!important;}
+  body.student-logged-in #student-dashboard .mp-dash-brand{padding-bottom:5px!important;}
+  body.student-logged-in #student-dashboard .mp-dash-sidebar-quote{display:none!important;}
+}
+</style>
+
+</body>
+</html>
