@@ -6457,5 +6457,207 @@ body.student-logged-in{width:100%;min-width:0;overflow-x:hidden!important;}
 }
 </style>
 
+
+
+<!-- MP ANDROID WEBVIEW FINAL MOBILE NAV + SCROLL FIX -->
+<style id="mp-android-webview-final-layout-fix">
+  /* WebViews can calculate 100vh from the app window rather than the visible area.
+     Keep the document naturally scrollable and let the dashboard grow with content. */
+  html, body {
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    height:auto !important;
+    min-height:100% !important;
+    overflow-x:hidden !important;
+    overflow-y:auto !important;
+    -webkit-overflow-scrolling:touch;
+  }
+  body.student-logged-in {
+    min-height:100vh !important;
+    min-height:100dvh !important;
+    height:auto !important;
+    overflow-y:auto !important;
+    overscroll-behavior-y:contain;
+  }
+  body.student-logged-in #student-dashboard {
+    display:block !important;
+    width:100% !important;
+    max-width:100% !important;
+    min-height:100vh !important;
+    min-height:100dvh !important;
+    height:auto !important;
+    padding-bottom:calc(104px + env(safe-area-inset-bottom, 0px)) !important;
+    overflow:visible !important;
+    box-sizing:border-box !important;
+  }
+  body.student-logged-in #student-dashboard .mp-premium-dashboard-shell {
+    display:block !important;
+    width:100% !important;
+    max-width:100% !important;
+    min-height:0 !important;
+    height:auto !important;
+    overflow:visible !important;
+  }
+  @media screen and (max-width:820px) {
+    body.student-logged-in #student-dashboard,
+    body.student-logged-in #student-dashboard > .wrap,
+    body.student-logged-in #student-dashboard .mp-premium-dashboard-shell,
+    body.student-logged-in #student-dashboard .mp-dash-main {
+      width:100% !important;
+      max-width:100% !important;
+      min-width:0 !important;
+      height:auto !important;
+      min-height:0 !important;
+      box-sizing:border-box !important;
+    }
+    body.student-logged-in #student-dashboard > .wrap {
+      margin:0 !important;
+      padding:0 !important;
+    }
+    body.student-logged-in #student-dashboard .mp-dash-sidebar {
+      position:relative !important;
+      inset:auto !important;
+      display:block !important;
+      width:100% !important;
+      height:auto !important;
+      min-height:0 !important;
+      max-height:none !important;
+      overflow:visible !important;
+      padding:10px 14px 8px !important;
+      box-sizing:border-box !important;
+    }
+    /* Use the fixed bottom navigation on phones; avoid a clipped second nav row. */
+    body.student-logged-in #student-dashboard .mp-dash-side-links {
+      display:none !important;
+    }
+    body.student-logged-in #student-dashboard .mp-dash-sidebar-quote {
+      display:none !important;
+    }
+    body.student-logged-in #student-dashboard .mp-dash-main {
+      display:block !important;
+      width:100% !important;
+      max-width:100% !important;
+      min-width:0 !important;
+      height:auto !important;
+      min-height:0 !important;
+      margin:0 !important;
+      padding:0 12px 24px !important;
+      overflow:visible !important;
+      box-sizing:border-box !important;
+    }
+    body.student-logged-in #student-dashboard .student-lms-topbar {
+      position:relative !important;
+      inset:auto !important;
+      display:flex !important;
+      flex-wrap:wrap !important;
+      width:calc(100% + 24px) !important;
+      max-width:none !important;
+      min-width:0 !important;
+      height:auto !important;
+      min-height:58px !important;
+      margin:0 -12px 13px !important;
+      padding:9px 12px !important;
+      box-sizing:border-box !important;
+    }
+    body.student-logged-in #student-dashboard .student-hero-card,
+    body.student-logged-in #student-dashboard .mp-modern-quick-actions,
+    body.student-logged-in #student-dashboard .student-kpi-grid,
+    body.student-logged-in #student-dashboard .student-main-grid,
+    body.student-logged-in #student-dashboard .mp-p3-student-grid {
+      width:100% !important;
+      max-width:100% !important;
+      min-width:0 !important;
+      box-sizing:border-box !important;
+    }
+    body.student-logged-in #student-dashboard .student-main-grid {
+      display:grid !important;
+      grid-template-columns:minmax(0,1fr) !important;
+      margin:0 !important;
+      padding:0 !important;
+      gap:12px !important;
+    }
+    body.student-logged-in #student-dashboard .student-panel,
+    body.student-logged-in #student-dashboard .student-panel-wide {
+      grid-column:1 / -1 !important;
+      width:100% !important;
+      max-width:100% !important;
+      min-width:0 !important;
+      margin:0 !important;
+      box-sizing:border-box !important;
+    }
+    body.student-logged-in #student-dashboard .mp-dash-mobile-nav {
+      display:grid !important;
+      position:fixed !important;
+      left:8px !important;
+      right:8px !important;
+      bottom:max(7px, env(safe-area-inset-bottom, 0px)) !important;
+      z-index:99999 !important;
+      grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+      gap:3px !important;
+      width:auto !important;
+      max-width:none !important;
+      min-height:62px !important;
+      padding:7px 5px calc(7px + env(safe-area-inset-bottom, 0px)) !important;
+      border:1px solid #dce5f3 !important;
+      border-radius:17px !important;
+      background:rgba(255,255,255,.97) !important;
+      box-shadow:0 8px 28px rgba(6,30,65,.20) !important;
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      box-sizing:border-box !important;
+    }
+    body.student-logged-in #student-dashboard .mp-dash-mobile-nav button {
+      display:flex !important;
+      flex-direction:column !important;
+      align-items:center !important;
+      justify-content:center !important;
+      gap:3px !important;
+      width:100% !important;
+      min-width:0 !important;
+      min-height:46px !important;
+      padding:5px 2px !important;
+      border:0 !important;
+      border-radius:11px !important;
+      background:transparent !important;
+      color:#60718d !important;
+      line-height:1.15 !important;
+    }
+    body.student-logged-in #student-dashboard .mp-dash-mobile-nav button.is-active {
+      background:#edf3ff !important;
+      color:#2449b7 !important;
+    }
+    body.student-logged-in #student-dashboard .mp-dash-mobile-nav button span {
+      font-size:18px !important;
+      line-height:1 !important;
+    }
+    body.student-logged-in #student-dashboard .mp-dash-mobile-nav button small {
+      display:block !important;
+      font-size:9px !important;
+      font-weight:800 !important;
+      white-space:nowrap !important;
+    }
+    body.student-logged-in #student-dashboard .mp-p1-history-wrap,
+    body.student-logged-in #student-dashboard .table-wrap,
+    body.student-logged-in #student-dashboard .mp-att-calendar {
+      max-width:100% !important;
+      overflow-x:auto !important;
+      -webkit-overflow-scrolling:touch !important;
+    }
+  }
+  @media screen and (max-width:360px) {
+    body.student-logged-in #student-dashboard .mp-dash-mobile-nav {
+      left:5px !important;
+      right:5px !important;
+      gap:1px !important;
+      padding-left:3px !important;
+      padding-right:3px !important;
+    }
+    body.student-logged-in #student-dashboard .mp-dash-mobile-nav button small {
+      font-size:8px !important;
+    }
+  }
+</style>
+
 </body>
 </html>
