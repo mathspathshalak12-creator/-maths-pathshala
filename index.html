@@ -4267,7 +4267,7 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
     }
 
     const data=docSnap.data();
-    await mpLoadPublishedCatalog();
+    await mpLoadPublishedCatalog(true);
     const catalogueTests=mpCatalogForStudent(data);
     const assigned=Array.isArray(data.assignedTests)?data.assignedTests:[];
     const combined=[...assigned];
@@ -4618,11 +4618,28 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
 
   // Maths Pathshala Test Centre — reads only the signed-in student's assignedTests.
   let mpActiveTest=null, mpTestIndex=0, mpTestAnswers={}, mpTestTick=null, mpTotalRemaining=0, mpQuestionRemaining=0;
-  let mpPublishedCatalog=[], mpCatalogLoadPromise=null, mpStudentLiveUnsub=null, mpStudentLiveEmail='';
-  async function mpLoadPublishedCatalog(){
+  let mpPublishedCatalog=[], mpCatalogLoadPromise=null, mpCatalogLoadError='', mpStudentLiveUnsub=null, mpStudentLiveEmail='';
+  async function mpLoadPublishedCatalog(forceRefresh=false){
+    // Share only an in-flight request. Never memoize an empty/failed response: a newly
+    // uploaded catalogue must become visible without requiring the student to sign out.
     if(mpCatalogLoadPromise)return mpCatalogLoadPromise;
-    mpCatalogLoadPromise=(async()=>{try{const res=await fetch('./published-tests.json',{cache:'no-store'});if(!res.ok)throw new Error('Catalogue not found');const payload=await res.json();mpPublishedCatalog=Array.isArray(payload.tests)?payload.tests:[];}catch(e){mpPublishedCatalog=[];console.info('Published test catalogue is not available yet:',e.message);}return mpPublishedCatalog;})();
-    return mpCatalogLoadPromise;
+    mpCatalogLoadPromise=(async()=>{
+      try{
+        const url='./published-tests.json'+(forceRefresh?'?v='+Date.now():'');
+        const res=await fetch(url,{cache:'no-store'});
+        if(!res.ok)throw new Error('published-tests.json not found (HTTP '+res.status+')');
+        const payload=await res.json();
+        if(!payload||!Array.isArray(payload.tests))throw new Error('published-tests.json format is invalid: tests array is missing');
+        mpPublishedCatalog=payload.tests;
+        mpCatalogLoadError='';
+      }catch(e){
+        mpPublishedCatalog=[];
+        mpCatalogLoadError=e?.message||'Could not load published tests';
+        console.warn('Published test catalogue could not be loaded:',mpCatalogLoadError);
+      }
+      return mpPublishedCatalog;
+    })();
+    try{return await mpCatalogLoadPromise;}finally{mpCatalogLoadPromise=null;}
   }
   function mpCatalogForStudent(data){
     const now=Date.now(),cls=String(data.class||'').trim().toLowerCase(),batch=String(data.batchName||'').trim().toLowerCase();
@@ -4635,6 +4652,26 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
       const identities=[cls,`class ${cls}`,batch,`class ${cls} ${batch}`].filter(Boolean);
       return targets.some(x=>identities.some(v=>v===x||v.includes(x)||x.includes(v)));
     }).map(t=>({...t,title:t.title||t.name,durationMinutes:Number(t.durationMinutes||t.duration)||30,questions:(t.questions||[]).map(q=>({...q,imageUrl:q.imageUrl||q.image?.data||''}))}));
+  }
+  async function mpRefreshTestCatalogue(){
+    const btn=document.getElementById('mp-test-refresh'),list=document.getElementById('mp-test-list');
+    const email=String(auth.currentUser?.email||'').trim().toLowerCase();
+    if(!email){if(list)list.innerHTML='<div class="mp-test-empty">Please sign in again to load tests.</div>';return;}
+    if(btn){btn.disabled=true;btn.textContent='↻ Checking…';}
+    if(list)list.innerHTML='<div class="mp-test-empty">Checking for newly published tests…</div>';
+    try{
+      const snap=await getDoc(doc(db,'students',email));
+      if(!snap.exists())throw new Error('Student profile not found');
+      const data=snap.data()||{};
+      await mpLoadPublishedCatalog(true);
+      const combined=Array.isArray(data.assignedTests)?data.assignedTests.slice():[];
+      const seen=new Set(combined.map(t=>String(t.id||'')));
+      mpCatalogForStudent(data).forEach(t=>{if(!seen.has(String(t.id||''))){combined.push(t);seen.add(String(t.id||''));}});
+      mpRenderAssignedTests(combined,data.testScores||[]);
+    }catch(e){
+      console.warn('Test catalogue refresh failed:',e);
+      if(list)list.innerHTML=`<div class="mp-test-empty">Could not refresh tests: ${mpTestEsc(e?.message||'Please try again.')}</div>`;
+    }finally{if(btn){btn.disabled=false;btn.textContent='↻ Refresh tests';}}
   }
   function mpSubscribeStudentResults(email){
     const canonical=String(email||'').trim().toLowerCase();if(!canonical||mpStudentLiveEmail===canonical)return;
@@ -4653,13 +4690,17 @@ header #student-login-btn{background:#fff!important;color:var(--mp-light-ink)!im
     if(nav){const b=document.createElement('button');b.type='button';b.dataset.dashTarget='mp-test-centre';b.innerHTML='<span>✎</span> Test Centre';nav.insertBefore(b,nav.children[2]||null);}
     const mobile=root.querySelector('.mp-dash-mobile-nav'); if(mobile){const b=document.createElement('button');b.type='button';b.dataset.dashTarget='mp-test-centre';b.textContent='✎ Tests';mobile.appendChild(b);}
     const main=root.querySelector('.mp-dash-main'); if(!main)return;
-    const panel=document.createElement('section');panel.id='mp-test-centre';panel.className='mp-student-test-centre';panel.innerHTML=`<div class="mp-test-head"><div><span class="mp-test-kicker">MATHS PATHSHALA · ASSESSMENTS</span><h2>Test Centre</h2><p>Published and assigned tests for your class and batch appear here. Results refresh automatically when Admin publishes marks.</p></div><div class="mp-test-head-icon">✦</div></div><div id="mp-test-list" class="mp-test-list"><div class="mp-test-empty">Your assigned tests will appear here.</div></div><div id="mp-test-stage" class="mp-test-stage" hidden></div>`;
+    const panel=document.createElement('section');panel.id='mp-test-centre';panel.className='mp-student-test-centre';panel.innerHTML=`<div class="mp-test-head"><div><span class="mp-test-kicker">MATHS PATHSHALA · ASSESSMENTS</span><h2>Test Centre</h2><p>Published and assigned tests for your class and batch appear here. Results refresh automatically when Admin publishes marks.</p></div><div class="mp-test-head-actions"><button type="button" id="mp-test-refresh" class="mp-test-refresh">↻ Refresh tests</button><div class="mp-test-head-icon">✦</div></div></div><div id="mp-test-list" class="mp-test-list"><div class="mp-test-empty">Loading your tests…</div></div><div id="mp-test-stage" class="mp-test-stage" hidden></div>`;
     const anchor=main.querySelector('#dash-found-content'); if(anchor)anchor.after(panel);else main.appendChild(panel);
+    panel.querySelector('#mp-test-refresh')?.addEventListener('click',mpRefreshTestCatalogue);
   }
   function mpRenderAssignedTests(tests, scores=[]){
     mpEnsureTestCentre(); const list=document.getElementById('mp-test-list'); if(!list)return;
     const items=Array.isArray(tests)?tests:[];
-    if(!items.length){list.innerHTML='<div class="mp-test-empty">No online tests assigned yet. Your teacher will publish them here.</div>';return;}
+    if(!items.length){
+      const detail=mpCatalogLoadError?`<br><small>Catalogue could not be loaded: ${mpTestEsc(mpCatalogLoadError)}. Check that published-tests.json is uploaded beside index.html, then tap Refresh tests.</small>`:'No online tests assigned yet. Your teacher will publish them here.';
+      list.innerHTML=`<div class="mp-test-empty">${detail}</div>`;return;
+    }
     list.innerHTML=items.map((t,i)=>{const count=Array.isArray(t.questions)?t.questions.length:0;const result=(Array.isArray(scores)?scores:[]).find(x=>x.testId===t.id);const done=!!(t.attempted||result);return `<article class="mp-test-card"><div class="mp-test-card-icon">${t.mode==='paper'?'▤':(t.questionMode==='image'?'▧':'✎')}</div><div class="mp-test-card-info"><span class="mp-test-chip">${mpTestEsc(t.subject||'Assessment')}</span><h3>${mpTestEsc(t.title||'Online Test')}</h3><p>${mpTestEsc(t.topic||'Practice assessment')} · ${t.mode==='paper'?'Full paper':count+' questions'} · ${Number(t.durationMinutes)||30} min</p><small>${mpTestEsc(t.date||'Flexible attempt')} ${t.time?'· '+mpTestEsc(t.time):''}</small></div><button type="button" class="mp-test-start" data-mp-start-test="${i}">${done?'View Result':'Start Test'} <span>→</span></button></article>`;}).join('');
     list.querySelectorAll('[data-mp-start-test]').forEach(b=>b.addEventListener('click',()=>{const t=items[Number(b.dataset.mpStartTest)],r=(Array.isArray(scores)?scores:[]).find(x=>x.testId===t.id);if(r){const stage=document.getElementById('mp-test-stage');stage.hidden=false;list.hidden=true;stage.innerHTML=`<div class="mp-test-result"><div class="mp-test-result-icon">✓</div><span>RESULT PUBLISHED</span><h2>${mpTestEsc(t.title||'Test')}</h2><div class="mp-test-score">${Number(r.score)||0}<small> / ${Number(r.max)||0}</small></div><p>${Number(r.max)>0?Math.round(Number(r.score)/Number(r.max)*100):0}% · ${mpTestEsc(r.date||'')}</p><button type="button" id="mp-test-back">Back to Test Centre</button></div>`;stage.querySelector('#mp-test-back').onclick=()=>{stage.hidden=true;list.hidden=false;};}else mpStartTest(t);}));
   }
@@ -6249,4 +6290,9 @@ html body #online-classes.online-learning-section .wrap > .section-head .section
     .student-brand-lockup span{display:none!important}
     .dash-logout{padding:8px 10px!important;font-size:11px!important}
   }
+
+  .mp-test-head-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
+  .mp-test-refresh{border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.10);color:inherit;border-radius:10px;padding:10px 14px;font:inherit;font-weight:700;cursor:pointer}
+  .mp-test-refresh:disabled{opacity:.65;cursor:wait}
+  @media(max-width:640px){.mp-test-head-actions{width:100%;justify-content:space-between}.mp-test-refresh{padding:9px 11px}}
 </style>
