@@ -2231,7 +2231,6 @@ body.mp-test-window-open{overflow:hidden!important}
 <div id="dash-homework"></div>
 <div class="mp-p3-student-grid" id="mp-p3-top" style="margin-top:14px;display:none;">
 <div class="mp-p3-student-panel"><span class="mp-p3-student-kicker">PHASE 3 · STUDENT PROFILE</span><h3>Your Profile</h3><p class="mp-p3-student-sub">Your current academic and batch information, synced from Maths Pathshala.</p><div class="mp-p3-profile-grid"><div class="mp-p3-profile-item"><span>Class</span><strong id="mp-p3-profile-class">—</strong></div><div class="mp-p3-profile-item"><span>Batch</span><strong id="mp-p3-profile-batch">—</strong></div><div class="mp-p3-profile-item"><span>Service</span><strong id="mp-p3-profile-service">—</strong></div><div class="mp-p3-profile-item"><span>Timing</span><strong id="mp-p3-profile-timing">—</strong></div><div class="mp-p3-profile-item"><span>Joined</span><strong id="mp-p3-profile-joined">—</strong></div><div class="mp-p3-profile-item"><span>Fee Status</span><strong id="mp-p3-profile-fee">—</strong></div><div class="mp-p3-profile-item"><span>Next Test</span><strong id="mp-p3-profile-test">—</strong></div><div class="mp-p3-profile-item"><span>Student Status</span><strong id="mp-p3-profile-status">Active</strong></div></div></div>
-<div class="mp-p3-student-panel"><span class="mp-p3-student-kicker">PHASE 3 · SMART NOTIFICATIONS</span><h3>Your Updates</h3><p class="mp-p3-student-sub">Important updates, reminders and progress messages for your account.</p><div class="mp-p3-notification-list" id="mp-p3-notifications"><div class="mp-p3-empty">No new updates right now.</div></div><div class="mp-p3-comm-row"><span>Latest communication</span><strong id="mp-p3-student-comm">No recent update</strong></div></div>
 </div>
 <div id="dash-found-content">
 <div class="student-kpi-grid">
@@ -4518,29 +4517,12 @@ body.mp-test-window-open{overflow:hidden!important}
     const top=document.getElementById('mp-p3-top');if(top)top.style.display='grid';const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v||'—';};
     const nextTest=mpP3NextTest(data);
     set('mp-p3-profile-class',data.class?`Class ${data.class}`:'—');set('mp-p3-profile-batch',data.batchName||'Not assigned');set('mp-p3-profile-service',data.serviceMode||'—');set('mp-p3-profile-timing',data.batchTiming||'Not assigned');set('mp-p3-profile-joined',data.admissionDate?new Date(data.admissionDate+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—');set('mp-p3-profile-fee',data.feeStatus||'Due');set('mp-p3-profile-test',nextTest.raw||'None scheduled');set('mp-p3-profile-status',data.studentStatus||'Active');
-    const notices=Array.isArray(data?.phase3?.notifications)?data.phase3.notifications.slice(0,6):[];const box=document.getElementById('mp-p3-notifications');if(box)box.innerHTML=notices.length?notices.map(n=>`<div class="mp-p3-notification"><div class="mp-p3-notification-top"><strong>${dashEscapeHtml(n.title||'Update')}</strong><span class="mp-p3-type">${dashEscapeHtml(n.type||'Update')}</span></div><p>${dashEscapeHtml(n.message||'')}</p><small>${n.createdAt?new Date(n.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}):''}</small></div>`).join(''):'<div class="mp-p3-empty">No new updates right now.</div>';
-    const comm=data?.phase3?.communication||{};set('mp-p3-student-comm',comm.status&&comm.status!=='Not Contacted'?`${comm.status}${comm.updatedAt?' · '+new Date(comm.updatedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}):''}`:'No recent update');
     const now=new Date(),currentKey=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`,key=selectedKey||currentKey,ma=(Array.isArray(attendance)?attendance:[]).filter(e=>mpP3MonthKey(e.date)===key),counted=ma.filter(e=>e.status==='Present'||e.status==='Absent'),pct=counted.length?Math.round(counted.filter(e=>e.status==='Present').length/counted.length*100):0,ms=(Array.isArray(scores)?scores:[]).filter(x=>mpP3MonthKey(x.date)===key),avg=ms.length?Math.round(ms.reduce((a,x)=>a+scorePct(x),0)/ms.length):0,best=ms.length?Math.max(...ms.map(scorePct)):0;
     set('mp-p3-report-attendance',counted.length?pct+'%':'—');set('mp-p3-report-average',ms.length?avg+'%':'—');set('mp-p3-report-best',ms.length?best+'%':'—');set('mp-p3-report-tests',String(ms.length));set('mp-p3-report-fee',data.feeStatus||'Due');set('mp-p3-report-month',mpP3MonthLabel(key));
     const tm={};ms.forEach(x=>{const t=String(x.topic||'').trim();if(t)(tm[t]??=[]).push(scorePct(x));});const focus=Object.entries(tm).map(([t,v])=>({t,a:Math.round(v.reduce((a,b)=>a+b,0)/v.length)})).sort((a,b)=>a.a-b.a)[0];set('mp-p3-report-focus',focus?`${focus.t} · ${focus.a}%`:(pct<75?'Improve attendance consistency':ms.length?'Keep strengthening your test performance':'Build a regular practice routine'));
     const select=document.getElementById('mp-p3-month-select');if(select&&select.value!==key&&[...select.options].some(o=>o.value===key))select.value=key;
   }
-  function mpP3Smart(data,attendance,homeworkItems){
-    const items=[],nextTest=mpP3NextTest(data),now=new Date(),key=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`,m=(Array.isArray(attendance)?attendance:[]).filter(e=>mpP3MonthKey(e.date)===key&&(e.status==='Present'||e.status==='Absent')),pct=m.length?Math.round(m.filter(e=>e.status==='Present').length/m.length*100):100;
-    if(nextTest.raw)items.push({title:'Upcoming test',message:`${nextTest.raw}${nextTest.test?.topic?' · Focus: '+nextTest.test.topic:''}`,type:'Test'});
-    const hw=Array.isArray(homeworkItems)?homeworkItems.filter(h=>{const n=mpP2DayDiff(h.dueDate);return !h.dueDate||n===null||n>=0;}).slice(0,3):[];
-    hw.forEach(h=>items.push({title:'Homework',message:`${h.title||'New homework'}${h.dueDate?' · Due '+h.dueDate:''}`,type:'Homework'}));
-    if(data.feeStatus==='Due')items.push({title:'Fee reminder',message:'Your current fee status is marked as Due. Please contact Maths Pathshala for payment details.',type:'Reminder'});
-    if(m.length&&pct<75)items.push({title:'Attendance focus',message:`Your attendance is ${pct}% this month. Try to maintain regular class attendance.`,type:'Important'});
-    return items.slice(0,6);
-  }
-  function renderMpP3SmartNotifications(data,attendance,homeworkItems){
-    const box=document.getElementById('mp-p3-notifications');if(!box)return;
-    const adminItems=Array.isArray(data?.phase3?.notifications)?data.phase3.notifications.slice(0,4):[];
-    const smartItems=mpP3Smart(data,attendance,homeworkItems);
-    const items=[...smartItems,...adminItems].slice(0,6);
-    box.innerHTML=items.length?items.map(n=>`<div class="mp-p3-notification"><div class="mp-p3-notification-top"><strong>${dashEscapeHtml(n.title||'Update')}</strong><span class="mp-p3-type">${dashEscapeHtml(n.type||'Update')}</span></div><p>${dashEscapeHtml(n.message||'')}</p><small>${n.createdAt?new Date(n.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}):''}</small></div>`).join(''):'<div class="mp-p3-empty">No new updates right now.</div>';
-  }
+
 
   // PHASE 2 — LEARNING HUB
   // =========================
@@ -4620,7 +4602,6 @@ body.mp-test-window-open{overflow:hidden!important}
         homeworkItems=hs.docs.map(d=>d.data()).filter(matchesStudentTarget).sort((a,b)=>(b.createdAt?.toMillis?.()||0)-(a.createdAt?.toMillis?.()||0)).slice(0,8);
       }catch(e){ console.warn('Phase 2 homework snapshot unavailable',e); }
       renderPhase2LearningHub(data,homeworkItems);
-      try{ renderMpP3SmartNotifications(data,normalizeStudentAttendanceLog(data.attendance?.log),homeworkItems); }catch(e){ console.warn('Smart notification refresh failed',e); }
     }catch(err){console.warn('Phase 2 learning hub unavailable',err);}
   }
   window.mpRefreshPhase2LearningHub=refreshPhase2LearningHub;
@@ -5980,6 +5961,68 @@ body.student-logged-in #student-dashboard .mp-test-centre-panel{border-radius:18
 @media(prefers-reduced-motion:reduce){body.student-logged-in #student-dashboard *{scroll-behavior:auto!important;transition:none!important;animation:none!important;}}
 </style>
 
+
+<style id="mp-dashboard-premium-refinement-20261031">
+/* Focused student-dashboard polish: brand mark, welcome treatment and quick actions. */
+body.student-logged-in #student-dashboard .student-brand-mark{
+  position:relative!important;display:grid!important;place-items:center!important;
+  width:44px!important;height:44px!important;border-radius:14px!important;
+  border:1px solid rgba(255,231,184,.9)!important;
+  background:linear-gradient(145deg,#fff0c9 0%,#e8b95f 42%,#a96d1b 100%)!important;
+  color:#10233d!important;font-size:23px!important;font-weight:900!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.65)!important;
+  box-shadow:0 8px 20px rgba(10,26,48,.22),inset 0 1px 2px rgba(255,255,255,.85),inset 0 -3px 6px rgba(111,66,10,.18)!important;
+}
+body.student-logged-in #student-dashboard .student-brand-mark:after{
+  content:""!important;position:absolute!important;inset:3px!important;border:1px solid rgba(255,255,255,.38)!important;border-radius:10px!important;pointer-events:none!important;
+}
+body.student-logged-in #student-dashboard .student-hero-card{
+  background:radial-gradient(circle at 82% 8%,rgba(218,177,104,.20),transparent 18rem),
+    linear-gradient(116deg,#101d32 0%,#173b49 58%,#24565a 100%)!important;
+  border:1px solid rgba(226,190,126,.32)!important;
+  box-shadow:0 20px 46px rgba(12,34,49,.20)!important;
+}
+body.student-logged-in #student-dashboard .dash-member-badge{
+  background:linear-gradient(110deg,#fff1d0,#f2d49b)!important;color:#26364a!important;
+  border:1px solid rgba(255,255,255,.72)!important;border-radius:999px!important;
+  box-shadow:0 4px 12px rgba(7,20,35,.13)!important;font-weight:850!important;
+}
+body.student-logged-in #student-dashboard .dash-welcome{color:#fff!important;text-shadow:0 2px 12px rgba(0,0,0,.16)!important}
+body.student-logged-in #student-dashboard .dash-welcome span{color:#f6cf83!important}
+body.student-logged-in #student-dashboard .student-hero-copy{border-color:rgba(245,211,151,.25)!important;border-left:3px solid #d7ad64!important;background:rgba(255,255,255,.065)!important}
+body.student-logged-in #student-dashboard .mp-p3-student-grid{grid-template-columns:minmax(0,1fr)!important}
+body.student-logged-in #student-dashboard .mp-p3-student-grid>.mp-p3-student-panel{width:100%!important}
+body.student-logged-in #student-dashboard .mp-modern-quick-actions{
+  position:relative!important;isolation:isolate!important;overflow:hidden!important;
+  display:grid!important;grid-template-columns:180px minmax(0,1fr)!important;align-items:center!important;gap:20px!important;
+  padding:19px 21px!important;border:1px solid rgba(225,190,128,.34)!important;border-radius:20px!important;
+  background:radial-gradient(circle at 100% 0%,rgba(220,178,103,.20),transparent 19rem),linear-gradient(112deg,#11243c 0%,#173e50 62%,#20585b 100%)!important;
+  box-shadow:0 14px 32px rgba(12,35,52,.16)!important;
+}
+body.student-logged-in #student-dashboard .mp-modern-quick-actions:after{content:""!important;position:absolute!important;z-index:-1!important;width:220px!important;height:220px!important;right:-110px!important;bottom:-150px!important;border:1px solid rgba(245,211,151,.22)!important;border-radius:50%!important;box-shadow:0 0 0 22px rgba(245,211,151,.035),0 0 0 44px rgba(245,211,151,.025)!important}
+body.student-logged-in #student-dashboard .mp-modern-quick-head .panel-kicker{color:#e5c58d!important}
+body.student-logged-in #student-dashboard .mp-modern-quick-head h3{color:#fff!important;font-size:19px!important;letter-spacing:-.35px!important}
+body.student-logged-in #student-dashboard .mp-modern-live-dot{color:#a9e5c9!important}
+body.student-logged-in #student-dashboard .mp-modern-action-grid{gap:11px!important}
+body.student-logged-in #student-dashboard .mp-modern-action-grid button{
+  min-height:66px!important;padding:12px 13px!important;border:1px solid rgba(255,255,255,.19)!important;
+  border-radius:14px!important;background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.075))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12)!important;backdrop-filter:blur(8px)!important;
+}
+body.student-logged-in #student-dashboard .mp-modern-action-grid button:hover{transform:translateY(-3px)!important;border-color:rgba(245,211,151,.62)!important;background:linear-gradient(145deg,rgba(255,255,255,.20),rgba(255,255,255,.10))!important;box-shadow:0 12px 22px rgba(0,0,0,.15)!important}
+body.student-logged-in #student-dashboard .mp-modern-action-grid strong{color:#fff!important;font-size:11.5px!important}
+body.student-logged-in #student-dashboard .mp-modern-action-grid small{color:#c7d7df!important}
+body.student-logged-in #student-dashboard .mp-modern-action-grid button>b{color:#f3cf8d!important}
+body.student-logged-in #student-dashboard .mp-action-icon{width:38px!important;height:38px!important;flex-basis:38px!important;border:1px solid rgba(255,255,255,.24)!important;box-shadow:0 5px 12px rgba(0,0,0,.16)!important}
+body.student-logged-in #student-dashboard .action-test{background:linear-gradient(135deg,#c38a35,#e4b85e)!important;color:#172b40!important}
+body.student-logged-in #student-dashboard .action-study{background:linear-gradient(135deg,#238c8a,#4ab9a4)!important}
+body.student-logged-in #student-dashboard .action-homework{background:linear-gradient(135deg,#bd6684,#e58c91)!important}
+@media(max-width:820px){
+ body.student-logged-in #student-dashboard .mp-modern-quick-actions{grid-template-columns:1fr!important;gap:12px!important;padding:15px!important}
+ body.student-logged-in #student-dashboard .mp-modern-action-grid{grid-template-columns:1fr!important}
+ body.student-logged-in #student-dashboard .mp-modern-action-grid button{min-height:60px!important}
+}
+</style>
 </body>
 </html>
 
